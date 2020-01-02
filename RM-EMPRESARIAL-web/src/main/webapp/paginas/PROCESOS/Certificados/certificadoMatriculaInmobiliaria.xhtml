@@ -1,0 +1,723 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            title
+        </ui:define>
+
+        <ui:define name="head">
+            head
+        </ui:define>
+
+        <ui:define name="content">
+            <script type="text/javascript">
+          function seleccionarTab0() {
+       PF('WV_tabView_Certificados').select(0);
+//       tabViewVar
+//tabView_Certificados
+   }
+                </script>
+            <p:messages id="mensajes" showDetail="true" closable="true"/>
+
+            <h:form id="formCertificados">
+
+                <div class="ui-g">
+                    <div class="ui-g-3">
+                        <p:panel id="pnlBusqueda" header="Selección">
+
+
+
+                            <!--                        <h:panelGroup >
+                                                        <h:panelGrid columns="5" cellspacing="4">
+                                                            <p:outputLabel for="numCertPendientes" value="Trabajos Asignados"/>
+                                                            <h:outputText id="numCertPendientes" value="#{controladorCertificado.numTrabajosAsignados}"
+                                                                          style="color: red"/>
+                                                            |
+                                                            <p:outputLabel for="numCertRealizados" value="Trabajos Habilitados"/>
+                                                            <h:outputText id="numCertRealizados" value="#{controladorCertificado.numTrabajosHabilitados}"
+                                                                          style="color: red"/>
+                                                        </h:panelGrid>
+                                                        <hr></hr>
+                            
+                                                    </h:panelGroup>-->
+
+                            <p:outputLabel for="tipo" value="Tipo G."  />
+                            <p:selectOneMenu id="tipo" value="#{controladorCertificado.tipoGravamen}"
+                                             required="true"
+                                             disabled="#{!controladorCertificado.esNuevo}">
+
+                                <f:selectItem itemLabel="GENERAL" itemValue="GENERAL"/>
+                                <f:selectItem itemLabel="NEGATIVA" itemValue="NEGATIVA"/>
+                                <!--                                                        <f:selectItem itemLabel="ESTATUTO" itemValue="ESTATUTO"/>-->
+                                <p:ajax 
+                                    process="@this" event="change"
+                                    update=":formCertificados"
+                                    listener="#{controladorCertificado.cambiarTipoGravamen()}"/>
+                            </p:selectOneMenu>
+
+
+
+
+                            <h:panelGrid id="panelListaFacturas" columns="1">  
+                                <p:outputLabel  value="Lista de trabajos" />
+                                <p:dataTable id="tblFacturas" 
+                                             value="#{controladorCertificadoBuscar.llenarTablaCertificadoCarga('M')}" 
+                                             var="certCarg" selectionMode="single" 
+                                             scrollable="true" scrollHeight="200"
+                                             rowKey="#{certCarg.cdcId}" sortBy="#{certCarg.facId.facNumero}"
+                                             > 
+
+                                    <p:ajax event="rowSelect" listener="#{controladorCertificado.seleccionarFila}"
+                                            process="@this :formCertificados:tipo" update=":formCertificados mensajes" 
+                                            oncomplete="seleccionarTab0()"/>
+
+
+                                    <p:column headerText="FACTURA" style="width: 40%">
+                                        <h:outputText value="#{certCarg.facId.facNumero}" />
+                                    </p:column>
+                                    <p:column headerText="HABILITADO" style="width: 40%">
+                                        <h:outputText value="SI" rendered="#{certCarg.cdcActivo}"/>
+                                        <h:outputText value="NO" rendered="#{!certCarg.cdcActivo}"/>
+                                    </p:column>
+
+
+                                </p:dataTable>
+
+                            </h:panelGrid>
+                            <hr></hr>
+
+                            <div align="left">
+                                <h:panelGrid columns="2">
+                                    <p:commandButton style="min-width: 90px" class="cyan-btn" icon="fa fa-refresh" value="Refrescar"
+                                                     immediate="true" process="@this"
+                                                     action="certificadoGravamen?faces-redirect=true"/>
+                                    <p:commandButton  
+                                        value="Terminar Proceso"
+                                        action="#{controladorCertificado.terminarProceso()}"
+                                        update="@form growl" 
+                                        class="yellow-btn" icon="fa fa-save">
+                                        <p:confirm header="Finalizar" message="¿Esta seguro de terminar proceso?"/>
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </div>
+                            <hr></hr>
+
+                        </p:panel>
+                    </div>
+                    <div class="ui-g-9">
+
+
+                        <p:panel id="panelTabs"  style="min-height: 520px" >
+                            
+                            <p:tabView  id="tabView_Certificados" widgetVar="WV_tabView_Certificados" 
+                                        activeIndex="#{controladorCertificado.indiceTabViewCertificados}" 
+                                        rendered="#{controladorCertificado.mostrarPnlTabs}" 
+                                        >
+                                <p:ajax event="tabChange" listener="#{controladorCertificado.cambiarTab}" 
+                                        update="growl @form:panelTabs " process="@this" />
+                                <p:tab id="tab_referencias" title="Referencias" rendered="#{controladorCertificado.mostrarTabReferencias}">
+
+                                    <h:panelGrid id="gridBusqueda" border="0" cellspacing="2" columns="7" style="text-align: left">
+
+                                        <p:selectBooleanCheckbox id="busquedaUno" 
+                                                                 value="#{controladorCertificado.busquedaUno}"
+                                                                 disabled="#{!controladorCertificado.esNuevo or controladorCertificado.deshabilitarBusqueda}">
+                                            <p:ajax update="tabView_Certificados "
+                                                    listener="#{controladorCertificado.habilitarBusquedaUno()}" />
+                                        </p:selectBooleanCheckbox>
+
+                                        <p:outputLabel value="Predio" for="predio"/>
+                                        <p:inputText id="predio" 
+                                                     disabled ="#{controladorCertificado.disabledPredioCatastro or controladorCertificado.deshabilitarBusqueda}"
+                                                     value="#{controladorCertificado.predio}"
+                                                     />
+
+                                        <p:outputLabel value="Catastro" for="catastro"/>
+                                        <p:inputText id="catastro" 
+                                                     disabled ="#{controladorCertificado.disabledPredioCatastro or controladorCertificado.deshabilitarBusqueda}"
+
+                                                     value="#{controladorCertificado.catastro}"
+                                                     />
+
+                                        <h:panelGroup/>
+                                        <h:panelGroup/>
+
+                                        <p:selectBooleanCheckbox id="busquedaDos" 
+                                                                 value="#{controladorCertificado.busquedaDos}"
+                                                                 disabled="#{!controladorCertificado.esNuevo  or controladorCertificado.deshabilitarBusqueda}">
+                                            <p:ajax update="tabView_Certificados" 
+                                                    listener="#{controladorCertificado.habilitarBusquedaDos()}" />
+                                        </p:selectBooleanCheckbox>
+                                        <p:outputLabel value="Fecha de Repertorio" for="fechaRepertorio"/>
+                                        <p:calendar pattern="dd/MM/yyyy" id="fechaRepertorio" 
+                                                    disabled ="#{controladorCertificado.disabledRepertorio or controladorCertificado.deshabilitarBusqueda}"
+                                                    value="#{controladorCertificado.fchRepertorio}" label="firstname">
+
+                                        </p:calendar>
+
+                                        <p:outputLabel value="Repertorio" for="repertorio"/>
+                                        <p:inputText id="repertorio" 
+                                                     disabled ="#{controladorCertificado.disabledRepertorio or controladorCertificado.deshabilitarBusqueda}"
+                                                     value="#{controladorCertificado.numRepertorio}"/>
+
+
+                                        <h:panelGroup/>
+                                        <h:panelGroup/>
+
+                                        <p:selectBooleanCheckbox id="busquedaTres"
+                                                                 value="#{controladorCertificado.busquedaTres}"
+                                                                 disabled="#{!controladorCertificado.esNuevo or controladorCertificado.deshabilitarBusqueda}">
+                                            <p:ajax update="tabView_Certificados" 
+                                                    listener="#{controladorCertificado.habilitarBusquedaTres()}" />
+                                        </p:selectBooleanCheckbox>
+
+                                        <p:outputLabel value="Fecha de Inscripción" for="fechaInscripcion"/>
+                                        <p:calendar pattern="dd/MM/yyyy" id="fechaInscripcion"
+                                                    disabled ="#{controladorCertificado.disabledInscripcion or controladorCertificado.deshabilitarBusqueda}"
+                                                    value="#{controladorCertificado.fchActa}" label="firstname">
+                                        </p:calendar>
+
+                                        <p:outputLabel value="Inscripción" for="inscripcion"/>
+                                        <p:inputText id="inscripcion" 
+                                                     disabled ="#{controladorCertificado.disabledInscripcion or controladorCertificado.deshabilitarBusqueda}"
+                                                     value="#{controladorCertificado.numInscripcion}"/>
+
+                                        <p:outputLabel value="Tipo Libro" for="cmbTipoLibro"/>
+                                        <p:selectOneMenu id="cmbTipoLibro" value="#{controladorCertificado.tipoLibroSeleccionado}"
+                                                         disabled ="#{controladorCertificado.disabledInscripcion or controladorCertificado.deshabilitarBusqueda}">
+                                            <f:selectItem itemLabel="Seleccione..."/>
+                                            <f:selectItems value="#{controladorTipoLibro.items}" var="tipoLibro" 
+                                                           itemLabel="#{tipoLibro.tplDescripcion}"
+                                                           itemValue="#{tipoLibro}"/>
+                                        </p:selectOneMenu>
+
+
+
+                                    </h:panelGrid>
+                                    <p:commandButton id="btn_buscarReferencias" value="Buscar" 
+                                                     class="green-btn" style="margin-right:20px;" icon="fa fa-search" title="Buscar"
+                                                     process="tab_referencias" 
+                                                     update="growl tabView_Certificados btnCrearActa" 
+                                                     action="#{controladorCertificado.buscarReferencias()}"
+                                                     disabled="#{!controladorCertificado.esNuevo or controladorCertificado.deshabilitarBusqueda} "/>
+                                    <p:button id="btnCrearActa" icon="fa fa-file" class="yellow-btn" value="Crear Acta"
+                                              style="width: 120px" rendered="#{controladorCertificado.esCertificadoVacio}"
+                                              href="/paginas/PROCESOS/MantenimientoTramite/MantenimientoTramite.xhtml"
+                                              />
+
+
+                                    <p:panel header="DATOS GENERALES" id="panelDatosGenerales"  >
+                                        <h:panelGrid columns="9" cellspacing="5px" >
+                                            <p:outputLabel value="No. Factura" for="NumFactura"/>
+                                            <p:inputText id="NumFactura" readonly="true"
+                                                         value="#{controladorCertificado.numFactura}"/>
+                                            <p:outputLabel value="No. Certificados" for="NumCertificados"/>
+                                            <p:inputText id="NumCertificados" readonly="true" style="width: 40px;" 
+                                                         value="#{controladorCertificado.numCertificados}"/>
+                                            <p:outputLabel value="Derecho" for="NumDerecho"/>
+                                            <p:inputText id="NumDerecho" readonly="true" style="width: 40px;"
+                                                         value="#{controladorCertificado.certificadoCargaSeleccionado.cdcCantidadDerecho}"/>
+                                            <p:outputLabel value="Caja" for="NumCaja"/>
+                                            <p:inputText id="NumCaja" readonly="true" style="width: 40px;"
+                                                         value="#{controladorCertificado.certificadoCargaSeleccionado.facId.cajId.cajNombre}"/>
+
+                                            <p:commandButton value="Ver formulario digitalizado" 
+                                                             action="#{controladorCertificado.cargarFormulario()}"
+                                                             update="dlgVerFormularioDig"
+                                                             oncomplete="PF('dlgVerFormularioDig').show();"/>
+
+                                        </h:panelGrid>
+                                    </p:panel>
+                                    <p:panel header="REFERENCIAS DEL CERTIFICADO" id="panelReferencias"  >
+                                        <p:tabView >
+                                            <p:tab title="Actas">
+
+                                                <h:panelGrid id="referenciasCertificado" columns="1">  
+
+                                                    <p:dataTable id="dtb_referencias" value="#{controladorCertificado.listaActasSeleccionadas}" 
+                                                                 var="item"
+                                                                 paginator="false"
+                                                                 rowKey="#{item.actNumero}"
+                                                                 scrollable="true" scrollHeight="100"
+                                                                 rowStyleClass="#{item eq controladorCertificado.actaSeleccionada ? 'highlight':''}"
+
+                                                                 >
+                                                        <p:column headerText="Acta"  style="width: 45px">
+                                                            <h:outputText value="#{item.actNumero}" />
+                                                        </p:column>
+                                                        <p:column headerText="Fecha" style="width: 80px">
+                                                            <h:outputText value="#{item.actFch}" >
+                                                                <f:convertDateTime pattern="YYYY-MM-DD"/>
+                                                            </h:outputText>
+                                                        </p:column>
+
+                                                        <p:column headerText="Tipo Libro">
+                                                            <h:outputText value="#{item.tplId.tplDescripcion}" />
+                                                        </p:column>
+
+                                                        <p:column headerText="Foja">
+                                                            <h:outputText value="#{item.actFoja}" />
+                                                        </p:column>
+
+                                                        <p:column headerText="Inscripción">
+                                                            <h:outputText value="#{item.actInscripcion}" />
+                                                        </p:column>
+
+                                                        <p:column headerText="Estado">
+                                                            <h:outputText value="#{item.actEstado}" />
+                                                        </p:column>
+
+                                                        <p:column headerText="Repertorio" style="width: 45px">
+                                                            <h:outputText value="#{item.repNumero.repNumero}" />
+                                                        </p:column>
+
+                                                        <p:column headerText="Predio">
+                                                            <h:outputText value="#{item.prdMatricula.prdPredio}" />
+                                                        </p:column>
+
+                                                        <p:column headerText="Catastro">
+                                                            <h:outputText value="#{item.prdMatricula.prdCatastro}" />
+                                                        </p:column>
+
+                                                        <p:column >
+                                                            <p:commandButton process="@this" update="@form"
+                                                                             icon="fa fa-check" 
+                                                                             action="#{controladorCertificado.seleccionarActa(item)}"
+                                                                             disabled="#{item.tplId.tplPropietario ne true}"
+                                                                             >
+
+
+                                                            </p:commandButton>
+                                                        </p:column>
+
+                                                    </p:dataTable>
+
+                                                </h:panelGrid>               
+                                            </p:tab>
+                                            <p:tab title="Cert. Ante.">
+                                                <p:dataTable id="dtb_certificados" value="#{controladorCertificado.listaCertificadoAnteriores}"
+                                                             var="cert"
+                                                             paginator="false"
+                                                             rowKey="#{cert.certificadoPK}"
+                                                             scrollable="true" scrollHeight="100"
+                                                             >
+
+                                                    <p:column headerText="Número" >
+                                                        <h:outputText value="#{cert.certificadoPK.cerNumero}" />
+                                                    </p:column>
+                                                    <p:column headerText="Fecha" style="width: 80px">
+                                                        <h:outputText value="#{cert.cerFHR}" >
+                                                            <f:convertDateTime pattern="yyyy-MM-dd"/>
+                                                        </h:outputText>
+                                                    </p:column>
+
+                                                    <p:column headerText="Propiedad">
+                                                        <h:outputText value="#{cert.cerPropiedad}" />
+                                                    </p:column>
+
+
+                                                </p:dataTable>
+                                            </p:tab>
+                                        </p:tabView>
+
+                                    </p:panel>
+
+                                </p:tab>
+
+                                <p:tab id="tab_Propiedad" title="Propiedad" rendered="#{controladorCertificado.mostrarTabPropiedad}">
+                                    <h:panelGrid columns="4" cellspacing="10" rendered="#{not empty controladorCertificado.propiedadSeleccionada}">
+                                        <p:dataTable id="dtbPrdDet" value="#{controladorCertificado.listaPropiedadMostrar}"
+                                                     var="prpd"
+                                                     rowKey="#{prpd.prdMatricula}"
+                                                     selection="#{controladorCertificado.listaPropiedadSelec}"
+
+                                                     >
+                                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                            <p:column headerText="Matricula">
+                                                <h:outputText value="#{prpd.prdMatricula}"/>
+                                            </p:column>
+                                            <p:column headerText="Predio">
+                                                <h:outputText value="#{prpd.prdPredio}"/>
+                                            </p:column>
+                                            <p:column headerText="Catastro">
+                                                <h:outputText value="#{prpd.prdCatastro}"/>
+                                            </p:column>
+                                            <p:column headerText="%(Der.Acc.)">
+                                                <p:commandButton value="Der. Acc." 
+                                                                 rendered="#{controladorCertificado.tieneDerAcc(prpd.prdMatricula)}"
+                                                                 action="#{controladorCertificado.obtenerDerAcc(prdMatricula)}"
+                                                                 oncomplete="PF('dlgDerAcc').show" update="frmDlgAct" >
+                                                    <f:setPropertyActionListener value="#{prdDtl}" target="#{controladorCertificado.propiedadDetSelDerAcc}"/>
+
+                                                </p:commandButton>
+                                            </p:column>
+                                            <f:facet name="header">
+                                                <div align="right">
+                                                    <p:commandButton value="Agregar" icon="fa fa-check" class="green-btn"
+                                                                     action="#{controladorCertificado.seleccionarPropiedades()}"
+                                                                     update=":formCertificados growl"
+                                                                     process="dtbPrdDet @this"
+                                                                     />
+                                                </div>
+                                            </f:facet>
+                                        </p:dataTable>
+
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="1" cellspacing="10" border="0" >
+
+                                        <p:outputLabel for="txtDescripcion" value="Descripción" style="text-align: right"/>
+                                        <p:inputTextarea id="txtDescripcion" rows="8" cols="115" 
+                                                         readonly="#{!controladorCertificado.esCertificadoVacio}"
+                                                         style="text-align: justify"
+                                                         value="#{controladorCertificado.descripcionPropiedad}">
+                                            <p:ajax event="change" process="@this" 
+                                                    update="growl tabView_Certificados"/>
+                                        </p:inputTextarea>
+
+                                    </h:panelGrid>
+
+
+                                </p:tab>
+                                <p:tab id="tab_propietarios" title="Propietarios"  rendered="#{controladorCertificado.mostrarTabPropietarios}">
+
+                                    <h:panelGrid id="propietarios" columns="1" cellspacing="10" 
+                                                 rendered="#{not empty controladorCertificado.listaPropietariosSeleccionados}">  
+                                        <p:outputLabel for="datalistPropietarios" value="Lista de Propietarios" 
+                                                       style="text-align: left; font-weight: bold"/>
+
+
+                                        <p:dataTable id="datalistPropietarios" value="#{controladorCertificado.listaPropietariosSeleccionados}" 
+                                                     var="propietario"
+                                                     paginator="false"
+                                                     rowKey="#{propietario.pprId}"
+                                                     >
+
+                                            <p:column headerText="Identificación">
+                                                <h:outputText value="#{propietario.perId.perIdentificacion}" />
+                                            </p:column>
+
+                                            <p:column headerText="Apellido Paterno">
+                                                <h:outputText value="#{propietario.perId.perApellidoPaterno}" />
+                                            </p:column>
+
+                                            <p:column headerText="Apellido Materno">
+                                                <h:outputText value="#{propietario.perId.perApellidoMaterno}" />
+                                            </p:column>
+
+                                            <p:column headerText="Nombres">
+                                                <h:outputText value="#{propietario.perId.perNombre}" />
+                                            </p:column>
+
+                                            <p:column headerText="Identificación Con">
+                                                <h:outputText value="#{propietario.perId.perIdConyuge.perIdentificacion}" />
+                                            </p:column>
+
+                                            <p:column headerText="Apellido Paterno Con">
+                                                <h:outputText value="#{propietario.perId.perIdConyuge.perApellidoPaterno}" />
+                                            </p:column>
+
+                                            <p:column headerText="Apellido Materno Con">
+                                                <h:outputText value="#{propietario.perId.perIdConyuge.perApellidoMaterno}" />
+                                            </p:column>
+                                            <p:column headerText="Nombres Con">
+                                                <h:outputText value="#{propietario.perId.perIdConyuge.perNombre}" />
+                                            </p:column>
+                                        </p:dataTable>
+
+                                    </h:panelGrid>   
+
+
+                                    <h:panelGrid columns="1" cellspacing="10" border="0" >
+
+                                        <p:outputLabel for="txtDescripcionPropietarios" 
+                                                       value="Descripción de Propietarios" style="text-align: right; font-weight: bold"/>
+                                        <p:inputTextarea id="txtDescripcionPropietarios" rows="8" cols="115" 
+                                                         readonly="#{!controladorCertificado.esCertificadoVacio}"
+                                                         style="text-align: justify"
+                                                         value="#{controladorCertificado.descripcionPropietarios}">
+                                            <p:ajax event="change" process="@this" 
+                                                    update="growl tabView_Certificados"/>
+                                        </p:inputTextarea>
+
+                                    </h:panelGrid>
+
+                                </p:tab>
+
+                                <p:tab id="tab_adquisicion" title="Adquisición" rendered="#{controladorCertificado.mostrarTabAdquisiciones}"  >
+                                    <h:panelGrid columns="1" cellspacing="10" border="0"  >
+
+                                        <p:outputLabel for="txtAdquisicion" 
+                                                       value="Adquisición y Antecedentes" style="text-align: right; font-weight: bold"/>
+                                        <p:inputTextarea id="txtAdquisicion" rows="15" cols="115" 
+                                                         readonly="false"
+                                                         style="text-align: justify"
+                                                         value="#{controladorCertificado.adquisicionAntecedentes}">
+                                            <p:ajax event="change" process="@this" 
+                                                    update="growl tabView_Certificados"/>
+                                        </p:inputTextarea>
+
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab id="tab_gravamenes" title="Gravamenes" rendered="#{controladorCertificado.mostrarTabGravamenes}" >
+
+                                    <h:panelGrid id="gravamenes" columns="1" cellspacing="10" 
+                                                 rendered="#{not empty controladorCertificado.listaGravamenesSelec}">  
+                                        <p:outputLabel for="datalistGravamenes" value="Listado de Gravamenes" 
+                                                       style="text-align: left; font-weight: bold"/>
+
+
+                                        <p:dataTable id="datalistGravamenes" value="#{controladorCertificado.listaGravamenesSelec}" 
+                                                     var="item"
+                                                     paginator="false"
+                                                     rowKey="#{item.graId}"
+
+                                                     >
+
+                                            <p:column headerText="Fecha">
+                                                <h:outputText value="#{item.graFHR}" style="width: 80px" >
+                                                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+
+                                                </h:outputText>
+                                            </p:column>
+
+                                            <p:column headerText="Matrícula">
+                                                <h:outputText value="#{item.prdMatricula}" />
+                                            </p:column>
+
+                                            <p:column headerText="Número de Repertorio">
+                                                <h:outputText value="#{item.repNumero.repNumero}" />
+                                            </p:column>
+
+                                            <p:column headerText="Descripción">
+                                                <h:outputText value="#{item.graDescripcion}" />
+                                            </p:column>
+
+
+                                        </p:dataTable>
+
+                                    </h:panelGrid>   
+                                    <h:panelGrid columns="1" cellspacing="10" border="0">
+
+                                        <p:outputLabel for="txtGravamen" 
+                                                       value="Gravamen" style="text-align: right; font-weight: bold"/>
+
+                                        <p:inputTextarea id="txtGravamen" rows="8" cols="115" 
+                                                         readonly="#{!controladorCertificado.esCertificadoVacio}"
+                                                         style="text-align: justify"
+                                                         value="#{controladorCertificado.gravamen}">
+                                            <p:ajax event="change" process="@this" 
+                                                    update="growl tabView_Certificados"/>
+                                        </p:inputTextarea>
+
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab id="tab_observacion" title="Observaciones Generales"  rendered="#{controladorCertificado.mostrarTabObservaciones}">
+                                    <h:panelGrid columns="1" cellpadding="10">
+                                        <p:outputLabel for="txtObservacion" 
+                                                       value="Observaciones" style="text-align: right; font-weight: bold"/>
+
+                                        <p:inputTextarea id="txtObservacion" rows="8" cols="115" 
+                                                         readonly="false"
+                                                         style="text-align: justify"
+                                                         value="#{controladorCertificado.certificadoSeleccionado.cerObservacion}">
+                                            <p:ajax event="change" process="@this" 
+                                                    update="growl tabView_Certificados"/> 
+                                        </p:inputTextarea>
+
+                                    </h:panelGrid>
+
+                                </p:tab>
+
+
+
+                                <p:tab id="tab_certificado" title="Certificado" rendered="#{controladorCertificado.mostrarTabCertificado}"
+                                       >
+
+                                    <p:panel id="pnlCertificado">
+
+                                        <p:commandButton  
+                                            icon="fa fa-plus" 
+                                            actionListener="#{controladorCertificado.sumarSaltoLinea()}"
+                                            style="margin-top: 5px"
+                                            process="@this"
+                                            update="growl tabView_Certificados"
+                                            action="#{controladorCertificado.generarCertificado()}">
+                                        </p:commandButton>
+
+                                        <p:commandButton  
+                                            icon="fa fa-minus" 
+                                            actionListener="#{controladorCertificado.restarSaltoLinea()}"
+                                            style="margin-top: 5px"
+                                            process="@this"
+                                            update="growl  tabView_Certificados"
+                                            action="#{controladorCertificado.generarCertificado()}"
+                                            >
+                                        </p:commandButton>
+
+
+                                        <p:selectBooleanButton value="#{controladorCertificado.agregarImagenEspacioEnBlanco}"
+                                                               onLabel="Con Imagen Texto En Blanco"
+                                                               offLabel="Sin Imagen Texto En Blanco">
+                                            <p:ajax listener="#{controladorCertificado.generarCertificado()}"
+                                                    update="growl  tabView_Certificados"/>
+                                        </p:selectBooleanButton>
+                                        <div align="right">
+                                            <p:commandButton value="Guardar" 
+                                                             icon="fa fa-save" class="green-btn"
+                                                             action="#{controladorCertificado.guardarCertificado()}"
+                                                             style="margin-top: 5px"
+                                                             process="tabView_Certificados formCertificados "
+                                                             immediate="true"
+                                                             update="@form growl"
+                                                             >
+                                            </p:commandButton>
+                                        </div>
+                                        <br/>
+                                        <p:media id="pdfCertificado"
+                                                 value="#{controladorCertificado.urlCertificadoPdf.concat('#toolbar=0')}"
+                                                 rendered="#{not empty controladorCertificado.urlCertificadoPdf}"
+                                                 style="width:700px;height: 700px"
+                                                 player="pdf"  />
+                                        <!--                                        <p:textEditor toolbarVisible="false" id="txtCertificado" widgetVar="txtCertif" 
+                                                                                              height="450" 
+                                                                                              style="margin-bottom:10px; width: 90%" readonly="true"
+                                                                                              value="#{controladorCertificado.textoCertificado}"/>-->
+
+                                    </p:panel>
+                                </p:tab>
+
+                            </p:tabView>
+
+
+
+
+                            <!--                                CERTIFICADOS CON PLANTILLA-->
+
+
+
+                            <p:panel id="pnlLlenarCertificado" rendered="#{controladorCertificado.mostrarPnlCertPlantilla}">
+
+                                <h:panelGrid columns="2">
+                                    <h:outputText value="#{controladorCertificado.tipoCertificadoSeleccionado.troNombre}"/>
+                                    <h:outputText rendered="#{!empty controladorCertificado.tipoGravamen}" 
+                                                  value="#{controladorCertificado.tipoGravamen}"/>
+                                </h:panelGrid>
+
+                                <p:commandButton value="Previsualizar" 
+                                                 class="green-btn" action="#{controladorCertificado.generarCertificado()}"
+                                                 oncomplete="PF('dialogoVerCert').show();"
+                                                 update=":frmVerCertPlan"
+
+                                                 />
+
+                                <ui:repeat id="edicion" value="#{controladorCertificado.listaPartesCertificado}" 
+                                           var="texto" 
+                                           varStatus="estado">
+                                    <p:editor id="editor" widgetVar="editorWidget" controls="bold"
+                                              value="#{controladorCertificado.listaPartesCertificado[estado.index]}" style="width: 100%" rendered="#{!empty texto}" />
+
+                                    <p:panel>
+                                        <h:outputText value="#{controladorCertificado.variables[estado.index]}"/>
+
+                                    </p:panel>
+                                </ui:repeat>
+                            </p:panel>
+                        </p:panel>
+                    </div>
+                </div>
+            </h:form>
+
+            <p:dialog id="dlgVerCert" header="Certificado" widgetVar="dialogoVerCert"  
+                      appendTo="@(body)" modal="true" resizable="true" width="750" height="400" >
+
+                <h:form id="frmVerCertPlan">
+                    <p:commandButton  
+                        icon="fa fa-plus" 
+                        actionListener="#{controladorCertificado.sumarSaltoLinea()}"
+                        style="margin-top: 5px"
+                        process="@this"
+                        update="growl @form" 
+                        action="#{controladorCertificado.generarCertificado()}">
+                    </p:commandButton>
+
+                    <p:commandButton  
+                        icon="fa fa-minus" 
+                        actionListener="#{controladorCertificado.restarSaltoLinea()}"
+                        style="margin-top: 5px"
+                        process="@this"
+                        update="growl  @form"
+                        action="#{controladorCertificado.generarCertificado()}"
+                        >
+                    </p:commandButton>
+
+
+                    <p:selectBooleanButton value="#{controladorCertificado.agregarImagenEspacioEnBlanco}"
+                                           onLabel="Con Imagen Texto En Blanco"
+                                           offLabel="Sin Imagen Texto En Blanco">
+                        <p:ajax listener="#{controladorCertificado.generarCertificado()}"
+                                update="growl  @form"/>
+                    </p:selectBooleanButton>
+                    <div align="right">
+                        <p:commandButton value="Guardar." style="margin-right: 5px"
+                                         icon="fa fa-save" class="green-btn"
+                                         rendered="#{controladorCertificado.esCertificadoPlantilla}"
+                                         action="#{controladorCertificado.guardarCertificadoConPlantilla()}"
+                                         oncomplete="PF('dialogoVerCert').hide();"
+                                         process="@this"
+                                         update="formCertificados growl "/>
+                    </div>
+
+<!--                    <p:textEditor  value="#{controladorCertificado.textoCertificado}"
+               toolbarVisible="false" readonly="true"
+               />-->
+                    <p:media id="pdfCertificado"
+                             value="#{controladorCertificado.urlCertificadoPdf}"
+                             rendered="#{not empty controladorCertificado.urlCertificadoPdf}"
+                             style="width:700px;height: 2000px"
+                             player="pdf"  /><!--
+<br></br>-->
+
+                </h:form>    
+            </p:dialog>
+
+
+            <p:dialog id="dlgVerFormularioDig" header="Certificado" widgetVar="dlgVerFormularioDig"  
+                      appendTo="@(body)" modal="true" resizable="true"  >
+                <h:form id="frmDlgVerFrmDig">
+                    <p:media value="#{controladorCertificado.url}"
+                             rendered="#{not empty controladorCertificado.url}" style="width:700px;height: 700px"/>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgAct" header="Derechos y Acciones" widgetVar="dlgDerAcc"  
+                      appendTo="@(body)" modal="true" resizable="true" width="700" >
+
+                <h:form id="frmDlgAct">
+                    <p:dataTable id="tblFacturas" 
+                                 value="#{controladorCertificado.listaPropiedadDetSelDerAcc}" 
+                                 var="propDeta" 
+                                 rowKey="#{propDeta.pdtId}" > 
+
+                        <p:column headerText="Matricula">
+                            <h:outputText value="#{propDeta.prdMatricula}" />
+                        </p:column>      
+                        <p:column headerText="Porcentaje Der. Acc.">
+                            <h:outputText value="#{propDeta.pdtValor}" />
+                        </p:column>      
+                    </p:dataTable>
+
+                    <p:commandButton value="Cerrar" oncomplete="PF('dlgDerAcc').hide();"/>
+                </h:form>    
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

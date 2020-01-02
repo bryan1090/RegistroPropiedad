@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Reportes Dinardap"></h:outputText>
+        </ui:define>
+        <ui:define name="content" >
+            <h:form id="formPrincipal">
+                <p:panel id="principal" header="Reportes Dinardap">
+                    <h:panelGrid id="pnlExportarTemplate" columns="2">
+                        <p:panelGrid columns="4" style="border: none;text-align: right;background-position: right">
+                            <p:outputLabel style="font-weight: bold" value="Año :" for="ttrId" />
+                            <p:selectOneMenu  id="ttrId" value="#{personaControlador.anio}"  >
+                                <f:selectItems value="#{personaControlador.año}"
+                                               var="año"
+                                               itemValue="#{año.configDetalleTexto}" itemLabel="#{año.configDetalleTexto}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel style="font-weight: bold"  value="Mes :" for="mes" />
+                            <p:selectOneMenu id="mes" value="#{personaControlador.mes}" style="width:125px;background-position-y: 100">
+                                <f:selectItem itemLabel="Enero" itemValue="1" />
+                                <f:selectItem itemLabel="Febrero" itemValue="2" />
+                                <f:selectItem itemLabel="Marzo" itemValue="3" />
+                                <f:selectItem itemLabel="Abril" itemValue="4" />
+                                <f:selectItem itemLabel="Mayo" itemValue="5" />
+                                <f:selectItem itemLabel="Junio" itemValue="6" />
+                                <f:selectItem itemLabel="Julio" itemValue="7" />
+                                <f:selectItem itemLabel="Agosto" itemValue="8" />
+                                <f:selectItem itemLabel="Septiembre" itemValue="9" />
+                                <f:selectItem itemLabel="Octubre" itemValue="10" />
+                                <f:selectItem itemLabel="Noviembre" itemValue="11" />
+                                <f:selectItem itemLabel="Diciembre" itemValue="12"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                        <br />
+                      
+                            <p:panel style=" border-width: medium">
+                                <p:outputLabel value="Registro de la Propiedad:"  style="text-align: center">
+                                    <br />    
+                                    <h:commandLink style="text-align: left" actionListener="#{personaControlador.exportarExcelActa()}" >
+                                        <p:graphicImage name="/imagenes/excel2.png" width="24" />
+                                    </h:commandLink>
+                                    <h:outputText value="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;" />
+                                    <h:commandLink actionListener="#{personaControlador.exportarTXT()}" >
+                                        <p:graphicImage name="/imagenes/txt.png" width="30"/>
+                                    </h:commandLink>
+                                    <h:outputText value="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;" />
+                                    <h:commandLink actionListener="#{personaControlador.generarPdfPropiedad()}" >
+                                        <p:graphicImage name="/imagenes/pdf.png" width="30"/>
+                                    </h:commandLink>
+                                </p:outputLabel>
+                            </p:panel>
+
+                            <br />
+                            <p:panel style=" border-width: medium">
+                                <p:outputLabel for="registro" value="Tracodigo registro propiedad: ">
+                                    <br />
+                                    <h:commandLink id="registro" actionListener="#{personaControlador.exportarExcel()}" title="Exportar a Excel">
+                                        <p:graphicImage name="/imagenes/excel2.png" width="24" />
+                                    </h:commandLink>
+                                </p:outputLabel>
+                            </p:panel>
+
+                            <br />
+
+                            <p:panel style=" border-width: medium">
+                                <p:outputLabel for="persona" value="Propietario :   " style="align-content: center" >
+
+                                    <br />
+                                    <h:commandLink id="persona" actionListener="#{personaControlador.exportarExcelPropiedad()}" title="Exportar a Excel">
+                                        <p:graphicImage name="/imagenes/excel2.png" width="24" />
+                                    </h:commandLink>
+                                </p:outputLabel>
+                            </p:panel>
+                    </h:panelGrid> 
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

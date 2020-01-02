@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CantonEditDlg" widgetVar="CantonEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditCantonTitle}">
+            <h:form id="CantonEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorCanton.selected != null}">
+                         <p:outputLabel value="#{bundle.EditCantonLabel_canNombre}" for="canNombre" />
+                        <p:inputText id="canNombre" value="#{controladorCanton.selected.canNombre}" style="text-transform: uppercase" title="#{bundle.EditCantonTitle_canNombre}" required="true" requiredMessage="#{bundle.EditCantonRequiredMessage_canNombre}"/>
+                        <p:outputLabel value="#{bundle.EditCantonLabel_canEstado}" for="canEstado" />
+                         <p:selectOneMenu id="canEstado" value="#{controladorCanton.selected.canEstado}" required="true" requiredMessage="#{bundle.EditCantonTitle_canEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditCantonLabel_canCodigo}" for="canCodigo" />
+                        <p:inputText id="canCodigo" value="#{controladorCanton.selected.canCodigo}" style="text-transform: uppercase" title="#{bundle.EditCantonTitle_canCodigo}" />
+                        <p:outputLabel value="#{bundle.EditCantonLabel_canInicial}" for="canInicial" />
+                        <p:inputText id="canInicial" value="#{controladorCanton.selected.canInicial}" style="text-transform: uppercase" title="#{bundle.EditCantonTitle_canInicial}" />
+                        <p:outputLabel value="#{bundle.EditCantonLabel_proId}" for="proId" />
+                        <p:selectOneMenu id="proId" value="#{controladorCanton.selected.proId}" style="text-transform: uppercase" required="true" requiredMessage="#{bundle.EditCantonRequiredMessage_proId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{controladorProvincia.itemsAvailableSelectOne}"
+                                           var="proIdItem"
+                                           itemValue="#{proIdItem}"  itemLabel="#{proIdItem.proNombre}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorCanton.update}" value="#{bundle.Save}" update="display,:CantonListForm:datalist,:growl" oncomplete="handleSubmit(args, 'CantonEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorCanton.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="CantonEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

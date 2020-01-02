@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Revision Legal"/>
+        </ui:define>
+
+        <ui:define name="content" >
+            <h:form id="form" >
+                <p:panel id="panel" header="Revisión Legal"  >
+                    <table align="center">
+                        <tbody>
+                            <tr align="top" bottom="top" >
+                                <td>
+                                    <p:panel header="" style="width: 275px; height: 450px; ">
+                                        <p:remoteCommand name="persona" actionListener="#{controladorLibroNegro.buscarPersona()}" update="panelRegistro"/>
+                                        <h:panelGrid id="panelRegistro" columns="2">
+                                            <p:outputLabel for="@next" value="CI/RUC/Pas. "/>
+                                            <p:inputText  id="txtCiRucPas" required="true"  title="Identificación Persona" style="color: red;font-family: Arial, Helvetica, sans-serif;font-size: 15px;text-transform:uppercase" value="#{controladorLibroNegro.identificacion}">
+                                                <p:ajax event="change" listener="#{controladorLibroNegro.buscarPersona()}" update="panelRegistro growl tblLibroNegro btnGuardar"/>
+                                            </p:inputText>
+
+                                            <p:outputLabel for="@next" value="Apellido Paterno "/>
+                                            <p:inputText style="text-transform:uppercase"  value="#{controladorLibroNegro.persona.perApellidoPaterno}" readonly="true"/>
+                                            <p:outputLabel for="@next" value="Apellido Materno "/>
+                                            <p:inputText style="text-transform:uppercase" value="#{controladorLibroNegro.persona.perApellidoMaterno}" readonly="true"/>
+                                            <p:outputLabel  for="@next" value="Nombres "/>
+                                            <p:inputText style="text-transform:uppercase" value="#{controladorLibroNegro.persona.perNombre}" readonly="true"/>
+
+                                            <p:outputLabel for="@next" value="Observaciones " />
+                                            <p:inputText style="text-transform:uppercase" value="#{controladorLibroNegro.libroNegro.lbnObservacion}" readonly="#{controladorLibroNegro.bloquearCampoObservacion}" required="true" requiredMessage="Campo De Observaciones Requerido"/>
+                                            <p:outputLabel for="@next" value="Catastro"/>
+                                            <p:inputText  value="#{controladorLibroNegro.libroNegro.lbnCatastro}" readonly="true"/>
+                                            <p:outputLabel for="@next" value="Predio"/>
+                                            <p:inputText  value="#{controladorLibroNegro.libroNegro.lbnPredio}" readonly="true"/>
+                                            <p:outputLabel for="@next" value="Fecha Creación "/>
+                                            <p:calendar  pattern="dd/MM/yyyy HH:mm:ss" readonly="true" showOn="none" value="#{controladorLibroNegro.fhr}"/>
+
+                                            <!--                        <p:outputLabel for="@next" value="Usuario "/>
+                                                                    <p:inputText  readonly="true" value="#{controladorLibroNegro.dataManagerSesion.usuarioLogeado.usuUser}" />
+                                                                    <p:outputLabel for="@next" value="Fecha Edición "/>
+                                                                    <p:calendar pattern="MM/dd/yyyy HH:mm:ss"  readonly="true"  showOn="none" value="#{controladorLibroNegro.libroNegro.lbnFechaActualizacion.time}"/>-->
+                                        </h:panelGrid>
+
+                                        <h:panelGrid columns="1">
+                                            <p:spacer height="10px" width="10px"/>
+                                        </h:panelGrid>
+                                        <h:panelGroup >
+                                            <p:commandButton id="btnGuardar" class="green-btn" icon="fa fa-save" value="Guardar" actionListener="#{controladorLibroNegro.guardar()}" update="growl tblLibroNegro btnGuardar" disabled="#{controladorLibroNegro.habilitacionBotonGuardar}" />
+                                            <p:commandButton class="cyan-btn"  icon="fa fa-refresh" process="@this" actionListener="#{controladorLibroNegro.limpiar()}" value="Refrescar"  update="@form tblLibroNegro" /> 
+                                            <p:commandButton class="red-btn"  icon="fa fa-sign-out" process="@this" actionListener="#{controladorLibroNegro.salir()}" value="Salir"  update="@form"  /> 
+                                        </h:panelGroup>
+                                    </p:panel></td>
+                                <td>
+                                    <p:panel id="panel1" header="" style="width: 770px; height: 450px;">
+
+                                        <p:dataTable id="tblLibroNegro" value="#{controladorLibroNegro.listaLibroNegro}" var="listLibroNegro" style="font-size: 9px" rowIndexVar="numeroDeFila"  sortBy="#{listLibroNegro.lbnEstado} #{listLibroNegro.lbnFHR}" rows="7" paginator="true"
+                                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                      paginatorPosition="bottom"> 
+
+                                            <p:column headerText="Estado" style="font-size: 9px;width: 25px;text-align: center">
+                                                <h:outputText value="#{listLibroNegro.lbnEstado}" />
+                                            </p:column>
+                                            <p:column headerText="Observacion" style="font-size: 9px;text-align: center">
+                                                <h:outputText value="#{listLibroNegro.lbnObservacion}" />
+                                            </p:column>
+                                            <p:column headerText="Catastro" style="font-size: 9px;width: 40px;text-align: center">
+                                                <h:outputText value="#{listLibroNegro.lbnCatastro}" />
+                                            </p:column>
+                                            <p:column headerText="Predio" style="font-size: 9px;width: 40px;text-align: center">
+                                                <h:outputText value="#{listLibroNegro.lbnPredio}" />
+                                            </p:column>
+                                            <p:column headerText="Usuario" style="font-size: 9px;width: 80px;text-align: center">
+                                                <h:outputText value="#{listLibroNegro.lbnUser}" />
+                                            </p:column>
+                                            <p:column headerText="FHR" style="font-size: 9px;width: 140px;text-align: center" >
+                                                <p:calendar style="border: none" value="#{listLibroNegro.lbnFHR.time}" pattern="dd/MM/yyyy HH:mm:ss" readonly="true" disabled="true" />
+                                            </p:column>                                          
+                                            
+                                            <p:column style="font-size: 9px;width: 20px;text-align: center">
+                                                <p:commandButton class="green-btn" icon="fa fa-reply-all" action="#{controladorLibroNegro.cambiarEstadoLibroNegro()}" update=" tblLibroNegro" >
+                                                    <f:setPropertyActionListener target="#{listLibroNegro.lbnEstado}" value="I" />
+                                                    <f:setPropertyActionListener target="#{controladorLibroNegro.cambioEstadoLibroNegro}" value="#{listLibroNegro}"/>
+                                                </p:commandButton>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </p:panel>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

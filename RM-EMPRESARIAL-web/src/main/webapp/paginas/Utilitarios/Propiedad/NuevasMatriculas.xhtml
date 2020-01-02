@@ -1,0 +1,569 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!--    <body>-->
+
+    <ui:composition template="./../../WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+        </ui:define>
+
+        <ui:define name="content">
+            <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyC7R9us6s7z77X-uy5zaAc6DzUM6u0-7c4"></script>
+
+
+            <br/>
+
+            <p:panel id="pnlAsigMatr" header="Asignación Nuevas Matriculacion" >
+                <ui:include src="preMatriculacion.xhtml"/>
+
+
+                <br/>
+
+
+                <p:panel id="pnlAcciones" header="Acciones">
+                    <p:tabView id="tabView" rendered="#{controladorNuevasMatriculas.mostrarTabView}" 
+                               activeIndex="#{controladorNuevasMatriculas.indiceActivoTabView}"
+                               >
+                        <p:tab id="tab_1" title="Generación de Matrículas"  >
+                            <h:form id="formNuevasMatriculas">
+
+
+                                <div align="left">
+                                    <p:commandButton class="green-btn" icon="fa fa-save" 
+                                                     action="#{controladorNuevasMatriculas.guardarPropiedad()}" 
+                                                     process="@form" update="growl @form :formMatriculacion2 :pnlAcciones"
+                                                     value="Guardar"/>
+                                </div>
+                                <div class="ui-g">
+                                    <div class="ui-g-6">
+
+                                        <p:panel header="Datos De Identificación" >
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtMatricula" value="Matricula" style="text-align: right"/>
+
+                                                <h:panelGrid columns="2" cellspacing="0" border="0" >
+                                                    <p:inputText id="txtMatricula" size="55" readonly="true" style="width: 250px" value="#{controladorNuevasMatriculas.matricula}"/>
+
+                                                </h:panelGrid>
+
+                                                <p:outputLabel for="@next" value="Número" style="text-align: right"/>
+                                                <p:inputText id="txtNumero" style="width: 250px" value="#{controladorNuevasMatriculas.propiedadNueva.prdUnidadVivienda}"/>
+                                                <p:outputLabel for="txtCatastro" value="Catastro" style="text-align: right"/>
+                                                <p:inputText id="txtCatastro" style="width: 250px" value="#{controladorNuevasMatriculas.propiedadNueva.prdCatastro}" size="55"
+                                                             readonly="true" required="true" requiredMessage="El campo Catastro es requerido"/>
+                                                <p:outputLabel for="txtPredio" value="Predio" style="text-align: right"/>
+                                                <p:inputText id="txtPredio" style="width: 250px" value="#{controladorNuevasMatriculas.propiedadNueva.prdPredio}" size="55"
+                                                             readonly="true" required="true" requiredMessage="El campo Predio es requerido"/>
+
+                                                <p:outputLabel for="txtParroquiaHistorica" value="Parroquia Historica" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaHistorica" required="true" style="width: 250px"
+                                                                 value="#{controladorNuevasMatriculas.propiedadNueva.prdTdtParIdH}"
+                                                                 filter="true" disabled="true">
+                                                    <p:ajax event="change" update="txtParroquiaActual txtDescripcion" listener="#{controladorNuevasMatriculas.seleccionarParroquiaHistorica()}"/>
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculas.listaParroquia}" var="parroquia" itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>
+                                                </p:selectOneMenu>
+
+                                                <p:outputLabel for="txtParroquiaActual" value="Parroquia Actual" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaActual" required="true" style="width: 250px" 
+                                                                 value="#{controladorNuevasMatriculas.propiedadNueva.prdTdtParId}">
+                                                    <p:ajax event="change" listener="#{controladorNuevasMatriculas.seleccionarParroquiaActual()}"/>
+                                                    <p:ajax event="change" update="txtDescripcion txtParroquiaHistorica" process="@this txtNumero" listener="#{controladorNuevasMatriculas.llenarDescripcion2()}"/> 
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculas.listaParroquia}" var="parroquia"
+                                                                   itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>                                            
+                                                </p:selectOneMenu>
+                                                <p:outputLabel for="txtEspacial" value="Espacial" style="text-align: right" />
+                                                <h:panelGrid columns="2" cellspacing="5">
+                                                    <p:commandButton class="orange-btn" icon="fa fa-search" onclick="PF('dlgMap').show()"
+                                                                     action="#{controladorNuevasMatriculas.verificarPosicion()}"
+                                                                     process="@this txtEspacial txtParroquiaHistorica txtParroquiaActual" 
+                                                                     update=":formMapa:gmap"/>
+                                                    <p:inputText id="txtEspacial" style="width: 250px" size="45" value="#{controladorNuevasMatriculas.propiedadNueva.prdEspacial}"
+                                                                 readonly="true"/>
+                                                </h:panelGrid>
+
+                                                <p:outputLabel for="txtTipo"  value="Tipo" style="text-align: right" />
+                                                <p:selectOneMenu id="txtTipo" required="true" style="width: 250px" 
+                                                                 value="#{controladorNuevasMatriculas.propiedadNueva.tpdId}" >
+                                                    <p:ajax event="change" update="txtDescripcion" process="@this txtNumero" listener="#{controladorNuevasMatriculas.llenarDescripcion2()}"/>                                                    
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculas.listaTipoPropiedad}" var="tipoPropiedad" 
+                                                                   itemLabel="#{tipoPropiedad.tpdNombre}" itemValue="#{tipoPropiedad}" />
+                                                </p:selectOneMenu>
+
+                                                <p:outputLabel for="txtClase" value="Clase" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtClase" required="true" style="width: 250px" 
+                                                                 value="#{controladorNuevasMatriculas.propiedadNueva.prdClasePropiedad}"  
+                                                                 disabled="true">
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItem itemLabel="HORIZONTAL" itemValue="H" />
+                                                    <f:selectItem itemLabel="ORDINARIA" itemValue="O"/>
+                                                    <p:ajax event="change" process="@this"  
+                                                            listener="#{controladorNuevasMatriculas.seleccionarClase()}"/>
+                                                </p:selectOneMenu>                                                
+
+
+                                                <p:outputLabel for="btnCrearLindero" value="Lindero" style="text-align: right"/>
+
+                                                <p:commandButton id="btnCrearLindero" value="Agregar Linderos" immediate="true"
+                                                                 process="@this"
+                                                                 icon="fa fa-plus" class="cyan-btn"
+                                                                 actionListener="#{controladorNuevasMatriculas.preCrearLindero()}"  
+                                                                 oncomplete="PF('dlgLinderos').show()"
+                                                                 update=":frmLinderos"/>
+
+                                                <h:outputText />
+
+                                                <p:dataTable id="dtbLinderos" value="#{controladorNuevasMatriculas.listaLinderos}" 
+                                                             var="item" rowKey="#{item.ldrId}" 
+                                                             style="width: 400px"
+                                                             editable="true" editMode="cell">
+                                                    <p:column headerText="Nombre">
+                                                        <p:cellEditor>
+                                                            <f:facet name="output"> <h:outputText value="#{item.ldrNombre}"/></f:facet> 
+                                                            <f:facet name="input"><p:inputText value="#{item.ldrNombre}" style="width:96%" /></f:facet>
+                                                        </p:cellEditor>
+                                                    </p:column>
+                                                    <p:column style="width: 15%">
+                                                        <p:commandButton class="red-btn" icon="fa fa-remove" 
+                                                                         immediate="true" 
+                                                                         update="growl
+                                                                         :tabView:formNuevasMatriculas:dtbLinderos 
+                                                                         "
+                                                                         action="#{controladorNuevasMatriculas.borrarLindero()}">
+                                                            <f:setPropertyActionListener target="#{controladorNuevasMatriculas.linderoSeleccionado}"
+                                                                                         value="#{item}"/>
+                                                        </p:commandButton>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </h:panelGrid>
+
+
+
+
+                                        </p:panel>
+                                    </div>
+
+                                    <div class="ui-g-6">
+                                        <p:panel header="Datos Descriptivos" >
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtSuperficie"  value="Superficie"/>
+                                                <p:inputNumber id="txtSuperficie" style="width: 250px" value="#{controladorNuevasMatriculas.propiedadNueva.prdSuperficie}" size="60" maxlength="6" required="true" requiredMessage="Superficie Requerida">
+                                                    <p:ajax event="change" listener="#{controladorNuevasMatriculas.llenarDescripcion1()}" update="txtSuperficieLetras growl"/>
+                                                </p:inputNumber>
+                                                <h:outputText/>
+                                                <p:selectOneMenu id="txtSuperficieTipo"  style="width: 250px" 
+                                                                 value="#{controladorNuevasMatriculas.propiedadNueva.umdId}" 
+                                                                 filter="true" required="true" requiredMessage="Requerido Unidad de Medida">
+                                                    <p:ajax event="change" listener="#{controladorNuevasMatriculas.llenarDescripcion1()}"
+                                                            update="txtSuperficieLetras growl"/>
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculas.listaUnidMedida}" var="unidMedida" itemLabel="#{unidMedida.umdNombre}" itemValue="#{unidMedida}"/>
+                                                </p:selectOneMenu>
+                                                <h:outputText/>
+                                                <p:inputTextarea id="txtSuperficieLetras" style="width: 250px" value="#{controladorNuevasMatriculas.propiedadNueva.prdDescripcion1}" rows="2"  readonly="true"/>
+                                                <p:outputLabel for="txtDescripcion" value="Descripción"/>
+                                                <p:inputTextarea id="txtDescripcion" style="width: 250px" rows="7" 
+                                                                 value="#{controladorNuevasMatriculas.propiedadNueva.prdDescripcion2}"
+                                                                 required="true" requiredMessage="Ingrese la Descripción de la Propiedad">
+
+                                                </p:inputTextarea>                                              
+
+                                                <p:outputLabel for="Estado" value="Estado"/>
+                                                <p:selectOneRadio id="Estado" required="true" requiredMessage="El campo estado, es requerido"
+                                                                  value="#{controladorNuevasMatriculas.propiedadNueva.prdEstadoPropiedad}"
+                                                                  disabled="true"
+                                                                  >
+                                                    <f:selectItem itemLabel="Activo" itemValue="AC"  />
+
+                                                </p:selectOneRadio>
+                                            </h:panelGrid>
+                                        </p:panel>
+
+
+                                    </div>
+                                </div>
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab_2" rendered="#{controladorNuevasMatriculas.tipoMatriculacion eq 'GDA'}" title="Generación de Derechos y Acciones">
+                            <h2 style="color: red"><h:outputText value="Atención: Debe primero crear la propiedad para continuar"
+                                                                 rendered="#{controladorNuevasMatriculas.esPropiedadNueva}"/></h2>
+                            <h:form id="formGenerarMatriculas" rendered="#{!controladorNuevasMatriculas.esPropiedadNueva}">
+
+
+                                <h:panelGrid columns="5">
+
+                                    <p:commandButton icon="fa fa-plus" immediate="true" process="@this"
+                                                     action="#{controladorNuevasMatriculas.preCrearDetallePropiedad()}"
+                                                     oncomplete="PF('dialogoDereAccn').show();" 
+                                                     update="frmDerAcc"
+                                                     value="Agregar"
+                                                     disabled="#{controladorNuevasMatriculas.disabledBtnAgregarDerAcc}"
+                                                     title="Agrega un derecho y acción"
+                                                     /> 
+                                    <p:commandButton icon="fa fa-plus-square-o" immediate="true" process="@this"
+                                                     action="#{controladorNuevasMatriculas.crearDetallePropiedadCompradores}"
+                                                     update="growl :tabView:formGenerarMatriculas"
+                                                     value="Agregar sobrante a vendedores"
+                                                     disabled="#{controladorNuevasMatriculas.disabledBtnAgregarDerAcc}"
+                                                     /> 
+                                    <p:commandButton icon="fa fa-save" immediate="true" process="@this"
+                                                     class="green-btn"
+                                                     disabled="#{controladorNuevasMatriculas.disabledBtnGuardarDerAcc}"
+                                                     action="#{controladorNuevasMatriculas.guardarDerAcc()}"
+                                                     update="growl" 
+                                                     value="Guardar"
+                                                     title="Guarda los derechos y acciones"
+                                                     /> 
+                                </h:panelGrid>
+
+
+                                <p:dataTable id="dtb_prop_deta" value="#{controladorNuevasMatriculas.listaPropiedadDetalle}" 
+                                             var="item" rowKey="#{item.pdtId}" rowIndexVar="row"  >
+                                    <p:column headerText="Codigo">
+                                        <h:outputText value="#{row+1}"/>
+                                    </p:column>
+                                    <p:column headerText="Propietario S">
+
+                                    </p:column>
+                                    <p:column headerText="Derechos" filterBy="" filterMatchMode="contains" 
+                                              groupRow="#{item.tempPropietario eq 'S' ? 'true' : 'false'}"
+                                              >
+                                        <h:outputText value="#{item.pdtValor}"  />
+                                    </p:column>
+                                    <p:column headerText="Descripción" >
+                                        <h:outputText value="#{item.pdtDescripcion}"/>
+                                    </p:column>
+                                    <p:column headerText="Cédula/RUC" filterBy="" filterMatchMode="contains">
+                                        <h:outputText value="#{item.persona.perIdentificacion}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Nombre" filterBy="" filterMatchMode="contains">
+                                        <h:outputText value="#{item.persona.perNombre}"/>
+                                    </p:column>
+                                    <p:column headerText="A. Paterno" filterBy="" filterMatchMode="contains">
+                                        <h:outputText value="#{item.persona.perApellidoPaterno}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandButton action="#{controladorNuevasMatriculas.borrarDetallePropiedad(row)}"
+                                                         class="red-btn" icon="fa fa-trash" value="Inactivar" 
+                                                         process="@this" immediate="true" update="@form "
+                                                         disabled="#{controladorNuevasMatriculas.verificarExiste(item.pdtPerId)}"
+                                                         >
+                                            <f:setPropertyActionListener target="#{controladorNuevasMatriculas.propiedadDetalleSeleccionada}"
+                                                                         value="#{item}"/>
+
+                                            <f:setPropertyActionListener target="#{controladorNuevasMatriculas.propiedadDetElim}"
+                                                                         value="#{item}"/>
+
+
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </p:tab>
+                        <p:tab id="tab_3" title="Unificaciones" rendered="#{controladorNuevasMatriculas.tipoMatriculacion eq 'UNF'}">
+                            <h:form id="formUnificaciones">
+                                <p:panel>
+                                    <h:panelGrid columns="8" cellspacing="20px">
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtMatriculaUnf" value="Matricula: " 
+                                                           style="font-weight: bold"/>
+                                            <h:outputText id="txtMatriculaUnf"
+                                                          value="#{controladorNuevasMatriculas.propiedadNueva.prdMatricula}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtPredioUnf" value="Predio: " style="font-weight: bold"/>
+                                            <h:outputText id="txtPredioUnf"
+                                                          value="#{controladorNuevasMatriculas.propiedadNueva.prdPredio}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtCatastroUnf" value="Catastro: " style="font-weight: bold"/>
+                                            <h:outputText id="txtCatastroUnf"
+                                                          value="#{controladorNuevasMatriculas.propiedadNueva.prdCatastro}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtSuperficieUnf" value="Superficie Unf.: " style="font-weight: bold"/>
+                                            <h:outputText id="txtSuperficieUnf" 
+                                                          value="#{controladorNuevasMatriculas.totalSuperficie} #{controladorNuevasMatriculas.propiedadNueva.umdId.umdAbreviatura}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtDescripcionUnf" value="Descripcion: " style="font-weight: bold"/>
+                                            <h:outputText id="txtDescripcionUnf" 
+                                                          value="#{controladorNuevasMatriculas.propiedadNueva.prdDescripcion2}"/>
+                                        </h:panelGroup>
+
+                                    </h:panelGrid>
+                                </p:panel>
+                                <div class="ui-g">
+
+                                    <p:dataTable id="dtbUnfPropiedades" value="#{controladorNuevasMatriculas.listaPropiedadesUnf}" 
+                                                 var="propiedad" rowKey="#{propiedad.prdMatricula}">
+                                        <f:facet name="header">
+                                            <div align="right">
+                                                <p:commandButton icon="fa fa-plus" process="@this" 
+                                                                 value="Agregar Propiedades"
+                                                                 title="Agregar las propiedades seleccionadas como secundarias"
+                                                                 action="#{controladorNuevasMatriculas.preBuscarPropiedadUnf()}" 
+                                                                 update="growl @form"/>
+                                                <p:commandButton class="green-btn" icon="fa fa-save" 
+                                                                 action="#{controladorNuevasMatriculas.guardarUnificaciones()}" 
+                                                                 process="@this" update="growl @form"
+                                                                 value="Guardar Unificaciones"/>
+                                            </div>
+                                        </f:facet>
+
+                                        <p:column headerText="Matricula">
+                                            <h:outputText value="#{propiedad.prdMatricula}"/>
+                                        </p:column>
+                                        <p:column headerText="Catastro">
+                                            <h:outputText value="#{propiedad.prdCatastro}"/>
+                                        </p:column>
+                                        <p:column headerText="Predio">
+                                            <h:outputText value="#{propiedad.prdPredio}"/>
+                                        </p:column>
+                                        <p:column headerText="Superficie">
+                                            <h:outputText value="#{propiedad.prdSuperficie}"/>
+                                        </p:column>
+                                        <p:column headerText="Descripcion">
+                                            <h:outputText value="#{propiedad.prdDescripcion1} #{propiedad.prdDescripcion2}"/>
+                                        </p:column>
+                                        <p:column style="width: 5%">
+                                            <div align="center">
+                                                <p:commandButton action="#{controladorNuevasMatriculas.eliminarPropiedadListaUnf()}"
+                                                                 process="@this"
+                                                                 update="growl @form" icon="fa fa-close" class="red-btn"
+                                                                 >
+                                                    <f:setPropertyActionListener 
+                                                        target="#{controladorNuevasMatriculas.propiedadSeleccionadaUnf}" 
+                                                        value="#{propiedad}"/>
+                                                </p:commandButton>
+                                            </div>
+
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab_4" title="Divisiones" rendered="#{controladorNuevasMatriculas.tipoMatriculacion eq 'DIV'}">
+                            <h:form id="formDivisiones">
+                                <p:panel >
+                                    <h:panelGrid columns="8" cellspacing="20px">
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtMatriculaUnf" value="Matricula: " 
+                                                           style="font-weight: bold"/>
+                                            <h:outputText id="txtMatriculaUnf"
+                                                          value="#{controladorNuevasMatriculas.propiedadNueva.prdMatricula}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtPredioUnf" value="Predio: " style="font-weight: bold"/>
+                                            <h:outputText id="txtPredioUnf"
+                                                          value="#{controladorNuevasMatriculas.propiedadNueva.prdPredio}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtCatastroUnf" value="Catastro: " style="font-weight: bold"/>
+                                            <h:outputText id="txtCatastroUnf"
+                                                          value="#{controladorNuevasMatriculas.propiedadNueva.prdCatastro}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtSuperficieUnf" value="Superficie Padre: " style="font-weight: bold"/>
+                                            <h:outputText id="txtSuperficieUnf" 
+                                                          value="#{controladorNuevasMatriculas.propiedadNueva.prdSuperficie} #{controladorNuevasMatriculas.propiedadNueva.umdId.umdAbreviatura}"/>
+                                        </h:panelGroup>
+
+
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtDescripcionUnf" value="Descripcion: " style="font-weight: bold"/>
+                                            <h:outputText id="txtDescripcionUnf" 
+                                                          value="#{controladorNuevasMatriculas.propiedadNueva.prdDescripcion2}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <p:outputLabel for="txtSuperficieDiv" value="Superficie Division " style="font-weight: bold"/>
+                                            <h:outputText id="txtSuperficieDiv" 
+                                                          value="#{controladorNuevasMatriculas.totalSuperficie}"/>
+                                        </h:panelGroup>
+                                    </h:panelGrid>
+
+                                </p:panel>
+
+
+                                <p:dataTable id="dtbDvPropiedades" value="#{controladorNuevasMatriculas.listaPropiedadesDiv}" 
+                                             var="propiedad" rowKey="#{propiedad.prdMatricula}"  >
+                                    <f:facet name="header">
+                                        <div align="right">
+                                            <p:commandButton icon="fa fa-plus" immediate="true" process="@this" 
+                                                             value="Agregar Propiedades"
+                                                             action="#{controladorNuevasMatriculas.preBuscarPropiedadDiv()}" 
+                                                             update="@form"/>
+                                            <p:commandButton class="green-btn" icon="fa fa-save" 
+                                                             action="#{controladorNuevasMatriculas.guardarDivisiones()}" 
+                                                             process="@form" update="growl @form"
+                                                             value="Guardar Divisiones"/>
+
+                                        </div>
+                                    </f:facet>
+
+                                    <p:column headerText="Matricula">
+                                        <h:outputText value="#{propiedad.prdMatricula}"/>
+                                    </p:column>
+                                    <p:column headerText="Catastro">
+                                        <h:outputText value="#{propiedad.prdCatastro}"/>
+                                    </p:column>
+                                    <p:column headerText="Predio">
+                                        <h:outputText value="#{propiedad.prdPredio}"/>
+                                    </p:column>
+                                    <p:column headerText="Superficie">
+                                        <h:outputText value="#{propiedad.prdSuperficie}"/>
+                                    </p:column>
+
+                                    <p:column style="width: 5%">
+                                        <div align="center">
+                                            <p:commandButton action="#{controladorNuevasMatriculas.eliminarPropiedadListaDiv(propiedad)}"
+                                                             update="growl @form" icon="fa fa-close" class="red-btn"
+                                                             >
+                                            </p:commandButton>
+                                        </div>
+
+                                    </p:column>
+                                </p:dataTable>
+
+                            </h:form>
+                        </p:tab>
+
+
+
+                    </p:tabView>
+                </p:panel>
+            </p:panel>
+
+            <!--            DIALOGOS-->
+
+            <p:dialog id="dlgBuscarPropiedad" modal="true" header="Buscar propiedad" widgetVar="dlgBuscarPropiedad">
+                <h:form id="frmBusqueda">
+                    <p:inputText value="#{controladorNuevasMatriculas.numDocumento}"/>
+                    <p:commandButton icon="fa fa-search" value="Buscar"  action="#{controladorNuevasMatriculas.buscar()}" update="@form"/>
+                    <h:panelGrid columns="1">
+
+                        <p:messages showDetail="false" >
+                            <p:autoUpdate />
+                        </p:messages>
+                        <h:panelGroup>
+                            <p:commandButton  class="green-btn" icon="fa fa-save" value="Seleccionar"
+                                              action="#{controladorNuevasMatriculas.seleccionarPropiedad()}" 
+                                              disabled="#{!controladorNuevasMatriculas.boolDocEncontrado}"
+                                              update="growl @form :tabView:formNuevasMatriculas" 
+                                              style="margin-right:20px;"  title="Confirmar selección"
+                                              oncomplete="PF('dlgBuscarPropiedad').hide()"
+                                              >
+                            </p:commandButton> 
+                            <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}"  immediate="true" onclick="PF('dlgBuscarPropiedad').hide()"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+
+            <p:dialog id="dlgLinderos" modal="true" header="Linderos" widgetVar="dlgLinderos">
+                <h:form id="frmLinderos">
+
+                    <h:panelGrid columns="3">
+                        <p:outputLabel for="@next" value="Nombre"/>
+                        <p:inputTextarea cols="30" value="#{controladorNuevasMatriculas.linderoSeleccionado.ldrNombre}"
+                                         required="true" requiredMessage="El campo Nombre, es requerido"
+                                         />
+
+                        <p:commandButton  class="green-btn" icon="fa fa-plus" 
+                                          action="#{controladorNuevasMatriculas.crearLindero()}" 
+                                          update="growl @form 
+                                          :tabView:formNuevasMatriculas:dtbLinderos 
+                                          " 
+                                          />
+                    </h:panelGrid>
+
+
+
+
+                    <h:panelGroup>
+
+                        <p:commandButton class="blue-btn" icon="fa fa-close" 
+                                         value="Cerrar" immediate="true"
+                                         onclick="PF('dlgLinderos').hide()"/>
+
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgBuscarPropiedadDiv" modal="true" header="Buscar propiedad(Divisiones)" widgetVar="dlgBuscarPropiedadDiv">
+                <h:form id="frmBusquedaDiv">
+                    <p:inputText value="#{controladorNuevasMatriculas.numDocumento}"/>
+                    <p:commandButton icon="fa fa-search" value="Buscar"  action="#{controladorNuevasMatriculas.buscar()}" update="@form"/>
+                    <h:panelGrid columns="1">
+
+                        <p:messages showDetail="false" >
+                            <p:autoUpdate />
+                        </p:messages>
+                        <h:panelGroup>
+                            <p:commandButton  class="green-btn" icon="fa fa-save" value="Seleccionar"
+                                              action="#{controladorNuevasMatriculas.seleccionarPropiedadDiv()}" 
+                                              disabled="#{!controladorNuevasMatriculas.boolDocEncontrado}"
+                                              update="growl @form :tabView:formDivisiones" 
+                                              style="margin-right:20px;"  title="Confirmar selección"
+                                              oncomplete="PF('dlgBuscarPropiedadDiv').hide()"
+                                              >
+                            </p:commandButton> 
+                            <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}"  immediate="true" onclick="PF('dlgBuscarPropiedadDiv').hide()"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog widgetVar="dlgMap" modal="true" resizable="false" closable="false" position="center center"
+                      responsive="true" width="1000" height="600">
+                <h:form id="formMapa">
+                    <p:growl id="growl" life="3000"/>
+                    <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyC7R9us6s7z77X-uy5zaAc6DzUM6u0-7c4"></script>
+                    <p:gmap id="gmap" widgetVar="map" center="#{controladorNuevasMatriculas.centerGeoMap}" 
+                            zoom="#{controladorNuevasMatriculas.zoom}" 
+                            type="ROADMAP" style="width:100%;height:500px" 
+                            model="#{controladorNuevasMatriculas.geoModel}" >
+                        <p:ajax event="stateChange" listener="#{controladorNuevasMatriculas.onZoomAction}"/>
+                        <p:ajax event="pointSelect" listener="#{controladorNuevasMatriculas.onPointSelect}" update="growl gmap" />
+                    </p:gmap>
+                    <br/>
+                    <p:panelGrid columns="5" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" styleClass="ui-panelgrid-blank ui-fluid" >
+                        <p:outputLabel for="@next" value="Dirección"/>
+                        <p:inputText id="txtDireccionP" value="#{controladorNuevasMatriculas.direccion}" 
+                                     placeholder="Barrio Calle principal N°casa"
+                                     required="true" requiredMessage="Dirección, Campo Requerido"/>
+                        <p:commandButton class="orange-btn" icon="fa fa-map-marker" value="Buscar"
+                                         action="#{controladorNuevasMatriculas.localizarPorDireccion()}"
+                                         update="gmap txtDireccionP growl"/>
+                        <p:commandButton class="green-btn" icon="fa fa-save" value="Guardar" process="gmap @this"
+                                         action="#{controladorNuevasMatriculas.guadarLocalizacion()}"
+                                         onclick="PF('dlgMap').hide()" update="growl :tabView:formNuevasMatriculas:txtEspacial"/>
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Salir" process="@this"
+                                         onclick="PF('dlgMap').hide()"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+
+            <!--DIALOGOS-->
+            <ui:include src="DerechosYacciones.xhtml"/>
+            <ui:include src="CrearNuevoTramiteValor.xhtml"/>
+
+        </ui:define>
+
+    </ui:composition>
+
+    <!--    </body>-->
+</html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ActaViewDlg" widgetVar="ActaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewActaTitle}">
+            <h:form id="ActaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{actaController.selected != null}">
+                        <h:outputText value="#{bundle.ViewActaLabel_actNumero}"/>
+                        <h:outputText value="#{actaController.selected.actNumero}" title="#{bundle.ViewActaTitle_actNumero}"/>
+                        <h:outputText value="#{bundle.ViewActaLabel_actActa}"/>
+                        <h:outputText value="#{actaController.selected.actActa}" title="#{bundle.ViewActaTitle_actActa}"/>
+                        <h:outputText value="#{bundle.ViewActaLabel_actInscripcion}"/>
+                        <h:outputText value="#{actaController.selected.actInscripcion}" title="#{bundle.ViewActaTitle_actInscripcion}"/>
+                        <h:outputText value="#{bundle.ViewActaLabel_actTomo}"/>
+                        <h:outputText value="#{actaController.selected.actTomo}" title="#{bundle.ViewActaTitle_actTomo}"/>
+                        <h:outputText value="#{bundle.ViewActaLabel_prdMatricula}"/>
+                        <h:outputText value="#{actaController.selected.prdMatricula}" title="#{bundle.ViewActaTitle_prdMatricula}"/>
+                        <h:outputText value="#{bundle.ViewActaLabel_repNumero}"/>
+                        <h:outputText value="#{actaController.selected.repNumero.repNumero}" title="#{bundle.ViewActaTitle_repNumero}"/>
+                        <h:outputText value="#{bundle.ViewActaLabel_tpaId}"/>
+                        <h:outputText value="#{actaController.selected.tpaId}" title="#{bundle.ViewActaTitle_tpaId}"/>
+                        <h:outputText value="#{bundle.ViewActaLabel_tplId}"/>
+                        <h:outputText value="#{actaController.selected.tplId.tplId}" title="#{bundle.ViewActaTitle_tplId}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" immediate="true" onclick="ActaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

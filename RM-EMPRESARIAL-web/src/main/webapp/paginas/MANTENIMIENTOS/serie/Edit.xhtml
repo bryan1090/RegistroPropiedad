@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SerieEditDlg" widgetVar="SerieEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditSerieTitle}">
+            <h:form id="SerieEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{serieController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditSerieLabel_serEstablecimiento}" for="serEstablecimiento" />
+                        <p:inputText id="serEstablecimiento" value="#{serieController.selected.serEstablecimiento}" title="#{bundle.EditSerieTitle_serEstablecimiento}" required="true" requiredMessage="#{bundle.EditSerieRequiredMessage_serEstablecimiento}"/>
+                        <p:outputLabel value="#{bundle.EditSerieLabel_serPuntoEmision}" for="serPuntoEmision" />
+                        <p:inputText id="serPuntoEmision" value="#{serieController.selected.serPuntoEmision}" title="#{bundle.EditSerieTitle_serPuntoEmision}" required="true" requiredMessage="#{bundle.EditSerieRequiredMessage_serPuntoEmision}"/>
+                        <p:outputLabel value="#{bundle.EditSerieLabel_serSecuenciaFactura}" for="serSecuenciaFactura" />
+                        <p:inputText id="serSecuenciaFactura" value="#{serieController.selected.serSecuenciaFactura}" title="#{bundle.EditSerieTitle_serSecuenciaFactura}" required="true" requiredMessage="#{bundle.EditSerieRequiredMessage_serSecuenciaFactura}"/>
+                        <p:outputLabel value="#{bundle.EditSerieLabel_serSecuencaNotaCredito}" for="serSecuencaNotaCredito" />
+                        <p:inputText id="serSecuencaNotaCredito" value="#{serieController.selected.serSecuencaNotaCredito}" title="#{bundle.EditSerieTitle_serSecuencaNotaCredito}" required="true" requiredMessage="#{bundle.EditSerieRequiredMessage_serSecuencaNotaCredito}"/>
+                        <p:outputLabel value="#{bundle.EditSerieLabel_serSecuenciaRetencion}" for="serSecuenciaRetencion" />
+                        <p:inputText id="serSecuenciaRetencion" value="#{serieController.selected.serSecuenciaRetencion}" title="#{bundle.EditSerieTitle_serSecuenciaRetencion}" required="true" requiredMessage="#{bundle.EditSerieRequiredMessage_serSecuenciaRetencion}"/>
+                        <p:outputLabel value="#{bundle.EditSerieLabel_sucId}" for="sucId" />
+                        <p:selectOneMenu id="sucId" value="#{serieController.selected.sucId}" required="true" requiredMessage="#{bundle.EditSerieRequiredMessage_sucId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{sucursalController.itemsAvailableSelectOne}"
+                                           var="sucIdItem"
+                                           itemValue="#{sucIdItem}" itemLabel="#{sucIdItem.sucNombre}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{serieController.update}" value="#{bundle.Save}" update="display,:SerieListForm:datalist,:growl" oncomplete="handleSubmit(args, 'SerieEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}" immediate="true" onclick="SerieEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

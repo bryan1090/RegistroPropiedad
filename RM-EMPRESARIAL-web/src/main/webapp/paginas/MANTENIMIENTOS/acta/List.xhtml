@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListActaTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="ActaListForm">
+                <p:panel header="#{bundle.ListActaTitle}">
+                    <p:dataTable id="datalist" value="#{actaController.items}" var="item"
+                                 selectionMode="single" selection="#{actaController.selected}"
+                                 paginator="true" sortBy="#{item.actNumero}"
+                                 rowKey="#{item.actNumero}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column filterBy="#{item.actNumero}" sortBy="#{item.actNumero}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListActaTitle_actNumero}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.actNumero}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.actActa}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListActaTitle_actActa}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.actActa}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.actInscripcion}" sortBy="#{item.actInscripcion}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListActaTitle_actInscripcion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.actInscripcion}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.actTomo}" sortBy="#{item.actTomo}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListActaTitle_actTomo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.actTomo}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.prdMatricula.prdCatastro}" sortBy="#{item.prdMatricula.prdCatastro}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListActaTitle_prdMatricula}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.prdMatricula.prdCatastro}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.repNumero.repNumero}" sortBy="#{item.repNumero.repNumero}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListActaTitle_repNumero}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.repNumero.repNumero}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.tpaId.tpaNombre}" sortBy="#{item.tpaId.tpaNombre}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListActaTitle_tpaId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpaId.tpaNombre}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.tplId.tplId}" sortBy="#{item.tplId.tplId}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListActaTitle_tplId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tplId.tplId}"/>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{actaController.prepareCreate}" update=":ActaCreateForm" oncomplete="PF('ActaCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":ActaViewForm" oncomplete="PF('ActaViewDialog').show()" disabled="#{empty actaController.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundle.Edit}" update=":ActaEditForm" oncomplete="PF('ActaEditDialog').show()" disabled="#{empty actaController.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundle.Delete}" actionListener="#{actaController.destroy}" update=":growl,datalist" disabled="#{empty actaController.selected}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

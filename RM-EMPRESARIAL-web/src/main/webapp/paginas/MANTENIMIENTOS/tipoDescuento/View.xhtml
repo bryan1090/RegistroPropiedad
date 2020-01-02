@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoDescuentoViewDlg" widgetVar="TipoDescuentoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTipoDescuentoTitle}">
+            <h:form id="TipoDescuentoViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tipoDescuentoController.selected != null}">
+                        
+                        <h:outputText value="#{bundle.ViewTipoDescuentoLabel_tpdDescripcion}"/>
+                        <h:outputText value="#{tipoDescuentoController.selected.tpdDescripcion}" title="#{bundle.ViewTipoDescuentoTitle_tpdDescripcion}"/>
+                        <h:outputText value="#{bundle.ViewTipoDescuentoLabel_tpdPorcentaje}"/>
+                        <h:outputText value="#{tipoDescuentoController.selected.tpdPorcentaje}" title="#{bundle.ViewTipoDescuentoTitle_tpdPorcentaje}"/>
+                        <h:outputText value="#{bundle.ViewTipoDescuentoLabel_tpdIdentificacion}"/>
+                        <h:outputText value="#{tipoDescuentoController.selected.tpdIdentificacion}" title="#{bundle.ViewTipoDescuentoTitle_tpdIdentificacion}"/>
+                        <h:outputText value="Persona"/>
+                        <h:outputText value="#{tipoDescuentoController.tramitesControladorBb.nombrePersona}" title="Persona"/>
+                        <h:outputText value="#{bundle.ViewTipoDescuentoLabel_tpdFHR}"/>
+                        <h:outputText value="#{tipoDescuentoController.selected.tpdFHR}" title="#{bundle.ViewTipoDescuentoTitle_tpdFHR}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>                       
+                        <h:outputText value="#{bundle.ViewTipoDescuentoLabel_tpdPublico}"/>
+                        <h:outputText value="#{tipoDescuentoController.selected.tpdPublico}" title="#{bundle.ViewTipoDescuentoTitle_tpdPublico}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" class="red-btn" onclick="TipoDescuentoViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoTramiteComparecienteViewDlg" widgetVar="TipoTramiteComparecienteViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTipoTramiteComparecienteTitle}">
+            <h:form id="TipoTramiteComparecienteViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTipoTramiteCompareciente.selected != null}">
+                        <h:outputText value="#{bundle.ViewTipoTramiteComparecienteLabel_ttcOrden}"/>
+                        <h:outputText value="#{controladorTipoTramiteCompareciente.selected.ttcOrden}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteComparecienteTitle_ttcOrden}"/>
+                        <h:outputText value="#{bundle.ViewTipoTramiteComparecienteLabel_ttcPropietario}"/>
+                        <h:outputText value="#{controladorTipoTramiteCompareciente.selected.ttcPropietario}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteComparecienteTitle_ttcPropietario}"/>
+                        <h:outputText value="#{bundle.ViewTipoTramiteComparecienteLabel_tpcId}"/>
+                        <h:outputText value="#{controladorTipoTramiteCompareciente.selected.tpcId.tpcDescripcion}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteComparecienteTitle_tpcId}"/>
+                        <h:outputText value="#{bundle.ViewTipoTramiteComparecienteLabel_ttrId}"/>
+                        <h:outputText value="#{controladorTipoTramiteCompareciente.selected.ttrId.ttrDescripcion}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteComparecienteTitle_ttrId}"/>
+                        <h:outputText value="Estado: "/>
+                        <h:outputText value="#{controladorTipoTramiteCompareciente.selected.ttcEstado}" style="text-transform: uppercase" title="Estado"/>
+                        <h:outputText value="#{bundle.ViewTipoTramiteComparecienteLabel_ttcUser}"/>
+                        <h:outputText value="#{controladorTipoTramiteCompareciente.selected.ttcUser}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteComparecienteTitle_ttcUser}"/>
+                        <h:outputText value="#{bundle.ViewTipoTramiteComparecienteLabel_ttcFHR}"/>
+                        <h:outputText value="#{controladorTipoTramiteCompareciente.selected.ttcFHR}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteComparecienteTitle_ttcFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTipoTramiteCompareciente.clear()}" value="#{bundle.Close}" onclick="TipoTramiteComparecienteViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

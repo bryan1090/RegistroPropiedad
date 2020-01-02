@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Repertorio"/>
+        </ui:define>
+
+        <ui:define name="content" >
+
+
+            <h:form id="formRepDigVer" target="_blank"  >
+
+                <p:panel id="panel" header="Trámites Digitalizados" style="min-height:500px;" >
+
+
+                    <p:dataTable id="datos2" value="#{controladorRepertorioDigitalVer.listaRepertorioDigital}" var="item" 
+                                 widgetVar="wVdtbDatos2"
+                                 scrollable="true" scrollHeight="430" resizableColumns="false" paginatorPosition="top" style="text-align: center" 
+                                 sortBy="#{item.repNumero.traNumero.traNumero}">
+                        <p:column groupRow="true" headerText="Tramite" sortBy="#{item.repNumero.traNumero.traNumero}" filterStyle="height:20px;text-transform: uppercase;"
+                                  filterBy="#{item.repNumero.traNumero.traNumero}" filterMatchMode="contains" >
+                            <h:outputText value="#{item.repNumero.traNumero.traNumero}" />
+                        </p:column>
+
+                        <p:column  headerText="Documento Realacionado" style="width: 15%" sortBy="#{item.rtdNombreArchivo}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.rtdNombreArchivo}" filterMatchMode="contains" >
+                            <h:outputText value="#{item.rtdNombreArchivo}" />
+                        </p:column>                           
+
+                        <p:column  headerText="Usuario" sortBy="#{item.rtdUser}"  >
+                            <h:outputText value="#{item.rtdUser}" />
+                        </p:column>
+                        <p:column  headerText="Fecha" sortBy="#{item.rtdFHR}"  >
+                            <h:outputText  value="#{item.rtdFHR}" >
+                                <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column  headerText="Estado" sortBy="#{item.rtdEstado}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.rtdEstado}" filterMatchMode="contains" >
+                            <h:outputText value="#{item.rtdEstado}" />
+                        </p:column>
+
+                        <p:column headerText="Abrir" style="width: 7%;">
+                            <h:commandLink title="Abrir PDF en un nuevo tab"  action="#{controladorRepertorioDigitalVer.abrirArchivo()}" >
+                                <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                <f:setPropertyActionListener value="#{item}" target="#{controladorRepertorioDigitalVer.repertorioDigitalSeleccionado}"/>
+                            </h:commandLink>  
+
+
+                        </p:column>
+                        <p:column headerText="Subir" style="width: 7%">
+                            <p:commandButton icon="fa fa-upload" oncomplete="PF('dialogoSubirArchivo').show();"
+                                             update="datos2" disabled="#{item.rtdEstado eq 'I'}">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorRepertorioDigitalVer.repertorioDigitalSeleccionado}" />
+                            </p:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+
+
+
+                </p:panel>
+
+            </h:form>
+
+
+            <p:dialog id="dlgSubirArchivo" widgetVar="dialogoSubirArchivo" modal="true" resizable="false" appendTo="@(body)" header="Subir Archivo">
+                <h:form >
+                    <p:growl id="messages" showDetail="true" />
+
+                    <p:fileUpload fileUploadListener="#{controladorRepertorioDigitalVer.subirArchivo}" mode="advanced" dragDropSupport="false" oncomplete="PF('dialogoSubirArchivo').hide();" 
+                                  update="@form :formRepDigVer:datos2 messages growl" process="@this" sizeLimit="1000000000" fileLimit="1" allowTypes="/(\.|\/)(pdf)$/" label="Escoger..." cancelLabel="Cancelar" uploadLabel="Subir" />
+                </h:form>
+            </p:dialog>
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>

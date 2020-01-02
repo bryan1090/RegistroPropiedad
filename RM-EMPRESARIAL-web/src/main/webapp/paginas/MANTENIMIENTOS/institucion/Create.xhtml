@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="InstitucionCreateDlg" widgetVar="InstitucionCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateInstitucionTitle}" position="center center" width="800">
+            <h:form id="InstitucionCreateForm">
+                <h:panelGroup id="display">
+                    <h:panelGrid columns="4" rendered="#{institucionController.selected != null}" style="width: 100%">
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insRuc}" for="insRuc" />
+                        <p:inputText id="insRuc" value="#{institucionController.selected.insRuc}" title="#{bundle.CreateInstitucionTitle_insRuc}" required="true" requiredMessage="#{bundle.CreateInstitucionRequiredMessage_insRuc}"/>
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insNombre}" for="insNombre" />
+                        <p:inputText id="insNombre" value="#{institucionController.selected.insNombre}" title="#{bundle.CreateInstitucionTitle_insNombre}" required="true" requiredMessage="#{bundle.CreateInstitucionRequiredMessage_insNombre}"/>
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insTelefono}" for="insTelefono" />
+                        <p:inputText id="insTelefono" value="#{institucionController.selected.insTelefono}" title="#{bundle.CreateInstitucionTitle_insTelefono}" />
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insCelular}" for="insCelular" />
+                        <p:inputText id="insCelular" value="#{institucionController.selected.insCelular}" title="#{bundle.CreateInstitucionTitle_insCelular}" />
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insLogo}" for="insLogo" />
+                        <p:inputText id="insLogo" value="#{institucionController.selected.insLogo}" title="#{bundle.CreateInstitucionTitle_insLogo}" />
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insIva}" for="insIva" />
+                        <p:inputText id="insIva" value="#{institucionController.selected.insIva}" title="#{bundle.CreateInstitucionTitle_insIva}" />
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insAmbiente}" for="insAmbiente" />
+                        <p:inputText id="insAmbiente" value="#{institucionController.selected.insAmbiente}" title="#{bundle.CreateInstitucionTitle_insAmbiente}" required="true" requiredMessage="#{bundle.CreateInstitucionRequiredMessage_insAmbiente}"/>
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insEstablecimiento}" for="insEstablecimiento" />
+                        <p:inputText id="insEstablecimiento" value="#{institucionController.selected.insEstablecimiento}" title="#{bundle.CreateInstitucionTitle_insEstablecimiento}" required="true" requiredMessage="#{bundle.CreateInstitucionRequiredMessage_insEstablecimiento}"/>
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insDireccion}" for="insDireccion" />
+                        <p:inputText id="insDireccion" value="#{institucionController.selected.insDireccion}" title="#{bundle.CreateInstitucionTitle_insDireccion}" required="true" requiredMessage="#{bundle.CreateInstitucionRequiredMessage_insDireccion}"/>
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insRazonSocial}" for="insRazonSocial" />
+                        <p:inputText id="insRazonSocial" value="#{institucionController.selected.insRazonSocial}" title="#{bundle.CreateInstitucionTitle_insRazonSocial}" required="true" requiredMessage="#{bundle.CreateInstitucionRequiredMessage_insRazonSocial}"/>
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insDescripcion}" for="insDescripcion" />
+                        <p:inputText id="insDescripcion" value="#{institucionController.selected.insDescripcion}" title="#{bundle.CreateInstitucionTitle_insDescripcion}" />
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insDocumentoDescripcion}" for="insDocumentoDescripcion" />
+                        <p:inputText id="insDocumentoDescripcion" value="#{institucionController.selected.insDocumentoDescripcion}" title="#{bundle.CreateInstitucionTitle_insDocumentoDescripcion}" />
+                        <p:outputLabel value="Cantón" for="insCanId" />
+                        <p:selectOneMenu id="insCanId" value="#{institucionController.cantonSeleccionado}" required="true" requiredMessage="Seleccione el Cantón">
+                            <f:selectItem itemLabel="Seleccionar uno.." itemValue=""></f:selectItem>
+                            <f:selectItems value="#{institucionController.listaCanton}" var="canton"
+                                           itemLabel="#{canton.canNombre}" itemValue="#{canton}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insCodigoRegistro}" for="insCodigoRegistro" />
+                        <p:inputText id="insCodigoRegistro" value="#{institucionController.selected.insCodigoRegistro}" title="#{bundle.CreateInstitucionTitle_insCodigoRegistro}" />
+
+                        <p:outputLabel value="#{bundle.CreateInstitucionLabel_insEstado}" for="insEstado" />
+                        <p:selectOneMenu id="insEstado" value="#{institucionController.selected.insEstado}" required="true" requiredMessage="#{bundle.CreateInstitucionRequiredMessage_insEstado}">
+                            <f:selectItem itemLabel="Seleccionar uno.." itemValue=""></f:selectItem>
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                        <!--<p:outputLabel value="#{bundle.CreateInstitucionLabel_insLinkLogo}" for="insLinkLogo" />
+                        <p:inputTextarea rows="4" cols="30" id="insLinkLogo" value="#{institucionController.selected.insLinkLogo}" title="#{bundle.CreateInstitucionTitle_insLinkLogo}" />-->
+                    </h:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{institucionController.create}" value="#{bundle.Save}" update="display,:InstitucionListForm:datalist,:growl" oncomplete="PF('InstitucionCreateDialog').hide();"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{institucionController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="InstitucionCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,636 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Cancelaciones"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:outputStylesheet name="css/textEditor.css" />
+
+            <h:form id="formCancelacion">
+
+
+
+                <p:panel header="Cancelaciones" >
+                    <p:panelGrid layout="grid" columns="8" style="display: block;text-align: center">
+                        <p:outputLabel for="txtNumTramite" value="# Trámite"/>
+                        <p:inputText id="txtNumTramite" value="#{controladorCancelaciones.numeroTramite}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtRepertorio" value="Repertorio"/>
+                        <p:inputText id="txtRepertorio" value="#{controladorCancelaciones.numeroRepertorio}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtFecha" value="Fecha"/>
+                        <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFecha" value="#{controladorCancelaciones.fecha}" disabled="true" readonly="true"
+                                    style="color: #1a237e"/>
+                        <p:outputLabel for="txtContrato" value="Contrato"/>
+                        <p:inputText id="txtContrato" value="#{controladorCancelaciones.descripcionContrato}" readonly="true"
+                                     style="color: #1a237e" />
+
+                    </p:panelGrid>
+
+
+
+                    <p:layout style="min-width:400px;min-height:589px;">
+                        <p:layoutUnit position="west" resizable="true" size="480" header="TRÁMITES" minSize="340" maxSize="500" collapsible="true" effect="drop">                                    
+                            <h:panelGrid columns="2" >
+                                <p:outputLabel for="txtFechaRepertorio" value="Fecha" />
+                                <p:calendar pattern="dd/MM/yyyy" id="txtFechaRepertorio" value="#{controladorCancelaciones.fecha}" required="true" label="firstname">
+                                    <p:ajax event="dateSelect" listener="#{controladorCancelaciones.llenarDatos()}" update=":formCancelacion"/>
+                                </p:calendar>                                           
+                            </h:panelGrid>
+
+                            <h:panelGrid id="panelRep" columns="1">      
+                                <p:dataTable id="tblRepertorios" scrollable="true"  scrollHeight="410" 
+                                             value="#{controladorCancelaciones.listaRepertorioFecha}" 
+                                             var="repertorio" selectionMode="single" selection="#{repertorio}" 
+                                             rowKey="#{repertorio.repNumero}" sortBy="#{repertorio.traNumero.traNumero}" > 
+                                    <p:ajax event="rowSelect" listener="#{controladorCancelaciones.onRowSelect}"  
+
+                                            update=" :formCancelacion" />
+                                    <p:column headerText="# Trámite" groupRow="true">
+                                        <h:outputText value="#{repertorio.traNumero.traNumero}" />
+                                    </p:column>
+                                    <p:column headerText="Repertorio">
+                                        <h:outputText value="#{repertorio.repNumero}" />
+                                    </p:column>                                              
+
+                                    <p:column headerText="Contrato">
+                                        <h:outputText value="#{repertorio.repTtrDescripcion}" />
+                                    </p:column>
+                                    <p:column headerText="Estado">
+                                        <h:outputText value="#{repertorio.estadoProceso}" />
+                                    </p:column>
+                                    <p:column headerText="TERMINAR" groupRow="true">
+                                        <p:commandButton value="TERMINAR #{repertorio.traNumero.traNumero}" class="yellow-btn"
+                                                         update="growl formCancelacion"
+                                                         actionListener="#{controladorCancelaciones.terminarProceso(repertorio.traNumero)}"
+                                                         />
+
+                                    </p:column>
+                                </p:dataTable>
+
+                            </h:panelGrid>
+
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" resizable="true" size="680" minSize="680" maxSize="700">
+
+                            <p:panel rendered="#{controladorCancelaciones.renderedPanel}">
+                                <p:commandButton action="#{controladorCancelaciones.procesoTerminar()}"
+                                                 update=":formCancelacion, growl" 
+                                                 value="Terminar" process="@this tblMatriculas formGravDetalle"
+                                                 disabled="#{controladorCancelaciones.deshabilitarBoton}"
+                                                 
+                                                 class="green-btn" style="margin-right:20px;" icon="fa fa-save" title="Terminar" >
+                                <p:confirm header="Confirmación" message="Asegurese de seleccionar los Gravamenes que desea Cancelar. ¿Continuar?" icon="fa fa-exclamation-triangle" />
+                                </p:commandButton>
+
+
+
+
+                                <p:commandButton  value="Suspensión" process="@this" immediate="true"
+                                                  class="red-btn"
+                                                  oncomplete="PF('dlgRznSus').show()" update="formRazonesSuspension" icon="fa fa-ban"
+                                                  rendered="#{controladorCancelaciones.renderedBtnSuspension}"
+                                                  disabled="#{controladorCancelaciones.numeroTramite eq null}">
+                                    <f:setPropertyActionListener target="#{controladorCancelacionesSuspension.numProforma}"
+                                                                 value="#{controladorCancelaciones.numeroTramite}"/>
+                                    <f:setPropertyActionListener target="#{controladorCancelacionesSuspension.numeroRepertorio}"
+                                                                 value="#{controladorCancelaciones.numeroRepertorio}"/>
+                                    <f:setPropertyActionListener target="#{controladorCancelacionesSuspension.numTramite}"
+                                                                 value="#{controladorCancelaciones.numeroTramite}"/>
+                                    <f:setPropertyActionListener target="#{controladorCancelacionesSuspension.listaPropietarioPropiedad}"
+                                                                 value="#{controladorCancelaciones.listaPropiedadPorMatricula}"/>
+                                </p:commandButton>
+
+                            </p:panel>
+
+                            <p:panel header="" id="scrollPanel" rendered="#{controladorCancelaciones.renderedPanel}" 
+                                     style="width: 680px; height: 500px; ">
+
+
+
+                                <div align="center">
+                                    <p:outputLabel style="font-weight: bold;"  value="GRAVÁMENES" />
+                                </div> 
+
+                                <h:panelGrid id="panelVerMatriculas" columns="2" width="650">       
+                                    <p:dataTable id="tblMatriculas" scrollable="true" scrollHeight="150" 
+                                                 value="#{controladorCancelaciones.listaGrav}" rowKey="#{gravamen.graId}"
+                                                 var="gravamen" sortBy="#{gravamen.prdMatricula.prdMatricula}" 
+                                                 selection="#{controladorCancelaciones.listaGravamenSeleccionados}"> 
+
+                                        <p:column  groupRow="true" headerText="Nro. Matrícula" style="width: 80px;">
+                                            <h:outputText value="#{gravamen.prdMatricula.prdMatricula}" />
+                                        </p:column>
+
+                                        <p:column headerText="Repertorio" style="width: 270px;">
+                                            <h:outputText value="#{gravamen.repNumero.repNumero}" />
+                                        </p:column>
+
+                                        <p:column headerText="Descripción" >
+                                            <h:outputText value="#{gravamen.graDescripcion}" />
+                                        </p:column>
+
+                                        <p:column selectionMode="multiple" style="width:16px;text-align:center" rendered="#{!gravamen.existeDetalleGrav}"/>  
+                                        <p:column>
+
+                                            <p:commandButton icon="fa fa-plus" class="cyan-btn" title="Detalles de Gravamen"
+                                                             oncomplete="PF('dlgGravDetalle').show()"
+                                                             update="formGravDetalle" rendered="#{gravamen.existeDetalleGrav}"                                                                     
+                                                             action="#{controladorCancelaciones.mostrarGravamenDetalle(gravamen.graId)}"
+                                                             disabled="#{!gravamen.existeDetalleGrav}">
+
+
+                                            </p:commandButton>
+                                        </p:column>
+
+
+
+
+                                    </p:dataTable>
+
+
+
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="2">
+
+                                    <p:outputLabel style="font-weight: bold;"  value="COMPARECIENTES" />
+
+                                    <p:commandButton  oncomplete ="PF('dlgComparecientes').show()"
+                                                      update ="formComparecientes" class="green-btn"
+                                                      disabled="#{controladorCancelaciones.deshabilitarBoton}"
+                                                      immediate="true" process="@this" 
+                                                      action="#{controladorCancelaciones.cargarTablaComparecientes()}"
+                                                      style="margin-right:20px;" icon="fa fa-plus"
+                                                      title="Agregar Compareciente" />
+
+                                </h:panelGrid>
+
+
+                                <h:panelGrid id="panelComparecientes" columns="2" width="650">      
+                                    <p:dataTable id="tblComparecientes" scrollable="true" scrollHeight="150"
+                                                 value="#{controladorCancelaciones.listaTramiteDetalle}"
+                                                 var="compareciente" sortBy="#{compareciente.tdtPerTipoIdentificacion}" > 
+
+
+
+                                        <p:column headerText="IDENTIFICACIÓN" width="115">
+                                            <h:outputText value="#{compareciente.tdtPerIdentificacion}" />
+                                        </p:column>
+                                        <p:column headerText="NOMBRES " width="220">
+                                            <h:outputText value="#{compareciente.tdtPerNombre.trim()} #{compareciente.tdtPerApellidoPaterno.trim()} #{compareciente.tdtPerApellidoMaterno.trim()}" />
+                                        </p:column>
+                                        <p:column headerText="TIPO" width="120">
+                                            <h:outputText value="#{compareciente.ttcId.tpcId.tpcDescripcion}" />
+                                        </p:column>
+
+
+
+
+                                    </p:dataTable>
+                                </h:panelGrid>
+
+                            </p:panel>
+
+                            <p:panel rendered="#{controladorCancelaciones.renderedPanelTab}"
+                                     style="width: 680px; height: 551px; ">
+
+                                <p:commandButton  value="Suspensión" process="@this" immediate="true"
+                                                  class="red-btn"
+                                                  oncomplete="PF('dlgRznSus').show()" update="formRazonesSuspension" icon="fa fa-ban"
+                                                  rendered="#{controladorCancelaciones.renderedBtnSuspension}"
+                                                  disabled="#{controladorCancelaciones.numeroTramite eq null}">
+                                    <f:setPropertyActionListener target="#{controladorCancelacionesSuspension.numProforma}"
+                                                                 value="#{controladorCancelaciones.numeroTramite}"/>
+                                    <f:setPropertyActionListener target="#{controladorCancelacionesSuspension.numeroRepertorio}"
+                                                                 value="#{controladorCancelaciones.numeroRepertorio}"/>
+                                    <f:setPropertyActionListener target="#{controladorCancelacionesSuspension.numTramite}"
+                                                                 value="#{controladorCancelaciones.numeroTramite}"/>
+                                    <f:setPropertyActionListener target="#{controladorCancelacionesSuspension.listaPropietarioPropiedad}"
+                                                                 value="#{controladorCancelaciones.listaPropiedadPorMatricula}"/>
+
+                                </p:commandButton>
+
+                                <p:tabView id="tabView"
+                                           rendered="#{controladorCancelaciones.renderedTabView}">
+
+
+                                    <p:tab id="tab_1" title="Datos Generales" 
+                                           rendered="#{controladorCancelaciones.renderedTabDatosGen}"
+                                           disabled="#{controladorCancelaciones.deshabilitarTabDatosGen}" >
+                                        <h:form id="formDatosGenerales">
+                                            <h:panelGrid columns="2" cellpadding="4">
+                                                <p:outputLabel for="txtParroquia" value="Parroquia" />
+                                                <p:inputText id="txtParroquia" style="width: 450px; text-transform: uppercase;" 
+                                                             required="true" requiredMessage="Ingrese la parroquia"
+                                                             value="#{controladorCancelaciones.parroquias}"/>
+
+                                                <p:outputLabel for="txtDescripcion" value="Descripcion"/>
+                                                <p:inputText id="txtDescripcion" style="width: 450px; text-transform: uppercase;"
+                                                             required="true" requiredMessage="Ingrese la descripción de la parroquia"
+                                                             value="#{controladorCancelaciones.descripcionParroquia}"/>
+                                            </h:panelGrid>
+                                            <h:panelGrid columns="4" cellpadding="4">
+                                                <p:outputLabel for="txtTipoContrato" value="Tipo de Contrato"/>
+                                                <p:inputText id="txtTipoContrato" readonly="true"
+                                                             required="true" requiredMessage="Seleccione un contrato"
+                                                             value="#{controladorCancelaciones.descripcionContrato}"/>
+                                                <p:outputLabel for="txtFechaIngreso" value="Fecha de Ingreso"/>
+                                                <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFechaIngreso"
+                                                            required="true" requiredMessage="Verifique que el repertorio tenga una fecha para la fecha de Ingreso"
+                                                            value="#{controladorCancelaciones.fechaIngreso}" 
+                                                            readonly="true" disabled="false" showOn="false"/>
+                                                <p:outputLabel for="txtFechaDe" value="Fecha Auto"/>
+                                                <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFechaDe" 
+
+                                                            required="true" requiredMessage="Seleccione la Fecha Auto"
+                                                            value="#{controladorCancelaciones.fechaDe}"
+                                                            style="color: #1a237e" >
+
+
+                                                </p:calendar>
+                                                <p:outputLabel for="txtFechaSentencia" value="Fecha de Sentencia"/> 
+                                                <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFechaSentencia" 
+                                                            maxdate="#{controladorCancelaciones.fechaIngreso}"
+
+                                                            required="true" requiredMessage="Seleccione la Fecha de Sentencia"
+                                                            value="#{controladorCancelaciones.fechaSentencia}"
+                                                            style="color: #1a237e">
+
+
+                                                </p:calendar>
+                                                <p:outputLabel for="txtTipoJuicio" value="Tipo de Juicio"/>
+                                                <p:selectOneMenu id="txtTipoJuicio" value="#{controladorCancelaciones.tipoJuicioId}"
+                                                                 required="true" requiredMessage="Seleccione el Tipo de Juicio">
+                                                    <f:selectItems value="#{controladorCancelaciones.listaTipoJuicio}"
+                                                                   var="tipoJuicio" 
+                                                                   itemValue="#{tipoJuicio.tpjId}"
+                                                                   itemLabel="#{tipoJuicio.tpjDescripcion}"                                            
+
+                                                                   />
+
+                                                </p:selectOneMenu>
+                                                <p:outputLabel for="txtNumeroJuicio" value="Número de Juicio"/>
+                                                <p:inputText id="txtNumeroJuicio" 
+                                                             required="true" requiredMessage="Ingrese el Número de Juicio"
+                                                             value="#{controladorCancelaciones.numeroJuicio}"/>
+                                            </h:panelGrid>
+                                            <h:panelGrid columns="2" cellpadding="4">
+                                                <p:outputLabel for="txtJuzgado" value="Juzgado"/>
+                                                <p:inputText id="txtJuzgado" style="width: 450px"
+                                                             required="true" requiredMessage="Ingrese el Número de Juzgado"
+                                                             value="#{controladorCancelaciones.juzgado}"/>
+                                                <p:outputLabel for="txtNotaria" value="Notaria"/>
+                                                <p:inputText id="txtNotaria" style="width: 450px"
+                                                             required="true" requiredMessage="Ingrese el Número de Notaria"
+                                                             value="#{controladorCancelaciones.notaria}"/>
+                                                <p:outputLabel for="txtNumeroOficio" value="Número de Oficio"/>
+                                                <p:inputText id="txtNumeroOficio" style="width: 450px"
+                                                             required="true" requiredMessage="Ingrese el Número de Oficio"
+                                                             value="#{controladorCancelaciones.numeroOficio}"/>
+                                                <p:outputLabel for="txtObservacion" value="Observación"/>
+                                                <p:inputText id="txtObservacion" style="width: 450px; text-transform: uppercase;"
+                                                             required="true" requiredMessage="Ingrese la Observación"
+                                                             value="#{controladorCancelaciones.observacion}"/>
+                                            </h:panelGrid>
+                                            <p:commandButton action="#{controladorCancelaciones.guardarActa()}"
+                                                             update="growl :formCancelacion formDatosGenerales" 
+                                                             value="Guardar"  process="formDatosGenerales"                                                       
+                                                             class="green-btn" style="margin-right:20px;" icon="fa fa-save" title="Guardar" />
+
+
+                                        </h:form>
+
+                                    </p:tab>
+                                    <p:tab id="tab_2" title="Acta" 
+                                           rendered="#{controladorCancelaciones.renderedTabActa}"
+                                           disabled="#{controladorCancelaciones.deshabilitarTabActa}">
+                                        <h:form id="formActa">
+                                            <p:commandButton action="#{controladorCancelaciones.previsualizarActa()}"
+                                                             update="growl :formPrevisualizar"
+                                                             value ="Previsualizar Acta"
+                                                             class="blue-btn" 
+                                                             process="@form"
+                                                             style="margin-right:20px;" icon="fa fa-file-o" title="Previsualizar Acta"
+                                                             />
+                                            <p:commandButton action="#{controladorCancelaciones.sobreEscribirActa()}"
+                                                             update=":formCancelacion growl " disabled="#{controladorCancelaciones.deshabilitarBotonGuardar}"
+                                                             value="Guardar Acta"  process="formActa"                                                       
+                                                             class="green-btn" style="margin-right:20px;" icon="fa fa-save" title="Guardar Acta" />
+                                            <h:panelGrid columns="1" cellpadding="10">
+                                                <p:textEditor toolbarVisible="false" id="txtActaCabecera" 
+                                                              widgetVar="actaCabecera" value="#{controladorCancelaciones.cabeceraActa}" 
+                                                              height="185" style="margin-bottom:10px; width: 620px; text-align: justify;"                                                          
+                                                              readonly="true" />
+
+                                                <p:textEditor toolbarVisible="false" id="txtActaCuerpo" 
+                                                              widgetVar="actaCuerpo" value="#{controladorCancelaciones.cuerpoActa}" 
+                                                              height="240" style="margin-bottom:10px; width: 620px; text-align: justify;"                                                          
+                                                              required="true" requiredMessage="El campo Cuerpo Acta es requerido"
+                                                              readonly="false"/>
+
+                                            </h:panelGrid>
+
+                                        </h:form>
+                                    </p:tab>
+                                    <p:tab id="tab_3" title="Razón" 
+                                           rendered="#{controladorCancelaciones.renderedTabRazon}"
+                                           disabled="#{controladorCancelaciones.deshabilitarTabRazon}">
+                                        <h:form id="formRazon">
+                                            <p:commandButton action="#{controladorCancelaciones.guardar()}"
+                                                             update=":formCancelacion growl " 
+                                                             value="Guardar Razón"     process="formRazon"
+                                                             class="green-btn" style="margin-right:20px;" icon="fa fa-save" title="Guardar Razón" />
+                                            <div align="center">
+                                                <p:commandButton  
+                                                    icon="fa fa-plus" 
+                                                    actionListener="#{controladorCancelaciones.sumarSaltoLineaRazon()}"
+                                                    style="margin-top: 5px"
+                                                    process="@this"
+                                                    update="growl :formCancelacion:tabView" >
+                                                </p:commandButton>
+
+                                                <p:commandButton  
+                                                    icon="fa fa-minus" 
+                                                    actionListener="#{controladorCancelaciones.restarSaltoLineaRazon()}"
+                                                    style="margin-top: 5px"
+                                                    process="@this"
+                                                    update="growl  :formCancelacion:tabView"
+                                                    >
+                                                </p:commandButton>
+                                                <p:selectBooleanButton value="#{controladorCancelaciones.bolAgregarImagenEspacioEnBlancoRazon}"
+                                                                       onLabel="Con Imagen Texto En Blanco"
+                                                                       offLabel="Sin Imagen Texto En Blanco">
+                                                    <p:ajax listener="#{controladorCancelaciones.agregarImagenBlancoRazon()}"
+                                                            update="growl  :formCancelacion:tabView"/>
+                                                </p:selectBooleanButton>
+                                            </div>
+                                            <h:panelGrid columns="1" cellpadding="10">                                                    
+
+                                                <p:media id="pdfActa"
+                                                         value="#{controladorCancelaciones.urlRazonPdf}"
+                                                         rendered="#{not empty controladorCancelaciones.urlRazonPdf}"
+                                                         style="width:600px;height: 400px"
+                                                         player="pdf"  />
+
+
+
+                                            </h:panelGrid>
+
+                                        </h:form>
+                                    </p:tab>
+                                </p:tabView>
+                            </p:panel>
+                        </p:layoutUnit>
+                    </p:layout>  
+                </p:panel>
+            </h:form>
+
+
+
+            <!-- DIALOGO PREVISUALIZAR ACTA -->
+
+            <p:dialog id="dlgFormPreViewActa" widgetVar="dlgPreviewActa" modal="true"
+                      onShow="PF('dlgPreviewActa').initPosition()" header="Previsualizar Acta" >
+
+                <h:form id="formPrevisualizar">
+                    <div align="center">
+                        <div align="center">
+                            <p:commandButton  
+                                icon="fa fa-plus" 
+                                actionListener="#{controladorCancelaciones.sumarSaltoLinea()}"
+                                style="margin-top: 5px"
+                                process="@this"
+                                update="growl @form" >
+                            </p:commandButton>
+
+                            <p:commandButton  
+                                icon="fa fa-minus" 
+                                actionListener="#{controladorCancelaciones.restarSaltoLinea()}"
+                                style="margin-top: 5px"
+                                process="@this"
+                                update="growl  @form"
+                                >
+                            </p:commandButton>
+                            <p:selectBooleanButton value="#{controladorCancelaciones.bolAgregarImagenEspacioEnBlancoActa}"
+                                                   onLabel="Con Imagen Texto En Blanco"
+                                                   offLabel="Sin Imagen Texto En Blanco">
+                                <p:ajax listener="#{controladorCancelaciones.agregarImagenBlancoActa()}"
+                                        update="growl  @form"/>
+                            </p:selectBooleanButton>
+                            <p:commandButton class="green-btn" value="Aceptar" immediate="true" 
+                                             action="#{controladorCancelaciones.habilitarGuardar()}"
+                                             oncomplete="PF('dlgPreviewActa').hide()"
+                                             icon="fa fa-check"
+                                             update=":formCancelacion:tabView"/>
+                        </div>
+                    </div>
+
+                    <br></br>
+                    <h:panelGroup >                       
+                        <p:media id="pdfActa"
+                                 value="#{controladorCancelaciones.urlActaPdf}"
+                                 rendered="#{not empty controladorCancelaciones.urlActaPdf}"
+                                 style="width:700px;height: 500px"
+                                 player="pdf"  />
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+
+
+            <p:dialog id="dlgFormComparecientes" widgetVar="dlgComparecientes" modal="true"
+                      onShow="PF('dlgComparecientes').initPosition()" header="Comparecientes" >
+
+                <h:form id="formComparecientes">
+                    <h:panelGroup >    
+                        <h:panelGrid id="panelGridCompareciente" columns="7" >
+                            <p:outputLabel value="Identificación"/>
+                            <p:inputText id="txtIdentificacion" required="true" requiredMessage="Ingrese la identificación"
+                                         title="Identificación"  
+                                         value="#{controladorCancelaciones.tramitesControladorBb.identificacion }" >
+                                <p:ajax listener="#{controladorCancelaciones.buscarPersona()}" 
+                                        update="growl panelGridCompareciente"  
+                                        process="txtIdentificacion" event="change" 
+                                        />
+                            </p:inputText>
+
+                            <p:inputText value="#{controladorCancelaciones.tramitesControladorBb.nombrePersona}"
+                                         style="width: 250px" readonly="true"/>
+
+                            <p:selectOneMenu id="tipoCompareciente" value="#{controladorCancelaciones.tipoComparecienteId}">
+                                <f:selectItems value="#{controladorCancelaciones.listaTipoCompareciente}"
+                                               var="tipoComp" 
+                                               itemValue="#{tipoComp.tpcId}"
+                                               itemLabel="#{tipoComp.tpcDescripcion}"                                            
+
+                                               />
+
+                            </p:selectOneMenu>
+                            <p:commandButton  
+                                action="#{controladorCancelaciones.guardarTramiteDetalle()}"
+                                class="green-btn"
+                                style="margin-right:20px;" icon="fa fa-plus"
+                                title="Agregar Compareciente" 
+                                update="growl formCancelacion formComparecientes"/>
+
+                            <p:commandButton title="Buscar Persona" icon="fa fa-search" value="Buscar"
+                                             class="orange-btn" immediate="true" process="@this" 
+                                             actionListener="#{controladorFiltradoPersona.prepararFiltrado('CtrlCAN', 'formComparecientes')}"
+                                             oncomplete ="PF('dlgFiltradoPersona').show()"/>
+
+                            <p:commandButton title="Crear Nueva Persona" icon="fa fa-user-plus" 
+                                             oncomplete ="PF('dlgNuevaPersona').show()"/>
+
+
+                        </h:panelGrid>  
+                        <div align="center" >
+
+
+                            <h:panelGrid id="panelComparecientes" columns="2" width="650">      
+                                <p:dataTable id="tblComparecientes"  scrollable="true" scrollHeight="150"
+                                             value="#{controladorCancelaciones.listaTramiteDetalle}"
+                                             var="compareciente" sortBy="#{compareciente.tdtPerIdentificacion}" > 
+
+                                    <p:column headerText="IDENTIFICACIÓN" width="120">
+                                        <h:outputText value="#{compareciente.tdtPerIdentificacion}" />
+                                    </p:column>
+                                    <p:column headerText="NOMBRES" width="220">
+                                        <h:outputText value="#{compareciente.tdtPerNombre.trim()} #{compareciente.tdtPerApellidoPaterno.trim()} #{compareciente.tdtPerApellidoMaterno.trim()}" />
+                                    </p:column>
+
+                                    <p:column headerText="TIPO" width="170">
+                                        <h:outputText value="#{compareciente.ttcId.tpcId.tpcDescripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="" style="text-align: center;">
+                                        <p:commandButton  
+                                            action="#{controladorCancelaciones.eliminarCompareciente(compareciente.tdtId)}"
+                                            class="red-btn" immediate="true" 
+                                            style="margin-right:20px;" icon="fa fa-remove"
+                                            title="Eliminar Compareciente" 
+                                            update="growl :formCancelacion formComparecientes"/>
+
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid>
+
+
+                        </div>
+
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" immediate="true" onclick="PF('dlgComparecientes').hide()"/>
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgFormPropiedad" widgetVar="dlgPropiedades" modal="true"
+                      onShow="PF('dlgPropiedades').initPosition()" header="Seleccionar Gravamen" >
+
+                <h:form id="formPropiedades">
+                    <h:panelGroup >   
+                        <div align="center" >
+                            <h:panelGrid id="panelPropiedades" columns="2" width="810">      
+                                <p:dataTable id="tblComparecientes"  scrollable="true" scrollHeight="150"
+                                             value="#{controladorCancelaciones.listaGrav}"
+                                             var="gravamen" sortBy="#{gravamen.prdMatricula.prdMatricula}" rowKey="#{gravamen.graId}"
+
+                                             selection="#{controladorCancelaciones.listaGravamenSeleccionados}" disabledSelection="#{gravamen.existeDetalleGrav}">
+
+                                    <p:column headerText="Nro. Matrícula">
+                                        <h:outputText value="#{gravamen.prdMatricula.prdMatricula}" />
+                                    </p:column>
+                                    <p:column headerText="Nro. Repertorio">
+                                        <h:outputText value="#{gravamen.repNumero.repNumero}" />
+                                    </p:column>
+                                    <p:column headerText="Descripción" >
+                                        <h:outputText value="#{gravamen.graDescripcion}" />
+                                    </p:column>
+                                    <p:column selectionMode="multiple" style="width:16px;text-align:center" rendered="#{!gravamen.existeDetalleGrav}"/>  
+                                    <p:column>
+
+                                        <p:commandButton icon="fa fa-plus" class="cyan-btn" title="Detalles de Gravamen"
+                                                         oncomplete="PF('dlgGravDetalle').show()"
+                                                         update="formGravDetalle" rendered="#{gravamen.existeDetalleGrav}"                                                                     
+                                                         action="#{controladorCancelaciones.mostrarGravamenDetalle(gravamen.graId)}"
+                                                         disabled="#{!gravamen.existeDetalleGrav}">
+
+
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </h:panelGrid>
+
+
+                        </div>
+                        <p:commandButton  
+                            action="#{controladorCancelaciones.mostrarGravamenes()}"
+                            class="green-btn" value="Aceptar"
+                            style="margin-right:20px;" icon="fa fa-save"
+                            title="Aceptar" 
+                            onclick="PF('dlgPropiedades').hide()"
+                            update="growl formGravDetalle  formComparecientes formCancelacion"/>
+
+
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgFormGravDetalle" widgetVar="dlgGravDetalle" modal="true" width="650"
+                      onShow="PF('dlgGravDetalle').initPosition()" header="Detalle Gravamen" >
+                <h:form id="formGravDetalle">
+                    <h:panelGroup>
+                        <h:panelGrid>
+                            <p:dataTable id="tblGravDetalles"  scrollable="true" scrollHeight="150"
+                                         value="#{controladorCancelaciones.listaGravamenDetalle}"
+                                         var="gravDet" sortBy="#{gravDet.graId.graId}" rowKey="#{gravDet.gvdId}"
+                                         selection="#{controladorCancelaciones.listaGravamenDetSeleccionados}" >
+
+                                <p:column headerText="Nro. Matrícula" style="text-align: center;width: 50px">
+                                    <h:outputText value="#{gravDet.graId.prdMatricula.prdMatricula}" />
+                                </p:column>
+                                 <p:column headerText="Persona" style="text-align: center;width:150px">
+                                     <h:outputText value="#{gravDet.perId.perNombre.trim()} #{gravDet.perId.perApellidoPaterno.trim()} #{gravDet.perId.perApellidoMaterno.trim()}" />
+                                </p:column>
+                                <p:column headerText="Valor (%)" style="text-align: center;width:40px">
+                                    <h:outputText value="#{gravDet.gvdPorcentaje}" />
+                                </p:column>                                                                     
+                                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+                            </p:dataTable>
+                        </h:panelGrid>
+                        <p:commandButton  
+                            process="@this formGravDetalle"
+                            action="#{controladorCancelaciones.agregarListaGravSeleccionado()}"
+                            class="green-btn" value="Aceptar"
+                            style="margin-right:20px;"
+                            title="Aceptar" onclick="PF('dlgGravDetalle').hide()"
+                            />
+
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+
+
+
+            <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+            <ui:include src="/paginas/PROCESOS/Cancelaciones/suspension.xhtml"/>
+            <ui:include src="/paginas/FiltradoPersona.xhtml"/>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Certificados"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+
+            <h:form id="frmImpCert">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <p:panel header="Certificados">
+                            <p:panel>
+                                <h:panelGrid columns="3" style="width: 100%">
+                                    <h:form>
+                                        <p:growl id="growl" showDetail="false" sticky="false" life="3000"/> 
+                                        <h:panelGrid columns="2" cellpadding="5">
+                                            <p:outputLabel for="tBusqueda" value="Tipo de Busqueda:" />
+                                            <p:selectOneRadio id="tBusqueda" value="#{controladorReimpresionCertificado.TBusqueda}">
+                                                <p:ajax event="click" update=":frmImpCert:busqueda"/>
+                                                <f:selectItem itemLabel="Fecha" itemValue="fecha" />
+                                                <f:selectItem itemLabel="N. Certificado" itemValue="nCertificado" />
+                                            </p:selectOneRadio>
+                                        </h:panelGrid>
+                                    </h:form>
+                                    <h:form id="busqueda">
+                                        <p:growl id="growl" showDetail="false" sticky="false" life="3000"/> 
+                                        <h:panelGrid columns="3" style="width: 100%">
+                                            <h:panelGroup rendered="#{controladorReimpresionCertificado.TBusqueda eq 'fecha'}">
+                                                <h:panelGrid columns="4" cellspacing="10">
+                                                    <div style="width: 80px">
+                                                        Fecha Inicial: 
+                                                    </div>
+                                                    <p:calendar value="#{controladorReimpresionCertificado.cerFHRI}" pattern="dd/MM/yyyy" required="true" requiredMessage="El campo Fecha Inicial, es requerido">
+
+                                                    </p:calendar>
+                                                    <div style="width: 80px">
+                                                        Fecha Final: 
+                                                    </div>
+                                                    <p:calendar value="#{controladorReimpresionCertificado.cerFHRF}" pattern="dd/MM/yyyy" required="true" requiredMessage="El campo Fecha Final, es requerido">
+                                                    </p:calendar>
+                                                </h:panelGrid>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{controladorReimpresionCertificado.TBusqueda eq 'nCertificado'}">
+                                                <h:panelGrid columns="2" cellspacing="10">
+                                                    <div style="width: 90px;">
+                                                        N. Certificado: 
+                                                    </div>
+                                                    <p:inputText value="#{controladorReimpresionCertificado.cerNumero}" rendered="true" requiredMessage="El campo N. Certificado, es requerido"/>
+                                                </h:panelGrid>
+                                            </h:panelGroup>
+                                            <p:commandButton style="margin:10px " value="Buscar" class="cyan-btn" action="#{controladorReimpresionCertificado.filtrar()}"
+                                                             icon="fa fa-search" process="busqueda" update=":frmImpCert:dtCertCarg growl"/>
+
+                                        </h:panelGrid>
+                                    </h:form>
+                                    <p:commandButton action="#{controladorReimpresionCertificado.crearpdfETC()}" style="margin:10px " 
+                                                     icon="fa fa-hand-lizard-o" value="Entregar"  class="yellow-btn"
+                                                     update=" :frmImpCert:dtCertCarg growl" >
+                                        <p:confirm header="Entregar" message="¿Desea entregar certificado?" icon="fa fa-exclamation-triangle" />
+
+                                    </p:commandButton>
+                                    <div >
+                                        
+                                        <p:outputLabel style="text-align: left" value="Descripcion:" for="descripcionE" >
+                                        <p:inputText style="width: 400px" id="descripcionE" value="#{controladorReimpresionCertificado.descripcionEntrega}" />
+                                        </p:outputLabel>
+
+                                    </div>
+                                </h:panelGrid>
+                            </p:panel><br/>
+                            <p:dataTable id="dtCertCarg" value="#{controladorReimpresionCertificado.listaCertificadosEntrega}" var="item" 
+                                         selection="#{controladorReimpresionCertificado.seleccionCertificadoCarga}"
+                                         rowKey="#{item.cdcId}}">
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Certificado" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.cdcCertificado}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N. Factura" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.facId.facNumero}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N. Caja" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.facId.cajId.cajNombre}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.cdcFHR}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            </p:dataTable>
+                        </p:panel>
+                    </div>
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
+

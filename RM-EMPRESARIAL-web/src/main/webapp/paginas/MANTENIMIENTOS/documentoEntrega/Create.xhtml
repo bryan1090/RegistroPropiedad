@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoEntregaCreateDlg" widgetVar="DocumentoEntregaCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateDocumentoEntregaTitle}">
+            <h:form id="DocumentoEntregaCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorDocumentoEntrega.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateDocumentoEntregaLabel_dteDescripcion}" for="dteDescripcion" />
+                        <p:inputText id="dteDescripcion" value="#{controladorDocumentoEntrega.selected.dteDescripcion}" title="#{bundle.CreateDocumentoEntregaTitle_dteDescripcion}" required="true" requiredMessage="#{bundle.CreateDocumentoEntregaRequiredMessage_dteDescripcion}"/>
+                        <p:outputLabel value="#{bundle.CreateDocumentoEntregaLabel_dteEstado}" for="dteEstado" />
+                        <p:selectOneMenu id="dteEstado" value="#{controladorDocumentoEntrega.selected.dteEstado}" required="true" requiredMessage="#{bundle.CreateDocumentoEntregaRequiredMessage_dteEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorDocumentoEntrega.create}" value="#{bundle.Save}" update="display,:DocumentoEntregaListForm:datalist,:growl" oncomplete="handleSubmit(args,'DocumentoEntregaCreateDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorDocumentoEntrega.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="DocumentoEntregaCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

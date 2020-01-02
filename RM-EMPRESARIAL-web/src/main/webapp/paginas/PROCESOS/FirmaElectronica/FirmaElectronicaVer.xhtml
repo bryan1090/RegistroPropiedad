@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Ver Firma Electrónica"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:outputStylesheet name="css/textEditor.css" />
+
+            <h:form id="formFirmaElectronica">
+                <p:growl id="growl" showDetail="true" sticky="false" life="3000"/>
+
+                <p:panel id="pnlBusqueda" header="Bùsqueda">
+                    <h:panelGrid columns="4" >
+                        <p:panel >
+                            <p:selectOneRadio id="tipoBusqueda" value="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda}">
+                                <f:selectItem itemLabel="Por Fecha" itemValue="F" />
+                                <f:selectItem itemLabel="Por Trámite" itemValue="T" />
+                                <f:selectItem itemLabel="Por Acta" itemValue="A" />
+                                <f:selectItem itemLabel="Por Inscripción" itemValue="I" />
+                                <p:ajax event="change" process="@this" update="pnlBusqueda"
+                                        listener="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.inicializar()}"/>
+                            </p:selectOneRadio>
+                        </p:panel>
+                        <p:spacer height="5" width="30"/>
+                        <p:panel rendered="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda eq 'F'}">
+                            <h:panelGrid columns="4" rendered="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda eq 'F'}" >
+                                <h:outputText value="Fecha de Inicio: "/>
+                                <p:calendar pattern="dd/MM/yyyy"  value="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.fechaInicio}"
+                                            required="true" requiredMessage="El campo fecha de inicio es requerido"
+                                            />
+                                <h:outputText value="Fecha de Fin: "/>
+                                <p:calendar pattern="dd/MM/yyyy"  value="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.fechaFin}"
+                                            required="true" requiredMessage="El campo fecha de fin es requerido"
+                                            />
+                                <h:outputText value="Tipo de Libro: "/>
+
+                                <p:selectOneMenu value="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.idTipoLibro}"
+                                                 required="true" requiredMessage="El campo tipo de libro es requerido"
+                                                 >
+                                    <f:selectItem itemLabel="TODAS" itemValue="0"/>
+
+                                    <f:selectItems value="#{controladorTipoLibro.itemsAvailableSelectOne}" var="tpl" 
+                                                   itemLabel="#{tpl.tplDescripcion}" itemValue="#{tpl.tplId}"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel rendered="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda eq 'T'}">
+                            <h:panelGrid columns="4" rendered="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda eq 'T'}">
+                                <h:outputText value="Número de Trámite: "/>
+                                <p:inputNumber value="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.numTramite}"
+                                               required="true" requiredMessage="El campo Tramite es requerido"
+                                               decimalPlaces="0" minValue="0" thousandSeparator=""/>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel rendered="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda eq 'A'}">
+                            <h:panelGrid columns="4" rendered="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda eq 'A'}">
+                                <h:outputText value="Número de Acta: "/>
+                                <p:inputNumber value="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.numActa}"
+                                               required="true" requiredMessage="El campo Acta es requerido"
+                                               decimalPlaces="0" minValue="0" thousandSeparator=""/>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel rendered="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda eq 'I'}">
+                            <h:panelGrid columns="4" rendered="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda eq 'I'}">
+                                <h:outputText value="Número de Inscripción "/>
+                                <p:inputNumber value="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.numInscripcion}"
+                                               required="true" requiredMessage="El campo Inscripción es requerido"
+                                               decimalPlaces="0" minValue="0" thousandSeparator=""/>
+                                <h:outputText value="Tipo de Libro: "/>
+                                <p:selectOneMenu value="#{controladorActaFirmadaVer.modeloCargaDiferidaActa.idTipoLibro}"
+                                                 required="true" requiredMessage="El campo tipo de libro es requerido"
+                                                 >
+                                    <f:selectItem itemLabel="TODAS" itemValue="0"/>
+
+                                    <f:selectItems value="#{controladorTipoLibro.itemsAvailableSelectOne}" var="tpl" 
+                                                   itemLabel="#{tpl.tplDescripcion}" itemValue="#{tpl.tplId}"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:commandButton icon="fa fa-search" rendered="#{not empty controladorActaFirmadaVer.modeloCargaDiferidaActa.tipoBusqueda}"
+                                         action="#{controladorActaFirmadaVer.buscarActa()}"
+                                         process="pnlBusqueda" update="@form"/>
+
+                    </h:panelGrid>
+
+                </p:panel>
+
+                <p:panel header="Ver Acta" >
+
+
+                    <p:dataTable id="dtb_referencias" value="#{controladorActaFirmadaVer.modeloCargaDiferidaActa}"
+                                 var="item"
+                                 rowKey="#{item.actNumero}"
+
+                                 rows="50"
+
+                                 paginator="true"
+                                 paginatorTemplate=
+                                 "{RowsPerPageDropdown} {FirstPageLink}
+                                 {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                 rowsPerPageTemplate="50,100,300,500" lazy="true"
+
+                                 >
+
+                        <f:facet name="header">
+                            Actas
+                        </f:facet>
+
+
+
+                        <p:column headerText="Acta" 
+                                  
+                                  >
+                            <h:outputText value="#{item.actNumero}" />
+                        </p:column>
+
+                        <p:column headerText="Fecha" style="width: 80px">
+                            <h:outputText value="#{item.actFch}" >
+                                <f:convertDateTime pattern="yyyy-MM-dd"/>
+                            </h:outputText>
+                        </p:column>
+
+
+
+                        <p:column headerText="Inscripción">
+                            <h:outputText value="#{item.actInscripcion}" />
+                        </p:column>
+
+
+                        <p:column headerText="Repertorio"
+                                  
+                                  >
+                            <h:outputText value="#{item.repNumero.repNumero}" />
+                        </p:column>
+
+                        <p:column headerText="Predio"
+                                  >
+                            <h:outputText value="#{item.prdMatricula.prdPredio}" />
+                        </p:column>
+
+                        <p:column headerText="Catastro"
+                                  
+                                  >
+                            <h:outputText value="#{item.prdMatricula.prdCatastro}" />
+                        </p:column>
+
+                        <!--                        <p:column headerText="Estado">
+                                                    <h:outputText value="Marginada" rendered="#{controladorActaFirmadaVer.esActaMarginada(item)}" style="color: green"/>
+                                                    <h:outputText value="No Marginada" rendered="#{!controladorActaFirmadaVer.esActaMarginada(item)}" style="color: red"/>
+                                                </p:column>-->
+
+
+
+                        <!--                        <p:column style="width: 80px">
+                                                    <p:commandButton process="@this"
+                                                                     immediate="true"
+                                                                     update="@form growl " 
+                                                                     icon="fa fa-search" 
+                                                                     class="cyan-btn"
+                                                                     value="Ver"
+                                                                     oncomplete="PF('dlgVerActa').show();"
+                                                                     action="#{controladorActaFirmadaVer.verActa(item)}"
+                                                                     >
+                                                    </p:commandButton>
+                                                </p:column>-->
+
+                        <p:column headerText="Abrir" style="width: 7%;">
+                            <h:commandLink title="Abrir PDF en un nuevo tab"  
+                                           action="#{controladorActaFirmadaVer.abrirArchivo()}" 
+                                           target="_blank">
+                                <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                <f:setPropertyActionListener value="#{item}" target="#{controladorActaFirmadaVer.actaSeleccionada}"/>
+                            </h:commandLink>  
+                        </p:column>
+
+                    </p:dataTable>
+
+
+
+                </p:panel>
+
+            </h:form>
+
+            <p:dialog header="Ver Acta" widgetVar="dlgVerActa"
+                      modal="true" minHeight="50"  width="80%" appendTo="@(body)" >
+                <h:form id="frmVerActa">
+
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

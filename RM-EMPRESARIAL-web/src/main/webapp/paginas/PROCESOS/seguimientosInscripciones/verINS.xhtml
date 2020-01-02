@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition>
+        <p:dialog id="InsDlg" header="Incripción" widgetVar="InsDialogo" modal="true" resizable="false" width="1000px">
+            <p:scrollPanel style="height:500px;">
+                <h:form id="InsVerForm">
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <p:panel id="pnl1" style="min-height: 520px; max-height: 620px">
+                                <div class="ui-fluid">
+                                    <h:panelGrid id="pnlBusqueda" columns="2" style="width: 100%" cellspacing="5">
+                                        <h:outputText value="Tramite"/>
+                                        <h:outputText value="#{controladorVerINS.tramite.traNumero}"/>
+                                        <h:outputText value="Repertorio"/>
+                                        <h:outputText value="#{controladorVerINS.acta.repNumero.repNumero}"/>
+                                        <h:outputText value="Libro"/>
+                                        <h:outputText value="#{controladorVerINS.acta.tplId.tplDescripcion}"/>
+                                    </h:panelGrid>
+                                </div>
+                                <p:separator  />
+                                <div class="ui-fluid">
+                                    <h:panelGrid  columns="2" id="pnlProceso" style="width: 100%;" cellspacing="5">
+                                        <h:outputText value="Fecha" />
+                                        <h:outputText value="#{controladorVerINS.acta.repNumero.repFHR}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText>
+                                        <h:outputText value="Inscripción "/>
+                                        <h:outputText value="#{controladorVerINS.acta.actInscripcion}"/>
+                                        <h:outputText value="Fojas "/>
+                                        <h:outputText value="#{controladorVerINS.acta.actFoja}"/>
+                                        <h:outputText value="Tomo "/>
+                                        <h:outputText value="#{controladorVerINS.acta.actTomo}"/>
+                                        <h:outputText value="Volumen "/>
+                                        <h:outputText value="#{controladorVerINS.acta.actVolumen}"/>
+                                    </h:panelGrid>
+                                </div>
+                            </p:panel>
+                        </div>
+
+                        <div class="ui-g-9">
+                            <p:panel id="pnlActa" style="min-height: 520px; max-height: 620px;text-align: justify;">
+                                <p:scrollPanel mode="native" style="height:500px;">
+                                    <h:outputText value="#{controladorVerINS.acta.actActa}" escape="false"/>
+                                </p:scrollPanel>
+                            </p:panel>
+                        </div>
+                    </div>
+                </h:form>
+            </p:scrollPanel>
+        </p:dialog>
+    </ui:composition>
+
+</html>
+

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Formulario"/>
+        </ui:define>
+
+        <ui:define name="content" >
+
+
+            <h:form id="formFormDigVer" target="_blank"  >
+
+                <p:panel id="panel" header="Formularios Digitalizados" style="min-height:500px;" >
+                    <p:panelGrid id="pnlFiltro"  columns="1" style="border: none;text-align: right;background-position: right">
+                    <p:panelGrid id="pnlFactura" rendered="#{!controladorFormularioDigitalVer.filtro}">
+                                <p:outputLabel id="lblFactura"  value="Buscar por Número de Factura"/> 
+                                <p:selectBooleanCheckbox id="slcFactura" value="#{controladorFormularioDigitalVer.filtro}" >
+                                    <p:ajax update="pnlFiltro :formFormDigVer:pnlFechas formFormDigVer"  
+                                            listener="#{controladorFormularioDigitalVer.busquedaPorFactura()}" />
+                                </p:selectBooleanCheckbox>
+                            </p:panelGrid>
+                            <p:panelGrid id="pnlFechas" rendered="#{controladorFormularioDigitalVer.filtro}">
+                                <p:outputLabel id="lblFechas"  value="Buscar por Rango de Fechas"/> 
+                                <p:selectBooleanCheckbox id="slcFechas"  value="#{controladorFormularioDigitalVer.filtro}" >
+                                    <p:ajax update="pnlFiltro pnlFactura formFormDigVer"  
+                                            listener="#{controladorFormularioDigitalVer.busquedaPorFechas()}" />
+                                </p:selectBooleanCheckbox>
+                            </p:panelGrid>
+                    <h:panelGrid columns="4" rendered="#{!controladorFormularioDigitalVer.filtro}">
+                            <p:outputLabel for="txtFechaInicio" value="Fecha Inicio" />
+                                            <p:calendar pattern="dd/MM/yyyy" id="txtFechaInicio" value="#{controladorFormularioDigitalVer.fechaInicio}" required="true" label="firstname">
+                                                
+                                            </p:calendar>
+                             <p:outputLabel for="txtFechaFin" value="Fecha Fin" />
+                                            <p:calendar pattern="dd/MM/yyyy" id="txtFechaFin" value="#{controladorFormularioDigitalVer.fechaFin}" required="true" label="firstname">
+                                              
+                                            </p:calendar>
+                                <p:commandButton icon="fa fa-search" class="green-btn" value="Buscar"
+                                             action="#{controladorFormularioDigitalVer.inicializar()}"
+                                             update="formFormDigVer"/>
+                        </h:panelGrid>
+                    <h:panelGrid columns="3" rendered="#{controladorFormularioDigitalVer.filtro}">
+                        <p:outputLabel for="txtNumFactura" value="Número de Factura" />
+                        <p:inputText id="txtNumFactura" value="#{controladorFormularioDigitalVer.numeroFactura}"></p:inputText>
+                        <p:commandButton action="#{controladorFormularioDigitalVer.buscarPorNumeroFactura()}"
+                                         update=":formFormDigVer" value="Buscar" class="green-btn"
+                                         
+                                         />
+                    </h:panelGrid>
+                        </p:panelGrid>
+
+
+                    <p:dataTable id="datos2" value="#{controladorFormularioDigitalVer.listaFormularioDigital}" var="item" 
+                                 widgetVar="wVdtbDatos2"
+                                 scrollable="true" scrollHeight="430" resizableColumns="false" paginatorPosition="top" style="text-align: center" 
+                                 sortBy="#{item.facId.facNumero}">
+                        <p:column groupRow="true" headerText="Factura" sortBy="#{item.facId.facNumero}" filterStyle="height:20px;text-transform: uppercase;"
+                                  filterBy="#{item.facId.facNumero}" filterMatchMode="contains" >
+                            <h:outputText value="#{item.facId.facNumero}" />
+                        </p:column>
+
+                        <p:column  headerText="Nombre Archivo" style="width: 15%" sortBy="#{item.fmdNombreArchivo}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.fmdNombreArchivo}" filterMatchMode="contains" >
+                            <h:outputText value="#{item.fmdNombreArchivo}" />
+                        </p:column>                           
+
+                        <p:column  headerText="Usuario" sortBy="#{item.fmdUser}"  >
+                            <h:outputText value="#{item.fmdUser}" />
+                        </p:column>
+                        <p:column  headerText="Fecha" sortBy="#{item.fmdFHR}"  >
+                            <h:outputText  value="#{item.fmdFHR}" >
+                                <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column  headerText="Estado" sortBy="#{item.fmdEstado}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.fmdEstado}" filterMatchMode="contains" >
+                            <h:outputText value="#{item.fmdEstado}" />
+                        </p:column>
+
+                        <p:column headerText="Abrir" style="width: 7%;">
+                            <h:commandLink title="Abrir PDF en un nuevo tab"  action="#{controladorFormularioDigitalVer.abrirArchivo()}" >
+                                <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                <f:setPropertyActionListener value="#{item}" target="#{controladorFormularioDigitalVer.formularioDigitalSeleccionado}"/>
+                            </h:commandLink>  
+
+
+                        </p:column>
+                        <p:column headerText="Subir" style="width: 7%">
+                            <p:commandButton icon="fa fa-upload" oncomplete="PF('dialogoSubirArchivo').show();"
+                                             update="datos2" disabled="#{item.fmdEstado eq 'I'}">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorFormularioDigitalVer.formularioDigitalSeleccionado}" />
+                            </p:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+
+                    
+
+                </p:panel>
+
+            </h:form>
+
+                <p:dialog id="dlgSubirArchivo" widgetVar="dialogoSubirArchivo" modal="true" resizable="false" appendTo="@(body)" header="Subir Archivo">
+                                <h:form >
+
+                    <p:growl id="messages" showDetail="true" />
+
+                    <p:fileUpload fileUploadListener="#{controladorFormularioDigitalVer.subirArchivo}" mode="advanced" dragDropSupport="false" oncomplete="PF('dialogoSubirArchivo').hide();" 
+                                  update="@form :formFormDigVer:datos2 messages growl" sizeLimit="1000000000" fileLimit="1" allowTypes="/(\.|\/)(pdf)$/" label="Escoger..." cancelLabel="Cancelar" uploadLabel="Subir" />
+                                </h:form>
+
+                </p:dialog>
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>

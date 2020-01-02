@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UsuarioCajaCreateDlg" widgetVar="UsuarioCajaCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateUsuarioCajaTitle}">
+            <h:form id="UsuarioCajaCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{usuarioCajaController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateUsuarioCajaLabel_cajId}" for="cajId" />
+                        <p:selectOneMenu id="cajId" value="#{usuarioCajaController.selected.cajId}" required="true" requiredMessage="#{bundle.EditUsuarioCajaRequiredMessage_cajId}">
+                            <f:selectItems value="#{cajaController.itemsAvailableSelectOne}"
+                                           var="cajIdItem"
+                                           itemValue="#{cajIdItem}" itemLabel="#{cajIdItem.cajNombre}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateUsuarioCajaLabel_usuId}" for="usuId" />
+                        <p:selectOneMenu id="usuId" value="#{usuarioCajaController.selected.usuId}" required="true" requiredMessage="#{bundle.EditUsuarioCajaRequiredMessage_usuId}">
+                            <f:selectItems value="#{usuarioController.itemsAvailableSelectOne}"
+                                           var="usuIdItem"
+                                           itemValue="#{usuIdItem}" itemLabel="#{usuIdItem.usuLogin}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{usuarioCajaController.create}" value="#{bundle.Save}" update="display,:UsuarioCajaListForm:datalist,:growl" oncomplete="handleSubmit(args,'UsuarioCajaCreateDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{usuarioCajaController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="UsuarioCajaCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

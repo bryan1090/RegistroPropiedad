@@ -1,0 +1,748 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Seguimiento Tramite"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <p:panel header="Seguimiento Tramite" id="pnlprincipal" >
+                <div class="ui-g">
+                    <div class="ui-g-4">
+
+                        <h:form id="frmTree">
+                            <p:outputLabel value="Numero de Tramite:" style="font-weight:bold"/>
+                            <p:outputLabel value="#{controladorDocumento.traNumero}"/>
+
+                            <p:separator  />
+                            <p:tree value="#{controladorDocumento.arbol}" 
+                                    var="nodo" selectionMode="single" 
+                                    selection="#{controladorDocumento.nodoSeleccionado}" style="width: 280px;">
+                                <p:ajax event="select" update="@form data"  listener="#{controladorDocumento.NodeSelect()}">
+
+                                </p:ajax>
+                                <p:treeNode icon="fa fa-file-o">
+                                    <h:outputText value="#{nodo}"/>
+                                </p:treeNode>
+                                <p:treeNode type="ver" icon="fa fa-external-link">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="caj" icon="fa fa-inbox">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="dfc" icon="fa fa-keyboard-o">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="mat" icon="fa fa-address-book">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="inc" icon="fa fa-window-close">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="ins" icon="fa fa-address-card">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="pro" icon="fa fa-file-archive-o">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="imp" icon="fa fa-print">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="rvt" icon="fa fa-check-square-o">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="rep" icon="fa fa-file">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="mrg" icon="fa fa-clipboard">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="fme" icon="fa fa-pencil-square-o">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="fin" icon="fa fa-info-circle">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="etg" icon="fa fa-hand-lizard-o">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+                                <p:treeNode type="mph" icon="fa fa-newspaper-o">
+                                    <h:outputText value="#{nodo}" />
+                                </p:treeNode>
+
+                            </p:tree>
+                            <p:commandButton icon="fa fa-arrow-circle-left" class="cyan-btn" value="Regresar"
+                                             style="width: 80px">
+                                <p:ajax update="" listener="#{controladorDocumento.busquedaTrue()}" />
+
+                            </p:commandButton>
+                        </h:form>
+
+
+
+
+
+                    </div>
+
+                    <!---->
+
+                    <div class="ui-g-8">
+
+                        <p:dataTable style="text-align: center; align-content: center" id="data" value="#{controladorDocumento.listaTramiteAccion}" 
+                                     var="item">
+                            <p:column style="text-align: center;align-content: center" width="50">
+                                <f:facet name="header">
+                                    <h:outputText value="N° Documento" style="align-content:  center"/>
+                                </f:facet>
+                                <h:form>
+                                    <h:commandLink value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'CAJ'}">
+                                        <p:ajax event="click" 
+                                                listener="#{controladorVerCAJ.mostrar(item.tmaNumeroDocumento)}" 
+                                                oncomplete="PF('CajDialogo').show()"
+                                                update=":CajVerForm"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'RVT'}">
+                                        <p:ajax event="click" 
+                                                listener="#{controladorVerRVT.mostrar(item.tmaNumeroDocumento)}" 
+                                                oncomplete="PF('RvtDialogo').show()"
+                                                update=":RvtVerForm"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="#{item.traNumero.traNumero}" rendered="#{item.tmaEstadoProceso eq 'DIG'}">
+                                        <p:ajax event="click" 
+                                                listener="#{controladorVerDIG.mostrar(item.traNumero.traNumero)}" 
+                                                oncomplete="PF('DigDialogo').show()"
+                                                update=":DigVerForm"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'INS'}">
+                                        <p:ajax event="click" 
+                                                listener="#{controladorVerINS.mostrar(item.tmaNumeroDocumento, item.traNumero)}"
+                                                oncomplete="PF('InsDialogo').show()"
+                                                update=":InsVerForm"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'MAT'}">
+                                        <p:ajax event="click" 
+                                                listener="#{controladorVerMAT.mostrar(item.tmaNumeroDocumento)}"
+                                                oncomplete="PF('MatDialogo').show()"
+                                                update=":MatVerForm"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'MRG'}">
+                                        <p:ajax event="click" 
+                                                listener="#{controladorVerMRG.mostrarListaActas(item.tmaNumeroDocumento, item.traNumero)}"
+                                                oncomplete="PF('MrgDialogo').show()"
+                                                update=":MrgVerForm"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'PRO'}">
+                                        <p:ajax event="click" 
+                                                listener="#{controladorVerPRO.mostrar(item.tmaNumeroDocumento)}" 
+                                                oncomplete="PF('ProDialogo').show()"
+                                                update=":ProVerForm"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'REP'}">
+                                        <p:ajax event="click" 
+                                                listener="#{controladorVerREP.mostrar(item.tmaNumeroDocumento)}" 
+                                                oncomplete="PF('RepDialogo').show()"
+                                                update=":RepVerForm"/>
+                                    </h:commandLink>
+                                    <h:outputText value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'IMP'}"/>
+                                    <h:outputText value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'INC'}"/>
+                                    <h:outputText value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'FME'}"/>
+                                    <h:outputText value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'FIN'}"/>
+                                    <h:outputText value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'ETG'}"/>
+                                    <h:outputText value="#{item.tmaNumeroDocumento}" rendered="#{item.tmaEstadoProceso eq 'MPH'}"/>
+
+                                </h:form>
+
+                            </p:column>
+
+                            <p:column style="text-align: center" width="30" >
+                                <f:facet name="header">
+                                    <h:outputText value="Fecha" style="align-content:  center" />
+                                </f:facet>
+                                <h:outputText value="#{item.tmaFHR.time}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column style="text-align: left" width="150">
+                                <f:facet name="header">
+                                    <h:outputText value="Observacion" style="text-align: left"/>
+                                </f:facet>
+
+                                <h:outputText value="#{item.tmaObservacion}"/>
+                            </p:column>
+
+
+                        </p:dataTable>
+
+
+                    </div>
+
+                </div>
+
+            </p:panel>
+
+
+
+            <p:dialog id="CajDlg" header="Cajas - Recaudación" widgetVar="CajDialogo" modal="true" resizable="false">
+                <p:scrollPanel style="height:500px">
+                    <h:form id="CajVerForm">
+                        <h:panelGrid columns="1" style="max-width: 850px;max-height: 500px">
+                            <h:panelGrid columns="2" style="width: 100%">
+                                <h:outputText/>
+                                <h:outputText/>
+                                <h:commandLink style="float: right" action="#{controladorVerCAJ.generarRide()}">
+                                    <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                </h:commandLink>
+                            </h:panelGrid>
+                            <h:panelGrid columns="6" cellpadding="10">
+                                <h:outputText value="#Factura:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facNumero}" style="color: #b30000"/>
+                                <h:outputText value="Fecha Ingreso  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facFHR.time}" style="color: #1A237E">
+                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                </h:outputText>
+                                <h:outputText value="Fecha Entrega:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facFechaEntrega.time}" style="color: #1A237E">
+                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                </h:outputText>
+                                <h:outputText value="Cedula/RUC/Pas:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facPerIdentificacion}" style="color: #b30000"/>
+                                <h:outputText value="Nombre:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facPerNombre}"/>
+                                <h:outputText value="Dirección:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facPerDireccion}"/>
+                                <h:outputText value="Telefono:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facPerTelefono}"/>
+                                <h:outputText value="Mail:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facPerEmail}"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2" cellpadding="10">
+                                <h:outputText value="Observación:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facObservacion}"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="4" cellpadding="10">
+                                <h:outputText value="Nro Certificados:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facCertificado}"/>
+                                <h:outputText value="Nro de Derechos:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerCAJ.factura.facNumeroDerecho}"/>
+                            </h:panelGrid>
+                            <p:dataTable id="DetFacLista" value="#{controladorVerCAJ.facturaDetalle}" var="itemDetFac" rowIndexVar="index">
+                                <p:column style="width: 100px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Línea" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{index+1}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Contrato" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemDetFac.fdtTtrDescripcion}"/>
+                                </p:column>
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Tramite" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemDetFac.fdtTraNumero}"/>
+                                </p:column>
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="Valor" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemDetFac.fdtValor}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <p:panelGrid  layout="grid" columns="1" style="border: none;text-align: right;background-position: right">
+                                <p:row style="border: none">
+                                    <h:outputText value="Subtotal   "/>
+                                    <p:inputNumber readonly="true" value="#{controladorVerCAJ.factura.facSubTotal}" style="background-position: left;font-weight:bold" inputStyle="text-align: right"/>
+                                </p:row>
+                                <p:row style="border: none">
+                                    <h:outputText value="Iva 12%   "/>
+                                    <p:inputNumber readonly="true" value="#{controladorVerCAJ.factura.facIva}" style="background-position: left;font-weight:bold" inputStyle="text-align: right"/>
+                                </p:row>
+                                <p:row style="border: none">
+                                    <h:outputText value="Iva 0%   "/>
+                                    <p:inputNumber readonly="true" value="#{controladorVerCAJ.factura.facBaseIva}" style="background-position: left;font-weight:bold" inputStyle="text-align: right"/>
+                                </p:row>
+                                <p:row style="border: none">
+                                    <h:outputText value="Total   "/>
+                                    <p:inputNumber readonly="true" value="#{controladorVerCAJ.factura.facTotal}" style="background-position: left;font-weight:bold" inputStyle="text-align: right"/>
+                                </p:row>
+                            </p:panelGrid>
+                        </h:panelGrid>
+                    </h:form>
+                </p:scrollPanel>
+            </p:dialog>
+            <p:dialog id="RvtDlg" header="Ingreso Trámite" widgetVar="RvtDialogo" modal="true" resizable="false">
+                <h:form id="RvtVerForm">
+                    <h:panelGrid columns="2" style="width: 100%">
+                        <h:panelGrid columns="2" cellpadding="10">
+                            <h:outputText value="N° Trámite:  "  style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerRVT.tramite.traNumero}" style="color: #b30000"/>
+                        </h:panelGrid>
+                        <h:commandLink action="#{controladorVerRVT.generarReporte()}" style="float: right">
+                            <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                        </h:commandLink>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Tipo ingreso"  style="font-weight: bold"/>
+                        <h:selectOneRadio id="TipoIngreso" value="#{controladorVerRVT.tramite.traTipo}" disabled="true">
+                            <f:selectItem itemLabel="Normal" itemValue="N"/>
+                            <f:selectItem itemLabel="Legal" itemValue="L"/>
+                            <f:selectItem itemLabel="Cancelaciones" itemValue="C" />
+                            <f:selectItem itemLabel="Organizaciones" itemValue="O" />                            
+                        </h:selectOneRadio>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid columns="6" cellpadding="10">
+                        <h:outputText value="CI/RUC/Pas:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traPerIdentificacion}" style="color: #b30000"/>
+                        <h:outputText value="N° de Tramites:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traCantidadTramite}"/>
+                        <h:outputText value="Fecha Entrega:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traFechaEntrega.time}" style="color: #1A237E">
+                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                        </h:outputText>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid id="pnlIngreso" columns="6" cellpadding="10">
+                        <h:outputText value="Apellido Paterno:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traPerApellidoPaterno}"/>
+                        <h:outputText value="Apellido Materno:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traPerApellidoMaterno}"/>
+                        <h:outputText value="Nombre:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traPerNombre}"/>
+                        <h:outputText value="Notaria:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traNotaria}"/>
+                        <h:outputText value="Juicio:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traJucio}"/>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            <p:dialog id="DigDlg" header="Trámites Digitalizados" widgetVar="DigDialogo" modal="true" resizable="false">
+                <p:scrollPanel style="height:500px">
+                    <h:form id="DigVerForm">
+                        <h:panelGrid columns="1" style="max-width: 800px">
+                            <p:dataTable id="datos2" value="#{controladorVerDIG.listaRepertorioDigital}" var="item">
+                                <p:column headerText="Tramite">
+                                    <h:outputText value="#{item.repNumero.traNumero.traNumero}" />
+                                </p:column>
+
+                                <p:column  headerText="Nombre Archivo">
+                                    <h:outputText value="#{item.rtdNombreArchivo}" />
+                                </p:column>                           
+
+                                <p:column  headerText="Usuario">
+                                    <h:outputText value="#{item.rtdUser}" />
+                                </p:column>
+                                <p:column  headerText="Fecha">
+                                    <h:outputText  value="#{item.rtdFHR}" >
+                                        <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column  headerText="Estado">
+                                    <h:outputText value="#{item.rtdEstado}" />
+                                </p:column>
+                                <p:column headerText="Abrir">
+                                    <div align="center">
+                                        <h:commandLink title="Abrir PDF en un nuevo tab"  action="#{controladorVerDIG.abrirArchivo()}" >
+                                            <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                            <f:setPropertyActionListener value="#{item}" target="#{controladorVerDIG.repertorioDigitalSeleccionado}"/>
+                                        </h:commandLink>  
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </h:form>
+                </p:scrollPanel>
+            </p:dialog>
+            <p:dialog id="InsDlg" header="Incripción" widgetVar="InsDialogo" modal="true" resizable="false" width="1000px">
+                <p:scrollPanel style="height:500px;">
+                    <h:form id="InsVerForm">
+                        <div class="ui-g">
+                            <div class="ui-g-3">
+                                <p:panel id="pnl1" style="min-height: 520px; max-height: 620px">
+                                    <div class="ui-fluid">
+                                        <h:panelGrid id="pnlBusqueda" columns="2" style="width: 100%" cellspacing="5">
+                                            <h:outputText value="Tramite"/>
+                                            <h:outputText value="#{controladorVerINS.tramite.traNumero}"/>
+                                            <h:outputText value="Repertorio"/>
+                                            <h:outputText value="#{controladorVerINS.acta.repNumero.repNumero}"/>
+                                            <h:outputText value="Libro"/>
+                                            <h:outputText value="#{controladorVerINS.acta.tplId.tplDescripcion}"/>
+                                        </h:panelGrid>
+                                    </div>
+                                    <p:separator  />
+                                    <div class="ui-fluid">
+                                        <h:panelGrid  columns="2" id="pnlProceso" style="width: 100%;" cellspacing="5">
+                                            <h:outputText value="Fecha" />
+                                            <h:outputText value="#{controladorVerINS.acta.repNumero.repFHR}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                            </h:outputText>
+                                            <h:outputText value="Inscripción "/>
+                                            <h:outputText value="#{controladorVerINS.acta.actInscripcion}"/>
+                                            <h:outputText value="Fojas "/>
+                                            <h:outputText value="#{controladorVerINS.acta.actFoja}"/>
+                                            <h:outputText value="Tomo "/>
+                                            <h:outputText value="#{controladorVerINS.acta.actTomo}"/>
+                                            <h:outputText value="Volumen "/>
+                                            <h:outputText value="#{controladorVerINS.acta.actVolumen}"/>
+                                        </h:panelGrid>
+                                    </div>
+                                </p:panel>
+                            </div>
+
+                            <div class="ui-g-9">
+                                <p:panel id="pnlActa" style="min-height: 520px; max-height: 620px;text-align: justify;">
+                                    <p:scrollPanel mode="native" style="height:500px;">
+                                        <h:outputText value="#{controladorVerINS.acta.actActa}" escape="false"/>
+                                    </p:scrollPanel>
+                                </p:panel>
+                            </div>
+                        </div>
+                    </h:form>
+                </p:scrollPanel>
+            </p:dialog>
+            <p:dialog id="MatDlg" header="Acciones" widgetVar="MatDialogo" modal="true" resizable="false" style="max-width: 900px;height: auto; max-height: 550px">
+                <p:scrollPanel style="max-height:500px">
+                    <h:form id="MatVerForm">
+                        <div class="ui-g">
+                            <div class="ui-g-6">
+                                <p:panel header="Datos De Identificación" style="height: 100%">
+                                    <h:panelGrid columns="2" cellspacing="10" style="width: 100%">
+                                        <h:outputText value="Matricula"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.prdMatricula}"/>
+                                        <h:outputText value="Catastro"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.prdCatastro}"/>
+                                        <h:outputText value="Predio"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.prdPredio}"/>
+                                        <h:outputText value="Espacial"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.prdEspacial}"/>
+                                        <h:outputText value="Parroquia Historica"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.prdTdtParNombreH}"/>
+                                        <h:outputText value="Parroquia Actual"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.prdTdtParNombre}"/>
+                                        <h:outputText value="Tipo"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.tpdId.tpdNombre}"/>
+                                        <h:outputText value="Clase"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.prdClasePropiedad}"/>
+                                        <h:outputText value="Grupo"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.tclId.tclNombre}"/>
+                                        <h:outputText value="Lindero"/>
+                                        <h:outputText />
+                                        <p:dataTable value="#{controladorVerMAT.listaLindero}" var="l">
+                                            <p:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="Nombre" style="float: left"/>
+                                                </f:facet>
+                                                <h:outputText value="#{l.ldrNombre}"/>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </div>
+
+                            <div class="ui-g-6">
+                                <p:panel header="Datos Descriptivos" style="height: 100%">
+                                    <h:panelGrid columns="2" cellspacing="10">
+                                        <p:outputLabel value="Superficie"/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.prdSuperficie}"/>
+                                        <h:outputText/>
+                                        <h:outputText value="#{controladorVerMAT.propiedad.umdId.umdNombre}"/>
+                                        <h:outputText/>
+                                        <p:panel>
+                                            <h:outputText value="#{controladorVerMAT.propiedad.prdDescripcion1}"/>
+                                        </p:panel>
+                                        <h:outputText value="Descripción"/>
+                                        <p:panel>
+                                            <h:outputText value="#{controladorVerMAT.propiedad.prdDescripcion2}"/>
+                                        </p:panel>
+                                        <h:outputText value="Estado"/>
+                                        <h:outputText value="Activo" rendered="#{controladorVerMAT.propiedad.prdEstadoPropiedad eq 'AC'}"/>
+                                        <h:outputText value="Anulado" rendered="#{controladorVerMAT.propiedad.prdEstadoPropiedad eq 'AN'}"/>
+                                        <h:outputText value="Prohibido" rendered="#{controladorVerMAT.propiedad.prdEstadoPropiedad eq 'PR'}"/>
+                                        <h:outputText value="Prohibición Levantada" rendered="#{controladorVerMAT.propiedad.prdEstadoPropiedad eq 'PL'}"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </div>
+                        </div>
+                    </h:form>
+                </p:scrollPanel>
+            </p:dialog>
+            <p:dialog id="MrgDlg" header="Marginación" widgetVar="MrgDialogo" modal="true" resizable="false">
+                <p:scrollPanel style="height:500px">
+                    <h:form id="MrgVerForm">
+                        <h:panelGroup rendered="#{empty controladorVerMRG.acta}">
+                            <h:panelGrid columns="1" style="max-width: 900px">
+                                <p:dataTable id="datos2" value="#{controladorVerMRG.listaMarginacion}" var="item">
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Numero Acta" style="float: left"/>
+                                        </f:facet>
+                                        <h:commandLink value="#{item.actNumero.actNumero}">
+                                            <p:ajax event="click" 
+                                                    listener="#{controladorVerMRG.mostrarActa(item.actNumero.actNumero, item.mrgAlt2)}"
+                                                    update=":MrgVerForm"/>
+                                        </h:commandLink>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Tipo Libro" style="float: left"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.actNumero.tplId.tplDescripcion}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha Registro" style="float: left"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.mrgFHR}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Tipo Marginacion" style="float: left"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.tmcId.tmcNombre}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{!empty controladorVerMRG.acta}">
+                            <div class="ui-g">
+                                <div class="ui-g-3">
+                                    <p:panel id="pnl1" style="min-height: 520px; max-height: 620px">
+                                        <div class="ui-fluid">
+                                            <h:panelGrid id="pnlBusqueda" columns="2" style="width: 100%" cellspacing="5">
+                                                <h:outputText value="Tramite"/>
+                                                <h:outputText value="#{controladorVerMRG.tramite.traNumero}"/>
+                                                <h:outputText value="Repertorio"/>
+                                                <h:outputText value="#{controladorVerMRG.acta.repNumero.repNumero}"/>
+                                                <h:outputText value="Libro"/>
+                                                <h:outputText value="#{controladorVerMRG.acta.tplId.tplDescripcion}"/>
+                                            </h:panelGrid>
+                                        </div>
+                                        <p:separator  />
+                                        <div class="ui-fluid">
+                                            <h:panelGrid  columns="2" id="pnlProceso" style="width: 100%;" cellspacing="5">
+                                                <h:outputText value="Fecha" />
+                                                <h:outputText value="#{controladorVerMRG.acta.repNumero.repFHR}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                                </h:outputText>
+                                                <h:outputText value="Inscripción "/>
+                                                <h:outputText value="#{controladorVerMRG.acta.actInscripcion}"/>
+                                                <h:outputText value="Fojas "/>
+                                                <h:outputText value="#{controladorVerMRG.acta.actFoja}"/>
+                                                <h:outputText value="Tomo "/>
+                                                <h:outputText value="#{controladorVerMRG.acta.actTomo}"/>
+                                                <h:outputText value="Volumen "/>
+                                                <h:outputText value="#{controladorVerMRG.acta.actVolumen}"/>
+                                            </h:panelGrid>
+                                        </div>
+                                    </p:panel>
+                                </div>
+
+                                <div class="ui-g-6">
+                                    <p:panel id="pnlActa" style="min-height: 520px; max-height: 620px;text-align: justify">
+                                        <p:scrollPanel mode="native" style="height:500px;">
+                                            <h:outputText value="#{controladorVerMRG.acta.actActa}" escape="false"/>
+                                        </p:scrollPanel>
+                                    </p:panel>
+                                </div>
+
+                                <div class="ui-g-3" >
+                                    <p:panel id="pnlMarginacionP" style="min-height: 100%;">
+                                        <p:scrollPanel mode="native" style="height:100%;">
+                                            <p:dataGrid  value="#{controladorVerMRG.listaMarginacion}" var="item" columns="1"
+                                                         layout="grid">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Lista Marginaciones"/>
+                                                </f:facet>
+                                                <h:panelGrid columns="2">
+                                                    <h:outputText value="Fecha: "/>
+                                                    <h:outputText value="#{item.mrgFHR}">
+                                                        <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                                    </h:outputText>
+                                                    <h:outputText value="Responsable: "/>
+
+                                                    <h:outputText value="#{item.mrgUser}"/>
+                                                    <h:outputText value="Alterno: "/>
+
+                                                    <h:outputText value="#{item.mrgAlt1}"/>
+                                                    <h:outputText value="Repertorio: "/>
+
+                                                    <h:outputText value="#{item.mrgAlt2}"/>
+                                                    <h:outputText value="Fecha: "/>
+                                                    <h:outputText value="#{item.mrgFch}">
+                                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                    </h:outputText>
+                                                </h:panelGrid>
+                                                <hr/>
+                                            </p:dataGrid>
+                                        </p:scrollPanel>
+                                    </p:panel>
+                                </div>
+                            </div>
+                        </h:panelGroup>
+                    </h:form>
+                </p:scrollPanel>
+            </p:dialog>
+            <p:dialog id="ProDlg" header="Trámite - Proforma" widgetVar="ProDialogo" modal="true" resizable="false">
+                <p:scrollPanel style="height:500px">
+                    <h:form id="ProVerForm">
+                        <h:panelGrid columns="1" style="max-width: 800px">
+                            <h:panelGrid columns="2" style="width: 100%">
+                                <h:panelGrid columns="2" cellpadding="10">
+                                    <h:outputText value="N° Trámite:  "  style="font-weight: bold"/>
+                                    <h:outputText value="#{controladorVerPRO.tramite.traNumero}" style="color: #b30000"/>
+                                </h:panelGrid>
+                                <h:commandLink action="#{controladorVerPRO.generarReporte()}" style="float: right">
+                                    <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                </h:commandLink>
+                            </h:panelGrid>
+                            <p:separator/>
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Tipo ingreso"  style="font-weight: bold"/>
+                                <h:selectOneRadio id="TipoIngreso" value="#{controladorVerPRO.tramite.traTipo}" disabled="true">
+                                    <f:selectItem itemLabel="Normal" itemValue="N"/>
+                                    <f:selectItem itemLabel="Legal" itemValue="L"/>
+                                    <f:selectItem itemLabel="Cancelaciones" itemValue="C" />
+                                    <f:selectItem itemLabel="Organizaciones" itemValue="O" />                            
+                                </h:selectOneRadio>
+                            </h:panelGrid>
+                            <p:separator/>
+                            <h:panelGrid columns="6" cellpadding="10">
+                                <h:outputText value="CI/RUC/Pas:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traPerIdentificacion}" style="color: #b30000"/>
+                                <h:outputText value="N° de Tramites:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traCantidadTramite}"/>
+                                <h:outputText value="Fecha Entrega:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traFechaEntrega.time}" style="color: #1A237E">
+                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                </h:outputText>
+                            </h:panelGrid>
+                            <p:separator/>
+                            <h:panelGrid id="pnlIngreso" columns="6" cellpadding="10">
+                                <h:outputText value="Apellido Paterno:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traPerApellidoPaterno}"/>
+                                <h:outputText value="Apellido Materno:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traPerApellidoMaterno}"/>
+                                <h:outputText value="Nombre:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traPerNombre}"/>
+                                <h:outputText value="Notaria:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traNotaria}"/>
+                                <h:outputText value="Juicio:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traJucio}"/>
+                            </h:panelGrid>
+                            <p:separator/>
+                            <h:outputText value="Comparecientes" style="font-weight: bold; font-size: 14px;"/>
+                            <p:dataTable id="ComparecientesLista" value="#{controladorVerPRO.tramiteDetalle}" var="itemCom">
+                                <p:column style="width: 100px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="CI/RUC/PAS" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCom.tdtPerIdentificacion}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="NOMBRES" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCom.tdtPerApellidoPaterno} #{itemCom.tdtPerApellidoMaterno} #{itemCom.tdtPerNombre}"/>
+                                </p:column>
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="CONTRATO" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCom.tdtTtrDescripcion}"/>
+                                </p:column>
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="COMPARECIENTES" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCom.tdtTpcDescripcion}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <p:separator/>
+                            <h:outputText value="Cuantía" style="font-weight: bold; font-size: 14px;"/>
+                            <p:dataTable id="CuantiaLista" value="#{controladorVerPRO.tramiteValor}" var="itemCua">
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Contrato" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.ttrId.ttrDescripcion}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Parroquia" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.trvParNombre}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N° Predio" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.traNumPredio}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N° Catastro" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.trvNumCatastro}" style="float:left"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Valor"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.trvValor}" style="float:left"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </h:form>
+                </p:scrollPanel>
+            </p:dialog>
+            <p:dialog id="RepDlg" header="Repertorio - Electrónico" widgetVar="RepDialogo" modal="true" resizable="false">
+                <p:scrollPanel style="height:500px">
+                    <h:form id="RepVerForm">
+                        <h:panelGrid columns="1" style="max-width: 800px">
+                            <p:dataTable id="repLista" value="#{controladorVerREP.listaTramiteDetalle}" var="item">
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="REPERTORIO" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.tdtNumeroRepertorio}" />
+                                </p:column>
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="CONTRATO" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.tdtTtrDescripcion}" />
+                                </p:column>
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="TIPO" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.tdtTpcDescripcion}" />
+                                </p:column>
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="APELLIDOS Y NOMBRES" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.tdtPerApellidoPaterno} #{item.tdtPerApellidoMaterno} #{item.tdtPerNombre}" />
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </h:form>
+                </p:scrollPanel>
+            </p:dialog>
+
+
+        </ui:define>
+    </ui:composition>
+</html>

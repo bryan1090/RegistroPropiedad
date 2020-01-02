@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition>
+            <h:form>
+                <p:panel style="text-align-last: center">
+                    <div class="ui-g">
+                        <div class="ui-g-4" style="text-align: center">
+                            <p:graphicImage value="/resources/imagenes/logo_Registro_de_la_propiedad_Rumiñahui.png"/>
+                        </div>
+
+                        <div class="ui-g-8 ui-g-nopad">
+                            <p>
+                                <center><strong>FORMULARIO ÚNICO PARA SOLICITUD</strong></center>
+                                <center><strong>DE CERTIFICADOS MERCANTILES</strong></center>
+                                <center><strong>www.registrodelapropiedadruminahui.gob.ec</strong></center>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <p:fieldset legend="TIPO DE CERTIFICADO QUE REQUIERE" style="margin-bottom:20px">
+                        <p:selectManyCheckbox layout="responsive" columns="2" style="text-align-last: left">
+                            <f:selectItem itemLabel="CERTIFICADO DE GRAVÁMENES DE VEHÍCULOS Y/O MAQUINARIA" itemValue="CERTIFICADO DE GRAVÁMENES DE VEHÍCULOS Y/O MAQUINARIA" />
+                            <f:selectItem itemLabel="CERTIFICADO DE NOMBRAMIENTOS" itemValue="CERTIFICADO DE NOMBRAMIENTOS" />
+                            <f:selectItem itemLabel="CERTIFICADO DE CONSTITUCIONES DE COMPAÑIAS Y/O SOCIEDADES" itemValue="CERTIFICADO DE CONSTITUCIONES DE COMPAÑIAS Y/O SOCIEDADES"/>
+                            <f:selectItem itemLabel="CERTIFICADOS PRENDA INSDUSTRIAL" itemValue="CERTIFICADOS PRENDA INSDUSTRIAL" />
+                            <f:selectItem itemLabel="CERTIFICADO DE COMPRAVENTA CON RESERVA DE DOMINIO" itemValue="CERTIFICADO DE COMPRAVENTA CON RESERVA DE DOMINIO"/>
+                            <f:selectItem itemLabel="CERTIFICADOS DE MATRICULAS DE COMERCIO" itemValue="CERTIFICADOS DE MATRICULAS DE COMERCIO"/>
+                            <f:selectItem itemLabel="CERTIFICADO DE BÚSQUEDA" itemValue="CERTIFICADO DE BÚSQUEDA"/>
+                        </p:selectManyCheckbox>
+                    </p:fieldset>
+
+                    <p:fieldset legend="JUSTIFICACIÓN DE LA SOLICITUD" style="margin-bottom:20px">
+                        <p:panelGrid columns="6" layout="grid" columnClasses="ui-grid-col-12,ui-grid-col-4" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left" >
+                            <p:outputLabel value="De conformidad con lo dispuesto por el quinto inciso del artículo 6 de la ley del Sistema Nacional de Regitro de Datos Públicos,
+                                           señalo que formulo mi solicitud para el siguiente objeto:"/> <p:inputText value="" />
+                        </p:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset legend="PARA CERTIFICADO DE GRAVÁMENES DE VEHÍCULOS Y/O MAQUINARIA, COMPRAVENTA CON RESERVA
+                                DE DOMINIO, PRENDA INDUSTRIAL" style="margin-bottom:20px">
+                        <p:panelGrid columns="6" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-3,ui-grid-col-5,ui-grid-col-4,ui-grid-col-5" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left" >
+                            <p:outputLabel value="MARCA:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="CLASE:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="FORMA DE ADQUISICIÓN:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="MODELO:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="TIPO:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="A QUIÉN ADQUIRIÓ:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="CHASIS No:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="COLOR:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value=""/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="PLACA:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="MOTOR No:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="DE PROPIEDAD:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="AÑO:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="SERIE No:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="ACREEDOR PRENDARIO:"/>
+                            <p:inputText value=""/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-6,ui-grid-col-6" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:selectManyCheckbox layout="responsive" columns="1">
+                                <f:selectItem itemLabel="COPIA A COLOR MATRICULA O FACTURA DEL VEHÍCULO O MAQUINARIA" itemValue="COPIA A COLOR MATRICULA O FACTURA DEL VEHÍCULO O MAQUINARIA" />                                    
+                            </p:selectManyCheckbox>
+                            <p:inputText value=""/>
+                        </p:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset legend="PARA CERTIFICADO DE CONSTITUCIÓN DE COMPAÑIAS Y/O SOCIEDADES, NOMBRAMIENTOS,
+                                MATRICULAS DE COMERCIO, REGISTRO DE DIRECTIVAS" style="margin-bottom:20px">
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-8" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="NOMBRE(S) RAZÓN SOCIAL O DENOMINACIÓN:"/>
+                            <p:inputText value=""/> 
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-12" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="NACIONALIDAD:"/>
+                            <p:inputText value=""/> 
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-12" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="DOMICILIO:"/>
+                            <p:inputText value=""/> 
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-6,ui-grid-col-10" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="NOMBRAMIENTO DE REPRESENTANTE LEGAL, PRESIDENTE O DIRECTORIO:"/>
+                            <p:inputText value=""/> 
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-6,ui-grid-col-9" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="RESOLUCIÓN DE LA SUPERINTENDENCIA DE COMPAÑIAS 7/O JUEZ DE LO CIVIL:"/>
+                            <p:inputText value=""/> 
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-12" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="FECHA DE OTORGAMIENTO Y NOTARIA:"/>
+                            <p:calendar value=""/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-12" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="FECHA DE INSCRIPCIÓN:"/>
+                            <p:calendar value=""/>
+                        </p:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset legend="PARA CERTIFICADOS DE BÚSQUEDA" style="margin-bottom:20px">
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-12" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="NOMBRE(S) RAZÓN SOCIAL O DENOMINACIÓN:"/>
+                            <p:inputText value=""/> 
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-8,ui-grid-col-8" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="FECHA DE INSCRIPCIÓN DE LA ESCRITURA/NOMBRAMIENTO/PROHIBICIÓN JUDICIAL:"/>
+                            <p:calendar value=""/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-12,ui-grid-col-3,ui-grid-col-12" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="BUSCAR DESDE:"/>
+                            <p:inputText value=""/> 
+                            <p:outputLabel value="HASTA:"/>
+                            <p:inputText value=""/> 
+                        </p:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset legend="TIPO DE ACTO REGISTRAL" style="margin-bottom:20px">
+                        <p:selectManyCheckbox layout="responsive" columns="3" style="text-align-last: left">
+                            <f:selectItem itemLabel="CONSTITUCIÓN DE COMPAÑIAS Y/O SOCIEDADES:" itemValue="CONSTITUCIÓN DE COMPAÑIAS Y/O SOCIEDADES:" />
+                            <f:selectItem itemLabel="MATRICULAS DE COMERCIO:" itemValue="MATRICULAS DE COMERCIO:" />
+                            <f:selectItem itemLabel="DIRECTIVAS:" itemValue="DIRECTIVAS:"/>
+                            <f:selectItem itemLabel="NOMBRAMIENTOS:" itemValue="NOMBRAMIENTOS:" />
+                            <f:selectItem itemLabel="PRENDA INDUSTRIAL:" itemValue="PRENDA INDUSTRIAL:"/>
+                            <f:selectItem itemLabel="PROHIBICIONES JUDICIALES:" itemValue="PROHIBICIONES JUDICIALES:"/>
+                            <f:selectItem itemLabel="COMPRAVENTA CON RESERVA DE DOMINIO" itemValue="COMPRAVENTA CON RESERVA DE DOMINIO"/>
+                            <f:selectItem itemLabel="VEHÍCULOS O MAQUINARIA" itemValue="VEHÍCULOS O MAQUINARIA"/>
+                        </p:selectManyCheckbox>
+                    </p:fieldset>
+
+                    <p:fieldset legend="DATOS DEL SOLICITANTE" style="margin-bottom:20px">
+                        <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-7,ui-grid-col-2,ui-grid-col-6" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="NOMBRE DEL SOLICITANTE:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="C.C./RUC:"/>
+                            <p:inputText value=""/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-3" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="TELÉFONO:"/>
+                            <p:inputText value=""/>
+                            <p:selectOneRadio value="" columns="3"><font></font>
+                                <f:selectItem itemLabel="MOVISTAR" itemValue="MOVISTAR" /><font></font>
+                                <f:selectItem itemLabel="CLARO" itemValue="CLARO" /><font></font>
+                                <f:selectItem itemLabel="CNT" itemValue="CNT" /><font></font>
+                            </p:selectOneRadio>
+                        </p:panelGrid>
+                        <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-5,ui-grid-col-2,ui-grid-col-6" 
+                                     styleClass="ui-panelgrid-blank ui-fluid" style="text-align-last: left">
+                            <p:outputLabel value="CORREO ELECTRÓNICO:"/>
+                            <p:inputText value=""/>
+                            <p:outputLabel value="FIRMA:"/>___________________________________________________
+                        </p:panelGrid>
+                    </p:fieldset>
+                    NOTA: Los datos asignados errónea o dolosamente EXIMEN DE RESPONSABILIDAD AL CERTIFICANTE - Validez del certificado 30 días
+                    ,apartir de la fecha de ingreso - El pago se realizará por cada acto registral.
+                </p:panel>
+            </h:form>
+
+        </ui:composition>
+
+    </body>
+</html>

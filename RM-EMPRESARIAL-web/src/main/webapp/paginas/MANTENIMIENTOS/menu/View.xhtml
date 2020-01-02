@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="MenuViewDlg" widgetVar="MenuViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewMenuTitle}">
+            <h:form id="MenuViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{menuController.selected != null}">
+                        <h:outputText value="#{bundle.ViewMenuLabel_menId}"/>
+                        <h:outputText value="#{menuController.selected.menId}" title="#{bundle.ViewMenuTitle_menId}"/>
+                        <h:outputText value="#{bundle.ViewMenuLabel_menNombre}"/>
+                        <h:outputText value="#{menuController.selected.menNombre}" title="#{bundle.ViewMenuTitle_menNombre}"/>
+                        <h:outputText value="#{bundle.ViewMenuLabel_menLink}"/>
+                        <h:outputText value="#{menuController.selected.menLink}" title="#{bundle.ViewMenuTitle_menLink}"/>
+                        <h:outputText value="#{bundle.ViewMenuLabel_menPadre}"/>
+                        <h:outputText value="#{menuController.selected.menPadre.menNombre}" title="#{bundle.ViewMenuTitle_menPadre}"/>
+                        <h:outputText value="#{bundle.ViewMenuLabel_menIcono}"/>
+                        <h:outputText value="#{menuController.selected.menIcono}" title="#{bundle.ViewMenuTitle_menIcono}"/>
+                        <h:outputText value="#{bundle.ViewMenuLabel_menEstado}"/>
+                        <h:outputText value="#{menuController.selected.menEstado}" title="#{bundle.ViewMenuTitle_menEstado}"/>
+                        <h:outputText value="#{bundle.ViewMenuLabel_menUser}"/>
+                        <h:outputText value="#{menuController.selected.menUser}" title="#{bundle.ViewMenuTitle_menUser}"/>
+                        <h:outputText value="#{bundle.ViewMenuLabel_menFHR}"/>
+                        <h:outputText value="#{menuController.selected.menFHR}" title="#{bundle.ViewMenuTitle_menFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{menuController.clear()}" value="#{bundle.Close}" onclick="MenuViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

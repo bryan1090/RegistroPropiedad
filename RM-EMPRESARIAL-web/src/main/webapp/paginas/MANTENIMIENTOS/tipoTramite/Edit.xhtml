@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoTramiteEditDlg" widgetVar="TipoTramiteEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditTipoTramiteTitle}">
+            <h:form id="TipoTramiteEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTipoTramite.selected != null}">
+                        <p:outputLabel value="#{bundle.EditTipoTramiteLabel_ttrDescripcion}" for="ttrDescripcion" />
+                        <p:inputText id="ttrDescripcion" value="#{controladorTipoTramite.selected.ttrDescripcion}" style="text-transform: uppercase" title="#{bundle.EditTipoTramiteTitle_ttrDescripcion}" required="true" requiredMessage="#{bundle.EditTipoTramiteRequiredMessage_ttrDescripcion}"/>
+                        <p:outputLabel value="#{bundle.EditTipoTramiteLabel_ttrValor}" for="ttrValor" />
+                        <p:selectOneMenu id="ttrValor" value="#{controladorTipoTramite.selected.ttrValor}" style="text-transform: uppercase" title="#{bundle.EditTipoTramiteTitle_ttrValor}" required="true" requiredMessage="El campo Código cuantía, es requerido.">
+                            <f:selectItem itemLabel="SELECCIONAR UNO..." itemValue="" />
+                            <f:selectItem itemLabel="VALOR DIGITADO EN PANTALLA" itemValue="0" />
+                            <f:selectItem itemLabel="CAMPO VALOR FIJO" itemValue="1" />
+                            <f:selectItem itemLabel="TABLA CUANTÍA" itemValue="2" />
+                            <f:selectItem itemLabel="VALOR DIGITADO EN PANTALLA MULTIPLICADO POR CAMPO CANTIDAD DE PANTALLA" itemValue="3" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditTipoTramiteLabel_ttrValorFijo}" for="ttrValorFijo" />
+                        <p:inputText id="ttrValorFijo" value="#{controladorTipoTramite.selected.ttrValorFijo}" style="text-transform: uppercase" title="#{bundle.EditTipoTramiteTitle_ttrValorFijo}" />                        
+                        <p:outputLabel value="Peso" for="ttrPeso" />
+                        <p:selectOneMenu id="ttrPeso" value="#{controladorTipoTramite.selected.ttrPeso}" title="Peso" required="true" requiredMessage="El campo Peso, es requerido.">                            
+                            <f:selectItems value="#{controladorTipoTramite.listaPeso}" var="peso"
+                                           itemLabel="#{peso}" itemValue="#{peso}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditTipoTramiteLabel_tplId}" for="tplId" />
+                        <p:selectOneMenu id="tplId" value="#{controladorTipoTramite.selected.tplId}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{controladorTipoLibro.itemsAvailableSelectOne}"
+                                           var="tplIdItem"
+                                           itemValue="#{tplIdItem}" itemLabel="#{tplIdItem.tplDescripcion}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditTipoTramiteLabel_ttrCodigo}" for="ttrCodigo" />
+                        <p:selectOneMenu id="ttrCodigo" value="#{controladorTipoTramite.comportamiento}" title="Clase" required="true" requiredMessage="El campo Comportamiento, es requerido.">
+                            <f:selectItem itemLabel="Seleccionar uno..." itemValue="" />
+                            <f:selectItems value="#{controladorTipoTramite.listaComportamiento}" var="comp"
+                                           itemLabel="#{comp}" itemValue="#{comp}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Clase:" for="ttrClase" />
+                        <p:selectOneMenu id="ttrClase" value="#{controladorTipoTramite.selected.ttrClase}" title="Clase" required="true" requiredMessage="El campo Clase, es requerido.">
+                            <f:selectItem itemLabel="Seleccionar uno..." itemValue="" />
+                            <f:selectItem itemLabel="E" itemValue="E" />
+                            <f:selectItem itemLabel="J" itemValue="J" />
+                        </p:selectOneMenu>
+                       
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorTipoTramite.update}" value="#{bundle.Save}" update="display,:TipoTramiteListForm:datalist,:growl" oncomplete="handleSubmit(args, 'TipoTramiteEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTipoTramite.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="TipoTramiteEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

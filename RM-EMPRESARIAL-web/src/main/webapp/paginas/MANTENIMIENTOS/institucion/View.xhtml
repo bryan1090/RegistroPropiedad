@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="InstitucionViewDlg" widgetVar="InstitucionViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewInstitucionTitle}" position="center center" width="800">
+            <h:form id="InstitucionViewForm">
+                <h:panelGroup id="display">
+                    <h:panelGrid columns="4" rendered="#{institucionController.selected != null}" style="width: 100%">
+                       
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insRuc}"/>
+                        <h:outputText value="#{institucionController.selected.insRuc}" title="#{bundle.ViewInstitucionTitle_insRuc}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insNombre}"/>
+                        <h:outputText value="#{institucionController.selected.insNombre}" title="#{bundle.ViewInstitucionTitle_insNombre}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insTelefono}"/>
+                        <h:outputText value="#{institucionController.selected.insTelefono}" title="#{bundle.ViewInstitucionTitle_insTelefono}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insCelular}"/>
+                        <h:outputText value="#{institucionController.selected.insCelular}" title="#{bundle.ViewInstitucionTitle_insCelular}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insLogo}"/>
+                        <h:outputText value="#{institucionController.selected.insLogo}" title="#{bundle.ViewInstitucionTitle_insLogo}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insIva}"/>
+                        <h:outputText value="#{institucionController.selected.insIva}" title="#{bundle.ViewInstitucionTitle_insIva}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insAmbiente}"/>
+                        <h:outputText value="#{institucionController.selected.insAmbiente}" title="#{bundle.ViewInstitucionTitle_insAmbiente}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insEstablecimiento}"/>
+                        <h:outputText value="#{institucionController.selected.insEstablecimiento}" title="#{bundle.ViewInstitucionTitle_insEstablecimiento}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insDireccion}"/>
+                        <h:outputText value="#{institucionController.selected.insDireccion}" title="#{bundle.ViewInstitucionTitle_insDireccion}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insRazonSocial}"/>
+                        <h:outputText value="#{institucionController.selected.insRazonSocial}" title="#{bundle.ViewInstitucionTitle_insRazonSocial}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insDescripcion}"/>
+                        <h:outputText value="#{institucionController.selected.insDescripcion}" title="#{bundle.ViewInstitucionTitle_insDescripcion}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insDocumentoDescripcion}"/>
+                        <h:outputText value="#{institucionController.selected.insDocumentoDescripcion}" title="#{bundle.ViewInstitucionTitle_insDocumentoDescripcion}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insCanId}"/>
+                        <h:outputText value="#{institucionController.selected.insCanId}" title="#{bundle.ViewInstitucionTitle_insCanId}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insCodigoRegistro}"/>
+                        <h:outputText value="#{institucionController.selected.insCodigoRegistro}" title="#{bundle.ViewInstitucionTitle_insCodigoRegistro}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insEstado}"/>
+                        <h:outputText value="#{institucionController.selected.insEstado}" title="#{bundle.ViewInstitucionTitle_insEstado}"/>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insFHR}"/>
+                        <h:outputText value="#{institucionController.selected.insFHR}" title="#{bundle.ViewInstitucionTitle_insFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewInstitucionLabel_insUser}"/>
+                        <h:outputText value="#{institucionController.selected.insUser}" title="#{bundle.ViewInstitucionTitle_insUser}"/>
+                        <!--<h:outputText value="#{bundle.ViewInstitucionLabel_insLinkLogo}"/>
+                        <h:outputText value="#{institucionController.selected.insLinkLogo}" title="#{bundle.ViewInstitucionTitle_insLinkLogo}"/>-->
+                    </h:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Close}" onclick="InstitucionViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

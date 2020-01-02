@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition>
+
+            <h:form id="form1">
+                <div class="ui-fluid">
+                    <p:panel>
+                        <h1><strong>RPC - 02</strong></h1>
+                        <br/>
+                        <div class="ui-g">
+                            <div class="ui-g-10 ui-g-nopad">
+                                <div class="ui-g-12">
+                                    <p:panel><strong>TIPO DE SOLICITUD</strong><p:inputText value="" style="border: none" size="5"  />Usted requiere un certificado de:</p:panel>
+                                </div>
+                                <div class="ui-g-12">
+                                    <p:panel>
+                                        <p:selectOneRadio id="certificado" value="" layout="responsive" columns="2">
+                                            <f:selectItem itemLabel="ESTATUTO PERSONAL" itemValue="ESTATUTO PERSONAL"/>
+                                            <f:selectItem itemLabel="BUSQUEDA DE INSCRIPCIÓN" itemValue="BUSQUEDA DE INSCRIPCIÓN"/>
+                                            <f:selectItem itemLabel="BIENES RAÍCES" itemValue="BIENES RAÍCES"/>
+                                            <f:selectItem itemLabel="PROPIEDAD DEL INMUEBLE" itemValue="PROPIEDAD DEL INMUEBLE"/>
+                                        </p:selectOneRadio>
+                                    </p:panel>
+                                </div>
+                            </div>
+                            <div class="ui-g-2" style="text-align: center">
+                                <p:graphicImage value="/resources/imagenes/Logotipo_registro_de_la_propiedad.png"/>
+                            </div>
+                        </div>
+                        <p>
+                            <strong>NOTA:</strong>LOS DATOS INGRESADOS ERRÓNEOS FALSOS O QUE PUEDAN INDUCIR A EQUIVOCACIÓN QUE SE CONSIGNEN EN ESTA SOLICITUD 
+                            EXIMEN DE RESPONSABILIDAD AL CERTIFICANTE ESTA ADMINISTRACIÓN NO SE RESPONSABILIZA DEL USO DOLOSO O
+                            FRAUDULENTO QUE SE PUEDA REALIZAR CON ESTE CERTIFICADO.
+                        </p>
+
+
+                        <p:panel header="SECCIÓN A | PARA: ESTATUTO PERSONAL - PROPIEDAD DEL INMUEBLE - BIENES RAÍCES" style="text-align-last: left">
+
+                            <p:dataTable id="tblPropietarios1" value="#{controladorFormularioWebDetalle.listaParaMostrar}" var="lista1" style="text-align-last: center">
+                                <p:column headerText="NOMBRES">
+                                    <p:inputText value="#{lista.fwdValorC01}" readonly="true"/>
+                                </p:column>
+                                <p:column headerText="APELLIDO PATERNO" >
+                                    <p:inputText value="#{lista.fwdValorC02}" readonly="true"/>
+                                </p:column>
+                                <p:column headerText="APELLIDO MATERNO" >
+                                    <p:inputText value="#{lista.fwdValorC03}" readonly="true"/>
+                                </p:column>
+                                <p:column headerText="C.C./RUC" >
+                                    <p:inputText value="#{lista.fwdValorC04}" readonly="true"/>
+                                </p:column>
+
+                                <f:facet name="header">
+                                    <div align="right" style="text-align-last: right">
+                                        <p:commandButton id="btnAñadirFila" value="" icon="ui-icon-plus" class="green-btn" 
+                                                         onclick="PF('dialogoAñadirPropietario1').show()" update="formAñadirPropietario1" immediate="true" style="width: 30px;height: 20px;text-align-last: center" />
+                                    </div>
+                                </f:facet>
+                            </p:dataTable>
+
+
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2, ui-grid-col-12"  styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="REFERENTE AL INMUEBLE:"/>
+                                <p:inputText value=""/>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-3,ui-grid-col-8 " styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="PARROQUIA:"/>
+                                <p:inputText value=""/>
+                                <p:outputLabel value="FECHA DE INSCRIPCIÓN:"/>
+                                <p:calendar pattern="dd/MM/yyyy"  id="txtFechaInscripcionRPC02" value=""/>
+                                <p:outputLabel value="N° CERTIFICADOS:"/>
+                                <p:inputText value=""/>
+                                <p:outputLabel value="N° DERECHOS:"/>
+                                <p:calendar pattern="dd/MM/yyyy"   value=""/>
+                            </p:panelGrid> 
+                        </p:panel>
+
+                        <p:panel header="SECCIÓN B | PARA: CERTIFICADO DE BÚSQUEDA"  style="text-align-last: left">
+
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-10,ui-grid-col-4" 
+                                         styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="" />
+                                <p:outputLabel value="TIPO DE CONTRATO QUE BUSCA" style="font-weight: bold" />
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:panel style="text-align-last: left">
+                                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-9,ui-grid-col-5" styleClass="ui-panelgrid-blank ui-fluid">
+                                            <p:outputLabel value="VENDEDOR O ACREEDOR U OTRA CALIDAD DE CONTRATANTE"/>
+                                            <p:inputText value=""/>
+                                            <p:outputLabel value="COMPRADOR O DEUDOR U OTRA CALIDAD DE CONTRATANTE"/>
+                                            <p:inputText value=""/>
+                                        </p:panelGrid>
+                                    </p:panel>
+                                    <p:panel style="text-align-last: left">
+                                        <p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-7" styleClass="ui-panelgrid-blank ui-fluid">
+                                            <p:outputLabel value="PARROQUÍA:"/>
+                                            <p:inputText value=""/>
+                                            <p:outputLabel value="PRECIO COMERCIAL O CUANTÍA EN CONTRATOS INSCRITOS ANTES DE 1970"/>
+                                        </p:panelGrid>
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                            <p:outputLabel value="FECHA APROXIMADA EN LA QUE SE INSCRIBIÓ EL CONTRATO:"/>
+                                            <p:calendar pattern="dd/MM/yyyy"  value=""/>
+                                            <p:outputLabel value="BUSCAR DESDE:"/>
+                                            <p:inputText value=""/>
+                                            <p:outputLabel value="NOMBRE DE CONJUNTO O EDIFICIO:"/>
+                                            <p:inputText value=""/>
+                                        </p:panelGrid>
+                                    </p:panel>
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:panel style="text-align-last: left">
+                                        <p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-12,ui-grid-col-0" styleClass="ui-panelgrid-blank ui-fluid">
+                                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                                <p:selectOneRadio id="console" value="#{radioView.console}" columns="1" layout="responsive" >
+                                                    <f:selectItem itemLabel="COMPRA-VENTA" itemValue="COMPRA-VENTA" />
+                                                    <f:selectItem itemLabel="POSESIÓN EFECTIVA" itemValue="POSESIÓN EFECTIVA" />
+                                                    <f:selectItem itemLabel="ADJUDICACIÓN" itemValue="ADJUDICACIÓN" />
+                                                    <f:selectItem itemLabel="DIS.SOCIEDAD CONYUGAL" itemValue="DIS.SOCIEDAD CONYUGAL" />
+                                                    <f:selectItem itemLabel="HIPOTECA" itemValue="HIPOTECA"/>
+                                                    <f:selectItem itemLabel="OTRO CONTRATO:" itemValue="OTRO CONTRATO:"/>
+                                                </p:selectOneRadio>
+                                            </p:panelGrid>
+                                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid">
+                                                <p:outputLabel value="CÚAL?"/>
+                                                <p:inputText value=""/>
+                                            </p:panelGrid>
+                                        </p:panelGrid>    
+                                    </p:panel>
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+                        </p:panel>
+
+                        <p:panel header="DECLARACIÓN DE USO DE INFORMACIÓN">
+                            <p>
+                                <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-10,ui-grid-col-5,ui-grid-col-9" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel value="Yo,"/><p:inputText value=""/><p:outputLabel value="portador de la C.C.No./RUC No:"/><p:inputText value=""/>
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-9,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel value=",por mis propios derechos o a nombre de (persona natural y/o jurídica)(*)"/><p:inputText value=""/>
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel value="domiciliado en, "/><p:inputText value="" /> 
+                                </p:panelGrid>
+                                <p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid">
+                                    en cumplimiento de lo establecido en el inciso Quinto del Artículo 6 de la Ley del Sistema Nacional de Registro de Datos
+                                    Públicos (LSNRDP) declaro que la información que solicito, será utilizada en (indicar el uso que se dará al certificado):<br/>
+                                    <p:inputText value=""/>
+
+                                    En orden a lo expuesto declaro que utilizaré esta información de manera exclusiva para el trámite descrito anteriormente
+                                    y que la responsabilidad del uso adecuado de dicha información recae sobre el declarante.<br/>
+                                    Toda vez que los datos registrales son suceptibles a actualización, modificación o supresión, con arreglo a la LSNRDP
+                                    y la ley de Registro, me commprometo a comunicar cualquier diferencia legal, contractual o física que exista entre la 
+                                    información certificada y la consta en actos o contratos al Registrador de la Propiedad del DMQ, o a sus funcionarios
+                                    para su inmediata modificación; de lo contrario deslindo de responsabilidad al Registro de la Propiedad y a sus
+                                    funcionarios por el uso contrario al ordenamiento jurídico que se dé a dicha información.
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <p><center><strong>__________________________________________________</strong></center></p>
+                                    <p><center><strong>Firma del Solicitante</strong></center></p>
+
+                                </p:panelGrid>
+                            </p>
+
+                            <p:panel>
+                                <p><strong>CONSIGNA TUS DATOS, SON IMPORTANTES PARA COMUNICARNOS</strong></p>
+                                <p:panelGrid columns="6" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-4,ui-grid-col-3,ui-grid-col-4,ui-grid-col-3,ui-grid-col-8" styleClass="ui-panelgrid-blank ui-fluid"> 
+                                    <p:outputLabel value="TELF.MÓVIL:"/>
+                                    <p:inputText value=""/>
+                                    <p:outputLabel value="TELF.CONVENCIONAL"/>
+                                    <p:inputText value=""/>
+                                    <p:outputLabel value="CORREO ELECTRÓNICO:"/>
+                                    <p:inputText value=""/>
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-4" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel value="PARROQUIA EN QUE RESIDE:"/>
+                                    <p:inputText value=""/>
+                                </p:panelGrid> 
+                            </p:panel>
+                        </p:panel>
+                    </p:panel>
+                </div>
+            </h:form>
+
+            <p:dialog id="dlgAñadirPropietario1"  widgetVar="dialogoAñadirPropietario1" modal="true" resizable="false" draggable="false" appendTo="@(body)" >
+                <h:form id="formAñadirPropietario1">
+
+                    <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC04}" placeholder="C.C./RUC" maxlength="10">
+                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.buscarPersona()}" update="formGeneral:growlGeneral formAñadirPropietario1 form1:tblPropietarios1"/>
+                    </p:inputText>
+                    <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}" placeholder="NOMBRES"/>
+                    <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC02}" placeholder="APELLIDO PATERNO"/>
+                    <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC03}" placeholder="APELLIDO MATERNO"/>
+
+                    <p:commandButton value="Añadir" icon="fa fa-plus" action="#{controladorFormularioWebDetalle.añadirAFormulario3(1,'NOMBRES PROPIETARIOS')}" 
+                                     update="form:tblPropietarios formAñadirPropietario1" oncomplete="PF('dialogoAñadirPropietario1').hide();"/>
+
+                    <p:commandButton id="btnCrearPersona" value="Crear Persona" icon="fa fa-plus" rendered="#{controladorFormularioWebDetalle.estadoBoton}"/>
+                </h:form>
+            </p:dialog>
+
+        </ui:composition>
+
+    </body>
+</html>

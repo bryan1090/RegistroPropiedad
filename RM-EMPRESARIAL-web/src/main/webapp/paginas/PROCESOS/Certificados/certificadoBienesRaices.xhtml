@@ -1,0 +1,310 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            title
+        </ui:define>
+
+        <ui:define name="head">
+            head
+        </ui:define>
+
+        <ui:define name="content">
+            <p:messages id="mensajes" showDetail="true" closable="true"/>
+
+            <h:form id="formCertificados">
+
+                <div class="ui-g">
+                    <div class="ui-g-3">
+                        <p:panel id="pnlBusqueda" header="Selección">
+
+
+
+                        <h:panelGrid id="panelListaFacturas" columns="1">  
+                            <p:outputLabel  value="Lista de trabajos" />
+                            <p:dataTable id="tblFacturas" 
+                                         value="#{controladorCertificadoBuscar.llenarTablaCertificadoCarga('R')}" 
+                                         var="certCarg" selectionMode="single" 
+                                         scrollable="true" scrollHeight="200"
+                                         rowKey="#{certCarg.cdcId}" sortBy="#{certCarg.facId.facNumero}"> 
+
+                                <p:ajax event="rowSelect" listener="#{controladorCertificado.seleccionarFila}"
+                                        update=":formCertificados mensajes" />
+
+
+                                <p:column headerText="FACTURA" style="width: 40%">
+                                    <h:outputText value="#{certCarg.facId.facNumero}" />
+                                </p:column>
+
+
+                            </p:dataTable>
+
+                        </h:panelGrid>
+                        </p:panel>
+                    </div>
+                    <div class="ui-g-9">
+                        <p:panel id="panelTabs"  style="min-height: 520px"  >
+                            <p:panel id="panelTabs2" style="min-height: 520px" rendered="#{controladorCertificado.mostrarPnlTabs2}" >
+
+                                    <p:tabView  id="tabView_Certificados2" rendered="#{controladorCertificado.esCertificadoBienesRaices or controladorCertificado.esCertificadoBusqueda or controladorCertificado.esCertificadoEstatuto}"
+                                                >
+                                        <p:ajax event="tabChange"  listener="#{controladorCertificado.cambiarTab2}"
+                                                update="growl pnlCertificado2" process="@this  :formCertificados txtSolicitanteNombre" />
+                                        <p:tab id="tab_referencias2" title="Referencias">
+                                            <h:panelGrid columns="6" cellpadding="5" >
+
+                                                <p:commandButton id="btnBuscarPersona" immediate="true" icon="fa fa-search"  class="orange-btn" 
+                                                                 title="Buscar Persona" 
+                                                                 action="#{controladorFiltradoPersona.prepararFiltrado('ctrlCert', 'formCertificados:panelTabs2')}"
+                                                                 oncomplete ="PF('dlgFiltradoPersona').show()"
+                                                                 disabled="#{not empty controladorCertificado.persona  and not empty controladorCertificado.persona.perId}"
+                                                                 />
+                                                <p:commandButton id="crearPersona" immediate="true"
+                                                                 disabled="#{not empty controladorCertificado.persona  and not empty controladorCertificado.persona.perId}"
+                                                                 icon="fa fa-user-plus"  class="green-btn" 
+                                                                 oncomplete="PF('dlgNuevaPersona').show()" title="Crear nueva persona"/>
+
+                                                <p:outputLabel value="CI/RUC/Pas." for="txtCiRucPas"/>
+
+                                                <p:inputText id="txtCiRucPas" size="43" 
+                                                             readonly="#{not empty controladorCertificado.persona  and not empty controladorCertificado.persona.perId}"
+                                                             maxlength="13"
+                                                             title="Identificación Persona" style="color: #b30000;font-family: Arial, Helvetica, sans-serif;font-size: 15px;"
+                                                             value="#{controladorCertificado.identificacion}"
+                                                             onkeypress="if (event.keyCode == 13) {
+                                                                         return false;
+                                                                     }">
+                                                    <p:ajax process="@this" listener="#{controladorCertificado.buscarPersona()}"
+                                                            update="growl :PersonaEditForm @form"/>
+
+                                                </p:inputText>  
+
+                                                <p:outputLabel value="Nombres." for="txtNombres"/>
+
+                                                <h:outputText id="txtNombres" 
+                                                              title="Identificación Persona" style="color: #b30000;font-family: Arial, Helvetica, sans-serif;font-size: 15px;"
+                                                              value="#{controladorCertificado.persona.perApellidoPaterno.trim()} #{controladorCertificado.persona.perApellidoMaterno.trim()} #{controladorCertificado.persona.perNombre}"
+                                                              />
+
+
+                                            </h:panelGrid>
+                                            <h:panelGrid columns="1">
+                                                <p:commandButton value="Buscar Propiedades" icon="fa fa-search" class="green-btn"
+
+                                                                 action="#{controladorCertificado.buscarDatosCertificadoBusqueda()}"
+                                                                 process="@this" update="@form growl" />
+                                                <p:dataTable id="dtbPropiedades"
+                                                             rendered="#{not empty controladorCertificado.listaPropiedadesCertBusqueda}"
+                                                             value="#{controladorCertificado.listaPropiedadesCertBusqueda}" 
+                                                             var="propiedadSeleccionada" rowKey="#{propiedadSeleccionada.prdMatricula}"
+                                                             scrollable="true" scrollHeight="200" emptyMessage=""
+                                                             selection="#{controladorCertificado.listaPropiedadesSel}">
+
+                                                    <p:column headerText="Matricula">
+                                                        <h:outputText  
+                                                            value="#{propiedadSeleccionada.prdMatricula}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Predio">
+                                                        <h:outputText 
+                                                            value="#{propiedadSeleccionada.prdPredio}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Catastro">
+                                                        <h:outputText  
+                                                            value="#{propiedadSeleccionada.prdCatastro}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Superficie">
+                                                        <h:outputText  
+                                                            value="#{propiedadSeleccionada.prdSuperficie}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Unidad">
+                                                        <h:outputText  
+                                                            value="#{propiedadSeleccionada.umdId.umdNombre}"/>
+                                                    </p:column>
+
+                                                    <p:column >
+                                                        <p:commandButton value="Obs" class="green-btn" icon="fa fa-plus"
+                                                                         style="width: 60px"
+                                                                         immediate="true"
+                                                                         update="formObservacion"
+                                                                         oncomplete="PF('dialogoAgregarObservacion').show();" >
+                                                            <f:setPropertyActionListener value="#{propiedadSeleccionada}"
+                                                                                         target="#{controladorCertificado.propiedadSelAgregarObs}"/>
+                                                        </p:commandButton>
+
+
+                                                    </p:column>
+                                                    <p:column headerText="Obsv." width="10%" >
+                                                        <h:outputText  
+                                                            value="#{propiedadSeleccionada.observacionT}"/>
+                                                    </p:column>
+                                                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+                                                    <f:facet name="footer">
+
+                                                        <p:commandButton process="@this dtbPropiedades" update="formCertificados:panelTabs2 growl" 
+                                                                         icon="fa fa-check" class="green-btn"
+                                                                         value="Agregar Propiedades" 
+                                                                         action="#{controladorCertificado.verificarSeleccionPropiedades()}"
+                                                                         />
+                                                        
+                                                    </f:facet>
+
+
+
+                                                </p:dataTable>
+                                            </h:panelGrid>
+
+                                        </p:tab>
+
+                                        <p:tab id="tab_solicitante" title="Solicitante" 
+                                               rendered="#{controladorCertificado.mostrarTabSolicitante}">
+                                            <h:panelGrid columns="2" cellspacing="10" border="0" >
+                                                <p:outputLabel for="txtSolicitanteNombre" value="Solicitante" style="text-align: right"/>
+                                                <p:inputText id="txtSolicitanteNombre"
+                                                             style="text-align: justify;text-transform: uppercase;"
+                                                             value="#{controladorCertificado.txtSolicitanteNombre}"
+                                                             required="true" requiredMessage="El nombre del solicitante es requerido">
+                                                    <p:ajax process="@this"/>
+                                                </p:inputText>
+                                                <p:outputLabel for="txtSolicitanteIdentificacion" value="Identificación" style="text-align: right"/>
+                                                <p:inputText id="txtSolicitanteIdentificacion"
+                                                             maxlength="13"
+                                                             style="text-align: justify"
+                                                             value="#{controladorCertificado.txtSolicitanteIdentificacion}"
+                                                             required="true" requiredMessage="El número de identificación es requerido">
+                                                    <p:ajax process="@this"/>
+                                                </p:inputText>
+
+                                            </h:panelGrid>
+                                        </p:tab>
+
+                                        <p:tab id="tab_certificado2" title="Certificado" 
+                                               rendered="#{controladorCertificado.mostrarTabSolicitante}"                                               >
+                                            <p:panel id="pnlCertificado2">
+                                               
+                                                <p:commandButton value="Previsualizar" 
+                                                                 class="green-btn"
+                                                                 oncomplete="PF('dialogoVerCert').show();"
+                                                                 process="@this  editor "
+                                                                 update=":frmVerCertPlan"
+                                                                 action="#{controladorCertificado.generarCertificadoPdf()}"/>
+                                                <br/>
+                                               
+                                                <p:editor id="editor" widgetVar="editorWidget" controls="bold" value="#{controladorCertificado.textoCertificado}"  />
+
+                                            </p:panel>
+                                        </p:tab>
+
+                                    </p:tabView>
+                                </p:panel>
+
+
+                            </p:panel>
+
+
+
+
+                       
+                    </div>
+                </div>
+            </h:form>
+            
+            <p:dialog id="dlgAgregarObservacion" header="Agregar Observación" widgetVar="dialogoAgregarObservacion"
+                      appendTo="@(body)" modal="true" resizable="true" width="700">
+                <h:form id="formObservacion">
+                    <h:panelGrid columns="2">
+                        <p:outputLabel for="txtObservacion" value="Observaciones" style="text-align: right"/>
+                        <p:inputTextarea id="txtObservacion" 
+                                         style="text-align: justify" cols="80" rows="10"
+                                         value="#{controladorCertificado.propiedadSelAgregarObs.observacionT}"
+                                         required="true" requiredMessage="El campo observación es requerido">
+                        </p:inputTextarea>
+                        <p:commandButton value="Guardar" update="formCertificados:panelTabs2" 
+                                         icon="fa fa-save" class="green-btn"
+                                         oncomplete="PF('dialogoAgregarObservacion').hide();" />
+                        <p:commandButton  value="Cerrar" immediate="true" 
+                                          icon="fa fa-close" class="red-btn"
+                                          oncomplete="PF('dialogoAgregarObservacion').hide();"  />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            
+            
+            <p:dialog id="dlgVerCert" header="Certificado" widgetVar="dialogoVerCert"  
+                      appendTo="@(body)" modal="true" resizable="true" width="750" height="400" >
+
+                <h:form id="frmVerCertPlan">
+                    <p:commandButton  
+                        icon="fa fa-plus" 
+                        actionListener="#{controladorCertificado.sumarSaltoLinea()}"
+                        style="margin-top: 5px"
+                        process="@this"
+                        update="growl @form" 
+                        action="#{controladorCertificado.generarCertificado()}">
+                    </p:commandButton>
+
+                    <p:commandButton  
+                        icon="fa fa-minus" 
+                        actionListener="#{controladorCertificado.restarSaltoLinea()}"
+                        style="margin-top: 5px"
+                        process="@this"
+                        update="growl  @form"
+                        action="#{controladorCertificado.generarCertificado()}"
+                        >
+                    </p:commandButton>
+
+
+                    <p:selectBooleanButton value="#{controladorCertificado.agregarImagenEspacioEnBlanco}"
+                                           onLabel="Con Imagen Texto En Blanco"
+                                           offLabel="Sin Imagen Texto En Blanco">
+                        <p:ajax listener="#{controladorCertificado.generarCertificado()}"
+                                update="growl  @form"/>
+                    </p:selectBooleanButton>
+                    <div align="right">
+                        <p:commandButton value="Guardar"
+                                         icon="fa fa-save" class="green-btn"
+                                         rendered="#{controladorCertificado.esCertificadoBusqueda 
+                                                     or controladorCertificado.esCertificadoBienesRaices
+                                                     or controladorCertificado.esCertificadoEstatuto}"
+                                         action="#{controladorCertificado.guardarCertificado()}"
+                                         style="margin-top: 5px"
+                                         process="@form"
+                                         immediate="true"
+                                         update="formCertificados growl"
+                                         oncomplete="PF('dialogoVerCert').hide();"                                                                     >
+                        </p:commandButton>
+                    </div>
+                    <p:commandButton value="Guardar." style="margin-right: 5px"
+                                     icon="fa fa-save" class="green-btn"
+                                     rendered="#{controladorCertificado.esCertificadoPlantilla}"
+                                     action="#{controladorCertificado.guardarCertificadoConPlantilla()}"
+                                     oncomplete="PF('dialogoVerCert').hide();"
+                                     process="@this"
+                                     update="formCertificados growl "/>
+<!--                    <p:textEditor  value="#{controladorCertificado.textoCertificado}"
+                                   toolbarVisible="false" readonly="true"
+                                   />-->
+                    <p:media id="pdfCertificado"
+                             value="#{controladorCertificado.urlCertificadoPdf}"
+                             rendered="#{not empty controladorCertificado.urlCertificadoPdf}"
+                             style="width:700px;height: 2000px"
+                             player="pdf"  /><!--
+<br></br>-->
+
+                </h:form>    
+            </p:dialog>
+
+
+            
+                 <ui:include src="/paginas/FiltradoPersona.xhtml" />
+            <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+        </ui:define>
+    </ui:composition>
+</html>

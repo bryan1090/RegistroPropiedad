@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            title
+        </ui:define>
+
+        <ui:define name="head">
+            head
+        </ui:define>
+
+        <ui:define name="content">
+            <p:messages id="mensajes" showDetail="true" closable="true"/>
+
+            <h:form id="formCertificados">
+
+                <div class="ui-g">
+                    <div class="ui-g-3">
+                        <p:panel id="pnlBusqueda" header="Selección">
+
+
+
+                            <h:panelGrid id="panelListaFacturas" columns="1">  
+                                <p:outputLabel  value="Lista de trabajos" />
+                                <p:dataTable id="tblFacturas" 
+                                             value="#{controladorCertificadoBuscar.llenarTablaCertificadoCarga('P')}" 
+                                             var="certCarg" selectionMode="single" 
+                                             scrollable="true" scrollHeight="200"
+                                             rowKey="#{certCarg.cdcId}" sortBy="#{certCarg.facId.facNumero}"> 
+
+                                    <p:ajax event="rowSelect" listener="#{controladorCertificado.seleccionarFila}"
+                                            update=":formCertificados mensajes" />
+
+
+                                    <p:column headerText="FACTURA" style="width: 40%">
+                                        <h:outputText value="#{certCarg.facId.facNumero}" />
+                                    </p:column>
+
+
+                                </p:dataTable>
+
+                            </h:panelGrid>
+                        </p:panel>
+                    </div>
+                    <div class="ui-g-9">
+
+
+
+                        <p:panel id="pnlLlenarCertificado" rendered="#{controladorCertificado.mostrarPnlCertPlantilla}">
+
+                            <h:panelGrid columns="2">
+                                <h:outputText value="#{controladorCertificado.tipoCertificadoSeleccionado.troNombre}"/>
+                                <h:outputText rendered="#{!empty controladorCertificado.tipoGravamen}" 
+                                              value="#{controladorCertificado.tipoGravamen}"/>
+                            </h:panelGrid>
+
+                            <p:commandButton value="Previsualizar" 
+                                             class="green-btn" action="#{controladorCertificado.generarCertificado()}"
+                                             oncomplete="PF('dialogoVerCert').show();"
+                                             update=":frmVerCertPlan"
+
+                                             />
+
+                            <ui:repeat id="edicion" value="#{controladorCertificado.listaPartesCertificado}" 
+                                       var="texto" 
+                                       varStatus="estado">
+                                <p:editor id="editor" widgetVar="editorWidget" controls="bold"
+                                          value="#{controladorCertificado.listaPartesCertificado[estado.index]}" style="width: 100%" rendered="#{!empty texto}" />
+
+                                <p:panel>
+                                    <h:outputText value="#{controladorCertificado.variables[estado.index]}"/>
+
+                                </p:panel>
+                            </ui:repeat>
+                        </p:panel>
+                    </div>
+                </div>
+            </h:form>
+            <p:dialog id="dlgVerCert" header="Certificado" widgetVar="dialogoVerCert"  
+                      appendTo="@(body)" modal="true" resizable="true" width="750" height="400" >
+
+                <h:form id="frmVerCertPlan">
+                    <p:commandButton  
+                        icon="fa fa-plus" 
+                        actionListener="#{controladorCertificado.sumarSaltoLinea()}"
+                        style="margin-top: 5px"
+                        process="@this"
+                        update="growl @form" 
+                        action="#{controladorCertificado.generarCertificado()}">
+                    </p:commandButton>
+
+                    <p:commandButton  
+                        icon="fa fa-minus" 
+                        actionListener="#{controladorCertificado.restarSaltoLinea()}"
+                        style="margin-top: 5px"
+                        process="@this"
+                        update="growl  @form"
+                        action="#{controladorCertificado.generarCertificado()}"
+                        >
+                    </p:commandButton>
+
+
+                    <p:selectBooleanButton value="#{controladorCertificado.agregarImagenEspacioEnBlanco}"
+                                           onLabel="Con Imagen Texto En Blanco"
+                                           offLabel="Sin Imagen Texto En Blanco">
+                        <p:ajax listener="#{controladorCertificado.generarCertificado()}"
+                                update="growl  @form"/>
+                    </p:selectBooleanButton>
+                    <div align="right">
+                        <p:commandButton value="Guardar." style="margin-right: 5px"
+                                     icon="fa fa-save" class="green-btn"
+                                     rendered="#{controladorCertificado.esCertificadoPlantilla}"
+                                     action="#{controladorCertificado.guardarCertificado()}"
+                                     oncomplete="PF('dialogoVerCert').hide();"
+                                     process="@this"
+                                     update="formCertificados growl "/>
+                    </div>
+                    
+<!--                    <p:textEditor  value="#{controladorCertificado.textoCertificado}"
+                                   toolbarVisible="false" readonly="true"
+                                   />-->
+                    <p:media id="pdfCertificado"
+                             value="#{controladorCertificado.urlCertificadoPdf}"
+                             rendered="#{not empty controladorCertificado.urlCertificadoPdf}"
+                             style="width:700px;height: 2000px"
+                             player="pdf"  /><!--
+<br></br>-->
+
+                </h:form>    
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

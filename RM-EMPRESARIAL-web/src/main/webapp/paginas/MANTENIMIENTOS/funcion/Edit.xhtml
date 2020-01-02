@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="FuncionEditDlg" widgetVar="FuncionEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditFuncionTitle}">
+            <h:form id="FuncionEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{funcionController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditFuncionLabel_rolId}" for="rolId" />
+                        <p:selectOneMenu id="rolId" value="#{funcionController.selected.rolId}" required="true" requiredMessage="#{bundle.EditFuncionRequiredMessage_rolId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{rolController.itemsAvailableSelectOne}"
+                                           var="rolIdItem"
+                                           itemValue="#{rolIdItem}" itemLabel="#{rolIdItem.rolNombre}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditFuncionLabel_funPrograma}" for="funPrograma" />
+                        <p:inputText id="funPrograma" value="#{funcionController.selected.funPrograma}" title="#{bundle.EditFuncionTitle_funPrograma}" />
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{funcionController.update}" value="#{bundle.Save}" update="display,:FuncionListForm:datalist,:growl" oncomplete="handleSubmit(args, 'FuncionEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{funcionController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="FuncionEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

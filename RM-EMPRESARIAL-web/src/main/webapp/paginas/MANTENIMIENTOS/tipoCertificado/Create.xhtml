@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoCertificadoCreateDlg" widgetVar="TipoCertificadoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateTipoCertificadoTitle}">
+            <p:scrollPanel style="height:600px" mode="native"> 
+                <h:form id="TipoCertificadoCreateForm">
+                    <h:panelGroup id="display">
+                        <p:panelGrid columns="2" rendered="#{tipoCertificadoController.selected != null}">                        
+                            <p:outputLabel value="#{bundle.CreateTipoCertificadoLabel_troNombre}" for="troNombre" />
+                            <p:inputText id="troNombre" value="#{tipoCertificadoController.selected.troNombre}" title="#{bundle.CreateTipoCertificadoTitle_troNombre}" required="true" requiredMessage="#{bundle.CreateTipoCertificadoRequiredMessage_troNombre}"/>
+                            <p:outputLabel value="#{bundle.CreateTipoCertificadoLabel_troValor}" for="troValor" />
+                            <p:inputText id="troValor" value="#{tipoCertificadoController.selected.troValor}" title="#{bundle.CreateTipoCertificadoTitle_troValor}" required="true" requiredMessage="#{bundle.CreateTipoCertificadoRequiredMessage_troValor}"/>
+                            <p:outputLabel value="#{bundle.CreateTipoCertificadoLabel_troUnidadTiempo}" for="troUnidadTiempo" />
+                            <p:inputText id="troUnidadTiempo" value="#{tipoCertificadoController.selected.troUnidadTiempo}" title="#{bundle.CreateTipoCertificadoTitle_troUnidadTiempo}" required="true" requiredMessage="#{bundle.CreateTipoCertificadoRequiredMessage_troUnidadTiempo}"/>
+                            <p:outputLabel value="#{bundle.CreateTipoCertificadoLabel_troCantidadTiempo}" for="troCantidadTiempo" />
+                            <p:inputText id="troCantidadTiempo" value="#{tipoCertificadoController.selected.troCantidadTiempo}" title="#{bundle.CreateTipoCertificadoTitle_troCantidadTiempo}" required="true" requiredMessage="#{bundle.CreateTipoCertificadoRequiredMessage_troCantidadTiempo}"/>
+                            <p:outputLabel value="#{bundle.CreateTipoCertificadoLabel_troIva}" for="troIva" />
+                            <p:selectBooleanCheckbox id="troIva" value="#{tipoCertificadoController.tipoCertificadoIva}" title="#{bundle.CreateTipoCertificadoTitle_troIva}" required="true" requiredMessage="#{bundle.CreateTipoCertificadoRequiredMessage_troIva}"/>
+                            <p:outputLabel value="#{bundle.CreateTipoCertificadoLabel_troTipo}" for="troTipo" />
+                            <p:selectOneMenu id="troTipo" value="#{tipoCertificadoController.selected.troTipo}" title="#{bundle.CreateTipoCertificadoTitle_troTipo}">
+                                <f:selectItem itemLabel="GRAVAMEN" itemValue="G"/> 
+                                <f:selectItem itemLabel="BIENES RAÍCES" itemValue="R"/> 
+                                <f:selectItem itemLabel="BÚSQUEDA" itemValue="B"/> 
+                                <f:selectItem itemLabel="NOMBRAMIENTOS" itemValue="N"/> 
+                                <f:selectItem itemLabel="PROPIEDAD" itemValue="P"/> 
+                            </p:selectOneMenu>
+                            <p:outputLabel value="#{bundle.CreateTipoCertificadoLabel_troDescripcion1}" for="troDescripcion1" />
+                            <p:textEditor id="troDescripcion1" value="#{tipoCertificadoController.selected.troDescripcion1}"  height="250" style="margin-bottom:10px; width: 800px" />
+                            <p:outputLabel value="#{bundle.CreateTipoCertificadoLabel_troDescripcion2}" for="troDescripcion2" />
+                            <p:textEditor id="troDescripcion2" value="#{tipoCertificadoController.selected.troDescripcion2}" height="250" style="margin-bottom:10px; width: 800px" />
+
+                        </p:panelGrid>
+                        <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{tipoCertificadoController.create}" value="#{bundle.Save}" update="display,:TipoCertificadoListForm:datalist,:growl" oncomplete="handleSubmit(args,'TipoCertificadoCreateDialog');"/>
+                        <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{tipoCertificadoController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="TipoCertificadoCreateDialog.hide()"/>
+                    </h:panelGroup>
+                </h:form>
+            </p:scrollPanel>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SecuenciaEditDlg" widgetVar="SecuenciaEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditSecuenciaTitle}">
+            <h:form id="SecuenciaEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorSecuencia.selected != null}">
+                        <p:outputLabel value="#{bundle.EditSecuenciaLabel_secCodigo}" for="secCodigo" />
+                        <p:inputText id="secCodigo" value="#{controladorSecuencia.selected.secCodigo}" title="#{bundle.EditSecuenciaTitle_secCodigo}" required="true" requiredMessage="#{bundle.EditSecuenciaRequiredMessage_secCodigo}" style="text-transform: uppercase" validatorMessage="Código: Solo ingresar Letras">
+                            <f:validateRegex  pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/>
+                        </p:inputText>
+                        <p:outputLabel value="#{bundle.EditSecuenciaLabel_secAnio}" for="secAnio" />
+                        <p:inputText id="secAnio" value="#{controladorSecuencia.anio}" title="#{bundle.EditSecuenciaTitle_secAnio}" required="true" requiredMessage="#{bundle.EditSecuenciaRequiredMessage_secAnio}" converterMessage="Año: Ingresar solo numeros"/>
+                        <p:outputLabel value="#{bundle.EditSecuenciaLabel_secActual}" for="secActual" />
+                        <p:inputText id="secActual" value="#{controladorSecuencia.selected.secActual}" title="#{bundle.EditSecuenciaTitle_secActual}" required="true" requiredMessage="#{bundle.EditSecuenciaRequiredMessage_secActual}" converterMessage="Actual: Ingresar solo numeros"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorSecuencia.update}" value="#{bundle.Save}" update="display,:SecuenciaListForm:datalist,:growl" oncomplete="handleSubmit(args, 'SecuenciaEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorSecuencia.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="SecuenciaEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

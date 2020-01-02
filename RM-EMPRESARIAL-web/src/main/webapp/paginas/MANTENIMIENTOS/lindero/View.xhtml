@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="LinderoViewDlg" widgetVar="LinderoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewLinderoTitle}">
+            <h:form id="LinderoViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{linderoController.selected != null}">
+                        <h:outputText value="#{bundle.ViewLinderoLabel_ldrNombre}"/>
+                        <h:outputText value="#{linderoController.selected.ldrNombre}" title="#{bundle.ViewLinderoTitle_ldrNombre}"/>
+                        <h:outputText value="#{bundle.ViewLinderoLabel_prdMatricula}"/>
+                        <h:outputText value="#{linderoController.selected.prdMatricula.prdPredio}" title="#{bundle.ViewLinderoTitle_prdMatricula}"/>
+                        <h:outputText value="#{bundle.ViewLinderoLabel_ldrUser}"/>
+                        <h:outputText value="#{linderoController.selected.ldrUser}" title="#{bundle.ViewLinderoTitle_ldrUser}"/>
+                        <h:outputText value="#{bundle.ViewLinderoLabel_ldrFHR}"/>
+                        <h:outputText value="#{linderoController.selected.ldrFHR}" title="#{bundle.ViewLinderoTitle_ldrFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Close}" onclick="LinderoViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="EMensajeEditDlg" widgetVar="EMensajeEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditEMensajeTitle}">
+            <h:form id="EMensajeEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{eMensajeController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgDocumento}" for="EMsgDocumento" />
+                        <p:inputText id="EMsgDocumento" maxlength="2" value="#{eMensajeController.selected.EMsgDocumento}" title="#{bundle.EditEMensajeTitle_EMsgDocumento}" required="true" requiredMessage="#{bundle.EditEMensajeRequiredMessage_EMsgDocumento}"/>
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgSerie}" for="EMsgSerie" />
+                        <p:inputText id="EMsgSerie" value="#{eMensajeController.selected.EMsgSerie}" title="#{bundle.EditEMensajeTitle_EMsgSerie}" required="true" requiredMessage="#{bundle.EditEMensajeRequiredMessage_EMsgSerie}"/>
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgNumero}" for="EMsgNumero" />
+                        <p:inputText id="EMsgNumero" value="#{eMensajeController.selected.EMsgNumero}" title="#{bundle.EditEMensajeTitle_EMsgNumero}" required="true" requiredMessage="#{bundle.EditEMensajeRequiredMessage_EMsgNumero}"/>
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgMensaje}" for="EMsgMensaje" />
+                        <p:inputText id="EMsgMensaje" value="#{eMensajeController.selected.EMsgMensaje}" title="#{bundle.EditEMensajeTitle_EMsgMensaje}" />
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgTipo}" for="EMsgTipo" />
+                        <p:inputText id="EMsgTipo" value="#{eMensajeController.selected.EMsgTipo}" title="#{bundle.EditEMensajeTitle_EMsgTipo}" />
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgDetalle}" for="EMsgDetalle" />
+                        <p:inputText id="EMsgDetalle" value="#{eMensajeController.selected.EMsgDetalle}" title="#{bundle.EditEMensajeTitle_EMsgDetalle}" />
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgPrograma}" for="EMsgPrograma" />
+                        <p:inputText id="EMsgPrograma" value="#{eMensajeController.selected.EMsgPrograma}" title="#{bundle.EditEMensajeTitle_EMsgPrograma}" />
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgClave}" for="EMsgClave" />
+                        <p:inputText id="EMsgClave" value="#{eMensajeController.selected.EMsgClave}" title="#{bundle.EditEMensajeTitle_EMsgClave}" />
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgAutorizacion}" for="EMsgAutorizacion" />
+                        <p:inputText id="EMsgAutorizacion" value="#{eMensajeController.selected.EMsgAutorizacion}" title="#{bundle.EditEMensajeTitle_EMsgAutorizacion}" />
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgErrorSri}" for="EMsgErrorSri" />
+                        <p:inputText id="EMsgErrorSri" maxlength="1" value="#{eMensajeController.selected.EMsgErrorSri}" title="#{bundle.EditEMensajeTitle_EMsgErrorSri}" />
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgCodigoSri}" for="EMsgCodigoSri" />
+                        <p:inputText id="EMsgCodigoSri" value="#{eMensajeController.selected.EMsgCodigoSri}" title="#{bundle.EditEMensajeTitle_EMsgCodigoSri}" />
+                        <p:outputLabel value="#{bundle.EditEMensajeLabel_EMsgEstado}" for="EMsgEstado" />
+                        <p:selectOneMenu id="EMsgEstado" value="#{eMensajeController.selected.EMsgEstado}" required="true">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{eMensajeController.update}" value="#{bundle.Save}" update="display,:EMensajeListForm:datalist,:growl" oncomplete="handleSubmit(args, 'EMensajeEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}" immediate="true" onclick="EMensajeEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

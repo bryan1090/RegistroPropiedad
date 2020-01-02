@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>run</actionName>
+            <packagings>
+                <packaging>war</packaging>
+                <packaging>ear</packaging>
+                <packaging>ejb</packaging>
+            </packagings>
+            <goals>
+                <goal>package</goal>
+            </goals>
+            <properties>
+                <netbeans.deploy>true</netbeans.deploy>
+            </properties>
+        </action>
+        <action>
+            <actionName>CUSTOM-buildear &amp; runear</actionName>
+            <displayName>buildear &amp; runear</displayName>
+            <goals>
+                <goal>install</goal>
+                <goal>package</goal>
+            </goals>
+            <properties>
+                <netbeans.deploy>true</netbeans.deploy>
+            </properties>
+        </action>
+        <action>
+            <actionName>CUSTOM-cleanear buildear &amp; runear</actionName>
+            <displayName>cleanear buildear &amp; runear</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+                <goal>package</goal>
+            </goals>
+            <properties>
+                <netbeans.deploy>true</netbeans.deploy>
+            </properties>
+        </action>
+    </actions>

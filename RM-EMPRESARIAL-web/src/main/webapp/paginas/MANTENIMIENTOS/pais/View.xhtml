@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PaisViewDlg" widgetVar="PaisViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewPaisTitle}">
+            <h:form id="PaisViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{paisController.selected != null}">
+                        
+                        <h:outputText value="#{bundle.ViewPaisLabel_paiNombre}"/>
+                        <h:outputText value="#{paisController.selected.paiNombre}" style="text-transform: uppercase" title="#{bundle.ViewPaisTitle_paiNombre}"/>
+                        <h:outputText value="#{bundle.ViewPaisLabel_paiEstado}"/>
+                        <h:outputText value="#{paisController.selected.paiEstado}" style="text-transform: uppercase" title="#{bundle.ViewPaisTitle_paiEstado}"/>
+                        <h:outputText value="#{bundle.ViewPaisLabel_paiFHR}"/>
+                        <h:outputText value="#{paisController.selected.paiFHR}" style="text-transform: uppercase" title="#{bundle.ViewPaisTitle_paiFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewPaisLabel_paiUser}"/>
+                        <h:outputText value="#{paisController.selected.paiUser}" style="text-transform: uppercase" title="#{bundle.ViewPaisTitle_paiUser}"/>
+                        <h:outputText value="#{bundle.ViewPaisLabel_paiCodigo}"/>
+                        <h:outputText value="#{paisController.selected.paiCodigo}" style="text-transform: uppercase" title="#{bundle.ViewPaisTitle_paiCodigo}"/>
+                        <h:outputText value="#{bundle.ViewPaisLabel_paiInicial}"/>
+                        <h:outputText value="#{paisController.selected.paiInicial}" style="text-transform: uppercase" title="#{bundle.ViewPaisTitle_paiInicial}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{paisController.clear()}" value="#{bundle.Close}" onclick="PaisViewDialog.hide()" />
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListDescuentoTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="DescuentoListForm">
+                <p:panel header="#{bundle.ListDescuentoTitle}">
+                    <p:dataTable id="datalist" value="#{controladorDescuento.items}" var="item"
+                                 selectionMode="single" selection="#{controladorDescuento.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.desId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListDescuentoTitle_desNombre}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.desNombre}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListDescuentoTitle_desValor}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.desValor}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListDescuentoTitle_desEstado}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.desEstado}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListDescuentoTitle_desFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.desFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListDescuentoTitle_desUsuario}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.desUsuario}"/>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn"  value="#{bundle.Create}" actionListener="#{controladorDescuento.prepareCreate}" update=":DescuentoCreateForm" oncomplete="PF('DescuentoCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":DescuentoViewForm" oncomplete="PF('DescuentoViewDialog').show()" disabled="#{empty controladorDescuento.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":DescuentoEditForm" oncomplete="PF('DescuentoEditDialog').show()" disabled="#{empty controladorDescuento.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{controladorDescuento.destroy}" update=":growl,datalist" disabled="#{empty controladorDescuento.selected}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

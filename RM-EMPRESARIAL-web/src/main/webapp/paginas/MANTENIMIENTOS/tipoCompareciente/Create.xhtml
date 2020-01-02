@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoComparecienteCreateDlg" widgetVar="TipoComparecienteCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateTipoComparecienteTitle}">
+            <h:form id="TipoComparecienteCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTipoCompareciente.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateTipoComparecienteLabel_tpcCodigo}" for="tpcCodigo" />
+                        <p:inputText id="tpcCodigo" value="#{controladorTipoCompareciente.selected.tpcCodigo}" style="text-transform: uppercase" title="#{bundle.CreateTipoComparecienteTitle_tpcCodigo}" required="true" requiredMessage="#{bundle.CreateTipoComparecienteRequiredMessage_tpcCodigo}"/>
+                        <p:outputLabel value="#{bundle.CreateTipoComparecienteLabel_tpcDescripcion}" for="tpcDescripcion" />
+                        <p:inputText id="tpcDescripcion" value="#{controladorTipoCompareciente.selected.tpcDescripcion}" style="text-transform: uppercase" title="#{bundle.CreateTipoComparecienteTitle_tpcDescripcion}" required="true" requiredMessage="#{bundle.CreateTipoComparecienteRequiredMessage_tpcDescripcion}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorTipoCompareciente.create}" value="#{bundle.Save}" update="display,:TipoComparecienteListForm:datalist,:growl" oncomplete="PF('TipoComparecienteCreateDialog').hide();" />
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTipoCompareciente.clear()}" immediate="true" value="#{bundle.Cancel}" onclick="TipoComparecienteCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

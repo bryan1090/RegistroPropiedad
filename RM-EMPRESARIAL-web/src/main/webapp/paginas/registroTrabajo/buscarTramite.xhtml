@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Buscar Trámite"></h:outputText>
+        </ui:define>
+        <ui:define name="content" >
+            <h:form id="formBuscarTramite"> 
+                <p:panel  id="principal" header="BUSCAR TRÁMITE"  style="text-align: center" >
+                    <p:panel id="botones" style="text-align: left ; width: 100%" >
+
+                        
+                        <p:fieldset legend="Tipo Búsqueda" style="margin-bottom:20px">
+                        
+                          <h:panelGrid columns="4"> 
+                              <!-- SELECCIONAR TIPO DE BUSQUEDA -->
+                        <p:selectOneRadio id="tipoBusqueda" 
+                                          required="true" requiredMessage="Seleccione el tipo de Búsqueda"
+                                          value="#{controladorBuscarTramite.tipoBusquedaTramite}">
+                            <f:selectItem itemLabel="Nro. Trámite" itemValue="numTramite" />
+                            <f:selectItem itemLabel="Fecha de Trámite" itemValue="fechaTramite" /> 
+                            <f:selectItem itemLabel="Persona" itemValue="personaTramite" /> 
+                            <f:selectItem itemLabel="Responsable" itemValue="responsableTramite" /> 
+                            <p:ajax event="valueChange" listener="#{controladorBuscarTramite.tipoBusqueda()}"
+                                    update="formBuscarTramite" />
+                        </p:selectOneRadio> 
+                         <!-- BOTON BUSCAR TRAMITE-->     
+                        <p:commandButton value="Buscar Trámite" icon="fa fa-search" class="green-btn" title="Buscar Trámite"
+                                         update="growl formBuscarTramite" style="margin-left: 30px"
+                                         action="#{controladorBuscarTramite.buscarTramite()}"/> 
+                        </h:panelGrid>
+                        </p:fieldset>
+
+                        <p:fieldset legend="Datos de Búsqueda" style="margin-bottom:20px" rendered="#{controladorBuscarTramite.rendFieldSetDatosBusq}">
+                        <!-- BUSQUEDA POR NUMERO DE TRAMITE-->
+                        <h:outputLabel value="Nro. Trámite: "  style="font-weight: bold"
+                                       rendered="#{controladorBuscarTramite.rendBuscarPorNumero}"/>
+                        <p:inputText value="#{controladorBuscarTramite.numTramite}" required="true" requiredMessage="Ingrese el número de Trámite"
+                                     rendered="#{controladorBuscarTramite.rendBuscarPorNumero}"/>
+
+                        <!-- BUSQUEDA POR FECHA DE TRAMITE-->
+                        <h:outputLabel value="Fecha de Trámite: " style="font-weight: bold" 
+                                       rendered="#{controladorBuscarTramite.rendBuscarPorFecha}"/>
+                        <p:calendar value="#{controladorBuscarTramite.fechaTramite}" pattern="dd/MM/yyyy" required="true" requiredMessage="Ingrese la fecha de Trámite"
+                                    rendered="#{controladorBuscarTramite.rendBuscarPorFecha}"/>
+
+                        <!-- BUSQUEDA POR PERSONA DE TRAMITE, RESPONSABLE DE TRAMITE-->
+                        <p:outputLabel value="Identificación" rendered="#{controladorBuscarTramite.rendBuscarPorPersona}"/>
+                        <p:inputText id="txtIdentificacion" required="true" requiredMessage="Ingrese la identificación o busque una Persona"
+                                     title="Identificación" rendered="#{controladorBuscarTramite.rendBuscarPorPersona}"
+                                     style="margin-left: 5px"
+                                     value="#{controladorBuscarTramite.tramitesControladorBb.identificacion}" >
+                            <p:ajax listener="#{controladorBuscarTramite.buscarPersona()}" 
+                                    update="growl formBuscarTramite"  
+                                    process="txtIdentificacion" event="change" 
+                                    />
+                        </p:inputText>
+
+                        <p:inputText value="#{controladorBuscarTramite.tramitesControladorBb.nombrePersona}"
+                                     style="width: 250px; margin-left: 5px" readonly="true" rendered="#{controladorBuscarTramite.rendBuscarPorPersona}"/>
+                        <p:commandButton title="Buscar Persona" icon="fa fa-search" value="Buscar Persona"
+                                         style="margin-left: 5px"
+                                         class="orange-btn" immediate="true" process="@this" rendered="#{controladorBuscarTramite.rendBuscarPorPersona}" 
+                                         actionListener="#{controladorFiltradoPersona.prepararFiltrado('CtrlBuscarTram', 'formBuscarTramite')}"
+                                         oncomplete ="PF('dlgFiltradoPersona').show()"/>
+
+                       </p:fieldset>
+                    </p:panel>
+
+                    <p:separator />
+                    <p:dataTable id="tblTramite" var="tramite" value="#{controladorBuscarTramite.listTramite}"
+                                 style="margin-bottom:0" >
+                        <p:column headerText="Nro. Trámite" >
+                            <h:outputText value="#{tramite.traNumero}" />
+                        </p:column>
+                        <p:column headerText="Descripción" >
+                            <h:outputText value="#{tramite.traDescripcion}" />
+                        </p:column>
+                        <p:column headerText="Estado" >
+                            <h:outputText value="#{controladorBuscarTramite.tramiteEntregado.traNumero.traEstadoRegistro eq 'RA'? 'ACTIVO' : 'SUSPENDIDO'}" />
+                        </p:column>
+
+                        <p:column headerText="" >
+                            <p:commandButton icon="fa fa-plus" class="cyan-btn" update="formTramEntregado"
+                                             oncomplete="PF('dlgTramEntregado').show()" 
+                                             action="#{controladorBuscarTramite.prepararTramiteEntregado(tramite)}"/>
+                        </p:column>
+                    </p:dataTable>
+
+                </p:panel>
+                <br/>                
+            </h:form>
+            <p:dialog id="IdDlgTramEntregado" widgetVar="dlgTramEntregado" 
+                      onShow="PF('dlgTramEntregado').initPosition()" header="Trámite"
+                      modal="true" position="center center">
+                <h:form id="formTramEntregado">
+                    <h:panelGrid columns="2" cellpadding = "5">
+                        <h:outputLabel value="Nro. Trámite: " style="font-weight: bold"/>
+                        <p:outputLabel value="#{controladorBuscarTramite.tramiteEntregado.traNumero.traNumero}"/>
+                        <h:outputLabel value="Descripción " style="font-weight: bold"/>
+                        <p:outputLabel value="#{controladorBuscarTramite.tramiteEntregado.traNumero.traDescripcion}"/>
+                        <h:outputLabel value="Estado " style="font-weight: bold"/>
+                        <h:outputLabel value="#{controladorBuscarTramite.tramiteEntregado.traNumero.traEstadoRegistro eq 'RA'? 'ACTIVO' : 'SUSPENDIDO'}"                                       
+                                       style="#{controladorBuscarTramite.tramiteEntregado.traNumero.traEstadoRegistro eq 'RA'? 'color: green; font-weight: bolder':'color: red; font-weight: bolder'}"/>                       
+                        <h:outputLabel value="Nombre " style="font-weight: bold"/>
+                        <p:outputLabel value="#{controladorBuscarTramite.tramiteEntregado.traNumero.traPerNombre} #{controladorBuscarTramite.tramiteEntregado.traNumero.traPerApellidoPaterno} #{controladorBuscarTramite.tramiteEntregado.traNumero.traPerApellidoMaterno}"/>
+                        <h:outputLabel value="Fecha " style="font-weight: bold"/>
+                        <p:calendar id="Fecha1" readonly="true" value="#{controladorBuscarTramite.tramiteEntregado.traNumero.traFechaRecepcion.time }"
+                                                    readonlyInput="true" showOn="none" pattern="dd/MM/yyyy"/>
+                        <h:outputLabel value="Observación " style="font-weight: bold"/>
+                        <p:inputTextarea rows="3" style="width: 200px" value="#{controladorBuscarTramite.tramiteEntregado.tmeDescripcion}"/>
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" cellpadding = "10" width="100%">
+                        <p:dataList value="#{controladorBuscarTramite.listTramiteValor}" var="tramValor" type="ordered">
+                            <f:facet name="header">
+                                Tipo de Trámites
+                            </f:facet>
+                            #{tramValor.ttrId.ttrDescripcion}
+                        </p:dataList>
+                    </h:panelGrid>
+                    <p:commandButton value="Guardar" class="green-btn" icon="fa fa-save" onclick="PF('dlgTramEntregado').close()"
+                                     action="#{controladorBuscarTramite.guardarTramiteEntregado()}"/>
+                    <p:commandButton value="Cancelar" onclick="PF('dlgTramEntregado').close()" class="red-btn" immediate="true"/>
+                </h:form>
+            </p:dialog>
+
+            <ui:include src="/paginas/FiltradoPersona.xhtml"/>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                Listado de Trabajo
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="formListTrabajo">
+                    <p:panel header="Listado de Trabajo">
+                        <p:panelGrid columns="7" 
+                                     columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-1,ui-grid-col-4,ui-grid-col-1,ui-grid-col-4,ui-grid-col-1" 
+                                     layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+                            <p:outputLabel for="txtFecha" value="Fecha:"/>
+                            <p:calendar id="txtFecha" value="#{controladorListadoTrabajo.busquedaFecha}" pattern="dd-MM-yyyy">
+                                <p:ajax event="dateSelect" listener="#{controladorListadoTrabajo.procesarConsulta()}" update="@form"/>
+                            </p:calendar>
+
+                            <p:outputLabel for="txtUsuario" value="Usuario:"/>
+                            <p:selectOneMenu id="txtUsuario" value="#{controladorListadoTrabajo.busquedaUsuario}" filter="true">
+                                <p:ajax event="change" listener="#{controladorListadoTrabajo.procesarConsulta()}" update="@form"/>
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                <f:selectItems value="#{controladorListadoTrabajo.listaUsuario}" var="listaUsuario" itemLabel="#{listaUsuario.usuLogin}" itemValue="#{listaUsuario.usuLogin}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="txtRol" value="Rol:"/>
+                            <p:selectOneMenu id="txtRol" value="#{controladorListadoTrabajo.busquedaRol}" filter="true">
+                                <p:ajax event="change" listener="#{controladorListadoTrabajo.procesarConsulta()}" update="@form"/>
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                <f:selectItems value="#{controladorListadoTrabajo.listaRol}" var="listaRol" itemLabel="#{listaRol.rolNombre}" itemValue="#{listaRol.rolNombre}"/>
+                            </p:selectOneMenu>
+
+                            <p:commandButton id="btnSetear" icon="fa fa-refresh" action="#{controladorListadoTrabajo.setearBusqueda()}"/>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="2" columnClasses="ui-grid-col-4,ui-grid-col-12" layout="grid"  style="border: none">
+                            <p:panel style="height: 500px">
+                                <p:dataTable id="dtbTramites" value="#{controladorListadoTrabajo.listaConsultada}" var="item"
+                                             scrollable="true" scrollHeight="400" sortBy="#{item.traNumero.traNumero}"
+                                             selectionMode="single" selection="#{controladorListadoTrabajo.tramiteAccionSeleccionado}" rowKey="#{item.traNumero.traNumero}"
+                                             style="text-align: center" rowIndexVar="row"  emptyMessage="Trámites No Encontrados">
+                                    <p:ajax event="rowSelect" listener="#{controladorListadoTrabajo.buscarPorTramite()}" update="formListTrabajo:dtbListaTrabajo"/>
+
+                                    <p:column  headerText="N° Trámite" groupRow="true" filterBy="#{item.traNumero.traNumero}">
+                                        <h:outputText value="#{item.traNumero.traNumero}" />
+                                    </p:column>
+                                </p:dataTable>
+
+                            </p:panel>
+                            <p:panel style="height: 500px;text-align: center">
+                                <p:dataTable id="dtbListaTrabajo" value="#{controladorListadoTrabajo.listaTramiteSeleccionado}" var="listTrabajo" 
+                                             selectionMode="single" selection="#{controladorListadoTrabajo.tramiteAccionFiltradoSeleccionado}" rowKey="#{listTrabajo.traNumero.traNumero}"
+                                             scrollable="true" scrollHeight="400" emptyMessage="Trámites No Encontrados"
+                                             style="text-align: center" rowIndexVar="row" >
+
+                                    <p:column  headerText="N° Trámite" >
+                                        <h:outputText value="#{listTrabajo.traNumero.traNumero}" />
+                                    </p:column>
+
+                                    <p:column  headerText="Observación" >
+                                        <h:outputText value="#{listTrabajo.tmaObservacion}" />
+                                    </p:column>
+
+                                    <p:column  headerText="Fecha" >
+                                        <h:outputText value="#{listTrabajo.tmaFHR}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column  headerText="Usuario" >
+                                        <h:outputText value="#{listTrabajo.tmaUserAsg}" />
+                                    </p:column>
+
+                                    <p:column  headerText="Nombre Usuario" >
+                                        <h:outputText value="#{controladorListadoTrabajo.listUsuarios.get(row)}" />
+                                    </p:column>
+                                </p:dataTable>
+                                <br/>
+                                <div class="ui-g">
+                                    <div class="ui-g-3">
+
+                                    </div>
+                                    <div class="ui-g-2">
+                                        <p:commandButton id="btnAsignar" class="green-btn" value="Asignar" />
+                                    </div>
+                                    <div class="ui-g-2">
+                                        <p:commandButton id="btnCambiar" class="yellow-btn" value="Cambiar" />
+                                    </div>
+                                    <div class="ui-g-2">
+                                        <p:commandButton id="btnSalir" class="red-btn" value="Salir" />
+                                    </div>
+                                    <div class="ui-g-3">
+
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

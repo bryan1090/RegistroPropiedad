@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="Buscar Version PH"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <p:panel header="Buscar Versión PH">
+                <h:form id="frmBusqueda">
+                    <h:panelGrid columns="5">
+                        <h:outputLabel for="tipoBusqueda" value="Tipo de Búsqueda" style="font-weight: bolder"/>
+                        <p:selectOneRadio id="tipoBusqueda" 
+                                          required="true" requiredMessage="Seleccione el tipo de Búsqueda"
+                                          value="#{controladorBuscarVersionPH.tipoBusquedaStr}">
+                            <f:selectItem itemLabel="Bloque" itemValue="bloque" />
+                            <f:selectItem itemLabel="Conjunto" itemValue="conjunto" />            
+                            <p:ajax event="valueChange" listener="#{controladorBuscarVersionPH.tipoBusqueda()}"
+                                    update="frmBusqueda frmPropiedad plPropiedad:formGeneral" />
+                        </p:selectOneRadio>
+                        <h:outputLabel value="Conjunto" for="cbxConjunto" style="float: right;font-weight: bolder" 
+                                       rendered="#{controladorBuscarVersionPH.renderedBuscarPorConjunto}"/>
+                        <h:outputLabel value="Bloque" for="cbxBloque" style="float: right;font-weight: bolder" 
+                                       rendered="#{controladorBuscarVersionPH.renderedBuscarPorBloque}"/>
+
+
+                        <p:selectOneMenu id="cbxConjunto" value="#{controladorBuscarVersionPH.comId}" 
+                                         rendered="#{controladorBuscarVersionPH.renderedBuscarPorConjunto}"
+                                         filter="true" required="true">
+                            <p:ajax event="change" listener="#{controladorBuscarVersionPH.cargarCompania()}" />
+                            <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                            <f:selectItems value="#{controladorBuscarVersionPH.listaCompania}"
+                                           var="item" itemValue="#{item.comId}" itemLabel="#{item.comNombre} - #{item.parId.parNombre}"/>
+                        </p:selectOneMenu>
+                        <p:selectOneMenu id="cbxBloque" value="#{controladorBuscarVersionPH.bloqueNombre}" 
+                                         rendered="#{controladorBuscarVersionPH.renderedBuscarPorBloque}"
+                                         filter="true" required="true">                                        
+                            <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                            <f:selectItems value="#{controladorBuscarVersionPH.listaBloqueNombre}"
+                                           var="item" itemValue="#{item}" itemLabel="#{item}"/>
+                        </p:selectOneMenu>
+
+                        <p:commandButton class="green-btn" icon="fa fa-search" value="Buscar"
+                                         action="#{controladorBuscarVersionPH.buscarPropiedades()}" update="frmPropiedad:dtbPropiedades plPropiedad"/>
+                    </h:panelGrid>                  
+                </h:form>
+                <hr/>
+                <p:panel style="height: 280px">
+                    <h:form id="frmPropiedad">
+                        <p:dataTable id="dtbPropiedades" value="#{controladorBuscarVersionPH.listaPropiedad}"
+                                     var="prop"
+                                     scrollable="true" scrollHeight="200">
+                            <p:column filterBy="#{prop.prdMatricula}" headerText="Matrícula" style="width: 100px; text-align: center" filterMatchMode="contains">                               
+                                <h:outputText value="#{prop.prdMatricula}"/>
+                            </p:column>
+                            <p:column filterBy="#{prop.prdCatastro}" headerText="Catastro" style="width: 100px; text-align: center" filterMatchMode="contains">                                
+                                <h:outputText value="#{prop.prdCatastro}"/>
+                            </p:column>
+                            <p:column filterBy="#{prop.prdPredio}" headerText="Predio" style="width: 100px; text-align: center" filterMatchMode="contains">                               
+                                <h:outputText value="#{prop.prdPredio}"/>
+                            </p:column>
+                            <p:column filterBy="#{prop.prdBloque}" headerText="Bloque" rendered="#{controladorBuscarVersionPH.tipoBusquedaStr eq 'conjunto'}" filterMatchMode="contains">
+                                <h:outputText value="#{prop.prdBloque}"/>
+                            </p:column>
+                            <p:column filterBy="#{prop.prdConjunto}" headerText="Conjunto" rendered="#{controladorBuscarVersionPH.tipoBusquedaStr eq 'bloque'}" filterMatchMode="contains">
+                                <h:outputText value="#{prop.prdConjunto}"/>
+                            </p:column>
+                            <p:column filterBy="#{prop.prdTdtParNombre}" headerText="Parroquia" style="width: 200px; text-align: center" filterMatchMode="contains">
+
+                                <h:outputText value="#{prop.prdTdtParNombre}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Descripción"/>
+                                </f:facet>
+                                <h:outputText value="#{prop.prdDescripcion2}"/>
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <f:facet name="header">
+                                    <h:outputText value="Seleccionar"/>
+                                </f:facet>
+                                <div align="center">
+                                    <h:form>
+                                        <p:commandButton class="cyan-btn" icon="fa fa-check" 
+                                                         process="@this"
+                                                         immediate="true" style="width: 40px" update="plPropiedad"
+                                                         action="#{controladorBuscarVersionPH.buscarVersiones()}">
+                                            <f:setPropertyActionListener target="#{controladorBuscarVersionPH.propiedadSeleccionada}" 
+                                                                         value="#{prop}"/>
+                                        </p:commandButton>
+                                    </h:form>
+                                </div>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form> 
+                </p:panel>
+                <hr/>
+               
+                <p:tabView id="plPropiedad">                  
+                    <p:tab title="GENERAL">
+                    <h:form id="formGeneral">
+                         <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                    <p:outputLabel value=" #{controladorBuscarVersionPH.propiedadSeleccionada.prdMatricula}"/>
+                    <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                    <p:outputLabel value=" #{controladorBuscarVersionPH.propiedadSeleccionada.prdDescripcion2}"/>
+                    <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                    <p:outputLabel value=" #{controladorBuscarVersionPH.propiedadSeleccionada.prdConjunto}"/>
+                        <br/>
+                        <p:dataTable var="version" value="#{controladorBuscarVersionPH.listaVersionPH}">
+                            <p:column headerText="Matrícula">
+                                <h:outputText value="#{version.versionPHPK.vphMatricula}" />
+                            </p:column>
+
+                            <p:column headerText="Versión">
+                                <h:outputText value="#{version.versionPHPK.vphVersion}" />
+                            </p:column>
+
+                            <p:column headerText="Secuencial">
+                                <h:outputText value="#{version.versionPHPK.vphSecuencial}" />
+                            </p:column>
+                              
+                            <p:column headerText="Descargar">    
+                                
+                                <p:commandButton value="Descargar" 
+                                                 class="cyan-btn"
+                                                 ajax="false" icon="fa fa-download"
+                                                 actionListener="#{controladorBuscarVersionPH.descargarVersionExcel(version)}">
+                                    <p:fileDownload value="#{controladorBuscarVersionPH.file}" />
+                                </p:commandButton> 
+                            </p:column>
+
+
+                        </p:dataTable>
+
+
+                    </h:form>
+                        </p:tab>                   
+                </p:tabView>
+
+            </p:panel>
+        </ui:define>
+    </ui:composition>
+</html>
+

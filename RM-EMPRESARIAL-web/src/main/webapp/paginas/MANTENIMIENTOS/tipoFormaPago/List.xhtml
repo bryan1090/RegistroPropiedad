@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListTipoFormaPagoTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="TipoFormaPagoListForm">
+                <p:panel header="#{bundle.ListTipoFormaPagoTitle}">
+                    <p:dataTable id="datalist" value="#{tipoFormaPagoController.items}" var="item"
+                                 selectionMode="single" selection="#{tipoFormaPagoController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.tpfId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column filterBy="#{item.tpfDescripcion}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoFormaPagoTitle_tpfDescripcion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpfDescripcion}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoFormaPagoTitle_tpfCodigo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpfCodigo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoFormaPagoTitle_tpfUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpfUser}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoFormaPagoTitle_tpfFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpfFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn"  value="#{bundle.Create}" actionListener="#{tipoFormaPagoController.prepareCreate}" update=":TipoFormaPagoCreateForm" oncomplete="PF('TipoFormaPagoCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":TipoFormaPagoViewForm" oncomplete="PF('TipoFormaPagoViewDialog').show()" disabled="#{empty tipoFormaPagoController.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":TipoFormaPagoEditForm" oncomplete="PF('TipoFormaPagoEditDialog').show()" disabled="#{empty tipoFormaPagoController.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{tipoFormaPagoController.destroy}" update=":growl,datalist" disabled="#{empty tipoFormaPagoController.selected}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

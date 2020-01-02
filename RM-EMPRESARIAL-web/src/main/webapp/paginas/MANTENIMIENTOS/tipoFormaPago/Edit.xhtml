@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoFormaPagoEditDlg" widgetVar="TipoFormaPagoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditTipoFormaPagoTitle}">
+            <h:form id="TipoFormaPagoEditForm">
+                
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tipoFormaPagoController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditTipoFormaPagoLabel_tpfDescripcion}" for="tpfDescripcion" />
+                        <p:inputText id="tpfDescripcion" value="#{tipoFormaPagoController.selected.tpfDescripcion}" style="text-transform: uppercase" title="#{bundle.EditTipoFormaPagoTitle_tpfDescripcion}"/>
+                        <p:outputLabel value="#{bundle.EditTipoFormaPagoLabel_tpfCodigo}" for="tpfCodigo" />
+                        <p:inputText id="tpfCodigo" value="#{tipoFormaPagoController.selected.tpfCodigo}" title="#{bundle.EditTipoFormaPagoTitle_tpfCodigo}" required="true" requiredMessage="#{bundle.EditTipoFormaPagoRequiredMessage_tpfCodigo}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{tipoFormaPagoController.update}" value="#{bundle.Save}" update="display,:TipoFormaPagoListForm:datalist,:growl" oncomplete="handleSubmit(args, 'TipoFormaPagoEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{tipoFormaPagoController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="TipoFormaPagoEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

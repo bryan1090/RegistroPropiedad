@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListConfigDetalleTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="ConfigDetalleListForm">
+                <p:panel header="#{bundle.ListConfigDetalleTitle}">
+                    <p:dataTable id="datalist" value="#{controladorConfigDetalle.items}" var="item"
+                                 selectionMode="single" selection="#{controladorConfigDetalle.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.configDetalleCodigo}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListConfigDetalleTitle_configDetalleCodigo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.configDetalleCodigo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListConfigDetalleTitle_configDetalleTexto}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.configDetalleTexto}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListConfigDetalleTitle_configDetalleNumero}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.configDetalleNumero}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListConfigDetalleTitle_configDetalleFecha}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.configDetalleFecha}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListConfigDetalleTitle_configId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.configId.configDescripcion}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListConfigDetalleTitle_configDetalleUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.configDetalleUser}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListConfigDetalleTitle_configDetalleFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.configDetalleFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                            <p:commandButton id="createButton" icon="ui-icon-plus"  class="green-btn" value="#{bundle.Create}" actionListener="#{controladorConfigDetalle.prepareCreate}" update=":ConfigDetalleCreateForm" oncomplete="PF('ConfigDetalleCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":ConfigDetalleViewForm" oncomplete="PF('ConfigDetalleViewDialog').show()" disabled="#{empty controladorConfigDetalle.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":ConfigDetalleEditForm" oncomplete="PF('ConfigDetalleEditDialog').show()" disabled="#{empty controladorConfigDetalle.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  class="red-btn" value="#{bundle.Delete}" actionListener="#{controladorConfigDetalle.destroy}" update=":growl,datalist" disabled="#{empty controladorConfigDetalle.selected}">
+                           <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="dlgFormCuantia" widgetVar="dlgCuantia" modal="true"
+                  onShow="PF('dlgCuantia').initPosition()" header="Cuantía"  appendTo="@(body)">
+            <h:form>
+                <h:panelGroup id="display">
+                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" title="El tipo de cuantía es">
+
+                        <p:selectOneRadio id="cuantia" value="s">
+                            <f:selectItem itemLabel="Normal" itemValue="n" />
+                            <f:selectItem itemLabel="Indeterminado" itemValue="i" />
+                            <f:selectItem itemLabel="Exonerado" itemValue="e" />
+                        </p:selectOneRadio>
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Monto" for="cuantiaMonto" />
+                        <p:inputText id="cuantiaMonto" value="#{controladorInscripcion.cuantiaMonto}" title="" />
+                        <p:outputLabel value="Alcabalas" for="cuantiaAlcabalas" />
+                        <p:inputText id="cuantiaAlcabalas" value="#{controladorInscripcion.cuantiaAlcabalas}" title="" />
+                        <p:outputLabel value="Plusvalía" for="cuantiaPlusvalia" />
+                        <p:inputText id="cuantiaPlusvalia" value="#{controladorInscripcion.cuantiaPlusvalia}" title="" />
+                        <p:outputLabel value="Registro" for="cuantiaRegistro" />
+                        <p:inputText id="cuantiaRegistro" value="#{controladorInscripcion.cuantiaRegistro}" title="" />
+                    </h:panelGrid>
+                    
+                    <p:commandButton class="green-btn" action ="#{controladorInscripcion.porbar()}" icon="fa fa-save" value="Generar" />
+
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+
+    </ui:composition>
+</html>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="EstadoAtributoCreateDlg" widgetVar="EstadoAtributoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateEstadoAtributoTitle}">
+            <h:form id="EstadoAtributoCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorEstadoAtributo.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateEstadoAtributoLabel_estAtrAtributo}" for="estAtrAtributo" />
+                        <p:inputText id="estAtrAtributo" value="#{controladorEstadoAtributo.selected.estAtrAtributo}" style="text-transform: uppercase" title="#{bundle.CreateEstadoAtributoTitle_estAtrAtributo}" required="true" requiredMessage="#{bundle.CreateEstadoAtributoRequiredMessage_estAtrAtributo}"/>
+                        <p:outputLabel value="#{bundle.CreateEstadoAtributoLabel_estId}" for="estId" />
+                        <p:selectOneMenu id="estId" value="#{controladorEstadoAtributo.selected.estId}" required="true" requiredMessage="#{bundle.EditEstadoAtributoRequiredMessage_estId}">
+                            <f:selectItems value="#{controladorEstado.itemsAvailableSelectOne}"
+                                           var="estIdItem"
+                                           itemValue="#{estIdItem}" itemLabel="#{estIdItem.estDescripcion}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorEstadoAtributo.create}" value="#{bundle.Save}" update="display,:EstadoAtributoListForm:datalist,:growl" oncomplete="handleSubmit(args,'EstadoAtributoCreateDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorEstadoAtributo.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="EstadoAtributoCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

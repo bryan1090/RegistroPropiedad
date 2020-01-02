@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Carga diaria"></h:outputText>
+        </ui:define>
+        <ui:define name="content" >
+            <h:form id="formPrincipal">
+                <p:panel header="Carga diaria" >
+                    <h:panelGrid columns="6" >
+                        <p:outputLabel value="Fecha Inicio:" for="txtFechaIni" />
+                        <p:calendar required="true" requiredMessage="Ingrese fecha de Inicio" value="#{controladorReporteCargaDiaria.fechaIni}" pattern="dd/MM/yyyy" id="txtFechaIni" >
+                            </p:calendar>
+                       
+                        <p:outputLabel value="Fecha Fin:" for="txtFechaFin" />
+                        
+                        <p:calendar required="true" requiredMessage="Ingrese fecha de finalizacion"  value="#{controladorReporteCargaDiaria.fechaFin}" pattern="dd/MM/yyyy" id="txtFechaFin" >
+                            
+                        </p:calendar>
+                        
+                        <p:commandButton style="margin-bottom: 10px" value="Descargar" class="cyan-btn" ajax="false" icon="fa fa-download" update="@form" action="#{controladorReporteCargaDiaria.excelCargaDiaria()}">
+                        
+                        </p:commandButton> 
+                         
+                    </h:panelGrid>
+                </p:panel>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

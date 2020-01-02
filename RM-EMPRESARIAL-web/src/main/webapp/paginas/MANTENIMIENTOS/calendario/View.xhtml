@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CalendarioViewDlg" widgetVar="CalendarioViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewCalendarioTitle}">
+            <h:form id="CalendarioViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{calendarioController.selected != null}">
+                        
+                        <h:outputText value="#{bundle.ViewCalendarioLabel_cldAnio}"/>
+                        <h:outputText value="#{calendarioController.selected.cldAnio}" title="#{bundle.ViewCalendarioTitle_cldAnio}"/>
+                        <h:outputText value="#{bundle.ViewCalendarioLabel_cldMes}"/>
+                        <h:outputText value="#{calendarioController.selected.cldMes}" title="#{bundle.ViewCalendarioTitle_cldMes}"/>
+                        <h:outputText value="#{bundle.ViewCalendarioLabel_cldDia}"/>
+                        <h:outputText value="#{calendarioController.selected.cldDia}" title="#{bundle.ViewCalendarioTitle_cldDia}"/>
+                        <h:outputText value="#{bundle.ViewCalendarioLabel_cldFecha}"/>
+                        <h:outputText value="#{calendarioController.selected.cldFecha}" title="#{bundle.ViewCalendarioTitle_cldFecha}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewCalendarioLabel_cldFestivo}"/>
+                        <h:outputText value="#{calendarioController.selected.cldFestivo}" title="#{bundle.ViewCalendarioTitle_cldFestivo}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Close}" onclick="CalendarioViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

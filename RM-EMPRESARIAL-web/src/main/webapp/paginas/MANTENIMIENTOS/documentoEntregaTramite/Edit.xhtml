@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoEntregaTramiteEditDlg" widgetVar="DocumentoEntregaTramiteEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditDocumentoEntregaTramiteTitle}">
+            <h:form id="DocumentoEntregaTramiteEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorDocumentoEntregaTramite.selected != null}">
+                        <p:outputLabel value="#{bundle.EditDocumentoEntregaTramiteLabel_dteId}" for="dteId" />
+                        <p:selectOneMenu id="dteId" value="#{controladorDocumentoEntregaTramite.selected.dteId}" required="true" requiredMessage="#{bundle.EditDocumentoEntregaTramiteRequiredMessage_dteId}"
+                                         filter="true" filterMatchMode="startsWith">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{controladorDocumentoEntrega.itemsAvailableSelectOne}"
+                                           var="dteIdItem"
+                                           itemValue="#{dteIdItem}" itemLabel="#{dteIdItem.dteDescripcion}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditDocumentoEntregaTramiteLabel_ttrId}" for="ttrId" />
+                        <p:selectOneMenu id="ttrId" value="#{controladorDocumentoEntregaTramite.selected.ttrId}" required="true" requiredMessage="#{bundle.EditDocumentoEntregaTramiteRequiredMessage_ttrId}"
+                                         filter="true" filterMatchMode="startsWith">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{controladorTipoTramite.itemsAvailableSelectOne}"
+                                           var="ttrIdItem"
+                                           itemValue="#{ttrIdItem}" itemLabel="#{ttrIdItem.ttrDescripcion}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorDocumentoEntregaTramite.update}" value="#{bundle.Save}" update="display,:DocumentoEntregaTramiteListForm:datalist,:growl" oncomplete="handleSubmit(args, 'DocumentoEntregaTramiteEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorDocumentoEntregaTramite.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="DocumentoEntregaTramiteEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

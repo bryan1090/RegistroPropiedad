@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoSuspensionEditDlg" widgetVar="TipoSuspensionEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditTipoSuspensionTitle}">
+            <h:form id="TipoSuspensionEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension != null}">
+                        
+                        <p:outputLabel value="#{bundle.EditTipoSuspensionLabel_tpsNombre}" for="tpsNombre" />
+                        <p:inputText id="tpsNombre" value="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension.tpsNombre}" style="text-transform: uppercase;" title="#{bundle.EditTipoSuspensionTitle_tpsNombre}" required="true" requiredMessage="#{bundle.EditTipoSuspensionRequiredMessage_tpsNombre}"/>
+                        <p:outputLabel value="#{bundle.EditTipoSuspensionLabel_tpsEstado}" for="tpsEstado" />
+                        <p:selectOneMenu id="tpsEstado" value="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension.tpsEstado}" title="#{bundle.EditTipoSuspensionTitle_tpsEstado}" required="true" requiredMessage="#{bundle.EditTipoSuspensionRequiredMessage_tpsEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Revisión" for="@next"/>
+                        <p:selectBooleanCheckbox value="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension.tpsRevision}"/>
+                        <p:outputLabel value="Inscripción" for="@next"/>
+                        <p:selectBooleanCheckbox value="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension.tpsInscripcion}"/>
+                        
+                        
+
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{tipoSuspensionController.actualizar()}" value="#{bundle.Save}" update="display,:TipoSuspensionListForm:datalist,:growl" oncomplete="PF('TipoSuspensionEditDialog').hide();"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{tipoSuspensionController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="TipoSuspensionEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

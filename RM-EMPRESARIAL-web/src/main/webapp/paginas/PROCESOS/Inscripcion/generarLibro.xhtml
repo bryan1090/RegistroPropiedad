@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Generar Libro"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="formGenerarLibro">
+                <p:growl id="growl" showDetail="true" sticky="false" life="3000"/>
+
+                <p:panel header="Generar Libro" >
+
+                    <p:panel>
+                        <h:panelGrid columns="6" style="text-align: center;width: 100%">
+
+                            <p:outputLabel for="txtFecha" value="Fecha"/>
+                            <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFecha" value="#{controladorGenerarLibro.fecha}" required="true" requiredMessage="Fecha requerida"/>
+
+                            <p:outputLabel for="txtLibro" value="Libro"/>
+                            <p:selectOneMenu id="txtLibro" value="#{controladorGenerarLibro.libroId}" filter="true" filterMatchMode="startsWith">
+                                <f:selectItem itemLabel="Seleccione uno..." itemValue="" />
+                                <f:selectItems value="#{controladorGenerarLibro.listaTipoLibro}"
+                                               var="tipoLibro" 
+                                               itemValue="#{tipoLibro.tplId}"
+                                               itemLabel="#{tipoLibro.tplDescripcion}"
+                                               />
+                            </p:selectOneMenu>
+
+
+                            <p:commandButton actionListener="#{controladorGenerarLibro.buscarActa()}"  value="Buscar" update=":formGenerarLibro growl frmRepUsario" 
+                                             class="green-btn" style="margin-right:20px;" icon="fa fa-search" title="BuscarActa" 
+                                             />
+                        </h:panelGrid>
+                    </p:panel>
+                    <br/>
+
+                    <p:panel>
+                        <h:panelGrid columns="8" style="text-align: center;width: 100%">
+
+                            <p:outputLabel for="txtTomo" value="Tomo"/>
+                            <p:inputText id="txtTomo" value="#{controladorGenerarLibro.tomo}" readonly="true"/>
+
+
+                            <p:outputLabel for="txtVolumen" value="Volumen"/>
+                            <p:inputText id="txtVolumen" value="#{controladorGenerarLibro.volumen}" />
+
+                            <h:panelGroup id="numHojas">
+                                <h:panelGroup rendered="#{controladorGenerarLibro.totHojasMasBdHojas le 500}">
+                                    <div align="center" style="width: 100px; border: 1px solid #d3d3d3; border-radius: 10px; background-color: palegreen">
+                                        <h:outputText value="#{controladorGenerarLibro.totHojasMasBdHojas}/#{controladorGenerarLibro.cd.configDetalleNumero.intValueExact()}"/>
+                                    </div>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{controladorGenerarLibro.totHojasMasBdHojas gt 500}">
+                                    <div align="center" style="width: 100px; border: 1px solid #d3d3d3; border-radius: 10px; background-color: #ffd333">
+                                        <h:outputText value="#{controladorGenerarLibro.totHojasMasBdHojas}/#{controladorGenerarLibro.cd.configDetalleNumero.intValueExact()}"/>
+                                    </div>
+                                </h:panelGroup>
+                            </h:panelGroup>
+
+                            <p:outputLabel for="txtInscripcion" value="Última Inscripción"/>
+                            <p:inputText id="txtInscripcion" readonly="true" value="#{controladorGenerarLibro.ultimaInscripcion}" />
+
+                            <p:commandButton action="#{controladorGenerarLibro.procesar()}" 
+                                             disabled="#{controladorGenerarLibro.listaActa.size() == 0}" value="Procesar" update=":formGenerarLibro, growl" 
+                                             class="cyan-btn" style="margin-right:20px;" icon="fa fa-clipboard" title="Procesar" />
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <br/>
+                    <style>
+                        .table-no-select-all .ui-chkbox-all {
+                            display: none !important;
+                        }
+                    </style>
+                    <h:panelGrid id="panelRep" columns="1">      
+                        <p:dataTable id="tblActas" rows="10" value="#{controladorGenerarLibro.listaActa}" var="list" selection="#{controladorGenerarLibro.listaActaProcesar}" rowKey="#{list.actNumero}" styleClass="table-no-select-all"> 
+                            <p:ajax event="rowSelectCheckbox" listener="#{controladorGenerarLibro.onRowSelectEvent}" update=":formGenerarLibro:numHojas"/>
+                            <p:ajax event="rowUnselectCheckbox" listener="#{controladorGenerarLibro.onRowUnselectEvent}" update=":formGenerarLibro:numHojas"/>
+                            <p:column headerText="Repertorio">
+                                <h:outputText value="#{list.repNumero.repNumero}" />
+                            </p:column>
+
+                            <p:column headerText="Acta">
+                                <h:outputText value="#{list.actNumero}" />
+                            </p:column>
+
+                            <p:column headerText="Inscripción">
+                                <h:outputText value="#{list.actInscripcion}" />
+                            </p:column>
+                            <p:column headerText="Número de Hojas">
+                                <h:outputText value="#{list.actNumeroHojas}" />
+                            </p:column>
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                        </p:dataTable>
+
+                    </h:panelGrid>
+
+                </p:panel>
+
+
+
+
+            </h:form>
+
+
+
+
+
+            <p:dialog widgetVar="dlgMostrarLibro" modal="true" >
+                <h:form id="frmMostrarLibros">
+                    <p:textEditor widgetVar="editor1" height="300"  readonly="true" 
+                                  value="#{controladorGenerarLibro.libros}"/>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog widgetVar="dlgMostrarLibroPDF" modal="true" resizable="true" width="80%">
+                <h:form id="frmMostrarLibrosPdf">
+<!--                    <iframe id="iframeCenter" src="#{controladorGenerarLibro.dirArchivoComoRecurso}"   
+                            frameborder="0"  width="700px" height="700px"/>  -->
+                    <p:media value="#{controladorGenerarLibro.url}" rendered="#{!empty controladorGenerarLibro.url}"
+                             width="100%" height="600px"
+                             />
+                </h:form>
+            </p:dialog>
+            <p:dialog widgetVar="dlgRepUsuario" modal="true" width="500"
+                      onShow="PF('dlgRepUsuario').initPosition()" header="PROCESOS PENDIENTES">
+                <h:form id="frmRepUsario">
+                    <h:outputText value="Existen Procesos sin Completar" style="color: red;font-weight: bolder;font-size: 15px"/>
+                    <p:dataTable value="#{controladorGenerarLibro.listRepUsuSinTerminar}"
+                                 scrollable="true" scrollHeight="200" var="repUsu" sortBy="#{repUsu.repNumero.repNumero}" rowKey="#{repUsu.rpuId}">
+                        <p:column headerText="Nro. Repertorio">
+                            <h:outputText value="#{repUsu.repNumero.repNumero}" />
+                        </p:column>
+                        <p:column headerText="Usuario Asignado">
+                            <h:outputText value="#{repUsu.usuId.usuLogin}" />
+                        </p:column>
+                        <p:column headerText="Fecha">
+                            <h:outputText value="#{repUsu.repNumero.repFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                            
+                        <p:column headerText="Tipo Proceso">
+                            <h:outputText value="INSCRIPCIÓN" rendered="#{repUsu.rpuTipo eq 'INS'}" />
+                            <h:outputText value="DEMANDA" rendered="#{repUsu.rpuTipo eq 'IND'}" />
+                            <h:outputText value="CANCELACIÓN" rendered="#{repUsu.rpuTipo eq 'INC'}" />
+                            <h:outputText value="POSESIÓN EFECTIVA" rendered="#{repUsu.rpuTipo eq 'INA'}" />
+                            <h:outputText value="PROHIBICIÓN" rendered="#{repUsu.rpuTipo eq 'INP'}" />
+                        </p:column>
+                        
+                    </p:dataTable>
+                    <p:commandButton value="Salir" class="red-btn" icon="fa fa-close" onclick="PF('dlgRepUsuario').hide()"/>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+
+</html>

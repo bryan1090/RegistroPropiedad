@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+   
+    
+    <ui:composition>
+         <style type="text/css">
+    .principal {
+        background-color: #fca752 !important;
+        background-image: none !important;
+        color: #000000 !important;
+    }
+    </style>
+        <div class="ui-fluid" align="center">
+            <p:panel>
+
+                <h:form id="formMatriculacion2">
+
+                    <p:panel id="pnlPreMatriculacion">
+                        <h:panelGrid columns="4" style="border: none;text-align: center;width: 100%" >
+
+                            <p:outputLabel for="txtRepertorioPopup" value="Repertorio" style="font-weight: bold"/>
+                            <p:outputLabel for="txtTramitePopup" value="#Trámite" style="font-weight: bold"/>
+                            <p:outputLabel for="txtFechaPopup" value="Fecha" style="font-weight: bold"/>
+                            <p:outputLabel for="txtContrato" value="Contrato" style="font-weight: bold"/>
+
+                            <h:outputText id="txtRepertorioPopup" value="#{controladorNuevasMatriculas.repertorioSeleccionado.repNumero}"
+                                          style="color: #1A237E"
+                                          />
+                            <h:outputText id="txtTramitePopup" value="#{controladorNuevasMatriculas.repertorioSeleccionado.traNumero.traNumero}"
+                                          style="color: #1A237E"/>
+                            <h:outputText id="txtFechaPopup" value="#{controladorNuevasMatriculas.repertorioSeleccionado.repFHR}"
+                                          style="color: #1A237E">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                            <h:outputText id="txtContrato" value="#{controladorNuevasMatriculas.repertorioSeleccionado.repTtrDescripcion}" 
+                                          style="color: #1A237E"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <br/>
+                    <div align="left">
+                        <p:selectOneRadio id="console" value="#{controladorNuevasMatriculas.tipoMatriculacion}" 
+                                          disabled="#{!empty controladorNuevasMatriculas.tipoMatriculacion}"
+                                          >
+                            <p:ajax event="change" process="@this" update="@this :pnlAcciones @form"
+                                    listener="#{controladorNuevasMatriculas.cargarListaParroquia()}"/>
+                            <f:selectItem itemLabel="Derechos y Acciones" itemValue="GDA" />                            
+                            <f:selectItem itemLabel="Unificaciones" itemValue="UNF" itemDisabled="#{controladorNuevasMatriculas.repertorioSeleccionado.traNumero.traClase.trim() eq 'J'}"/>
+                            <f:selectItem itemLabel="Divisiones" itemValue="DIV" itemDisabled="#{controladorNuevasMatriculas.repertorioSeleccionado.traNumero.traClase.trim() eq 'J'}"/>
+
+                        </p:selectOneRadio>
+                    </div>
+                    <br/>
+                    <p:dataTable id="dtbTramVal" value="#{controladorNuevasMatriculas.listaTramiteValor}" 
+                                 var="traval" rowKey="#{traval.trvId}" 
+                                 editable="true"
+                                 rowStyleClass="#{traval.trvPrincipal eq true ? 'principal' : null}"
+                                 scrollable="true" scrollHeight="200" style="text-align: center"
+                                 rowIndexVar="numFila"
+                                 selection="#{controladorNuevasMatriculas.listaTramiteValorSeleccionados}" 
+                                  disabledSelection="#{(controladorNuevasMatriculas.tipoMatriculacion eq 'UNF' and (traval.trvAccion eq 0 or traval.trvAccion eq null)) or traval.trvPrincipal eq true}"
+                                 >
+                        
+                      
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton value="Nuevo" icon="fa fa-plus" style="width: 80px"
+                                                 class="green-btn"
+                                                 action="#{controladorNuevasMatriculas.preCrearNuevoTramiteValor()}"
+                                                 process="@this" immediate="true"
+                                                 update=":frmIngresoTramVal"
+                                                 oncomplete="PF('dlgCrearTramVal').show()"/>
+                                <p:commandButton icon="fa fa-arrow-circle-left"  value="Regresar"
+                                                 class="cyan-btn"
+                                                 style="width: 80px" 
+                                                 action="#{controladorNuevasMatriculas.redireccionarPaginaSeleccion()}"
+                                                 process="@this" immediate="true"
+                                                 update="growl"/>
+                                <p:commandButton icon="fa fa-stop"  value="Terminar"
+                                                 class="red-btn"
+                                                 style="width: 80px" 
+                                                 action="#{controladorNuevasMatriculas.terminarProceso()}"
+                                                 process="@this" immediate="true"
+                                                 disabled="#{controladorNuevasMatriculas.disabledBtnTerminar}"
+                                                 rendered="#{controladorNuevasMatriculas.renderedBtnTerminar}"
+                                                 update="growl" >
+
+                                    <p:confirm header="Confirmación" message="¿Desea terminar el proceso?" icon="ui-icon-alert" />
+                                </p:commandButton>  
+
+                                <p:commandButton  oncomplete ="PF('dlgComparecientes').show()"
+                                                  rendered="true"    
+                                                  immediate="true" process="@this" 
+                                                  actionListener="#{controladorNuevasMatriculas.prepararDialogoComparecientes()}"
+                                                  action="#{controladorInscripcionProceso.listarComparecientes()}"
+                                                  value="Compareciente"
+                                                  class="green-btn"
+                                                  style="width: 120px" update=":formComparecientes" icon="fa fa-plus"
+                                                  title="Agregar" />
+                            </div>
+                        </f:facet>
+                       
+                        <p:column headerText="Estado" style="width: 15%">
+                            <h:outputText value="Revisado" style="font-size: medium; color: green"
+                                          rendered="#{traval.trvAccion gt 0}"/>
+
+                            <h:outputText value="No Revisado" style="font-size: medium;color: red"
+                                          rendered="#{traval.trvAccion eq 0 or traval.trvAccion eq null}"/>
+                        </p:column>
+                        <p:column headerText="Gravamen" style="width: 15%;font-size: medium;">
+                            <h:outputText value="#{controladorNuevasMatriculas.verificarGravamenes(traval)}"
+                                          style="#{controladorNuevasMatriculas.verificarGravamenes(traval) eq 'Tiene gravamenes'? 'color:red':
+                                                   controladorNuevasMatriculas.verificarGravamenes(traval) eq 'No Tiene gravamenes'?'color:red':''}"/>
+                        </p:column>
+                        <p:column headerText="Predio">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{traval.traNumPredio}"/></f:facet> 
+                                <f:facet name="input"><p:inputText value="#{traval.traNumPredio}" style="width:96%" label="Year"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Catastro">
+                            <p:cellEditor>
+                                <f:facet name="output"> <h:outputText value="#{traval.trvNumCatastro}" style="text-transform: uppercase"/></f:facet> 
+                                <f:facet name="input"><p:inputText value="#{traval.trvNumCatastro}" style="width:96%;text-transform: uppercase" /></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column  headerText="Parroquia">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{traval.trvParNombre}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{traval.trvParNombre}" style="width:100%">
+                                        <f:selectItems value="#{controladorNuevasMatriculas.listaParroquia}" var="item"
+                                                       itemLabel="#{item.parNombre}" itemValue="#{item.parNombre}" />
+
+
+                                    </h:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+
+                        <p:column  headerText="Editar" style="width:7%;" >
+                            <p:rowEditor rendered="#{!traval.trvPrincipal eq true and (traval.trvAccion eq 0 or traval.trvAccion eq null)}"/>
+                        </p:column>
+                        <!--    
+                        <p:column  headerText="Estado" style="width:10%;" 
+                                   rendered="#{controladorNuevasMatriculas.tipoMatriculacion eq 'UNF'
+                                               or controladorNuevasMatriculas.tipoMatriculacion eq 'DIV'}"
+                                   >
+                            <h:outputText value="#{controladorNuevasMatriculas.obtenerEstadoPropiedad(traval)}"/>
+
+                        </p:column>
+                        -->
+                         <p:column  headerText="P/S" style="width:10%;" 
+                                   rendered="#{controladorNuevasMatriculas.tipoMatriculacion eq 'UNF'
+                                                or controladorNuevasMatriculas.tipoMatriculacion eq 'DIV'}"                                              
+                                   >
+                             
+                             <h:outputText value="Secundaria"
+                                           rendered="#{traval.trvPrincipal eq false or traval.trvPrincipal eq null}"/>
+                             <h:outputText value="Principal" style="color:red; font-weight: bolder"
+                                           rendered="#{traval.trvPrincipal eq true}"/>                            
+
+                        </p:column>                     
+
+                        <p:column headerText="Seleccionar" style="width: 10%">
+                            <p:commandButton class="cyan-btn" icon="fa fa-check" disabled="#{traval.trvPrincipal eq true}" 
+                                             action="#{controladorNuevasMatriculas.seleccionarTramiteValor()}" 
+                                             process="@this"
+                                             immediate="true"
+                                             update="growl :pnlAcciones @form" style="width: 40px">
+                                <f:setPropertyActionListener target="#{controladorNuevasMatriculas.tramiteValorSeleccionado}" 
+                                                             value="#{traval}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="Eliminar" style="width: 10%">
+                            <p:commandButton class="red-btn" icon="fa fa-trash" disabled="#{traval.trvPrincipal eq true}"
+                                             action="#{controladorNuevasMatriculas.borrarTramiteValor()}" 
+                                             update="@form growl :tabView" style="width: 40px">
+                                <p:confirm header="Eliminar elemento" message="¿Esta seguro?"/>
+                                <f:setPropertyActionListener target="#{controladorNuevasMatriculas.tramiteValorSeleccionado}" 
+                                                             value="#{traval}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:form>
+            </p:panel>
+        </div>
+
+        <p:dialog id="dlgFormComparecientes" widgetVar="dlgComparecientes" modal="true"
+                  onShow="PF('dlgComparecientes').initPosition()" header="Comparecientes" >
+
+            <h:form id="formComparecientes">
+                <h:panelGroup >    
+                    <h:panelGrid id="panelGridCompareciente" columns="7" >
+                        <p:outputLabel value="Identificación"/>
+                        <p:inputText id="txtIdentificacion" required="true" requiredMessage="Ingrese la identificación"
+                                     title="Identificación"  
+                                     value="#{controladorInscripcionProceso.tramitesControladorBb.identificacion }" >
+                            <p:ajax listener="#{controladorInscripcionProceso.buscarPersona()}" 
+                                    update="growl panelGridCompareciente"  
+                                    process="txtIdentificacion" event="change" 
+                                    />
+                        </p:inputText>
+
+                        <p:inputText value="#{controladorInscripcionProceso.tramitesControladorBb.nombrePersona}"
+                                     style="width: 250px" readonly="true"/>
+
+                        <p:selectOneMenu id="tipoContrato" value="#{controladorInscripcionProceso.tipoComparecienteId}">
+                            <f:selectItems value="#{controladorInscripcionProceso.listaTipoCompareciente}"
+                                           var="tipoComp" 
+                                           itemValue="#{tipoComp.tpcId}"
+                                           itemLabel="#{tipoComp.tpcDescripcion}"
+                                           />
+                        </p:selectOneMenu>
+                        <p:commandButton  rendered="true"
+                                          action="#{controladorInscripcionProceso.guardarTramiteDetalle()}"
+                                          class="green-btn"
+                                          style="margin-right:20px;" icon="fa fa-plus"
+                                          title="Agregar Compareciente" 
+                                          update="growl formComparecientes"/>
+                        <p:commandButton title="Buscar Persona" icon="fa fa-search" value="Buscar"
+                                         class="orange-btn" immediate="true" process="@this" 
+                                         actionListener="#{controladorFiltradoPersona.prepararFiltrado('CtrlIns', 'formComparecientes')}"
+                                         oncomplete ="PF('dlgFiltradoPersona').show()"/>
+                        <p:commandButton title="Crear Nueva Persona" icon="fa fa-user-plus" 
+                                         oncomplete ="PF('dlgNuevaPersona').show()"
+                                         update="growl @form"/>
+                    </h:panelGrid>  
+                    <div align="center" >
+                        <h:panelGrid id="panelComparecientes" columns="2" width="650">   
+                            <p:dataTable id="tblComparecientes"  style="overflow: auto"
+                                         value="#{controladorInscripcionProceso.listaTramiteDetalle}"
+                                         var="compareciente" sortBy="#{compareciente.tdtPerIdentificacion}" >
+
+                                <p:column headerText="NOMBRE" width="220">
+                                    <h:outputText value="#{compareciente.tdtPerNombre.trim()} #{compareciente.tdtPerApellidoPaterno.trim()} #{compareciente.tdtPerApellidoMaterno.trim()}" />
+                                </p:column>
+                                <p:column headerText="TIPO" width="110">
+                                    <h:outputText value="#{compareciente.tdtTpcDescripcion}" />
+                                </p:column>
+
+                                <p:column headerText="TIPO CONTRATO" width="170">
+                                    <h:outputText value="#{compareciente.tdtTtrDescripcion}" />
+                                </p:column>
+
+                                <p:column headerText="" style="text-align: center;">
+                                    <p:commandButton  
+                                        action="#{controladorInscripcionProceso.eliminarCompareciente(compareciente.tdtId)}"
+                                        class="red-btn" immediate="true" 
+                                        style="margin-right:20px;" icon="fa fa-remove"
+                                        title="Eliminar Compareciente" 
+                                        update="growl formComparecientes"/>
+
+                                </p:column>
+                            </p:dataTable> 
+
+                        </h:panelGrid>
+                    </div>
+
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="Salir" immediate="true" onclick="PF('dlgComparecientes').hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+
+        <ui:include src="/paginas/FiltradoPersona.xhtml"/>
+    </ui:composition>
+
+</html>

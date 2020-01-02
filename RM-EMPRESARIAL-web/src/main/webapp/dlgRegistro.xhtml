@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog header="Registrarse" modal="true" widgetVar="dlgRegistro" minHeight="40" position="center center" onShow="PF('dlgRegistro').initPosition()">
+            <h:form id="RegistroForm">
+                <p:growl id="growl" showDetail="true" sticky="false" life="5000"/> 
+                <p:outputPanel id="plRegistro" style="text-align:left;">             
+
+                    <h:panelGrid columns="4">
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perIdentificacion}" for="perIdentificacion" />
+                        <p:inputText maxlength="20"  id="perIdentificacion" value="#{controladorRegistro.persona.perIdentificacion}" title="#{bundle.CreatePersonaTitle_perIdentificacion}" 
+                                     required="true" requiredMessage="Ingrese la identificación" autocomplete="off"> 
+                            <p:ajax event="change" listener="#{controladorRegistro.traer()}" update="plRegistro growl"/>
+                            <p:ajax event="change" listener="#{controladorRegistro.quitarEspacios()}" update="@this"/>
+                        </p:inputText>
+                        <p:outputLabel value="Tipo Identificación" for="perTipoIdentificacion" />                     
+
+                        <p:selectOneMenu id="perTipoIdentificacion" 
+                                         value="#{controladorRegistro.persona.perTipoIdentificacion}" 
+                                         style="width:125px"
+                                         required="true" requiredMessage="Seleccionar tipo de identificación">
+                            <p:ajax process="@this" update="plRegistro"></p:ajax>
+                            <f:selectItem itemLabel="CEDULA" itemValue="C" />
+                            <f:selectItem itemLabel="RUC" itemValue="R" />
+                            <f:selectItem itemLabel="PASAPORTE" itemValue="P" />
+
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Apellido Paterno" for="perApellidoPaterno" rendered="#{controladorRegistro.persona.perTipoIdentificacion eq 'N'}"/>
+                        <p:outputLabel value="Apellido Paterno" for="perApellidoPaterno" rendered="#{controladorRegistro.persona.perTipoIdentificacion eq 'C'}" />
+                        <p:outputLabel value="Apellido Paterno" for="perApellidoPaterno" rendered="#{controladorRegistro.persona.perTipoIdentificacion eq 'P'}" />
+                        <p:outputLabel value="Nombre Comercial" for="perApellidoPaterno" rendered="#{controladorRegistro.persona.perTipoIdentificacion eq 'R'}" />
+
+                        <p:inputText style="text-transform:uppercase;" id="perApellidoPaterno" 
+                                     validatorMessage="Ingrese solo letras en el apellido paterno" 
+                                     value="#{controladorRegistro.persona.perApellidoPaterno}" 
+                                     title="#{bundle.CreatePersonaTitle_perApellidoPaterno}" 
+                                     required="true" requiredMessage="Ingrese el apellido paterno"
+                                     disabled="#{controladorRegistro.disableInput}"
+                                     autocomplete="off">
+                            <p:ajax event="change" listener="#{controladorRegistro.quitarEspacios()}" update="@this"/>
+                            <f:validateRegex  pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/> 
+                        </p:inputText>
+
+                        <p:outputLabel value="Apellido Materno" for="perApellidoMaterno" />
+                        <p:inputText style="text-transform:uppercase;" id="perApellidoMaterno" 
+                                     validatorMessage="Ingrese solo letras en el apellido materno" 
+                                     value="#{controladorRegistro.persona.perApellidoMaterno}" 
+                                     title="#{bundle.CreatePersonaTitle_perApellidoMaterno}"
+                                     disabled="#{controladorRegistro.disableInput}">
+                            <p:ajax event="change" listener="#{controladorRegistro.quitarEspacios()}" update="@this"/>
+                            <f:validateRegex  pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/> 
+                        </p:inputText>
+
+                        <p:outputLabel value="Nombres" for="perNombre" rendered="#{controladorRegistro.persona.perTipoIdentificacion eq 'N'}" />
+                        <p:outputLabel value="Nombres" for="perNombre" rendered="#{controladorRegistro.persona.perTipoIdentificacion eq 'C'}" />
+                        <p:outputLabel value="Nombres" for="perNombre" rendered="#{controladorRegistro.persona.perTipoIdentificacion eq 'P'}" />
+                        <p:outputLabel value="Razón Social" for="perNombre" rendered="#{controladorRegistro.persona.perTipoIdentificacion eq 'R'}" />                     
+                        <p:inputText required="true"  style="text-transform:uppercase;" 
+                                     id="perNombre" value="#{controladorRegistro.persona.perNombre}" 
+                                     title="#{bundle.CreatePersonaTitle_perNombre}" 
+                                     requiredMessage="Ingrese el nombre"
+                                     disabled="#{controladorRegistro.disableInput}"
+                                     autocomplete="off">
+                            <p:ajax event="change" listener="#{controladorRegistro.quitarEspacios()}" update="@this"/>
+                        </p:inputText>
+
+                        <p:outputLabel value="Correo Electrónico" for="txtCorreo"/>
+                        <p:inputText  size="50"  id="txtCorreo" 
+                                      value="#{controladorRegistro.persona.perEmail}" 
+                                      validatorMessage="El email es incorrecto"
+                                      required="true" requiredMessage="Ingrese un correo electrónico"
+                                      autocomplete="off">
+                            <f:validateRegex  pattern="^((\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)|(\s*))$"/>
+                        </p:inputText>
+
+                        <p:outputLabel value="Celular" for="txtCelular1"/>
+                        <p:inputMask  mask="9999999999"  id="txtCelular1" value="#{controladorRegistro.persona.perCelular}" 
+                                      required="true" requiredMessage="Ingrese un numero de celular" autocomplete="off"></p:inputMask>
+
+                        <p:outputLabel value="Dirección" for="txtDireccion1"/>
+                        <p:inputText  size="50" id="txtDireccion1" 
+                                      value="#{controladorRegistro.persona.perDireccion}" 
+                                      style="text-transform: uppercase"
+                                      required="true" requiredMessage="Ingrese la dirección"
+                                      autocomplete="off">
+                            <p:ajax event="change" listener="#{controladorRegistro.quitarEspacios()}" update="@this"/>
+                        </p:inputText>
+                    </h:panelGrid>
+                    <hr/>
+                    <div align="center">
+                        <h:panelGrid columns="4">
+                            <p:outputLabel value="N° Factura" for="txtNfactura"/>
+                            <p:inputText id="txtNfactura" value="#{controladorRegistro.txtNfactura}" style="text-transform: uppercase"
+                                         required="true" requiredMessage="Ingrese el número de factura"
+                                         autocomplete="off"/>
+                            <p:outputLabel value="Código de verificación" for="txtCodigo"/>
+                            <p:inputText size="4" id="txtCodigo" value="#{controladorRegistro.txtCodigo}" style="text-transform: uppercase"
+                                         required="true" requiredMessage="Ingrese el código de verificación"
+                                         autocomplete="off"/>
+                        </h:panelGrid>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel>
+                    <hr/>
+                    <div align="center">
+                        <div class="g-recaptcha" data-sitekey="6LfyNJoUAAAAAJajcJCAvli-rgd-YUJpkNA3C3gU"></div>
+                        <h:outputText id="msgRecaptcha2" style="color: red" value="#{controladorRegistro.msgReCaptcha}"/>
+                    </div>
+                    <hr/>
+                    <div align="center">
+                        <p:commandButton value="Guardar" icon="fa fa-save" class="green-btn" update="plRegistro msgRecaptcha2 growl" actionListener="#{controladorRegistro.quitarEspacios()}" action="#{controladorRegistro.crearPersona()}" oncomplete="grecaptcha.reset();"/>
+                        <p:commandButton value="Refrescar" class="cyan-btn"  icon="fa fa-refresh" action="#{controladorRegistro.limpiar()}" process="@this" update="plRegistro msgRecaptcha2" immediate="true" oncomplete="grecaptcha.reset();"/>
+                        <p:commandButton class="blue-btn" update="plRegistro msgRecaptcha2 growl" process="@this" immediate="true" action="#{controladorRegistro.limpiar()}" icon="fa fa-close" value="Salir" onclick="PF('dlgRegistro').hide();grecaptcha.reset();"/>
+                    </div>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="idDlgVerif" header="Verificación de cuenta" modal="true" widgetVar="dlgVerificacion" position="center center"  visible="#{loginController.visibleDlg}">
+            <h:form id="VerificacionForm">
+                <p:growl id="growl" showDetail="true" sticky="false" life="4000"/> 
+                <p:outputPanel id="plVerificacion" style="text-align:left;">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Contraseña nueva:"/>
+                        <p:password autocomplete="off" value="#{loginController.usuarioVerificacion.usuContrasenia}" feedback="true"
+                                    required="true" requiredMessage="Ingrese su contraseña nueva"/>
+                        <h:outputText value="Confirmar contraseña:"/>
+                        <p:password autocomplete="off" value="#{loginController.confiContrasenia}" feedback="false"
+                                    required="true" requiredMessage="Vuelva a ingresar su contraseña nueva"/>
+                        <h:outputText value="Código de verificación:"/>
+                        <p:inputMask mask="9999" required="true" requiredMessage="Ingrese la clave de verificación"
+                                     value="#{loginController.codigoVerificacion.cvnCodigo}" autocomplete="off"/>
+                    </h:panelGrid>
+                    <hr/>
+                    <div align="center">
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="Verificar" icon="fa fa-check-square" class="green-btn" update="plVerificacion growl" action="#{loginController.verificarCuenta()}" oncomplete="PF('dlgVerificacion').hide()"/>
+                            <p:commandButton class="red-btn" process="@this" update="plVerificacion idDlgVerif" immediate="true" action="#{loginController.limpiar()}" icon="fa fa-close" value="Salir" onclick="PF('dlgVerificacion').hide()"/>
+                        </h:panelGrid>
+                    </div>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>

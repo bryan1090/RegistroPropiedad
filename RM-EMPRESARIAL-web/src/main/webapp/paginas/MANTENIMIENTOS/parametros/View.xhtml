@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ParametrosViewDlg" widgetVar="ParametrosViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewParametrosTitle}">
+            <h:form id="ParametrosViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorParametro.selected != null}">
+                        <h:outputText value="#{bundle.ViewParametrosLabel_prmParametro}"/>
+                        <h:outputText value="#{controladorParametro.selected.prmParametro}" title="#{bundle.ViewParametrosTitle_prmParametro}"/>
+                        <h:outputText value="#{bundle.ViewParametrosLabel_prmDescripcion}"/>
+                        <h:outputText value="#{controladorParametro.selected.prmDescripcion}" title="#{bundle.ViewParametrosTitle_prmDescripcion}"/>
+                        <h:outputText value="#{bundle.ViewParametrosLabel_prmValor1}"/>
+                        <h:outputText value="#{controladorParametro.selected.prmValor1}" title="#{bundle.ViewParametrosTitle_prmValor1}"/>
+                        <h:outputText value="#{bundle.ViewParametrosLabel_prmValor2}"/>
+                        <h:outputText value="#{controladorParametro.selected.prmValor2}" title="#{bundle.ViewParametrosTitle_prmValor2}"/>
+                        <h:outputText value="#{bundle.ViewParametrosLabel_prmValor3}"/>
+                        <h:outputText value="#{controladorParametro.selected.prmValor3}" title="#{bundle.ViewParametrosTitle_prmValor3}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewParametrosLabel_prmUnidadTiempo}"/>
+                        <h:outputText value="#{controladorParametro.selected.prmUnidadTiempo}" title="#{bundle.ViewParametrosTitle_prmUnidadTiempo}"/>
+                        <h:outputText value="#{bundle.ViewParametrosLabel_prmCantidadTiempo}"/>
+                        <h:outputText value="#{controladorParametro.selected.prmCantidadTiempo}" title="#{bundle.ViewParametrosTitle_prmCantidadTiempo}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorParametro.clear()}" value="#{bundle.Close}" onclick="ParametrosViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>

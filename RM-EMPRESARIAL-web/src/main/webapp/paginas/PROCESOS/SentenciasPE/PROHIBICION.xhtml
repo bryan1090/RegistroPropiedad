@@ -1,0 +1,331 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Inscripción"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:outputStylesheet name="css/textEditor.css" />
+
+            <h:form id="formInscripcionJudicial">
+
+
+
+                <p:panel header="Inscripción Judicial" >
+                    <p:panelGrid layout="grid" columns="8" style="display: block;text-align: center">
+                        <p:outputLabel for="txtNumTramite" value="# Trámite"/>
+                        <p:inputText id="txtNumTramite" value="#{controladorProhibicion.numeroTramite}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtRepertorio" value="Repertorio"/>
+                        <p:inputText id="txtRepertorio" value="#{controladorProhibicion.numeroRepertorio}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtFecha" value="Fecha"/>
+                        <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFecha" value="#{controladorProhibicion.fecha}" readonly="true"
+                                    style="color: #1a237e"/>
+                        <p:outputLabel for="txtContrato" value="Contrato"/>
+                        <p:inputText id="txtContrato" value="#{controladorProhibicion.descripcionContrato}" readonly="true"
+                                     style="color: #1a237e" />
+
+                    </p:panelGrid>
+
+
+                    <table align="center" >
+                        <tbody>
+                            <tr align="top" bottom="top" >
+                                <td ><p:panel header="" style="width: 350px; height: 552px; ">
+                                        <h:panelGrid columns="2" >
+                                            <p:outputLabel for="txtFechaRepertorio" value="Fecha" />
+                                            <p:calendar pattern="dd/MM/yyyy" id="txtFechaRepertorio" value="#{controladorProhibicion.fecha}" required="true" label="firstname">
+                                                <p:ajax event="dateSelect" listener="#{controladorProhibicion.llenarDatos()}" update=":formInscripcionJudicial"/>
+                                            </p:calendar>                                           
+                                        </h:panelGrid>
+
+                                        <h:panelGrid id="panelRep" columns="1">      
+                                            <p:dataTable id="tblRepertorios" scrollable="true"  scrollHeight="410" 
+                                                         value="#{controladorProhibicion.listaRepertorioFecha}" 
+                                                         var="repertorio" selectionMode="single" selection="#{repertorio}" 
+                                                         rowKey="#{repertorio.repNumero}" sortBy="#{repertorio.traNumero.traNumero}" > 
+                                                <p:ajax event="rowSelect" listener="#{controladorProhibicion.onRowSelect}"  
+
+                                                        update=" :formInscripcionJudicial" />
+                                                <p:column headerText="# Trámite" groupRow="true">
+                                                    <h:outputText value="#{repertorio.traNumero.traNumero}" />
+                                                </p:column>
+                                                <p:column headerText="Repertorio">
+                                                    <h:outputText value="#{repertorio.repNumero}" />
+                                                </p:column>                                              
+
+                                                <p:column headerText="Contrato">
+                                                    <h:outputText value="#{repertorio.repTtrDescripcion}" />
+                                                </p:column>
+                                            </p:dataTable>
+
+                                        </h:panelGrid>
+
+
+                                    </p:panel>
+
+                                </td>
+
+                                <td>
+                                    <p:panel rendered="#{controladorProhibicion.renderedPanel}">
+                                        <p:commandButton action="#{controladorProhibicion.mostrarPanel()}"
+                                                         update=":formInscripcionJudicial, growl" 
+                                                         value="Terminar" immediate="true" process="@this"
+                                                        
+                                                         class="green-btn" style="margin-right:20px;" icon="fa fa-save" title="Terminar" />
+
+                                    </p:panel>
+
+                                    <p:panel header="" id="scrollPanel" rendered="#{controladorProhibicion.renderedPanel}" 
+                                             style="width: 680px; height: 500px; ">
+
+
+
+                                        <div align="center">
+                                            <p:outputLabel style="font-weight: bold;"  value="MATRÍCULAS" />
+                                        </div> 
+                                                       
+<!--                                        <h:panelGrid id="panelVerMatriculas" columns="2" width="650">      
+                                            <p:dataTable id="tblMatriculas"  value="#{controladorProhibicion.listaPropiedadPorMatricula}"
+                                                         var="propiedad" sortBy="#{propiedad.prdMatricula}" > 
+
+                                                <p:column headerText="Matricula" width="160">
+                                                    <h:outputText value="#{propiedad.prdMatricula}" />
+                                                </p:column>
+
+                                                <p:column headerText="Descripción" >
+                                                    <h:outputText value="#{propiedad.prdDescripcion2}" />
+                                                </p:column>
+
+
+                                            </p:dataTable>
+                                           
+                                            
+                                           
+                                        </h:panelGrid>
+                                        -->
+                                        <h:panelGrid columns="2">
+                                      
+                                            <p:outputLabel style="font-weight: bold;"  value="COMPARECIENTES" />
+                                        
+                                         <p:commandButton  oncomplete ="PF('dlgComparecientes').show()"
+                                                           update ="formComparecientes" class="green-btn"
+                                                              disabled="#{controladorProhibicion.deshabilitarBoton}"
+                                                              immediate="true" process="@this" 
+                                                              action="#{controladorProhibicion.cargarTablaComparecientes()}"
+                                                              style="margin-right:20px;" icon="fa fa-plus"
+                                                              title="Agregar Compareciente" />
+                                         
+                                         </h:panelGrid>
+
+                                        
+                                        <h:panelGrid id="panelComparecientes" columns="2" width="650">      
+                                            <p:dataTable id="tblComparecientes"  value="#{controladorProhibicion.listaTramiteDetalle}"
+                                                         var="compareciente" sortBy="#{compareciente.tdtPerTipoIdentificacion}" > 
+
+
+
+                                                <p:column headerText="IDENTIFICACIÓN" width="120">
+                                                    <h:outputText value="#{compareciente.tdtPerIdentificacion}" />
+                                                </p:column>
+                                                <p:column headerText="A. PATERNO" width="120">
+                                                    <h:outputText value="#{compareciente.tdtPerApellidoPaterno}" />
+                                                </p:column>
+                                                <p:column headerText="A. MATERNO" width="120">
+                                                    <h:outputText value="#{compareciente.tdtPerApellidoMaterno}" />
+                                                </p:column>
+                                                <p:column headerText="NOMBRES">
+                                                    <h:outputText value="#{compareciente.tdtPerNombre}" />
+                                                </p:column>
+<!--                                                <p:column headerText="PROPIEDADES">
+                                                    <p:commandButton title="Seleccionar Propiedades" class="green-btn"
+                                                                     icon="fa fa-home" disabled="#{compareciente.ttcId.ttcPropietario eq 'S'}"
+                                                                     update="dlgFormPropiedad"
+                                                                     oncomplete ="PF('dlgPropiedades').show()"
+                                                                     action="#{controladorProhibicion.seleccionarPropiedades(compareciente.tdtPerIdentificacion)}"/>                                                    
+                                                </p:column>-->
+
+
+
+                                            </p:dataTable>
+                                        </h:panelGrid>
+
+                                    </p:panel>
+                                    <p:panel rendered="#{controladorProhibicion.renderedPanelTab}"
+                                              style="width: 680px; height: 551px; ">
+                                    
+                                        <p:tabView style="align-content: ">
+                                        
+        <p:tab title="Datos Generales">
+            <h:panelGrid columns="2" cellpadding="10">
+                
+                
+            </h:panelGrid>
+        </p:tab>
+        <p:tab title="Acta">
+            <h:panelGrid columns="2" cellpadding="10">
+                
+            </h:panelGrid>
+        </p:tab>
+        <p:tab title="Razón">
+            <h:panelGrid columns="2" cellpadding="10">
+               
+            </h:panelGrid>
+        </p:tab>
+    </p:tabView>
+                                        </p:panel>
+                                    
+                                    
+
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </p:panel>
+
+
+
+
+
+            </h:form>
+            <p:dialog id="dlgFormComparecientes" widgetVar="dlgComparecientes" modal="true"
+                      onShow="PF('dlgComparecientes').initPosition()" header="Comparecientes" >
+
+                <h:form id="formComparecientes">
+                    <h:panelGroup >    
+                        <h:panelGrid id="panelGridCompareciente" columns="6" >
+                            <p:outputLabel value="Identificación"/>
+                            <p:inputText id="txtIdentificacion" required="true" requiredMessage="Ingrese la identificación"
+                                         title="Identificación"  
+                                         value="#{controladorProhibicion.identificacion }" >
+                                <p:ajax listener="#{controladorProhibicion.buscarPersona()}" 
+                                         update="growl panelGridCompareciente"  
+                                         process="txtIdentificacion" event="change" 
+                                         />
+                            </p:inputText>
+                            
+                            <p:inputText value="#{controladorProhibicion.tramitesControladorBb.nombrePersona}"
+                                         style="width: 250px" readonly="true"/>
+                            
+                            <p:selectOneMenu id="tipoCompareciente" value="#{controladorProhibicion.tipoComparecienteId}">
+                                <f:selectItems value="#{controladorProhibicion.listaTipoCompareciente}"
+                                               var="tipoComp" 
+                                               itemValue="#{tipoComp.tpcId}"
+                                               itemLabel="#{tipoComp.tpcDescripcion}"                                            
+                                               
+                                               />
+
+                            </p:selectOneMenu>
+                             <p:commandButton  
+                                 action="#{controladorProhibicion.guardarTramiteDetalle()}"
+                                              class="green-btn"
+                                                              style="margin-right:20px;" icon="fa fa-plus"
+                                                              title="Agregar Compareciente" 
+                                                              update="growl formInscripcionJudicial formComparecientes"/>
+                             
+                             <p:commandButton title="Crear Nueva Persona" icon="fa fa-user-plus" 
+                                             oncomplete ="PF('dlgNuevaPersona').show()"/>
+                        
+
+                        </h:panelGrid>  
+                        <div align="center" >
+                        
+                            
+                                        <h:panelGrid id="panelComparecientes" columns="2" width="650">      
+                                            <p:dataTable id="tblComparecientes"  value="#{controladorProhibicion.listaTramiteDetalle}"
+                                                         var="compareciente" sortBy="#{compareciente.tdtPerTipoIdentificacion}" > 
+
+
+
+                                                <p:column headerText="IDENTIFICACIÓN" width="120">
+                                                    <h:outputText value="#{compareciente.tdtPerIdentificacion}" />
+                                                </p:column>
+                                                <p:column headerText="A. PATERNO" width="120">
+                                                    <h:outputText value="#{compareciente.tdtPerApellidoPaterno}" />
+                                                </p:column>
+                                                <p:column headerText="A. MATERNO" width="120">
+                                                    <h:outputText value="#{compareciente.tdtPerApellidoMaterno}" />
+                                                </p:column>
+                                                <p:column headerText="NOMBRES">
+                                                    <h:outputText value="#{compareciente.tdtPerNombre}" />
+                                                </p:column>
+                                                <p:column headerText="">
+                                     <p:commandButton  
+                                         action="#{controladorProhibicion.eliminarCompareciente(compareciente.tdtId)}"
+                                               class="red-btn" immediate="true" 
+                                                              style="margin-right:20px;" icon="fa fa-remove"
+                                                              title="Eliminar Compareciente" 
+                                                              update="growl :formInscripcionJudicial formComparecientes"/>
+
+                                </p:column>
+                                            </p:dataTable>
+                                        </h:panelGrid>
+                               
+                        
+                             </div>
+
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" immediate="true" onclick="PF('dlgComparecientes').hide()"/>
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+            
+<!--            <p:dialog id="dlgFormPropiedad" widgetVar="dlgPropiedades" modal="true"
+                      onShow="PF('dlgPropiedades').initPosition()" header="Seleccionar Propiedades" >
+
+                <h:form id="formPropiedades">
+                    <h:panelGroup >   
+                        <div align="center" >
+                                        <h:panelGrid id="panelPropiedades" columns="2" width="810">      
+                                            <p:dataTable id="tblComparecientes"  value="#{controladorProhibicion.listaPropiedad}"
+                                                         var="propiedad" sortBy="#{propiedad.prdMatricula}" rowKey="#{propiedad.prdMatricula}"
+                                                         selection="#{controladorProhibicion.listaPropiedadesSeleccionadas}" >
+                                                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>                                                
+                                                <p:column headerText="Nro. Matrícula">
+                                                    <h:outputText value="#{propiedad.prdMatricula}" />
+                                                </p:column>
+                                                <p:column headerText="Catastro" >
+                                                    <h:outputText value="#{propiedad.prdCatastro}" />
+                                                </p:column>
+                                                <p:column headerText="Predio" >
+                                                    <h:outputText value="#{propiedad.prdPredio}" />
+                                                </p:column>
+                                                <p:column headerText="Parroquia">
+                                                    <h:outputText value="#{propiedad.prdTdtParNombre}" />
+                                                </p:column>                                                
+                                                
+                                            </p:dataTable>
+                                        </h:panelGrid>
+                               
+                        
+                             </div>
+                         <p:commandButton  
+                                 action="#{controladorProhibicion.guardarPropiedades()}"
+                                 class="green-btn" value="Guardar"
+                                                              style="margin-right:20px;" icon="fa fa-save"
+                                                              title="Guardar Propiedades" 
+                                                              update="growl formInscripcionJudicial formComparecientes"/>
+
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" immediate="true" onclick="PF('dlgPropiedades').hide()"/>
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+            -->
+            <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

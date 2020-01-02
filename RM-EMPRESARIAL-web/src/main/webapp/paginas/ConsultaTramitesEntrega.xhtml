@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                Trámites Entrega
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+                    <p:growl id="growl" life="2000" showDetail="true"/>
+                    <p:panel>
+                        <p:panelGrid id="pnlFiltro"  columns="1" style="border: none;text-align: right;background-position: right">
+                            <p:panelGrid id="pnlFactura" rendered="#{!controladorConsultaTramitesEntrega.estadoRenderFiltro}">
+                                <p:outputLabel id="lblFactura"  value="Buscar por Número de Trámite"/> 
+                                <p:selectBooleanCheckbox id="slcFactura" value="#{controladorConsultaTramitesEntrega.estadoRenderFiltro}" >
+                                    <p:ajax update="pnlFiltro pnlFechas tblTramites"  listener="#{controladorConsultaTramitesEntrega.busquedaPorTramites()}" />
+                                </p:selectBooleanCheckbox>
+                            </p:panelGrid>
+                            <p:panelGrid id="pnlFechas" rendered="#{controladorConsultaTramitesEntrega.estadoRenderFiltro}">
+                                <p:outputLabel id="lblFechas"  value="Buscar por Rango de Fechas"/> 
+                                <p:selectBooleanCheckbox id="slcFechas"  value="#{controladorConsultaTramitesEntrega.estadoRenderFiltro}" >
+                                    <p:ajax update="pnlFiltro pnlFactura tblTramites"  listener="#{controladorConsultaTramitesEntrega.busquedaPorFechas()}" />
+                                </p:selectBooleanCheckbox>
+                            </p:panelGrid>
+                            <p:row rendered="#{!controladorConsultaTramitesEntrega.estadoRenderFiltro}" style="border: none">
+                                <p:outputLabel value="Fecha Inicio"></p:outputLabel>
+                                <p:calendar value="#{controladorConsultaTramitesEntrega.fechaInicio}" pattern="dd-MM-yyyy" required="true" requiredMessage="Fecha de Inicio Requerida Para La Búsqueda"/>
+                                <p:outputLabel value="Fecha Fin"></p:outputLabel>
+                                <p:calendar value="#{controladorConsultaTramitesEntrega.fechaFin}" pattern="dd-MM-yyyy" required="true" requiredMessage="Fecha de Fin Requerida Para La Búsqueda"/>
+                                <br/>
+                                <p:commandButton id="btnBusquedaFecha" class="green-btn" icon="fa fa-search" action="#{controladorConsultaTramitesEntrega.listarTramitesPorFechas()}" update="tblTramites growl"/>
+                            </p:row>
+                            <p:row rendered="#{controladorConsultaTramitesEntrega.estadoRenderFiltro}" style="border: none "   >
+                                <p:column style="border: none;text-align: left">
+                                    <p:outputLabel for="txtNumTramiteIni" value="N° Trámite Inicio"/>
+                                    <p:inputText id="txtNumTramiteIni" value="#{controladorConsultaTramitesEntrega.numTramiteIni}" required="true" requiredMessage="No Existe Parametro de Busqueda" />
+                                    <p:outputLabel for="txtNumTramiteFin" value="N° Trámite Fin"/>
+                                    <p:inputText id="txtNumTramiteFin" value="#{controladorConsultaTramitesEntrega.numTramiteFin}" required="true" requiredMessage="No Existe Parametro de Busqueda" />
+                                    <br/>
+                                    <p:commandButton id="btnBusquedaTramite" class="green-btn" icon="fa fa-search" action="#{controladorConsultaTramitesEntrega.listarTramitesPorNumero()}" update="tblTramites growl"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>                    
+
+                    <p:panel>
+                        <p:dataTable id="tblTramites" value="#{controladorConsultaTramitesEntrega.listaTramites}" var="lisTra"
+                                     scrollable="true" scrollHeight="400" style="text-align-last: center" sortBy="#{lisTra.traNumero}">
+                            <p:column headerText="N° Trámite" filterBy="#{lisTra.traNumero}">
+                                <h:outputText value="#{lisTra.traNumero}" />
+                            </p:column>
+
+                            <p:column headerText="Descripción" filterBy="#{lisTra.traDescripcion}">
+                                <h:outputText value="#{lisTra.traDescripcion}" />
+                            </p:column>
+
+                            <p:column headerText="Fecha" filterBy="#{lisTra.traFechaRecepcion.time}">
+                                <h:outputText value="#{lisTra.traFechaRecepcion.time}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column>
+                                <p:commandButton icon="fa fa-eye" value="Ver" action="#{controladorConsultaTramitesEntrega.listarTramitesEntrega()}"
+                                                 update="@form :formInfoTraEntrega" onsuccess="PF('dlgTraEntrega').show()" class="green-btn">
+                                    <f:setPropertyActionListener value="#{lisTra}" target="#{controladorConsultaTramitesEntrega.tramiteSeleccionado}"/>
+                                </p:commandButton>
+                            </p:column>
+
+                            <p:column>
+                                <h:commandLink title="Abrir PDF en un nuevo tab" action="#{controladorConsultaTramitesEntrega.createPDF()}" target="_blank">
+                                    <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                    <f:setPropertyActionListener value="#{lisTra}" target="#{controladorConsultaTramitesEntrega.tramiteSeleccionado}"/>
+                                </h:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog widgetVar="dlgTraEntrega" draggable="false" resizable="false" modal="true" width="600" position="center center">
+                    <h:form id="formInfoTraEntrega">
+                        <p:dataTable id="tblTraEntrega" value="#{controladorConsultaTramitesEntrega.listaTramitesEntrega}" var="listTraEn"
+                                     sortBy="#{listTraEn.detId.ttrId.ttrDescripcion}" style="text-align-last: center">
+
+                            <p:column headerText="Tipo Trámite" groupRow="true" filterBy="#{listTraEn.detId.ttrId.ttrDescripcion}">
+                                <h:outputText value="#{listTraEn.detId.ttrId.ttrDescripcion}"/>
+                            </p:column>
+
+                            <p:column headerText="Documento Entrega" filterBy="#{listTraEn.detId.dteId.dteDescripcion}">
+                                <h:outputText value="#{listTraEn.detId.dteId.dteDescripcion}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

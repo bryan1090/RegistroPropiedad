@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                <h:outputText value="Reimpresión Trámite Entrega"/>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+                    <p:panel>
+                        <p:panelGrid columns="6" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                                     columnClasses="ui-grid-col-1, ui-grid-col-3, ui-grid-col-1, ui-grid-col-3, ui-grid-col-2">
+                            <p:outputLabel value="Fecha" />
+                            <p:calendar pattern="dd-MM-yyyy" value="#{controladorEntregas.FHRReimpresion}" />
+                            <p:outputLabel value="N° Trámite" />
+                            <p:inputText value="#{controladorEntregas.numTramite}" />
+                            <p:commandButton icon="fa fa-search" class="green-btn" value="Buscar" 
+                                             action="#{controladorEntregas.buscarTramitesEntregado()}" update="@form"/>
+                        </p:panelGrid>
+
+                        <p:panel>
+                            <p:dataTable id="tblRepertorios" scrollable="true"  scrollHeight="410" 
+                                         value="#{controladorEntregas.listaRepertoriosTerminados}" 
+                                         var="list" style="text-align-last: center "> 
+                                <p:column headerText="# Trámite" groupRow="true" filterBy="#{list.traNumero.traNumero}" filterMatchMode="contains" filterStyle="text-transform: uppercase">
+                                    <h:outputText value="#{list.traNumero.traNumero}" />
+                                </p:column>
+
+                                <p:column headerText="Repertorio" filterBy="#{list.repNumero}" filterMatchMode="contains" filterStyle="text-transform: uppercase">
+                                    <h:outputText value="#{list.repNumero}" />
+                                </p:column>
+
+                                <p:column headerText="Contrato">
+                                    <h:outputText value="#{list.repTtrDescripcion}" />
+                                </p:column>
+
+                                <p:column headerText="Fecha Recepción" >
+                                    <h:outputText value="#{list.traNumero.traFechaRecepcion.time}" >
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Imprimir">
+                                    <p:commandButton icon="fa fa-print" class="orange-btn" value="Imprimir"
+                                                     action="#{controladorEntregas.reimprimirTramiteEntregado()}" update="@form"
+                                                     ajax="false" immediate="true">
+                                        <f:setPropertyActionListener value="#{list}" target="#{controladorEntregas.repertorioReimprimir}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:panel>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

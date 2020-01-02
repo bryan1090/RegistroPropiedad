@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="NotariaViewDlg" widgetVar="NotariaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewNotariaTitle}">
+            <h:form id="NotariaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorNotaria.selected != null}">
+                        <h:outputText value="#{bundle.ViewNotariaLabel_notNumero}"/>
+                        <h:outputText value="#{controladorNotaria.selected.notNumero}" style="text-transform: uppercase" title="#{bundle.ViewNotariaTitle_notNumero}"/>
+                        <h:outputText value="#{bundle.ViewNotariaLabel_notNotario}"/>
+                        <h:outputText value="#{controladorNotaria.selected.notNotario}" style="text-transform: uppercase" title="#{bundle.ViewNotariaTitle_notNotario}"/>
+                        <h:outputText value="#{bundle.ViewNotariaLabel_notDireccion}"/>
+                        <h:outputText value="#{controladorNotaria.selected.notDireccion}" style="text-transform: uppercase" title="#{bundle.ViewNotariaTitle_notDireccion}"/>
+                        <h:outputText value="Cantón"/>
+                        <h:outputText value="#{controladorNotaria.selected.ciuId.ciuNombre}" style="text-transform: uppercase" title="#{bundle.ViewNotariaTitle_ciuId}"/>
+                        <h:outputText value="#{bundle.ViewNotariaLabel_notUser}"/>
+                        <h:outputText value="#{controladorNotaria.selected.notUser}" style="text-transform: uppercase" title="#{bundle.ViewNotariaTitle_notUser}"/>
+                        <h:outputText value="#{bundle.ViewNotariaLabel_notFHR}"/>
+                        <h:outputText value="#{controladorNotaria.selected.notFHR}" style="text-transform: uppercase" title="#{bundle.ViewNotariaTitle_notFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorNotaria.clear()}" value="#{bundle.Close}" onclick="NotariaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- P
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="Documentos Electrónicos"></h:outputText>
+        </ui:define>
+
+
+        <ui:define name="content">
+            <h:form id="formDocumentosElectronicos">
+
+                <p:panel header="Documentos Electrónicos" >
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <p:panel id="pnl1" style="min-height: 520px; max-height: 520px">
+                                <h:panelGrid id="pnlBusqueda" columns="1" >
+
+                                    <p:outputLabel   value="Tipo"/>
+                                    <p:selectOneMenu id="tipo" value="" 
+                                                     required="true"
+                                                     filter="true" filterMatchMode="contains"
+                                                     style="width:145px "
+                                                     >  
+                                        <f:selectItem itemValue = "FV" itemLabel = "Factura Venta" />
+                                        <f:selectItem itemValue = "NC" itemLabel = "Nota Crédito" />
+                                        <f:selectItem itemValue = "ND" itemLabel = "Nota Débito" />
+                                        <f:selectItem itemValue = "RC" itemLabel = "Retención Compra" />
+                                        <f:selectItem itemValue = "GR" itemLabel = "Guía Remisión" />
+                                    </p:selectOneMenu>                  
+
+                                    <p:inputTextarea rows="25" cols="195" queryDelay="750" minQueryLength="4" />
+
+                                    <p:commandButton value="Generar Documento" icon="fa fa-pencil" 
+
+                                                     update="@form :formDocumentosElectronicos"/>
+                                </h:panelGrid>
+                            </p:panel>
+                        </div>
+
+                    </div>
+
+                </p:panel>
+            </h:form>     
+        </ui:define>
+    </ui:composition>
+</html>

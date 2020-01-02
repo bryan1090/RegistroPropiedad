@@ -1,0 +1,721 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition>
+
+        <p:panel header="Acta" rendered="#{controladorIncidenciaUsuario.rendPnlActa}">
+
+            <h:form id="formIncidenciaActa">
+
+
+                <p:tabView id="tabViewInsc" activeIndex="#{controladorIncidenciaActa.indiceTab}"
+                           rendered="#{controladorIncidenciaUsuario.rendPnlActa}">
+
+                    <p:tab title="Acta" id="tabActa" 
+                           rendered="#{controladorIncidenciaUsuario.rendPnlActa}"
+                           disabled="#{!controladorIncidenciaUsuario.rendPnlActa}"
+                           >
+                        <p:commandButton action="#{controladorIncidenciaActa.previsualizarActa()}"
+                                         update="growl formIncidencia:formIncidenciaActa formIncidencia:formPrevisualizar"
+                                         value ="Previsualizar Acta"
+                                         rendered="#{controladorIncidenciaActa.renderedBtnsTab}"
+                                         class="blue-btn" process="formIncidencia:formIncidenciaActa"                                          
+                                         style="margin-right:20px;" icon="fa fa-file-o" title="Previsualizar Acta" >
+
+                        </p:commandButton>
+                        <p:commandButton actionListener="#{controladorIncidenciaActa.preGuardarActa()}"                                                             
+                                         action="#{controladorIncidenciaUsuario.listarIncidenciasPorUsuarioLogueado()}"
+                                         update="growl formIncidencia:tblIncidencias formIncidencia:formPrevisualizar formIncidencia:formIncidenciaActa formIncidencia"
+                                         value ="Guardar" rendered="true" id="btnGuardarActa"
+                                         class="green-btn" process="formIncidencia:formIncidenciaActa"                                          
+                                         style="margin-right:20px;" icon="fa fa-file-o" 
+                                         disabled="#{controladorIncidenciaActa.disableBtnGuardar}"
+                                         >
+                        </p:commandButton>
+                        <p:commandButton  value="Suspensión" process="@this" immediate="true"
+                                          class="red-btn"
+                                          oncomplete="PF('dlgRznSus').show()" update="formRazonesSuspension" icon="fa fa-ban"
+                                          rendered="false"
+                                          disabled="#{controladorIncidenciaActa.numTramite eq null}">
+                            <f:setPropertyActionListener target="#{controladorInsProcesoSuspension.numProforma}"
+                                                         value="#{controladorIncidenciaActa.numTramite}"/>
+                            <f:setPropertyActionListener target="#{controladorInsProcesoSuspension.numeroRepertorio}"
+                                                         value="#{controladorIncidenciaActa.numRepertorio}"/>
+                            <f:setPropertyActionListener target="#{controladorInsProcesoSuspension.numTramite}"
+                                                         value="#{controladorIncidenciaActa.numTramite}"/>
+                            <f:setPropertyActionListener target="#{controladorInsProcesoSuspension.listaPropietarioPropiedad}"
+                                                         value="#{controladorIncidenciaActa.listaPropiedadPorMatricula}"/>
+                        </p:commandButton>
+                        <p:panel header="" id="scrollPanel"  style="border-width:0;width:600px" rendered="#{controladorIncidenciaActa.contratoDescripcion != 'TESTAMENTO'}">
+
+
+                            <p:outputLabel style="font-weight: bold;" value="#{controladorIncidenciaActa.compareciente}" 
+                                            for="txtCompareciente" />
+                            <p:commandButton  oncomplete ="PF('dlgComparecientes').show()"
+                                              rendered="#{controladorIncidenciaActa.renderedBtnsTab}"    
+                                              immediate="true" process="@this" 
+                                              disabled="#{!(controladorIncidenciaUsuario.txtEditPorNumero eq 1)}"
+                                              action="#{controladorIncidenciaActa.listarComparecientes()}"
+                                              style="margin-right:20px;" update="formIncidencia:formComparecientes" icon="fa fa-plus"
+                                              title="Agregar" />
+                            <p:outputLabel value="Ver Propiedades" rendered="false"/>
+                            <p:commandButton class="green-btn"
+                                            disabled="#{!(controladorIncidenciaUsuario.txtEditPorNumero eq 1)}"
+                                             icon="fa fa-eye" update="formIncidencia:formInsPropiedad"
+                                             immediate="true" process="@this" title="Ver Propiedades"
+                                             rendered="false"    
+                                             action="#{controladorIncidenciaActa.mostrarPropiedades()}"
+                                             oncomplete ="PF('dlgInsPropiedad').show()" >
+
+                            </p:commandButton>                                                    
+
+                            <p:textEditor toolbarVisible="false" id="txtCompareciente"
+                                          widgetVar="editorCor" value="#{controladorIncidenciaActa.txtEditCompareciente}"
+                                          requiredMessage="El campo Comparecientes es requerido"
+                                          required="true" height="150" style="margin-bottom:10px; width: 589px; text-align: justify;" 
+                                          readonly="true"/>
+
+                            <p:outputLabel style="font-weight: bold;" value="#{controladorIncidenciaActa.otorgamiento}"
+                                           rendered="#{controladorIncidenciaActa.renderedTxtEdit}" for="txtEditorOtorgamiento" />
+                            <p:commandButton oncomplete ="PF('dlgFechaOtorgamiento').show()" 
+                                             update="formIncidencia:formFechaOtorgamiento"
+                                             rendered="#{controladorIncidenciaActa.renderedBtnsTab}"  
+                                             disabled="#{!(controladorIncidenciaUsuario.txtEditPorNumero eq 2)}"
+                                             immediate="true" process="@this"  
+                                             action="#{controladorIncidenciaActa.prepararOtorgamiento()}"
+                                             style="margin-right:20px;" icon="fa fa-plus" title="Agregar" >
+
+                            </p:commandButton>
+
+                            <p:textEditor toolbarVisible="false" id="txtEditorOtorgamiento" widgetVar="editorPro"
+                                          rendered="#{controladorIncidenciaActa.renderedTxtEdit}"
+                                          value="#{controladorIncidenciaActa.txtEditOtorgamiento}" required="true" 
+                                          requiredMessage="El campo Fecha de Otorgamiento es requerido"
+                                          height="150" style="margin-bottom:10px; width: 589px; text-align: justify;" 
+                                          readonly="true"/>
+
+                            <p:outputLabel style="font-weight: bold;" value="#{controladorIncidenciaActa.antecedentes}"
+                                           rendered="#{controladorIncidenciaActa.renderedTxtEdit}" for="inscripcionIns" />
+                            <p:textEditor  toolbarVisible="false" id="inscripcionIns" widgetVar="editorIns" 
+                                           rendered="#{controladorIncidenciaActa.renderedTxtEdit}" 
+                                           value="#{controladorIncidenciaActa.txtEditAntecedentes}" required="true"
+                                           requiredMessage="El campo Antecedentes es requerido"
+                                           readonly="#{!(controladorIncidenciaUsuario.txtEditPorNumero eq 3)}"
+                                           height="150" style="margin-bottom:10px; width: 589px; text-align: justify;"
+                                           />                                            
+
+                            <p:outputLabel style="font-weight: bold;" value="#{controladorIncidenciaActa.objetoContrato}"
+                                           rendered="#{controladorIncidenciaActa.renderedTxtEdit}" for="inscripcionPrf" />
+                            <p:textEditor toolbarVisible="false" id="inscripcionPrf" widgetVar="editorPrf"
+                                          rendered="#{controladorIncidenciaActa.renderedTxtEdit}"
+                                          value="#{controladorIncidenciaActa.txtEditObjetoContrato}" required="true" 
+                                          requiredMessage="El campo Objeto Contrato es requerido"
+                                          height="150" style="margin-bottom:10px; width: 589px; text-align: justify;" 
+                                          readonly="#{!(controladorIncidenciaUsuario.txtEditPorNumero eq 4)}"/>
+
+                            <p:outputLabel style="font-weight: bold;" value="#{controladorIncidenciaActa.linderos}" 
+                                           rendered="#{controladorIncidenciaActa.renderedTxtEdit}"
+                                           for="inscripcionRaz" />
+                            <p:textEditor toolbarVisible="false" id="inscripcionRaz" widgetVar="editorRaz"
+                                          rendered="#{controladorIncidenciaActa.renderedTxtEdit}"
+                                          value="#{controladorIncidenciaActa.txtEditLinderos}" required="true" 
+                                          requiredMessage="El campo Linderos es requerido"
+                                          height="150" style="margin-bottom:10px; width: 589px; text-align: justify;" 
+                                          readonly="#{!(controladorIncidenciaUsuario.txtEditPorNumero eq 5)}"/>
+
+                            <p:outputLabel style="font-weight: bold;" value="#{controladorIncidenciaActa.cuantias}" 
+                                           rendered="#{controladorIncidenciaActa.renderedTxtEdit}" for="inscripcionBlo" />
+
+                            <p:commandButton  oncomplete ="PF('dlgCuantia').show()"
+                                              rendered="#{controladorIncidenciaActa.renderedBtnsTab}"    
+                                              immediate="true" process="@this" 
+                                              disabled="#{!(controladorIncidenciaUsuario.txtEditPorNumero eq 6)}"
+                                              action="#{controladorIncidenciaActa.prepararCuantia()}"
+                                              style="margin-right:20px;" update="formIncidencia:formCuantias" icon="fa fa-plus"
+                                              title="Agregar" />
+
+
+                            <p:textEditor toolbarVisible="false" id="inscripcionBlo" widgetVar="editorBlo" 
+                                          rendered="#{controladorIncidenciaActa.renderedTxtEdit}"
+                                          value="#{controladorIncidenciaActa.txtEditCuantias}" required="true" 
+                                          requiredMessage="El campo Cuantías es requerido"
+                                          height="150" style="margin-bottom:10px; width: 589px; text-align: justify;"
+                                          readonly="true"/>
+
+                            <p:outputLabel style="font-weight: bold;" value="#{controladorIncidenciaActa.gravamenes}" 
+                                           rendered="#{controladorIncidenciaActa.renderedTxtEdit}" for="inscripcionCc" />
+                            <p:textEditor toolbarVisible="false" id="inscripcionCc" widgetVar="editorCc"
+                                          rendered="#{controladorIncidenciaActa.renderedTxtEdit}"
+                                          value="#{controladorIncidenciaActa.txtEditGravamenes}"
+                                          requiredMessage="El campo Gravámenes es requerido"
+                                          required="true" height="150" style="margin-bottom:10px; width: 589px; text-align: justify;"
+                                          readonly="#{!(controladorIncidenciaUsuario.txtEditPorNumero == 7)}"/>
+
+                            <p:outputLabel style="font-weight: bold;" value="#{controladorIncidenciaActa.observaciones}"
+                                           rendered="#{controladorIncidenciaActa.renderedTxtEdit}" for="inscripcionFe" />
+                            <p:textEditor toolbarVisible="false" id="inscripcionFe" widgetVar="editorFe"
+                                          rendered="#{controladorIncidenciaActa.renderedTxtEdit}"
+                                          value="#{controladorIncidenciaActa.txtEditObservaciones}" required="true"
+                                          requiredMessage="El campo Observaciones es requerido"
+                                          height="150" style="margin-bottom:10px; width: 589px; text-align: justify;" 
+                                          readonly="#{!(controladorIncidenciaUsuario.txtEditPorNumero == 8)}"/>
+
+                            <p:outputLabel style="font-weight: bold;" value="Copia Textual"
+                                           rendered="#{controladorIncidenciaActa.tipoTramite.ttrCodigo eq 7}" for="txtCopiaTextual" />
+                            <p:textEditor toolbarVisible="false" id="txtCopiaTextual" 
+                                          rendered="#{controladorIncidenciaActa.tipoTramite.ttrCodigo eq 7}"
+                                          value="#{controladorIncidenciaActa.txtEditCopiaTextual}" required="true"
+                                          requiredMessage="El campo Copia Textual es requerido"
+                                          height="150" style="margin-bottom:10px; width: 589px; text-align: justify;" 
+                                          readonly="false"/>
+
+
+
+
+                        </p:panel>
+                        <!--                                    //PARA TRAMITES TIPO TESTAMENTO-->
+                        <p:panel header="" id="scrollPanel2"  style="width: 680px;  " rendered="#{controladorIncidenciaActa.contratoDescripcion == 'TESTAMENTO'}">
+                            <p:scrollPanel  style="width: 660px; height: 510px;" >
+                                <p:textEditor toolbarVisible="false" id="preViewActa2" widgetVar="testamento"
+                                              value="#{controladorIncidenciaActa.testamento}" required="true" height="550" 
+                                              style="margin-bottom:10px; width: 660px"/>
+                            </p:scrollPanel>
+                        </p:panel>
+
+                    </p:tab>
+                    <p:tab title="Razón" 
+                           rendered="false"
+                           disabled="#{controladorIncidenciaActa.disabledTabRazon}">
+                        <p:panel header="" id="scrollPanelRazon"  style="height: 550px; width: 680px;">
+                            <h:outputText style="font-weight: bold;" value="RAZÓN DE INSCRIPCIÓN"
+                                          />
+                            <div align="center">
+                                <p:commandButton  
+                                    icon="fa fa-plus" 
+                                    actionListener="#{controladorIncidenciaActa.sumarSaltoLineaRazon()}"
+                                    style="margin-top: 5px"
+                                    process="@this"
+                                    update="growl tabViewInsc" >
+                                </p:commandButton>
+
+                                <p:commandButton  
+                                    icon="fa fa-minus" 
+                                    actionListener="#{controladorIncidenciaActa.restarSaltoLineaRazon()}"
+                                    style="margin-top: 5px"
+                                    process="@this"
+                                    update="growl  tabViewInsc"
+                                    >
+                                </p:commandButton>
+                                <p:selectBooleanButton value="#{controladorIncidenciaActa.bolAgregarImagenEspacioEnBlancoRazon}"
+                                                       onLabel="Con Imagen Texto En Blanco"
+                                                       offLabel="Sin Imagen Texto En Blanco">
+                                    <p:ajax listener="#{controladorIncidenciaActa.agregarImagenBlancoRazon()}"
+                                            update="growl  tabViewInsc"/>
+                                </p:selectBooleanButton>
+
+
+                            </div>
+
+                            <p:media id="pdfRazon"
+                                     value="#{controladorIncidenciaActa.urlRazonPdf}"
+                                     rendered="#{not empty controladorIncidenciaActa.urlRazonPdf}"
+                                     style="width:600px;height: 400px"
+                                     player="pdf"  />
+
+
+
+                        </p:panel>
+
+                    </p:tab>
+                    <p:tab title="Certificado"
+                           rendered="false"
+                           disabled="#{controladorIncidenciaActa.disabledTabCertifcado}">
+                        <p:panel header="" id="scrollPanelCertificado"  style="height: 550px; width: 680px;  ">
+
+                            <p:commandButton action="#{controladorIncidenciaActa.guardar()}"
+                                             rendered="#{controladorIncidenciaActa.renderedBtnGuardar}"    
+                                             update="growl formIncidencia:formIncidenciaActa"
+                                             value ="Guardar" 
+                                             class="green-btn" process="formIncidencia:formIncidenciaActa"                                          
+                                             style="margin-right:20px;" icon="fa fa-file-o" title="Guardar Razón y Certificado" >
+                            </p:commandButton>
+                            <p:dataList value="#{controladorIncidenciaActa.listaPropiedadCertificado}" var="prop">
+                                <f:facet name="header">
+
+                                </f:facet>
+                                <p:commandLink update=":formVerCert" oncomplete="PF('dlgVerCert').show()" title="Ver Certifiado"
+                                               action="#{controladorIncidenciaActa.generarCertificado()}" >
+                                    <h:outputText value="Ver Certificado " />
+                                    <f:setPropertyActionListener value="#{prop}" target="#{controladorIncidenciaActa.propiedadCertificadoSeleccionada}" />
+
+                                </p:commandLink>
+                                <h:outputText value="Matrícula: #{prop.prdMatricula}" style="display:inline-block"/>
+                                <h:outputText value="; Predio: #{prop.prdPredio}" style="display:inline-block"/>
+                                <h:outputText value="; Catastro: #{prop.prdCatastro}" style="display:inline-block"/>
+                            </p:dataList>
+                        </p:panel>
+                    </p:tab>
+
+
+                </p:tabView>
+
+
+            </h:form>
+        </p:panel>
+
+        <!-- DIALOGOS -->
+        <!-- DIALOGOS -->
+        <!-- DIALOGOS -->
+        <!-- DIALOGOS -->
+        <!-- DIALOGO VER CERTIFICADO -->
+        <p:dialog id="idDlgVerCert" widgetVar="dlgVerCert" modal="true"
+                  onShow="PF('dlgVerCert').initPosition()" header="Certificado" >
+            <h:form id="formVerCert">
+                <p:panel header="" id="scrollDlgPanelCertificado"  style="height: 550px; width: 680px;  ">
+                    <div align="center">
+                        <p:commandButton  
+                            icon="fa fa-plus" 
+                            actionListener="#{controladorIncidenciaActa.sumarSaltoLineaCertificado()}"
+                            style="margin-top: 5px"
+                            process="@this"
+                            update="growl formVerCert">
+                        </p:commandButton>
+
+                        <p:commandButton  
+                            icon="fa fa-minus" 
+                            actionListener="#{controladorIncidenciaActa.restarSaltoLineaCertificado()}"
+                            style="margin-top: 5px"
+                            process="@this"
+                            update="growl formVerCert"
+                            >
+                        </p:commandButton>
+
+                        <!-- SELECCIONAR SI AGREGA O NO IMAGEN -->
+                        <p:selectOneRadio id="agregarImagen" 
+                                          required="true" requiredMessage="Seleccione si agrega o no imágen en blanco"
+                                          value="#{controladorIncidenciaActa.agregarImagen}">                          
+                            <f:selectItem itemLabel="Sin Imagen Texto En Blanco" itemValue="noAgregar" />
+                            <f:selectItem itemLabel="Con Imagen Texto En Blanco" itemValue="agregar" />
+                            <p:ajax event="valueChange" listener="#{controladorIncidenciaActa.agregarImagenBlancoCertificado()}"
+                                    update="formVerCert" />
+                        </p:selectOneRadio> 
+
+                    </div>
+
+                    <p:commandButton icon="fa fa-plus" class="cyan-btn" title="Agregar Observación Certificado"
+                                     process="@this"
+                                     oncomplete="PF('dlgObsCert').show()" update="formIncidencia:formObservacion" value="Observación"
+                                     action="#{controladorIncidenciaActa.observacionCertificado()}">
+                        <f:setPropertyActionListener target="#{controladorIncidenciaActa.agregarObservacion}"
+                                                     value="true"/>
+
+                    </p:commandButton>
+
+                    <p:outputLabel style="font-weight: bold;" value=""
+                                   for="@next" />
+                    <p:media id="pdfCertificado"
+                             value="#{controladorIncidenciaActa.urlCertificadoPdf}"
+                             rendered="#{not empty controladorIncidenciaActa.urlCertificadoPdf}"
+                             style="width:600px;height: 400px"
+                             player="pdf"/>
+
+
+
+                </p:panel>
+
+            </h:form>
+
+        </p:dialog>
+        <!-- DIALOGO OBSERVACION CERTIFICADO -->
+        <!-- DIALOGO OBSERVACION CERTIFICADO -->
+        <!-- DIALOGO OBSERVACION CERTIFICADO -->
+        <p:dialog id="dlgFormObsCert" widgetVar="dlgObsCert" modal="true"
+                  onShow="PF('dlgObsCert').initPosition()" header="Observación Certificado" >
+            <h:form id="formObservacion">
+
+                <h:panelGroup >
+
+                    <h:panelGrid columns="1" style="height: 100px">
+                        <p:outputLabel value="Observación" for="txtObs" />
+                        <p:inputTextarea id="txtObs" style="width: 300px" rows="3"
+                                         value="#{controladorIncidenciaActa.observacionCert}" />
+
+                    </h:panelGrid>
+
+
+                    <p:commandButton class="green-btn" action ="#{controladorIncidenciaActa.generarCertificado()}" 
+                                     icon="fa fa-save" value="Aceptar" process="@form" onclick="PF('dlgObsCert').hide()"
+                                     update="formIncidencia:formVerCert" 
+                                     />
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" 
+                                     update="formIncidencia:formCuantias" immediate="true" onclick="PF('dlgObsCert').hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgFormCuantia" widgetVar="dlgCuantia" modal="true"
+                  onShow="PF('dlgCuantia').initPosition()" header="Cuantía" >
+            <h:form id="formCuantias">
+
+                <h:panelGroup >
+                    <p:fieldset legend="El tipo de cuantía es " style="margin-bottom:20px">
+                        <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" title="El tipo de cuantía es">
+
+                            <p:selectOneRadio id="cuantia" required="true" 
+                                              requiredMessage="Por favor ingrese el tipo de cuantía"
+                                              value="#{controladorIncidenciaActa.cuantiaTipo}">
+                                <f:selectItems value="#{controladorIncidenciaActa.listaTipoCuantia}" /> 
+                                <p:ajax event="valueChange" listener="#{controladorIncidenciaActa.tipoCuantia()}"
+                                        update="formIncidencia:formCuantias" />
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                    </p:fieldset> 
+
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Monto" for="cuantiaMonto" />
+                        <p:inputText id="cuantiaMonto" value="#{controladorIncidenciaActa.cuantiaMonto}" title="" />
+                        <p:outputLabel value="Alcabalas" for="cuantiaAlcabalas" />
+                        <p:inputText id="cuantiaAlcabalas" value="#{controladorIncidenciaActa.cuantiaAlcabalas}" title="" />
+                        <p:outputLabel value="Plusvalía" for="cuantiaPlusvalia" />
+                        <p:inputText id="cuantiaPlusvalia" value="#{controladorIncidenciaActa.cuantiaPlusvalia}" title="" />
+                        <p:outputLabel value="Registro" for="cuantiaRegistro" />
+                        <p:inputText id="cuantiaRegistro" value="#{controladorIncidenciaActa.cuantiaRegistro}" 
+                                     disabled="#{controladorIncidenciaActa.disabledRegistroCuantia}" title="" />
+                        <p:outputLabel value="Observación" for="cuantiaObservacion" />
+                        <p:inputText id="cuantiaObservacion" value="#{controladorIncidenciaActa.cuantiaObservacion}" 
+                                     title="" style="text-transform:uppercase "/>
+                    </h:panelGrid>
+
+
+                    <p:commandButton class="green-btn" action ="#{controladorIncidenciaActa.txtCuantias()}" 
+                                     icon="fa fa-save" value="Generar" process="@form"
+                                     update="formIncidencia:formIncidenciaActa:tabViewInsc:inscripcionBlo,:growl,formIncidencia:formCuantias" 
+                                     oncomplete="handleSubmit(args,'dlgCuantia');" />
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" 
+                                     update="formIncidencia:formCuantias" immediate="true" onclick="PF('dlgCuantia').hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+
+
+        <p:dialog id="dlgFormOtorgamiento" widgetVar="dlgFechaOtorgamiento" modal="true"
+                  onShow="PF('dlgFechaOtorgamiento').initPosition()" header="Otorgamiento" >
+            <h:form id="formFechaOtorgamiento">
+
+                <h:panelGroup id="panelOtorgamiento">                       
+
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Fecha" for="otorgamientoFecha" />
+                        <p:calendar id = "otorgamientoFecha" pattern="dd/MM/yyyy"
+                                    mask="true" value = "#{controladorIncidenciaActa.fechaOtorgamiento}"
+                                    disabled="false" required="true" requiredMessage="Seleccione una fecha"/>
+                        <p:outputLabel value="Número Notario" for="numNotario" />
+                        <p:selectOneMenu id="numNotario" value="#{controladorIncidenciaActa.numeroNotario}">
+                            <f:selectItems value="#{controladorIncidenciaActa.listaNumeroNotario}"
+                                           var="notaria" 
+                                           itemValue="#{notaria.notNotario}"
+                                           itemLabel="#{notaria.notNotario}"
+                                           />
+
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Cantón" for="otorgamientoCanton" />
+                        <p:selectOneMenu id="otorgamientoCanton" value="#{controladorIncidenciaActa.canton}">
+                            <f:selectItems value="#{controladorIncidenciaActa.listaCanton}"
+                                           var="canton" 
+                                           itemValue="#{canton.canNombre}"
+                                           itemLabel="#{canton.canNombre}"
+                                           />
+
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Nombre Notario" for="nombreNotario" />
+                        <p:inputText id="nombreNotario" value="#{controladorIncidenciaActa.nombreNotario}" 
+                                     title="" required="true" 
+                                     requiredMessage="Ingrese el nombre del notario"
+                                     validatorMessage="Ingrese solo letras en el nombre"
+                                     style="text-transform: uppercase">
+                            <f:validateRegex  pattern="^\s*[a-zA-Z\ñÑÁÉÍÓÚáéíóú'´][a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/>
+                        </p:inputText>
+                    </h:panelGrid>
+
+                    <p:commandButton class="green-btn" action ="#{controladorIncidenciaActa.txtOtorgamiento()}" 
+                                     icon="fa fa-save" value="Generar" process="formIncidencia:formFechaOtorgamiento"
+                                     update="growl formIncidencia:formIncidenciaActa:tabViewInsc:txtEditorOtorgamiento" 
+                                     oncomplete="handleSubmit(args,'dlgFechaOtorgamiento');" />
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" 
+                                     immediate="true" onclick="PF('dlgFechaOtorgamiento').hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+        <!-- DIALOGO PREVISUALIZAR ACTA -->
+
+        <p:dialog id="dlgFormPreViewActa" widgetVar="dlgPreviewActa" modal="true"
+                  onShow="PF('dlgPreviewActa').initPosition()" header="Previsualizar Acta" >
+
+            <h:form id="formPrevisualizar">
+                <div align="center">
+                    <p:commandButton  
+                        icon="fa fa-plus" 
+                        actionListener="#{controladorIncidenciaActa.sumarSaltoLinea()}"
+                        style="margin-top: 5px"
+                        process="@this"
+                        update="growl formIncidencia:formPrevisualizar" >
+                    </p:commandButton>
+
+                    <p:commandButton  
+                        icon="fa fa-minus" 
+                        actionListener="#{controladorIncidenciaActa.restarSaltoLinea()}"
+                        style="margin-top: 5px"
+                        process="@this"
+                        update="growl formIncidencia:formPrevisualizar"
+                        >
+                    </p:commandButton>
+
+                    <p:selectBooleanButton value="#{controladorIncidenciaActa.bolAgregarImagenEspacioEnBlancoActa}"
+                                           onLabel="Con Imagen Texto En Blanco"
+                                           offLabel="Sin Imagen Texto En Blanco">
+                        <p:ajax listener="#{controladorIncidenciaActa.agregarImagenBlancoActa()}"
+                                update="growl formPrevisualizar"/>
+                    </p:selectBooleanButton>
+                    <p:commandButton class="green-btn" value="Aceptar" 
+                                     action="#{controladorIncidenciaActa.habilitarGuardar()}"
+                                     oncomplete="PF('dlgPreviewActa').hide()"
+                                     icon="fa fa-check" 
+                                     update=":formIncidencia:formIncidenciaActa:tabViewInsc:btnGuardarActa"/>
+
+                    <f:attribute name="btn2" value="rendered='false'"/>
+                </div>
+
+                <br></br>
+                <h:panelGroup >                       
+                    <p:media id="pdfActa"
+                             value="#{controladorIncidenciaActa.urlActaPdf}"
+                             rendered="#{not empty controladorIncidenciaActa.urlActaPdf}"
+                             style="width:700px;height: 500px"
+                             player="pdf"  />
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+
+
+        <p:dialog id="dlgFormComparecientes" widgetVar="dlgComparecientes" modal="true"
+                  onShow="PF('dlgComparecientes').initPosition()" header="Comparecientes" >
+
+            <h:form id="formComparecientes">
+                <h:panelGroup >    
+                    <h:panelGrid id="panelGridCompareciente" columns="7" >
+                        <p:outputLabel value="Identificación"/>
+                        <p:inputText id="txtIdentificacion" required="true" requiredMessage="Ingrese la identificación"
+                                     title="Identificación"  
+                                     value="#{controladorIncidenciaActa.tramitesControladorBb.identificacion }" >
+                            <p:ajax listener="#{controladorIncidenciaActa.buscarPersona()}" 
+                                    update="growl panelGridCompareciente"  
+                                    process="txtIdentificacion" event="change" 
+                                    />
+                        </p:inputText>
+
+                        <p:inputText value="#{controladorIncidenciaActa.tramitesControladorBb.nombrePersona}"
+                                     style="width: 250px" readonly="true" />
+
+                        <p:selectOneMenu id="tipoContrato" value="#{controladorIncidenciaActa.tipoComparecienteId}">
+                            <f:selectItems value="#{controladorIncidenciaActa.listaTipoCompareciente}"
+                                           var="tipoComp" 
+                                           itemValue="#{tipoComp.tpcId}"
+                                           itemLabel="#{tipoComp.tpcDescripcion}"
+
+
+                                           />
+
+                        </p:selectOneMenu>
+                        <p:commandButton  rendered="true"
+                                          action="#{controladorIncidenciaActa.guardarTramiteDetalle()}"
+                                          class="green-btn"
+                                          style="margin-right:20px;" icon="fa fa-plus"
+                                          title="Agregar Compareciente" 
+                                          update="growl formIncidencia:formIncidenciaActa:tabViewInsc:txtCompareciente formIncidencia:formComparecientes"
+                                          process="@form"/>
+                        <p:commandButton title="Buscar Persona" icon="fa fa-search" value="Buscar"
+                                         class="orange-btn" immediate="true" process="@this" 
+                                         actionListener="#{controladorFiltradoPersona.prepararFiltrado('CtrlIncActa', 'formIncidencia:formComparecientes')}"
+                                         oncomplete ="PF('dlgFiltradoPersona').show()"/>
+                        <p:commandButton title="Crear Nueva Persona" icon="fa fa-user-plus" 
+                                         oncomplete ="PF('dlgNuevaPersona').show()"
+                                         update="growl @form" rendered="false"/>
+
+
+
+                    </h:panelGrid>  
+                    <div align="center" >
+                        <h:panelGrid id="panelComparecientes" columns="1" width="500">   
+
+                            <p:dataTable id="tblComparecientes"  scrollable="true" scrollHeight="150"
+                                         value="#{controladorIncidenciaActa.listaTramiteDetalle}"
+                                         var="compareciente" sortBy="#{compareciente.traNumero.traNumero}" 
+                                         style="align-content: center" 
+                                         selection="#{compareciente}" rowKey="#{compareciente.tdtId}"> 
+
+                                <p:ajax event="rowSelect" 
+                                        listener="#{controladorIncidenciaActa.onRowSelectComparecientes}" 
+                                        update="formIncidencia:formComparecientes" />
+                                <p:column headerText="Nombre">
+                                    <h:outputText value="#{compareciente.tdtPerNombre}" />
+                                </p:column>
+                                <p:column headerText="Apellido Paterno">
+                                    <h:outputText value="#{compareciente.tdtPerApellidoPaterno}" />
+                                </p:column>
+                                <p:column headerText="Apellido Materno">
+                                    <h:outputText value="#{compareciente.tdtPerApellidoMaterno}" />
+                                </p:column>
+
+                                <p:column headerText="Tipo">
+                                    <h:outputText value="#{compareciente.tdtTpcDescripcion}" />
+                                </p:column>
+
+                                <p:column headerText="Tipo Contrato">
+                                    <h:outputText value="#{compareciente.tdtTtrDescripcion}" />
+                                </p:column>
+
+                                <p:column headerText="">
+                                    <p:commandButton  
+                                        action="#{controladorIncidenciaActa.eliminarCompareciente(compareciente.tdtId)}"
+                                        class="red-btn" immediate="true" process="@this" 
+                                        style="margin-right:20px;" icon="fa fa-remove"
+                                        title="Eliminar Compareciente" 
+                                        update="growl formIncidencia:formIncidenciaActa:tabViewInsc:txtCompareciente formIncidencia:formComparecientes"/>
+
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </h:panelGrid>
+                    </div>
+
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="Salir" immediate="true" onclick="PF('dlgComparecientes').hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+
+        <p:dialog id="dlgFormPropiedadesDerAcc" widgetVar="dlgPropiedadesDerAcc" modal="true" width="900"
+                  onShow="PF('dlgPropiedadesDerAcc').initPosition()" header="Seleccionar Derechos y Acciones" >
+
+            <h:form id="formDerechosAcciones">
+
+
+                <h:panelGrid columns="5">
+
+                    <p:commandButton icon="fa fa-plus" immediate="true" process="@this"
+                                     action="#{controladorIncidenciaActa.preCrearDetallePropiedad()}"
+                                     oncomplete="PF('dialogoDereAccn').show();" 
+                                     update=":frmDerAcc"
+                                     value="Agregar"
+                                     disabled="#{controladorIncidenciaActa.disabledBtnAgregarDerAcc }"
+                                     title="Agregar un derecho y acción"
+                                     /> 
+                    <p:commandButton icon="fa fa-save" immediate="true" process="@this"
+                                     class="green-btn"
+                                     action="#{controladorIncidenciaActa.guardarDerAcc()}"
+                                     disabled="#{controladorIncidenciaActa.disabledBtnGuardarDerAcc }"
+                                     update="growl" 
+                                     value="Guardar"
+                                     title="Guardar los derechos y acciones"
+                                     /> 
+                </h:panelGrid>
+
+
+                <p:dataTable id="dtb_prop_deta" scrollable="true" scrollHeight="300"
+                             value="#{controladorIncidenciaActa.listaPropiedadDetalle}" 
+                             var="itemDet" rowKey="#{itemDet.pdtId}" rowIndexVar="row" >
+                    <p:column headerText="Código" style="width: 30px;">
+                        <h:outputText value="#{row+1}"/>
+                    </p:column>
+                    <p:column headerText="Derechos" filterBy="" filterMatchMode="contains" style="width: 50px;">
+                        <h:outputText value="#{itemDet.pdtValor}"/>
+                    </p:column>
+                    <p:column headerText="Descripción" style="width: 250px;">
+                        <h:outputText value="#{itemDet.pdtDescripcion}"/>
+                    </p:column>
+                    <p:column headerText="Cédula/RUC" filterBy="" filterMatchMode="contains" style="width: 60px;">
+                        <h:outputText value="#{itemDet.persona.perIdentificacion}"/>
+                    </p:column>
+
+                    <p:column headerText="Nombre" filterBy="" filterMatchMode="contains" style="width: 60px;">
+                        <h:outputText value="#{itemDet.persona.perNombre}"/>
+                    </p:column>
+                    <p:column headerText="A. Paterno" filterBy="" filterMatchMode="contains" style="width: 60px;">
+                        <h:outputText value="#{itemDet.persona.perApellidoPaterno}"/>
+                    </p:column>
+
+
+                    <p:column style="width: 70px;">
+                        <p:commandButton action="#{controladorIncidenciaActa.borrarDetallePropiedad(row)}"
+                                         class="red-btn" icon="fa fa-trash" value="Inactivar" 
+                                         process="@this" immediate="true" update="@form"
+                                         disabled="#{controladorIncidenciaActa.verificarExiste(itemDet.pdtPerId)}"
+                                         >
+                            <f:setPropertyActionListener target="#{controladorIncidenciaActa.propiedadDetalleSeleccionada}"
+                                                         value="#{itemDet}"/>
+
+                            <f:setPropertyActionListener target="#{controladorIncidenciaActa.propiedadDetElim}"
+                                                         value="#{itemDet}"/>
+
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+
+
+
+        </p:dialog> 
+        <p:dialog id="dglFormPropiedadDerAcc" widgetVar="dlgInsPropiedad" modal="true" width="600"
+                  onShow="PF('dlgInsPropiedad').initPosition()" header="Seleccionar Propiedad" >
+
+            <h:form id="formInsPropiedad">
+
+
+                <h:panelGrid columns="5">
+
+                    <p:dataTable id="dtb_prop_deta" scrollable="true" scrollHeight="200"
+                                 value="#{controladorIncidenciaActa.listaRepPropiedad}" 
+                                 var="item" rowKey="#{item.rpdId}" sortBy="#{item.prdMatricula.prdMatricula}" >
+                        <p:column headerText="Nro. Matrícula" style="width: 70px;">
+                            <h:outputText value="#{item.prdMatricula.prdMatricula}"/>
+                        </p:column>
+                        <p:column headerText="Descripción" >
+                            <h:outputText value="#{item.prdMatricula.prdDescripcion2}"/>
+                        </p:column>
+                        <p:column headerText="" style="width: 100px;">
+                            <p:commandButton title="Derechos y Acciones" class="cyan-btn"
+                                             value="Derechos y Acciones"
+                                             icon="fa fa-file-text-o"
+                                             rendered="#{controladorIncidenciaActa.renderedTxtEdit}"
+                                             update=":formIncidencia:formDerechosAcciones"
+                                             action="#{controladorIncidenciaActa.cargarPropiedadDetalle()}"
+                                             oncomplete ="PF('dlgPropiedadesDerAcc').show()" >
+                                <f:setPropertyActionListener target="#{controladorIncidenciaActa.propiedadMatriculaDerAcc}"
+                                                             value="#{item.prdMatricula}"/>
+                            </p:commandButton>                                                    
+
+
+                        </p:column>
+
+
+
+                    </p:dataTable>
+
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+
+
+    </ui:composition>
+
+</html>

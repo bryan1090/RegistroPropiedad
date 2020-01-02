@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Nuevo"></h:outputText>
+        </ui:define>
+        <ui:define name="content" >
+
+            <h:form >
+                <h1><h:outputText value="Usuario logeado: #{dataManagerSesion.usuarioLogeado.usuLogin}"/></h1>
+                <p:panel >
+                    <h:panelGrid columns="2">
+                        <p:outputLabel  for="@next" value="Nombre: "/>
+                        <p:inputText required="true" requiredMessage="El nombre es requerido"
+                                     value="#{controladorPrueba.nombre}"/>
+                        <p:outputLabel for="@next" value="Edad "/>
+                        <p:inputText value="#{controladorPrueba.edad}"/>
+                        <p:outputLabel for="popup" value="Fecha" />
+                        <p:calendar pattern="dd/MM/yyyy"  id="popup" value="#{controladorPrueba.fecha}" />
+                        <p:outputLabel for="console" value="Ciudad: " />
+                        <p:selectOneMenu id="console" value="#{controladorPrueba.seleccion}" >
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItems value="#{controladorPrueba.combo}"/>
+                        </p:selectOneMenu>
+                        <p:commandButton value="Guardar" update="growl" actionListener="#{controladorPrueba.guardar()}"/>
+                        <p:commandButton value="Excep" update="growl" actionListener="#{controladorPrueba.procesar()}"/>
+
+                    </h:panelGrid>
+
+                </p:panel>
+
+            </h:form>
+
+            <h:form>
+                <p:panel>
+                    <p:commandButton value="llenar lista texto" action="#{controladorPrueba.llenarListaTexto()}" update="@form"/>
+                    <p:commandButton value="llenar lista personas sin id" action="#{controladorPrueba.llenarListaPersonas(false)}" update="@form"/>
+                    <p:commandButton value="llenar lista personas con id" action="#{controladorPrueba.llenarListaPersonas(true)}" update="@form"/>
+                    <p:dataTable  value="#{controladorPrueba.lista}" var="texto">
+                        <f:facet name="header">
+                            Lista de texto
+                        </f:facet>
+                        <p:column>
+                            <h:outputText value="#{texto}"/>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton icon="fa fa-trash" action="#{controladorPrueba.eliminarTexto(texto)}" update="@form"/>
+                        </p:column>
+                    </p:dataTable>
+                    
+                    <p:dataTable  value="#{controladorPrueba.listaPersonas}" var="persona" 
+                                  rowKey="#{persona.perNombre}" selectionMode="single" selection="#{controladorPrueba.personaSeleccionada}" 
+                                  rowIndexVar="numFila">
+                        <p:ajax event="rowSelect" listener="#{controladorPrueba.seleccionarPersona()}"/>
+                        <f:facet name="header">
+                            Lista de personas
+                        </f:facet>
+                        <p:column headerText="Id" sortBy="#{persona.perId}">
+                             <h:outputText value="#{persona.perId}"/>
+                        </p:column>
+                        <p:column headerText="Nombre" sortBy="#{persona.perNombre}">
+                            <h:outputText value="#{persona.perNombre}"/>
+                        </p:column>
+                        
+                        <p:column headerText="borrar por objecto">
+                            <p:commandButton icon="fa fa-trash" action="#{controladorPrueba.eliminarPersonaSel(persona)}" update="@form"/>
+                        </p:column>
+                        <p:column headerText="borrar por indice">
+                            <p:commandButton icon="fa fa-trash" action="#{controladorPrueba.eliminarPersonaSelPorIndice(numFila)}" update="@form"/>
+                        </p:column>
+                        <p:column headerText="borrar por objeto seleccionado">
+                            <p:commandButton icon="fa fa-trash" action="#{controladorPrueba.eliminarPersonaSelPF()}" update="@form"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+        </ui:define>        
+    </ui:composition>
+
+</html>

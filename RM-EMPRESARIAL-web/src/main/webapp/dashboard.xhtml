@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            //<![CDATA[
+            function skinChart() {
+                this.cfg.animate = true;
+                this.cfg.shadow = false;
+                this.cfg.title = '';
+                this.cfg.seriesColors = ['#4CAF50', '#39a3f4'];
+                this.cfg.grid = {
+                    background: 'transparent',
+                    borderColor: 'transparent',
+                    gridLineColor: '#{guestPreferences.dark ? "#121213" : "#dddddd"}',
+                    shadow: false,
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#9fadb7'
+                    },
+                    tickOptions: {
+                        textColor: '#9fadb7'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    lineWidth: 1,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                }
+                this.cfg.legend = {
+                    show: false
+                }
+            }
+
+//            setInterval(function () {
+//                setAnimation(PF('knob1'));
+//                setAnimation(PF('knob2'));
+//                setAnimation(PF('knob3'));
+//                setAnimation(PF('knob4'));
+//                PF('pb1').setValue(generateRandomNumber());
+//                PF('pb2').setValue(generateRandomNumber());
+//                PF('pb3').setValue(generateRandomNumber());
+//            }, 2000);
+
+            function setAnimation(widget) {
+                widget.jq.animate({value: generateRandomNumber()}, {
+                    duration: 1000,
+                    easing: 'linear',
+                    progress: function ()
+                    {
+                        widget.setValue(Math.floor(this.value));
+                    }
+                });
+            }
+
+            function generateRandomNumber() {
+                return Math.floor(Math.random() * 100) + 1;
+            }
+            //]]>
+        </script>
+        <style type="text/css">
+            .jqplot-xaxis-label {
+                color: #9fadb7;
+                display: none;
+            }
+            .jqplot-yaxis-label {
+                color: #9fadb7;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g dashboard">
+
+            <h:panelGrid style="min-height: 410px;min-width: 800px">               
+                
+                <!--  <h:graphicImage value="resources/imagenes/Logo_RM_inicio.png"/> -->
+           
+
+            </h:panelGrid>
+
+
+
+        </div>
+    </ui:define>
+
+</ui:composition>

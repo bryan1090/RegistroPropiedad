@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                Cajas-Consulta-Comprobantes
+                <script type="text/javascript">
+//<![CDATA[
+                    function start() {
+                        PF('statusDialog').show();
+                    }
+
+                    function stop() {
+                        PF('statusDialog').hide();
+                    }
+//]]>
+                </script>    
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="formCajas">
+                    <p:growl id="mensajito" life="3000" sticky="false"  />
+                    <f:passThroughAttribute name="autocomplete" value="off"/>
+                    <p:panel header="Comprobantes Electronicos" style="text-align: center">
+
+                        <p:panel>
+                            <h:panelGrid id="pnlFiltro" columns="3" style="width: 100%">
+                                <h:panelGrid id="pnlFactura" rendered="#{!controladorConsultaComprobantes.consultaComprobantesBb.filtro}">
+                                    <p:row>
+                                        <p:column >
+                                            <p:selectBooleanCheckbox id="slcFactura" value="#{controladorConsultaComprobantes.consultaComprobantesBb.filtro}" >
+                                                <p:ajax update="pnlFiltro :formCajas:pnlFechas "  listener="#{controladorConsultaComprobantes.busquedaPorFactura()}" />
+                                            </p:selectBooleanCheckbox>
+                                            <p:outputLabel id="lblFactura"  value="&nbsp;&nbsp;&nbsp;Buscar por Número de Factura"/>
+                                        </p:column>
+                                    </p:row>
+                                </h:panelGrid>
+                                <h:panelGrid id="pnlFechas" rendered="#{controladorConsultaComprobantes.consultaComprobantesBb.filtro}">
+                                    <p:row>
+                                        <p:column>
+                                            <p:selectBooleanCheckbox id="slcFechas"  value="#{controladorConsultaComprobantes.consultaComprobantesBb.filtro}" >
+                                                <p:ajax update="pnlFiltro pnlFactura "  listener="#{controladorConsultaComprobantes.busquedaPorFechas()}" />
+                                            </p:selectBooleanCheckbox>
+                                            <p:outputLabel id="lblFechas"  value="&nbsp;&nbsp;&nbsp;Buscar por Rango de Fechas"/> 
+                                        </p:column>
+                                    </p:row>
+                                </h:panelGrid>
+                                <h:panelGrid>
+                                    <p:row rendered="#{!controladorConsultaComprobantes.consultaComprobantesBb.filtro}" style="border: none">
+                                        <p:column>
+                                            <p:outputLabel value="Fecha Inicio&nbsp;&nbsp;&nbsp;"/>
+                                            <p:calendar value="#{controladorConsultaComprobantes.consultaComprobantesBb.fechaIinicio}" pattern="dd/MM/yyyy" mask="true"/>
+                                            <p:outputLabel value="&nbsp;&nbsp;&nbsp;Fecha Fin&nbsp;&nbsp;&nbsp;"/>
+                                            <p:calendar value="#{controladorConsultaComprobantes.consultaComprobantesBb.fechaFin}" pattern="dd/MM/yyyy" mask="true"/>
+                                        </p:column>
+                                    </p:row>
+                                    <p:row rendered="#{controladorConsultaComprobantes.consultaComprobantesBb.filtro}" style="border: none "   >
+                                        <p:column>
+                                            <p:outputLabel value="Número Factura&nbsp;&nbsp;&nbsp;"/>
+                                            <p:inputText value="#{controladorConsultaComprobantes.consultaComprobantesBb.numeroFactura}"/>
+                                        </p:column>
+                                    </p:row>
+                                </h:panelGrid>
+                                <h:panelGrid style="width: 100%">
+                                    <p:row>
+                                        <p:column>
+                                            <div align="right">
+                                                <p:commandButton id="btnBuscar" icon="fa fa-search" class="green-btn" update="dtValores" value="Buscar" action="#{controladorConsultaComprobantes.listarPorFechaFacturaWeb()}"/>
+                                            </div>
+                                        </p:column>
+                                    </p:row>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:panel><br/>
+                        <p:dataTable id="dtValores" var="factura" value="#{controladorConsultaComprobantes.consultaComprobantesBb.listaFacturaWeb}" paginator="true" >
+                            <p:column headerText="Número Factura" width="130" style="text-align-last: center" >
+                                <h:outputText value="#{factura.facNumero}"/>
+                            </p:column>
+                            <p:column headerText="Número Autorización" width="350" style="text-align-last: center"  >
+                                <p:outputLabel value="#{factura.facClaveAcceso}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Respuesta SRI" style="text-align-last: center"  > 
+                                <h:outputText value="#{factura.facRespuestaSri}"/>
+                            </p:column>
+                            <p:column headerText="Ride" style="text-align-last: center" > 
+                                <h:commandLink title="Generar Ride"  action="#{controladorConsultaComprobantes.generarRide}" target="_blank">
+                                    <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                    <f:setPropertyActionListener  value="#{factura}" target="#{controladorConsultaComprobantes.consultaComprobantesBb.facturaSeleccionada}"/>
+                                </h:commandLink> 
+                            </p:column>
+                            <p:column headerText="NV" style="text-align-last: center" > 
+                                <h:commandLink title="Generar NV"  action="#{controladorConsultaComprobantes.generarNV()}">
+                                    <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                    <f:setPropertyActionListener  value="#{factura}" target="#{controladorConsultaComprobantes.consultaComprobantesBb.facturaSeleccionada}"/>
+                                </h:commandLink>
+                            </p:column>
+                            <p:column headerText="XML" style="text-align-last: center" > 
+                                <p:commandButton value="XML" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" action="#{controladorConsultaComprobantes.descargarArchivo}" icon="fa fa-fw fa-download">
+                                    <f:setPropertyActionListener value="#{factura}" target="#{controladorConsultaComprobantes.consultaComprobantesBb.facturaSeleccionada}"/>
+
+                                    <p:fileDownload value="#{controladorConsultaComprobantes.files}" />
+                                </p:commandButton>    
+                            </p:column>
+                            
+                        </p:dataTable>
+
+
+
+                    </p:panel>
+                    <p:dialog header="Mensaje SRI"  widgetVar="dlgMensaje" modal="true" minHeight="40" position="center center" onShow="PF('dlgMensaje').initPosition()">
+                        <p:panel id="dlgMensaje1">
+                            <p:outputLabel value="#{controladorConsultaComprobantes.consultaComprobantesBb.EMensaje.EMsgDetalle}"></p:outputLabel>
+                        </p:panel>
+                    </p:dialog>
+                    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                        <p:graphicImage  value="../../resources/imagenes/loading.gif"  style="width: 75px; height: 75px;"/>
+                    </p:dialog>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

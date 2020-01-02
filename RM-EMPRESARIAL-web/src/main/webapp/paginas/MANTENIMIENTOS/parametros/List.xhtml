@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListParametrosTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="ParametrosListForm">
+                <p:panel header="#{bundle.ListParametrosTitle}">
+                    <p:dataTable id="datalist" value="#{controladorParametro.items}" var="item"
+                                 selectionMode="single" selection="#{controladorParametro.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.prmId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column filterBy="#{item.prmParametro}" filterStyle="text-transform: uppercase">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParametrosTitle_prmParametro}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.prmParametro}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.prmDescripcion}" filterStyle="text-transform: uppercase">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParametrosTitle_prmDescripcion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.prmDescripcion}"/>
+                        </p:column>
+                        <!--
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParametrosTitle_prmValor1}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.prmValor1}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParametrosTitle_prmValor2}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.prmValor2}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParametrosTitle_prmValor3}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.prmValor3}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>-->
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParametrosTitle_prmUnidadTiempo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.prmUnidadTiempo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParametrosTitle_prmCantidadTiempo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.prmCantidadTiempo}"/>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                            <p:commandButton id="createButton" icon="ui-icon-plus"  class="green-btn" value="#{bundle.Create}" actionListener="#{controladorParametro.prepareCreate}" update=":ParametrosCreateForm" oncomplete="PF('ParametrosCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":ParametrosViewForm" oncomplete="PF('ParametrosViewDialog').show()" disabled="#{empty controladorParametro.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":ParametrosEditForm" oncomplete="PF('ParametrosEditDialog').show()" disabled="#{empty controladorParametro.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  class="red-btn" value="#{bundle.Delete}" actionListener="#{controladorParametro.destroy}" update=":growl,datalist" disabled="#{empty controladorParametro.selected}">
+                         <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

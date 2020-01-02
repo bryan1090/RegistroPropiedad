@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UsuarioViewDlg" widgetVar="UsuarioViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewUsuarioTitle}">
+            <h:form id="UsuarioViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{usuarioController.usuarioControllerBb.usuario != null}">
+                        
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_usuLogin}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.usuLogin}" title="#{bundle.ViewUsuarioTitle_usuLogin}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_usuEmail}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.usuEmail}" title="#{bundle.ViewUsuarioTitle_usuEmail}"/>
+                         <h:outputText value="#{bundle.ViewUsuarioLabel_usuFechaInicio}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.usuFechaInicio}" title="#{bundle.ViewUsuarioTitle_usuFechaInicio}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_usuFechaFin}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.usuFechaFin}" title="#{bundle.ViewUsuarioTitle_usuFechaFin}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_perId}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.perId.perNombre}" title="#{bundle.ViewUsuarioTitle_perId}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_rolId}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.rolId.rolNombre}" title="#{bundle.ViewUsuarioTitle_rolId}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_zonId}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.zonId.zonNombre}" title="#{bundle.ViewUsuarioTitle_zonId}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_usuImagen}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.usuImagen}" title="#{bundle.ViewUsuarioTitle_usuImagen}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_usuEstado}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.usuEstado}" title="#{bundle.ViewUsuarioTitle_usuEstado}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_usuUser}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.usuUser}" title="#{bundle.ViewUsuarioTitle_usuUser}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioLabel_usuFHR}"/>
+                        <h:outputText value="#{usuarioController.usuarioControllerBb.usuario.usuFHR}" title="#{bundle.ViewUsuarioTitle_usuFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{usuarioController.clear()}" value="#{bundle.Close}" onclick="UsuarioViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

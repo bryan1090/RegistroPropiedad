@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoComparecienteViewDlg" widgetVar="TipoComparecienteViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTipoComparecienteTitle}">
+            <h:form id="TipoComparecienteViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTipoCompareciente.selected != null}">
+                        <h:outputText value="#{bundle.ViewTipoComparecienteLabel_tpcCodigo}"/>
+                        <h:outputText value="#{controladorTipoCompareciente.selected.tpcCodigo}" style="text-transform: uppercase" title="#{bundle.ViewTipoComparecienteTitle_tpcCodigo}"/>
+                        <h:outputText value="#{bundle.ViewTipoComparecienteLabel_tpcDescripcion}"/>
+                        <h:outputText value="#{controladorTipoCompareciente.selected.tpcDescripcion}" style="text-transform: uppercase" title="#{bundle.ViewTipoComparecienteTitle_tpcDescripcion}"/>
+                        <h:outputText value="#{bundle.ViewTipoComparecienteLabel_tpcUser}"/>
+                        <h:outputText value="#{controladorTipoCompareciente.selected.tpcUser}" style="text-transform: uppercase" title="#{bundle.ViewTipoComparecienteTitle_tpcUser}"/>
+                        <h:outputText value="#{bundle.ViewTipoComparecienteLabel_tpcFHR}"/>
+                        <h:outputText value="#{controladorTipoCompareciente.selected.tpcFHR}" style="text-transform: uppercase" title="#{bundle.ViewTipoComparecienteTitle_tpcFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTipoCompareciente.clear()}" value="#{bundle.Close}" onclick="TipoComparecienteViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

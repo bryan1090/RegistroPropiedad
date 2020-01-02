@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="EMensajeViewDlg" widgetVar="EMensajeViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewEMensajeTitle}">
+            <h:form id="EMensajeViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{eMensajeController.selected != null}">
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgDocumento}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgDocumento}" title="#{bundle.ViewEMensajeTitle_EMsgDocumento}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgSerie}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgSerie}" title="#{bundle.ViewEMensajeTitle_EMsgSerie}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgNumero}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgNumero}" title="#{bundle.ViewEMensajeTitle_EMsgNumero}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgMensaje}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgMensaje}" title="#{bundle.ViewEMensajeTitle_EMsgMensaje}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgTipo}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgTipo}" title="#{bundle.ViewEMensajeTitle_EMsgTipo}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgDetalle}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgDetalle}" title="#{bundle.ViewEMensajeTitle_EMsgDetalle}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgPrograma}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgPrograma}" title="#{bundle.ViewEMensajeTitle_EMsgPrograma}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgClave}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgClave}" title="#{bundle.ViewEMensajeTitle_EMsgClave}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgAutorizacion}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgAutorizacion}" title="#{bundle.ViewEMensajeTitle_EMsgAutorizacion}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgErrorSri}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgErrorSri}" title="#{bundle.ViewEMensajeTitle_EMsgErrorSri}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgCodigoSri}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgCodigoSri}" title="#{bundle.ViewEMensajeTitle_EMsgCodigoSri}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgEstado}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgEstado}" title="#{bundle.ViewEMensajeTitle_EMsgEstado}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgUser}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgUser}" title="#{bundle.ViewEMensajeTitle_EMsgUser}"/>
+                        <h:outputText value="#{bundle.ViewEMensajeLabel_EMsgFHR}"/>
+                        <h:outputText value="#{eMensajeController.selected.EMsgFHR}" title="#{bundle.ViewEMensajeTitle_EMsgFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Close}" onclick="EMensajeViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

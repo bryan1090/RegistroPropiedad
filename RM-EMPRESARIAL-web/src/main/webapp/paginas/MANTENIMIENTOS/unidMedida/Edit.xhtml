@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UnidMedidaEditDlg" widgetVar="UnidMedidaEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditUnidMedidaTitle}">
+            <h:form id="UnidMedidaEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{unidMedidaController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditUnidMedidaLabel_umdNombre}" for="umdNombre" />
+                        <p:inputText id="umdNombre" value="#{unidMedidaController.selected.umdNombre}" title="#{bundle.EditUnidMedidaTitle_umdNombre}" required="true" requiredMessage="#{bundle.EditUnidMedidaRequiredMessage_umdNombre}"/>
+                        <p:outputLabel value="#{bundle.EditUnidMedidaLabel_umdAbreviatura}" for="umdAbreviatura" />
+                        <p:inputText id="umdAbreviatura" value="#{unidMedidaController.selected.umdAbreviatura}" title="#{bundle.EditUnidMedidaTitle_umdAbreviatura}" />
+                        <p:outputLabel value="#{bundle.EditUnidMedidaLabel_umdEstado}" for="umdEstado" />
+                        <p:selectOneMenu id="umdEstado" value="#{unidMedidaController.selected.umdEstado}" required="true">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{unidMedidaController.update}" value="#{bundle.Save}" update="display,:UnidMedidaListForm:datalist,:growl" oncomplete="handleSubmit(args, 'UnidMedidaEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{unidMedidaController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="UnidMedidaEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

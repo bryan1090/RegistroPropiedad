@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="dlgCrearAlicTmp" header="Crear Componente PH" modal="true" widgetVar="dlgNuevaAlicuotaTmp" 
+                  style="width: 600px"
+                  minHeight="40" position="center center" onShow="PF('dlgNuevaAlicuotaTmp').initPosition()">
+            <h:form id="CrearAlicuotaTmpForm">
+
+                <p:growl id="growl" showDetail="true" sticky="false" life="4000"/> 
+                <p:outputPanel id="plNuevaAlicuotaTmp" style="text-align:left;">             
+                    
+                        <h:panelGrid columns="2">
+                            
+                            
+                              <p:outputLabel for="numeracion" value="Numeración:" />
+                              <p:selectOneMenu id="numeracion" value="#{controladorNuevasMatriculasPH.tipoNumeracionAlicTmp}"
+                                               style="width: 150px">
+            <f:selectItem itemLabel="Seleccione una opción" itemValue="" />
+            <f:selectItem itemLabel="Numérico" itemValue="numerico" />
+            <f:selectItem itemLabel="Letras" itemValue="letras" />
+            <f:selectItem itemLabel="Por Piso" itemValue="Por Piso" />
+            <f:selectItem itemLabel="Letra y Número" itemValue="Letra_Numero" />
+            <f:selectItem itemLabel="Número y Letra" itemValue="Numero_Letra" />
+            <f:selectItem itemLabel="Manual" itemValue="manual" />
+            <p:ajax event="change" update="CrearAlicuotaTmpForm" 
+                listener="#{controladorNuevasMatriculasPH.tipoNumeracionAlicuotaTmp()}" />            
+        </p:selectOneMenu>
+                            <p:outputLabel value="Número" for="alNumero" 
+                                           rendered="#{controladorNuevasMatriculasPH.renderedNumeroAlicTmp}"/>
+                            <p:inputText id="alNumero" style="text-transform: uppercase" 
+                                         rendered="#{controladorNuevasMatriculasPH.renderedNumeroAlicTmp}"
+                                         value="#{controladorNuevasMatriculasPH.tmpAlicuota.talNumero}"  
+                                         required="true" requiredMessage="Ingrese el Número" >                             
+                            </p:inputText>
+                            <p:outputLabel value="Letra" for="letra" 
+                                           rendered="#{controladorNuevasMatriculasPH.renderedLetraAlicTmp}"/>
+                            <p:inputText id="letra" style="text-transform: uppercase" 
+                                         rendered="#{controladorNuevasMatriculasPH.renderedLetraAlicTmp}"
+                                         value="#{controladorNuevasMatriculasPH.letraAlicuatasTmp}"  
+                                         required="true" requiredMessage="Ingrese la Letra" >
+                            </p:inputText>  
+                              <p:outputLabel value="Número" for="numero_letra"
+                                            rendered="#{controladorNuevasMatriculasPH.renderedLetNumlicTmp}"/>
+                            <p:inputNumber id="numero_letra" decimalPlaces="0"
+                                         rendered="#{controladorNuevasMatriculasPH.renderedLetNumlicTmp}"
+                                         value="#{controladorNuevasMatriculasPH.numAlicuatasTmp}"  
+                                         required="true" requiredMessage="Ingrese el Número" >                             
+                            </p:inputNumber> 
+                            <p:outputLabel value="Letra Inicial" for="letraInicial" 
+                                           rendered="#{controladorNuevasMatriculasPH.renderedLetNumlicTmp}"/>
+                            <p:inputText id="letraInicial" style="text-transform: uppercase" 
+                                         rendered="#{controladorNuevasMatriculasPH.renderedLetNumlicTmp}"
+                                         value="#{controladorNuevasMatriculasPH.letraInicAlicuatasTmp}"  
+                                         required="true" requiredMessage="Ingrese la Letra Inicial" >
+                            </p:inputText> 
+                           
+                             <p:outputLabel value="Número Inicial" for="inicial"
+                                            rendered="#{controladorNuevasMatriculasPH.renderedInicialAlicTmp}"/>
+                            <p:inputNumber id="inicial" decimalPlaces="0"
+                                         rendered="#{controladorNuevasMatriculasPH.renderedInicialAlicTmp}"
+                                         value="#{controladorNuevasMatriculasPH.inicialAlicuatasTmp}"  
+                                         required="true" requiredMessage="Ingrese el Inicial" >                             
+                            </p:inputNumber>            
+                            <p:outputLabel value="Cantidad" for="cantidad"
+                                           rendered="#{controladorNuevasMatriculasPH.renderedCantAlicTmp}"/>
+                            <p:inputNumber id="cantidad" decimalPlaces="0"
+                                         rendered="#{controladorNuevasMatriculasPH.renderedCantAlicTmp}"
+                                         value="#{controladorNuevasMatriculasPH.cantidadAlicuatasTmp}"  
+                                         required="true" requiredMessage="Ingrese el Cantidad" >                             
+                            </p:inputNumber>                           
+                            
+                                                       
+                            <p:outputLabel value="Bloque" for="talArea" />
+                             <p:selectOneMenu id="talArea" style="width: 118px"  
+                                               required="true" requiredMessage="Seleccione el Bloque" 
+                                                 value="#{controladorNuevasMatriculasPH.tmpAlicuota.talArea}">
+                              
+                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaBloque}" 
+                                                  var="bloq"
+                                                  itemLabel="#{bloq.bloNombre}" itemValue="#{bloq.bloNombre}" />
+            
+        </p:selectOneMenu>
+                            
+                            <p:outputLabel value="Piso" for="talPiso" />
+                            <p:inputText id="talPiso" value="#{controladorNuevasMatriculasPH.tmpAlicuota.talPiso}"  
+                                         style="text-transform: uppercase" required="true" requiredMessage="Ingrese el Piso" >                             
+                            </p:inputText>
+                            <p:outputLabel value="Descripción" for="talDesc" />
+                             <p:selectOneMenu id="talDesc" required="true" style="width: 250px" 
+                                                 filter="true"
+                                                 requiredMessage="Seleccione el Tipo"
+                                                 value="#{controladorNuevasMatriculasPH.tipoProp}" >
+                                 <p:ajax event="change" listener="#{controladorNuevasMatriculasPH.llenarDescripcionTmpAlicuaota()}"/>                                                    
+                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaTipoPropiedad}" var="tipoPropiedad" 
+                                                   itemLabel="#{tipoPropiedad.tpdNombre}" itemValue="#{tipoPropiedad}" />
+                                </p:selectOneMenu>                            
+                            <p:outputLabel value="Observación" for="talObs" />
+                            <p:inputText id="talObs" value="#{controladorNuevasMatriculasPH.tmpAlicuota.talObservacion}"  
+                                         style="text-transform: uppercase" required="false" >                             
+                            </p:inputText>
+                              <p:outputLabel value="No vendible?" for="vendible" />
+                              <p:selectBooleanCheckbox id="vendible"  
+                                                       value="#{controladorNuevasMatriculasPH.esVendibleTmpAlicuota}"/>
+
+                        </h:panelGrid>
+                    
+                    
+                    <div align="left">
+                        <p:commandButton value="Guardar" icon="fa fa-save" class="green-btn" 
+                                         action="#{controladorNuevasMatriculasPH.guardarAlicuotaTmp}"
+                                         update="growl CrearAlicuotaTmpForm :tabView:formGenerarDeclaratorias :tabView:formUniViv :tabView" />
+
+                        <p:commandButton class="red-btn" immediate="true" icon="fa fa-close"
+
+                                         value="Salir" onclick="PF('dlgNuevaAlicuotaTmp').hide()"/>
+                    </div>
+
+                </p:outputPanel>
+            </h:form>
+        </p:dialog> 
+        
+    </ui:composition>
+</html>

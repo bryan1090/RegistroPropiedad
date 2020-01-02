@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoTramiteComparecienteEditDlg" widgetVar="TipoTramiteComparecienteEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditTipoTramiteComparecienteTitle}">
+            <h:form id="TipoTramiteComparecienteEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTipoTramiteCompareciente.selected != null}">
+                        <p:outputLabel value="#{bundle.EditTipoTramiteComparecienteLabel_ttcOrden}" for="ttcOrden" />
+                        <p:selectOneMenu id="ttcOrden" value="#{controladorTipoTramiteCompareciente.selected.ttcOrden}" title="#{bundle.EditTipoTramiteComparecienteTitle_ttcOrden}" required="true" requiredMessage="#{bundle.EditTipoTramiteComparecienteRequiredMessage_ttcOrden}">
+                            <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                            <f:selectItem itemLabel="1" itemValue="1"/>
+                            <f:selectItem itemLabel="2" itemValue="2"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditTipoTramiteComparecienteLabel_ttcPropietario}" for="ttcPropietario" />
+                        <p:selectBooleanCheckbox id="ttcPropietario" value="#{controladorTipoTramiteCompareciente.ttcPropietario}" title="#{bundle.EditTipoTramiteComparecienteTitle_ttcPropietario}"/>
+                        <p:outputLabel value="#{bundle.EditTipoTramiteComparecienteLabel_tpcId}" for="tpcId" />
+                        <p:selectOneMenu id="tpcId" value="#{controladorTipoTramiteCompareciente.selected.tpcId}" style="text-transform: uppercase" required="true" requiredMessage="#{bundle.EditTipoTramiteComparecienteRequiredMessage_tpcId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{controladorTipoCompareciente.itemsAvailableSelectOne}"
+                                           var="tpcIdItem"
+                                           itemValue="#{tpcIdItem}" itemLabel="#{tpcIdItem.tpcDescripcion}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditTipoTramiteComparecienteLabel_ttrId}" for="ttrId" />
+                        <p:selectOneMenu id="ttrId" value="#{controladorTipoTramiteCompareciente.selected.ttrId}" style="text-transform: uppercase" required="true" requiredMessage="#{bundle.EditTipoTramiteComparecienteRequiredMessage_ttrId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{controladorTipoTramite.itemsAvailableSelectOne}"
+                                           var="ttrIdItem"
+                                           itemValue="#{ttrIdItem}" itemLabel="#{ttrIdItem.ttrDescripcion}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Estado" for="ttrEstado" />
+                        <p:selectOneMenu id="ttrEstado" value="#{controladorTipoTramiteCompareciente.selected.ttcEstado}" required="true" requiredMessage="Seleccione el Estado">
+                            <f:selectItem itemValue="A" itemLabel="ACTIVO"/>
+                            <f:selectItem itemValue="I" itemLabel="INACTIVO"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorTipoTramiteCompareciente.update}" value="#{bundle.Save}" update="display,:TipoTramiteComparecienteListForm:datalist,:growl" oncomplete="handleSubmit(args, 'TipoTramiteComparecienteEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTipoTramiteCompareciente.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="TipoTramiteComparecienteEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

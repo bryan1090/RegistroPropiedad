@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListParroquiaTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="ParroquiaListForm">
+                <p:panel header="#{bundle.ListParroquiaTitle}">
+
+
+                    <!--                    TABLA -->
+                    <p:dataTable id="datalist" value="#{controladorParroquia.items}" var="item"
+                                 selectionMode="single" selection="#{controladorParroquia.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.parId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column sortBy="#{item.parNombre}" filterBy="#{item.parNombre}" filterMatchMode="contains" filterStyle="text-transform: uppercase">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParroquiaTitle_parNombre}" />
+                            </f:facet>
+                            <h:outputText value="#{item.parNombre}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.parCodigo}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParroquiaTitle_parCodigo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parCodigo}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.parInicial}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParroquiaTitle_parInicial}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parInicial}"/>
+                        </p:column>
+
+                        <p:column sortBy="#{item.ciuId.ciuNombre}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParroquiaTitle_ciuId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ciuId.ciuNombre}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.parUser}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListParroquiaTitle_parUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parUser}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.parFHR}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.CreateCiudadLabel_ciuFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus"  class="green-btn" value="#{bundle.Create}" actionListener="#{controladorParroquia.prepareCreate}" update=":ParroquiaCreateForm" oncomplete="PF('ParroquiaCreateDialog').show()" title="Crear nueva parroquia"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":ParroquiaViewForm" oncomplete="PF('ParroquiaViewDialog').show()" disabled="#{empty controladorParroquia.selected}" title="Ver parroquia"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":ParroquiaEditForm" oncomplete="PF('ParroquiaEditDialog').show()" disabled="#{empty controladorParroquia.selected}" title="Editar parroquia"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn"  value="#{bundle.Delete}" actionListener="#{controladorParroquia.destroy}" update=":growl,datalist" disabled="#{empty controladorParroquia.selected}" title="Eliminar parroquia">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

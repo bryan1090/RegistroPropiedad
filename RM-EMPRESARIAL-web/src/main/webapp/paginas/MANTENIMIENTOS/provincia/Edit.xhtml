@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProvinciaEditDlg" widgetVar="ProvinciaEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditProvinciaTitle}">
+            <h:form id="ProvinciaEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorProvincia.selected != null}">
+                        <p:outputLabel value="#{bundle.EditProvinciaLabel_proNombre}" for="proNombre" />
+                        <p:inputText id="proNombre" value="#{controladorProvincia.selected.proNombre}" style="text-transform: uppercase" title="#{bundle.EditProvinciaTitle_proNombre}" required="true" requiredMessage="#{bundle.EditProvinciaRequiredMessage_proNombre}"/>
+                        <p:outputLabel value="#{bundle.EditProvinciaLabel_proEstado}" for="proEstado" />
+                        <p:selectOneMenu id="proEstado" value="#{controladorProvincia.selected.proEstado}" required="true" requiredMessage="#{bundle.EditProvinciaTitle_proEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditProvinciaLabel_proCodigo}" for="proCodigo" />
+                        <p:inputText id="proCodigo" value="#{controladorProvincia.selected.proCodigo}" style="text-transform: uppercase" title="#{bundle.EditProvinciaTitle_proCodigo}" />
+                        <p:outputLabel value="#{bundle.EditProvinciaLabel_proInicial}" for="proInicial" />
+                        <p:inputText id="proInicial" value="#{controladorProvincia.selected.proInicial}" style="text-transform: uppercase" title="#{bundle.EditProvinciaTitle_proInicial}" />
+                        <p:outputLabel value="#{bundle.EditProvinciaLabel_paiId}" for="paiId" />
+                        <p:selectOneMenu id="paiId" value="#{controladorProvincia.selected.paiId}" required="true" requiredMessage="#{bundle.EditProvinciaRequiredMessage_paiId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{paisController.itemsAvailableSelectOne}"
+                                           var="paiIdItem"
+                                           itemValue="#{paiIdItem}" itemLabel="#{paiIdItem.paiNombre}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorProvincia.update}" value="#{bundle.Save}" update="display,:ProvinciaListForm:datalist,:growl" oncomplete="handleSubmit(args, 'ProvinciaEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorProvincia.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="ProvinciaEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

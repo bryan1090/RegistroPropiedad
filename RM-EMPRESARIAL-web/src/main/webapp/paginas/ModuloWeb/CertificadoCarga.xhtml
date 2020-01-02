@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                Certificado Carga
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="formCertificado">
+                    <p:growl id="growl" showDetail="true" life="3000"/>
+                    <p:panel header="Certificados">                        
+                        <p:dataTable id="tblCertificadoCarga" value="#{controladorCertificadoCarga.listaCertificados}"
+                                     var="listaCertificados" style="text-align-last: center" sortBy="#{listaCertificados.facId.facNumero}" rowIndexVar="numFila">
+                            <f:facet name="header">
+                                <p:outputPanel style="text-align-last: left">
+                                    <p:outputLabel for="txtFechaBusqueda" value="Fecha"/>
+                                    <p:calendar id="txtFechaBusqueda" value="#{controladorCertificadoCarga.fechaActual}" pattern="dd-MM-yyyy"/>
+                                    <p:commandButton id="btnBusqueda" class="green-btn" icon="fa fa-search" action="#{controladorCertificadoCarga.listarCaertificado()}" update="@form"/>
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:column headerText="Número de Factura" groupRow="true" filterBy="#{listaCertificados.facId.facNumero}">
+                                <h:outputText id="facNumero" value="#{listaCertificados.facId.facNumero}"/>
+                            </p:column>
+
+                            <p:column headerText="Número de Certificado" filterBy="#{listaCertificados.cdcDocumento}">
+                                <h:outputText id="numTramite" value="#{controladorCertificadoCarga.listarNumCertificado.get(numFila)}"/>
+                            </p:column>
+
+                            <p:column headerText="Tipo de Documento" filterBy="#{controladorCertificadoCarga.listarNomFormulario.get(numFila)}">
+                                <h:outputText id="tipDocumento" value="#{controladorCertificadoCarga.listarNomFormulario.get(numFila)}"/>
+                            </p:column>
+
+                            <p:column style="width: 25px">
+                                <p:commandLink id="cmlDescargar" title="Descargar Formulario" action="#{controladorCertificadoCarga.generarFormulario()}" 
+                                               ajax="false" update="@form">
+                                    <p:graphicImage name="/imagenes/pdf.png" width="24"/>
+                                    <f:setPropertyActionListener value="#{controladorCertificadoCarga.listarNumCertificado.get(numFila)}" target="#{controladorCertificadoCarga.numCertificado}"/>
+                                </p:commandLink>
+                            </p:column>
+
+                            <p:column style="width: 100px">
+                                <p:commandButton id="btnRevisar" icon="fa fa-check" action="#{controladorCertificadoCarga.revisarFormWeb()}" rendered="#{listaCertificados.cdcEstado eq 'A'}"
+                                                 class="green-btn" style="border: none" update="btnRevisar btnTerminar">
+                                    <f:setPropertyActionListener value="#{listaCertificados}" target="#{controladorCertificadoCarga.certificadoCargaSeleccionado}"/>
+                                </p:commandButton>
+                                <h:outputText value="Revisado" style="font-size: medium;font-weight: bold; color: green"
+                                              rendered="#{listaCertificados.cdcEstado eq 'I'}"/>
+                            </p:column>
+
+                            <p:column style="width: 100px" groupRow="true">
+                                <p:commandButton id="btnTerminar" icon="fa fa-save" value="Terminar Proceso    #{listaCertificados.facId.facNumero}" action="#{controladorCertificadoCarga.terminarFormWeb()}"
+                                                 class="orange-btn" style="border: none;height: 37px" update="@form growl" label="#{listaCertificados.facId.facNumero}">
+                                    <f:setPropertyActionListener value="#{listaCertificados}" target="#{controladorCertificadoCarga.certificadoCargaSeleccionado}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

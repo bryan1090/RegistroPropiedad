@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoTramiteClaseEditDlg" widgetVar="TipoTramiteClaseEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditTipoTramiteClaseTitle}">
+            <h:form id="TipoTramiteClaseEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tipoTramiteClaseController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditTipoTramiteClaseLabel_tdcEstado}" for="tdcEstado" />
+                        <p:selectOneMenu id="tdcEstado" value="#{tipoTramiteClaseController.selected.tdcEstado}" required="true" requiredMessage="#{bundle.EditTipoTramiteClaseRequiredMessage_tdcEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditTipoTramiteClaseLabel_tclId}" for="tclId" />
+                        <p:selectOneMenu id="tclId" value="#{tipoTramiteClaseController.selected.tclId}" required="true" requiredMessage="#{bundle.EditTipoTramiteClaseRequiredMessage_tclId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{tipoPropiedadClaseController.itemsAvailableSelectOne}"
+                                           var="tclIdItem"
+                                           itemValue="#{tclIdItem}" itemLabel="#{tclIdItem.tclNombre}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditTipoTramiteClaseLabel_ttrId}" for="ttrId" />
+                        <p:selectOneMenu id="ttrId" value="#{tipoTramiteClaseController.selected.ttrId}" required="true" requiredMessage="#{bundle.EditTipoTramiteClaseRequiredMessage_ttrId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{controladorTipoTramite.itemsAvailableSelectOne}"
+                                           var="ttrIdItem"
+                                           itemValue="#{ttrIdItem}" itemLabel="#{ttrIdItem.ttrDescripcion}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{tipoTramiteClaseController.update}" value="#{bundle.Save}" update="display,:TipoTramiteClaseListForm:datalist,:growl" oncomplete="handleSubmit(args, 'TipoTramiteClaseEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}" onclick="TipoTramiteClaseEditDialog.hide()" immediate="true"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

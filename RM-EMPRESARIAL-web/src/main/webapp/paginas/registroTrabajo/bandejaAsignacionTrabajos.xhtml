@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Bandeja Asignacion Trabajos"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content" >
+
+            <h:form id="formBandAsigTrab" >
+                <div class="ui-g">
+                    <div class="ui-g-8">
+                        <p:panel id="principal" header="Bandeja de Asignación de Trabajos"  >
+                            <div align="right">
+                            <p:commandButton value="Agregar Contrato" class="green-btn" title="Ingresar a Reingreso de Trámite" icon="fa fa-arrow-circle-o-right" 
+                                             action="#{tramitesControlador.redireccionarAPaginaReingreso()}" process="@this"/>
+                            </div>
+                            <br></br>
+                            
+                            <p:dataTable id="tblTramites"  disabledSelection="true" widgetVar="dataTramite" var="item" value="#{tramitesControlador.tramitesControladorBb.listaTramiteUsuario}"
+                                         selectionMode="single" selection="#{tramitesControlador.tramitesControladorBb.tramiteUsuarioSeleccionado}"
+                                         rowKey="#{item.traNumero.traNumero}" style="margin-bottom:0" scrollable="true" scrollHeight="450"
+
+                                         >
+
+                                <p:ajax event="rowSelect"  update="tblTramites" /> 
+
+                                <p:column visible="false" selectionMode="multiple">
+                                </p:column>
+
+                                <p:column filterBy="#{item.traNumero.traNumero}"  style="width: 20%;" headerText="Nro. TRÁMITE" filterMatchMode="contains">
+                                    <h:outputText value="#{item.traNumero.traNumero}" />
+                                </p:column>
+
+                                <p:column filterBy="#{item.traNumero.traClase}" style="width: 15%;"  headerText="Tipo" filterMatchMode="contains">
+                                    <h:outputText value="#{item.traNumero.traClase}" />
+                                </p:column>
+
+                                <p:column headerText="A Cajas" style="width: 15%;">
+                                    <p:commandButton class="yellow-btn" update="formBandAsigTrab tblTramites growl" 
+                                                     action="#{tramitesControlador.cajasYenviarCorreo()}"  icon="fa fa-usd" title="A Cajas">
+                                        <p:confirm header="Confirmación" message="¿Desea pasar a caja el trámite?" icon="ui-icon-alert" />
+                                        <f:setPropertyActionListener value="#{item}" target="#{tramitesControlador.tramitesControladorBb.tramiteUsuarioSeleccionado}" />
+                                        <f:setPropertyActionListener target="#{tramitesControlador.tramitesControladorBb.tramite}" value="#{item.traNumero}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Abrir" style="width: 15%;">
+                                    <p:commandButton class="cyan-btn" action="#{tramitesControlador.onRowSelect()}"  icon="fa fa-external-link" title="Abrir">
+                                        <f:setPropertyActionListener value="#{item}" target="#{tramitesControlador.tramitesControladorBb.tramiteUsuarioSeleccionado}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Observación" filterMatchMode="contains" style="width: 30%;">
+                                    <h:outputText value="#{item.tusEstadoDetalle }" />
+                                </p:column>
+
+                            </p:dataTable>                          
+                        </p:panel>
+
+
+
+
+                    </div>
+                </div>
+            </h:form>
+
+
+
+        </ui:define>                 
+         
+    </ui:composition>
+</html>

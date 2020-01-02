@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Creación modelos de Tramites"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content" >
+
+            <h:form id="formBandAsigTrab" >
+                <p:panel id="principal" header="Creación modelos de Tramites"  >
+                    <div class="ui-g">
+                        <div class="ui-g-4">
+                            <p:panel>
+                                <p:outputLabel value="Ver todos los tramites: " />
+                                <p:selectBooleanCheckbox value="#{controladorCopiaModelo.tramitesControladorBb.filtro}" >
+                                    <p:ajax update="tblTramites"  listener="#{controladorCopiaModelo.listarTramites}" />
+                                </p:selectBooleanCheckbox>
+                            </p:panel>
+                            <p:spacer></p:spacer>
+                            <p:dataTable id="tblTramites"  widgetVar="tblTramites" var="item" value="#{controladorCopiaModelo.tramitesControladorBb.listaTramiteUsuario}" selection="#{controladorCopiaModelo.tramitesControladorBb.listaTramiteUsuaFiltrada}" 
+                                         rowKey="#{item.traNumero.traNumero}" style="margin-bottom:0" scrollable="true" scrollHeight="350">
+                                <p:ajax event="rowSelect"  listener="#{controladorCopiaModelo.onRowSelect}" update=":formBandAsigTrab:tblComparecientes :formBandAsigTrab:selModelo" />
+                                <p:column visible="false" selectionMode="multiple" style="width:16px;text-align:center"/>
+
+                                <p:column filterBy="#{item.traNumero.traNumero}"  headerText="#TRÁMITE" filterMatchMode="contains">
+                                    <h:outputText value="#{item.traNumero.traNumero}" />
+                                </p:column>
+
+                                <p:column headerText="TIPO">
+                                    <h:outputText value="#{item.traNumero.traClase}" />
+                                </p:column>
+
+                                <p:column headerText="MODELO" >
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{item.traNumero.traModelo}" style="color: red;" /></f:facet>
+                                        <f:facet name="input"><p:inputText id="modelInput" value="#{item.traNumero.traModelo}" style="width:96%"/></f:facet>
+
+                                    </p:cellEditor>
+                                </p:column>
+                            </p:dataTable>
+
+                        </div>
+                        <div class="ui-g-8">
+                            <p:panel>
+                                <p:dataTable sortBy="#{detalle.tdtTtrDescripcion} #{detalle.tdtTpcDescripcion}" sortMode="ascending" widgetVar="tblComparecientes" id="tblComparecientes" editable="true"  var="detalle" value="#{controladorCopiaModelo.tramitesControladorBb.listaTramitesDetalle}" 
+                                             scrollable="true" scrollHeight="350">
+                                    <p:column headerText="NOMBRES">
+                                        <h:outputText value="#{detalle.tdtPerNombre}" />
+                                    </p:column>
+                                    <p:column headerText="CÉDULA/RUC/PAS">
+                                        <h:outputText value="#{detalle.tdtPerIdentificacion}" />
+                                    </p:column>
+                                    <p:column headerText="COMPARECIENTES">
+                                        <h:outputText value="#{detalle.tdtTpcDescripcion}" />
+                                    </p:column>
+                                    <p:column headerText="TRÁMITE">
+                                        <h:outputText value="#{detalle.tdtTtrDescripcion}" />
+                                    </p:column>
+                                </p:dataTable>
+                                <p:separator/>
+                                <h:panelGrid columns="3" cellpadding="10">
+                                    <p:outputLabel value="Modelo"/>
+                                    <p:selectBooleanCheckbox id="selModelo" value="#{controladorCopiaModelo.tramitesControladorBb.modelo}"  >
+                                        <p:ajax   listener="#{controladorCopiaModelo.actualizarTramiteModelo}" />
+                                    </p:selectBooleanCheckbox>  
+                                    
+                                    <p:commandButton update="tblTramites tblComparecientes" class="green-btn" icon="fa fa-save" action="#{controladorCopiaModelo.actualizarTramite}" value="Guardar"  />
+                                   
+                                </h:panelGrid>
+                            </p:panel>
+                        </div>
+
+                    </div>
+                </p:panel>
+                <p:dialog header="Trámite" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="carDetail" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty controladorCopiaModelo.tramitesControladorBb.tramite}" columnClasses="label,value">
+
+                            <h:outputText value="Trámite" />
+                            <h:outputText value="#{controladorCopiaModelo.tramitesControladorBb.tramite.traNumero}" />
+
+                            <h:outputText value="Tipo" />
+                            <h:outputText value="#{controladorCopiaModelo.tramitesControladorBb.tramite.traTipo}" />
+
+                            <h:outputText value="Modelo" />
+                            <p:selectOneMenu id="console" value="#{controladorCopiaModelo.tramitesControladorBb.tramite.traModelo}" style="width:125px">
+                                <f:selectItem itemLabel="S" itemValue="S" />
+                                <f:selectItem itemLabel="N" itemValue="N" />
+
+                            </p:selectOneMenu>
+                            <p:commandButton value="Actualizar" update=":formBandAsigTrab:principal" oncomplete="PF('carDialog').hide()" action="#{controladorCopiaModelo.actualizarTramite}"></p:commandButton>
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                    <p:graphicImage value="../../resources/imagenes/loading.gif"  style="width: 75px; height: 75px;"/>
+                </p:dialog>
+            </h:form>
+
+
+
+        </ui:define>
+    </ui:composition>
+</html>

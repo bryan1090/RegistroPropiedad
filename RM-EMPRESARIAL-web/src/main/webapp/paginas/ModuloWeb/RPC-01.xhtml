@@ -1,0 +1,404 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition>
+
+            <h:form id="form"> 
+                <div  id="content" class="ui-fluid">
+                    <p:panel  >
+                        <h1><strong>RPC - 01</strong></h1>
+                        <br/>
+                        <div class="ui-g">
+                            <div class="ui-g-10 ui-g-nopad">
+                                <div class="ui-g-12">
+                                    <p:panel><strong>TIPO DE SOLICITUD</strong><p:inputText value="" style="border: none" size="5" readonly="true" disabled="true" />Usted requiere un certificado de:</p:panel>
+                                </div>
+                                <div class="ui-g-12">
+                                    <p:panel>
+                                        <p:selectOneRadio id="certificado" value="#{controladorFormularioWebDetalle.seleccionLineaUno}" layout="responsive" columns="2" 
+                                                          required="true" requiredMessage="Seleccione El Tipo de Solicitud">
+                                            <p:ajax event="click" listener="#{controladorFormularioWebDetalle.añadirAFormulario1(1,'GRAVAMEN DEL INMUEBLE')}" />
+                                            <f:selectItem itemLabel="GRAVAMEN DEL INMUEBLE" itemValue="A"/>
+                                            <f:selectItem itemLabel="VENTAS DEL INMUEBLE" itemValue="B"/>
+                                        </p:selectOneRadio>
+                                    </p:panel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-2" style="text-align: center">
+                                <p:graphicImage value="/resources/imagenes/Logotipo_registro_de_la_propiedad.png" />
+                            </div>
+                        </div>
+                        <p>
+                            <strong>NOTA:</strong>LOS DATOS INGRESADOS ERRÓNEOS FALSOS O QUE PUEDAN INDUCIR A EQUIVOCACIÓN QUE SE CONSIGNEN EN ESTA SOLICITUD 
+                            EXIMEN DE RESPONSABILIDAD AL CERTIFICANTE ESTA ADMINISTRACIÓN NO SE RESPONSABILIZA DEL USO DOLOSO O
+                            FRAUDULENTO QUE SE PUEDA REALIZAR CON ESTE CERTIFICADO.
+                        </p>
+
+                        <p:panel header="DESCRIPCIÓN DEL INMUEBLE" style="text-align-last: left">
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-7,ui-grid-col-5" styleClass="ui-panelgrid-blank ui-fluid" >
+
+                                <p:panelGrid columns="2" columnClasses="ui-grid-col-1,ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:selectBooleanCheckbox id="bool1" value="#{controladorFormularioWebDetalle.bool}" label="1.-LOTE/DERECHO O ACCIONES" >
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(1,'1.-LOTE/DERECHO O ACCIONES')}" process="bool1" />
+                                    </p:selectBooleanCheckbox>
+                                    <p:outputLabel value="1.-LOTE/DERECHO O ACCIONES"/>
+
+                                    <p:selectBooleanCheckbox id="bool2" value="#{controladorFormularioWebDetalle.bool}" label="2.-CASA N°.-">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(2,'2.-CASA N°.-')}" process="bool2" />
+                                    </p:selectBooleanCheckbox>
+                                    <p:outputLabel value="2.-CASA N°.-"/>
+
+                                    <p:selectBooleanCheckbox id="bool3" value="#{controladorFormularioWebDetalle.bool}" label="3.-DEPARTAMENTO N°.-">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(3,'3.-DEPARTAMENTO N°.-')}" process="bool3" />
+                                    </p:selectBooleanCheckbox>
+                                    <p:outputLabel value="3.-DEPARTAMENTO N°.-"/>
+
+                                    <p:selectBooleanCheckbox id="bool4" value="#{controladorFormularioWebDetalle.bool}" label="4.-BODEGA N°.-">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(4,'4.-BODEGA N°.-')}" process="bool4" />
+                                    </p:selectBooleanCheckbox>
+                                    <p:outputLabel value="4.-BODEGA N°.-"/>
+
+                                    <p:selectBooleanCheckbox id="bool5" value="#{controladorFormularioWebDetalle.bool}" label="5.-LOCAL/ALMACEN N°.-">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(5,'5.-LOCAL/ALMACEN N°.-')}" process="bool5" />
+                                    </p:selectBooleanCheckbox>
+                                    <p:outputLabel value="5.-LOCAL/ALMACEN N°.-"/>
+
+                                    <p:selectBooleanCheckbox id="bool6" value="#{controladorFormularioWebDetalle.bool}" label="6.-PARQUEADERO N°.-">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(6,'6.-PARQUEADERO N°.-')}" process="bool6" />
+                                    </p:selectBooleanCheckbox>
+                                    <p:outputLabel value="6.-PARQUEADERO N°.-"/>
+
+                                    <p:selectBooleanCheckbox id="bool7" value="#{controladorFormularioWebDetalle.bool}" label="7.-OFICINA N°.-" >
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(7,'7.-OFICINA N°.-')}" process="bool7" />
+                                    </p:selectBooleanCheckbox>
+                                    <p:outputLabel value="7.-OFICINA N°.-"/>
+
+                                    <p:selectBooleanCheckbox id="bool8" value="#{controladorFormularioWebDetalle.bool}" label="8.-SUITE N°.-">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(8,'8.-SUITE N°.-')}" process="bool8" />
+                                    </p:selectBooleanCheckbox>
+                                    <p:outputLabel value="8.-SUITE N°.-"/>
+
+                                    <p:selectBooleanCheckbox id="bool9" value="#{controladorFormularioWebDetalle.bool}" label="9.-SECADERO N°.-" >
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(9,'9.-SECADERO N°.-')}" process="bool9" />
+                                    </p:selectBooleanCheckbox>
+                                    <p:outputLabel value="9.-SECADERO N°.-"/>
+                                </p:panelGrid>
+
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-5, ui-grid-col-7"  styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-12"  styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel value=""/>
+                                    <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-6,ui-grid-col-6"  styleClass="ui-panelgrid-blank ui-fluid">
+                                        <p:outputLabel value="10.- OTRAS ALÍCUOTAS:"/>
+                                        <p:inputText id="txtAlicuotas" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}"/>
+
+                                    </p:panelGrid>
+                                    <p:outputLabel value=""/>
+                                    <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-12"  styleClass="ui-panelgrid-blank ui-fluid">
+                                        <p:outputLabel value="11.- "/>
+                                        <p:inputText id="txt11" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}"/>
+                                    </p:panelGrid>
+                                    <p:outputLabel value=""/>
+                                    <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-6,ui-grid-col-1,ui-grid-col-6"  styleClass="ui-panelgrid-blank ui-fluid">
+                                        <p:outputLabel value="12.- "/>
+                                        <p:inputText id="txt12" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}"/>
+                                        <p:outputLabel value="13.- "/>
+                                        <p:inputText id="txt13" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC02}"/>
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                                <p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-12"  styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-5,ui-grid-col-10"  styleClass="ui-panelgrid-blank ui-fluid">
+                                        <p:outputLabel value="NOMBRE DEL CONJUNTO:"/>
+                                        <p:inputText id="txtNombreConjunto" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC02}">
+                                            <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(10,'10.- OTRAS ALÍCUOTAS:')}" process="txtAlicuotas txtNombreConjunto"/>
+                                        </p:inputText>
+                                    </p:panelGrid>
+                                    <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-6,ui-grid-col-3,ui-grid-col-6"  styleClass="ui-panelgrid-blank ui-fluid">
+                                        <p:outputLabel value="PARROQUIA:"/>
+                                        <p:selectOneMenu id="txtParroquia" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC02}" filter="true">
+                                            <f:selectItem itemLabel="Select One" itemValue="" />
+                                            <f:selectItems value="#{controladorFormularioWebDetalle.listaParroquias}" var="lista" itemLabel="#{lista.parNombre}" itemValue="#{lista.parNombre}"  />
+                                        </p:selectOneMenu>
+                                        <p:outputLabel value="PREDIO:"/>
+                                        <p:inputText id="txtPredio" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC03}">
+                                            <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(11,'11.-')}" process="txt11 txtParroquia txtPredio"/>
+                                        </p:inputText>
+                                    </p:panelGrid>
+                                    <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-5,ui-grid-col-12"  styleClass="ui-panelgrid-blank ui-fluid">
+                                        <p:outputLabel value="CLAVE CATASTRAL N°:"/>
+                                        <p:inputText id="txtClaveCatastral" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC03}">
+                                            <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(12,'12.-')}" process="txt12 txt13 txtClaveCatastral"/>
+                                        </p:inputText>
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                            </p:panelGrid>
+                            <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3" styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="N°.CERTIFICADOS:"/>
+                                <p:inputNumber id="txtNumCertificados" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorN01}" 
+											   required="true" requiredMessage="Número de Certificados es Requerido"
+											   decimalPlaces="0" thousandSeparator=""/>
+                                <p:outputLabel value="N°.DERECHOS:"/>
+                                <p:inputNumber id="txtNumDerechos" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorN02}" 
+											   required="true" requiredMessage="Número de Derechos es Requerido"
+											   decimalPlaces="0" thousandSeparator="">
+                                    <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(13,'N°.CERTIFICADOS:')}" process="txtNumCertificados txtNumDerechos"/>
+                                </p:inputNumber>
+                            </p:panelGrid>
+                            <p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-11,ui-grid-col-1 forty-percent top-alignment" styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="DOCUMENTACIÓN QUE ADJUNTA:"/>
+                                <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}">
+                                    <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario2(14,'DOCUMENTACIÓN QUE ADJUNTA:')}" />
+                                </p:inputText>
+                                <p:commandButton class="cyan-btn" icon="fa fa-file-pdf-o fa-5x" style="width: 35px;height: 35px" oncomplete="PF('dialogoSubirArchivo').show()" immediate="true"/>
+                            </p:panelGrid>
+
+                        </p:panel>
+
+                        <p:panel header="PROPIETARIOS" style="text-align-last: left">
+                            <p:dataTable id="tblPropietarios" value="#{controladorFormularioWebDetalle.listaParaMostrar}" var="lista" style="text-align-last: center">
+                                <p:column headerText="NOMBRES">
+                                    <p:inputText value="#{lista.fwdValorC01}" readonly="true"/>
+                                </p:column>
+                                <p:column headerText="APELLIDO PATERNO" >
+                                    <p:inputText value="#{lista.fwdValorC02}" readonly="true"/>
+                                </p:column>
+                                <p:column headerText="APELLIDO MATERNO" >
+                                    <p:inputText value="#{lista.fwdValorC03}" readonly="true"/>
+                                </p:column>
+                                <p:column headerText="C.C./RUC" >
+                                    <p:inputText value="#{lista.fwdValorC04}" readonly="true"/>
+                                </p:column>
+                                <f:facet name="header">
+                                    <div align="right" style="text-align-last: right">
+                                        <p:commandButton id="btnAñadirFila" value="" icon="ui-icon-plus" class="green-btn" onclick="PF('dialogoAñadirPropietario').show()" update="formAñadirPropietario" immediate="true" style="width: 30px;height: 20px;text-align-last: center" />
+                                    </div>
+                                </f:facet>
+                            </p:dataTable>
+
+                            <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3" styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="N°.Certificados:"/>
+                                <p:inputNumber id="txtNumCertificados1" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorN01}"
+                                             required="true" requiredMessage="Número de Certificados es Requerido"
+											 decimalPlaces="0" thousandSeparator="">
+                                </p:inputNumber>
+                                <p:outputLabel value="N°.Derechos:"/>
+                                <p:inputNumber id="txtNumDerechos1" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorN02}"
+                                             required="true" requiredMessage="Número de Derechos es Requerido"
+											 decimalPlaces="0" thousandSeparator="">
+                                    <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario3(1,'N°.Certificados:')}" process="txtNumCertificados1 txtNumDerechos1" />
+                                </p:inputNumber>
+                            </p:panelGrid>
+                            <p><strong>FORMA DE ADQUISICIÓN</strong></p>
+
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid"> 
+                                <p:outputLabel value="A QUIÉN ADQUIRIÓ:"/>
+                                <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}">
+                                    <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario4(1,'A QUIÉN ADQUIRIÓ:')}" />
+                                </p:inputText>
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid"> 
+                                <p:outputLabel value="FORMA DE ADQUISICIÓN DE CONTRATO:"/>
+                                <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}">
+                                    <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario4(2,'FORMA DE ADQUISICIÓN DE CONTRATO:')}" />
+                                </p:inputText>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="6" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-3,ui-grid-col-4" styleClass="ui-panelgrid-blank ui-fluid"> 
+                                <p:outputLabel value="FECHA DE OTORGAMIENTO:"/>
+                                <p:calendar pattern="dd/MM/yyyy" id="txtFechaOtorgamiento" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorF01}" mindate=""/>
+                                <p:outputLabel value="NOTARIA:"/>
+                                <p:inputText id="txtNotaria" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC02}"/>
+                                <p:outputLabel value="NOMBRE DEL NOTARIO:"/>
+                                <p:inputText id="txtNombreNotario" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC03}">
+                                    <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario4(3,'FECHA DE OTORGAMIENTO:')}" process="txtFechaOtorgamiento txtNotaria txtNombreNotario" />
+                                </p:inputText>
+                            </p:panelGrid>
+
+                            <p>
+                                <center style="text-align-last: center">"SI SU TÍTULO SE INSCRIBIÓ 30 AÑOS ATRÁS, SUGERIMOS 
+                                    ADJUNTAR RAZÓN DE INSCRIPCIÓN, O CERTIFICADO CADUCADO"</center>
+                                <center style="text-align-last: center"><strong>"SI CONSOLIDO EL INMUEBLE CON VARIOS TÍTULOS O HERENCIA, 
+                                        LLENAR EN EL REVERSO EL ANTECEDENTE DEL CAUSANTE"</strong></center>
+                            </p>
+
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid"> 
+                                <p:outputLabel value="FECHA DE INSCRIPCIÓN:"/>
+                                <p:calendar pattern="dd/MM/yyyy"  id="txtFechaInscripcion" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorF01}">
+                                    <p:ajax event="dateSelect" listener="#{controladorFormularioWebDetalle.añadirAFormulario4(4,'FECHA DE INSCRIPCIÓN:')}" />
+                                </p:calendar>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-6,ui-grid-col-6" styleClass="ui-panelgrid-blank ui-fluid"> 
+                                <p:outputLabel value="FECHA DE INSCRIPCIÓN DE LA DECLARATORIA DE PROPIEDAD HORIZONTAL:"/>
+                                <p:calendar   value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorF01}" mindate="4/1/14" maxdate="7/1/14" >
+                                    <p:ajax event="dateSelect" listener="#{controladorFormularioWebDetalle.añadirAFormulario4(5,'FECHA DE INSCRIPCIÓN DE LA DECLARATORIA DE PROPIEDAD HORIZONTAL:')}" />
+                                </p:calendar>
+                            </p:panelGrid>
+
+                        </p:panel>
+                    </p:panel>
+                </div>
+                <div class="ui-fluid">
+                    <p:panel>
+                        <p:panel>
+                            <p><strong>OTRAS FORMAS DE ADQUISICIÓN</strong></p>
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid"> 
+                                <p:outputLabel value="FORMA DE ADQUISICIÓN:"/>
+                                <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}">
+                                    <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario5(1,'FORMA DE ADQUISICIÓN:')}" />
+                                </p:inputText>
+                                <p:outputLabel value="A QUIÉN ADQUIRIÓ:"/>
+                                <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}">
+                                    <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario5(2,'A QUIÉN ADQUIRIÓ:')}" />
+                                </p:inputText>
+                                <p:outputLabel value="FECHA DE OTORGAMIENTO/NOTARIA:"/>
+                                <p:calendar pattern="dd/MM/yyyy"  value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorF01}">
+                                    <p:ajax event="dateSelect" listener="#{controladorFormularioWebDetalle.añadirAFormulario5(3,'FECHA DE OTORGAMIENTO/NOTARIA:')}" />
+                                </p:calendar>
+                                <p:outputLabel value="FECHA DE INSCRIPCIÓN:"/>
+                                <p:calendar pattern="dd/MM/yyyy"  value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorF01}">
+                                    <p:ajax event="dateSelect" listener="#{controladorFormularioWebDetalle.añadirAFormulario5(4,'FECHA DE INSCRIPCIÓN:')}" />
+                                </p:calendar>
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:panel>
+                            <p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid"> 
+                                <p:outputLabel value="SI HAY TESTAMENTO POSESIÓN EFECTIVA INDICAR LA FECHA DE INSCRIPCIÓN
+                                               , EL NOMBRE DEL CAUSANTE Y LOS APELLIDOS DE LOS HEREDEROS:"/>
+                                <p:inputTextarea value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}" rows="6" cols="33" maxlength="300"  >
+                                    <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario5(5,'SI HAY TESTAMENTO POSESIÓN EFECTIVA')}" />
+                                </p:inputTextarea>
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:panel header="DECLARACIÓN DE USO DE INFORMACIÓN" style="text-align-last: left">
+                            <p>
+                                <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-10,ui-grid-col-5,ui-grid-col-9" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel value="Yo,"/>
+                                    <p:inputText id="txtYo" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}"/>
+                                    <p:outputLabel value="portador de la C.C.No./RUC No:"/>
+                                    <p:inputNumber id="txtPortador" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC02}" 
+												   maxlength="13" decimalPlaces="0" thousandSeparator="">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario6(1,'Yo,')}" process="txtYo txtPortador" update="formGeneral:growlGeneral"/>
+                                    </p:inputNumber>
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-9,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel value=",por mis propios derechos o a nombre de (persona natural y/o jurídica)(*)"/><p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario6(2,',por mis propios derechos o a nombre')}" />
+                                    </p:inputText>
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel value="domiciliado en, "/><p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}" >
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario6(3,'domiciliado en,')}" />
+                                    </p:inputText> 
+                                </p:panelGrid>
+                                <p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid">
+                                    en cumplimiento de lo establecido en el inciso Quinto del Artículo 6 de la Ley del Sistema Nacional de Registro de Datos
+                                    Públicos (LSNRDP) declaro que la información que solicito, será utilizada en (indicar el uso que se dará al certificado):<br/>
+                                    <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario6(4,'en cumplimiento de lo establecido')}" />
+                                    </p:inputText>
+                                </p:panelGrid>
+                            </p>
+                        </p:panel>
+
+                        <p:panel header="NOTA: UNICAMENTE EN TRAMITES JUDICIALES Y EMBARGO, EL CERTIFICADO SE CONFERIRÁ CON LINDEROS." style="text-align-last: left">
+                            <p>
+                                En orden a lo expuesto declaro que utilizaré esta información de manera exclusiva para el trámite descrito anteriormente
+                                y que la responsabilidad del uso adecuado de dicha informaciónrecae sobre el declarante.<br/>
+
+                                Toda vez que los datos registrales son susceptibles de actualización, modificación o supresión, con arreglo a la LSNRDP
+                                y la ley de Registro, me comprometo a comunicar cualquier diferencia legal, contractual o física que exista entre la
+                                información certificada y la que consta en actos o contratos al Registrador de la Propiedad del DMQ, o a sus funcionarios
+                                para su inmediata modificación, de lo contrario deslindo de responsabilidad al Registro de la Propiedad y a sus
+                                funcionarios por el uso contrario al ordenamiento jurídico que se dé a dicha información.<br/>
+
+                                El firmante autoriza la desmaterialización de la presente solicitud, conforme <strong>el artículo y de la Ley de Comercio Electrónico.</strong>
+                                El solicitante autoriza al Registro de la Propiedad a publicar la información contenida en el certificado.<br/>
+                            </p>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <p><center style="text-align-last: center"><strong>__________________________________________________</strong></center></p>
+                            <p><center style="text-align-last: center"><strong>Firma del Solicitante</strong></center></p>
+
+                            <p:panel>
+                                <p><strong>CONSIGNA TUS DATOS, SON IMPORTANTES PARA COMUNICARNOS</strong></p>
+                                <p:panelGrid columns="6" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-4,ui-grid-col-3,ui-grid-col-4,ui-grid-col-3,ui-grid-col-8" styleClass="ui-panelgrid-blank ui-fluid"> 
+                                    <p:outputLabel value="TELF.MÓVIL:"/>
+                                    <p:inputNumber id="txtTelfMovil" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorN01}" 
+												   maxlength="10" decimalPlaces="0" thousandSeparator=""/>
+                                    <p:outputLabel value="TELF.CONVENCIONAL"/>
+                                    <p:inputNumber id="txtTelfConvencional" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorN02}" 
+												   maxlength="7" decimalPlaces="0" thousandSeparator=""/>
+                                    <p:outputLabel value="CORREO ELECTRÓNICO:"/>
+                                    <p:inputText id="txtCorreoElect" value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC03}" label="email" validatorMessage="Formato Inválido de email">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario7(1,'TELF.MÓVIL:')}" process="txtTelfMovil txtTelfConvencional txtCorreoElect" update="formGeneral:growlGeneral"/>
+                                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                                    </p:inputText>
+                                </p:panelGrid>
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-4" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel value="PARROQUIA EN QUE RESIDE:"/>
+                                    <p:selectOneMenu value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}" filter="true" 
+                                                     required="true" requiredMessage="Seleccione Parroquia En Que Reside">
+                                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.añadirAFormulario7(2,'PARROQUIA EN QUE RESIDE:')}" update="formGeneral:growlGeneral"/>
+                                        <f:selectItem itemLabel="Select One" itemValue="" />
+                                        <f:selectItems value="#{controladorFormularioWebDetalle.listaParroquias}" var="lista" itemLabel="#{lista.parNombre}" itemValue="#{lista.parNombre}"  />
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+                            </p:panel>
+                            <p>(*) Si comparece en representación de una persona Natural o Jurídica debe adjuntar a esta petición el poder que justifique dicha calidad; en su defecto deberá comparecer a título personal</p>
+                        </p:panel>
+                        <p:commandButton value="Guardar" action="#{controladorFormularioWebDetalle.guardarNuevoFormulario()}" 
+                                         update="formGeneral:growlGeneral" oncomplete="if (!args.validationFailed) PF('dialogoExportarPdf').show()"/>
+                    </p:panel>
+                </div>
+
+            </h:form>
+
+            <p:dialog id="dlgAñadirPropietario"  widgetVar="dialogoAñadirPropietario" modal="true" resizable="false" draggable="false" appendTo="@(body)" >
+                <h:form id="formAñadirPropietario">
+
+                    <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC04}" placeholder="C.C./RUC" maxlength="10">
+                        <p:ajax event="change" listener="#{controladorFormularioWebDetalle.buscarPersona()}" update="formGeneral:growlGeneral formAñadirPropietario form:tblPropietarios"/>
+                    </p:inputText>
+                    <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC01}" placeholder="NOMBRES"/>
+                    <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC02}" placeholder="APELLIDO PATERNO"/>
+                    <p:inputText value="#{controladorFormularioWebDetalle.nuevoFormulario.fwdValorC03}" placeholder="APELLIDO MATERNO"/>
+
+                    <p:commandButton value="Añadir" icon="fa fa-plus" action="#{controladorFormularioWebDetalle.añadirAFormulario3(1,'NOMBRES PROPIETARIOS')}" 
+                                     update="form:tblPropietarios formAñadirPropietario" oncomplete="PF('dialogoAñadirPropietario').hide();"/>
+
+                    <p:commandButton id="btnCrearPersona" value="Crear Persona" icon="fa fa-plus" rendered="#{controladorFormularioWebDetalle.estadoBoton}"/>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgSubirArchivo"  widgetVar="dialogoSubirArchivo" modal="true" resizable="false" appendTo="@(body)" header="Subir Archivo">
+                <h:form id="formDialogo">
+                    <p:fileUpload widgetVar="fileUploadWidgetVar" fileUploadListener="#{controladorFormularioWebDetalle.subirArchivo}" oncomplete="PF('dialogoSubirArchivo').hide()" mode="advanced" dragDropSupport="false"
+                                  sizeLimit="1000000000" fileLimit="1" allowTypes="/(\.|\/)(pdf)$/" label="Escoger..." cancelLabel="Cancelar" uploadLabel="Subir" fileLimitMessage="Error, Sólo puede subir 1 archivo." />
+                </h:form>
+            </p:dialog>    
+
+            <p:dialog id="dlgExportarPdf" header="Descargar Formulario" widgetVar="dialogoExportarPdf" closable="false" resizable="false" draggable="false"  modal="true" style="background-color: transparent;border: none;text-align-last: center" width="150">
+                <h:form>
+                    <p:commandLink title="Generar Form" action="#{controladorFormularioWebDetalle.generarRPC01()}" ajax="false">
+                        <p:graphicImage name="/imagenes/pdf.png" width="24"/>
+                    </p:commandLink><br/>
+                    
+                    <p:commandButton class="red-btn" icon="fa fa-times" style="border: none" action="#{controladorFormularioWebDetalle.redireccionar()}" />
+                </h:form>
+            </p:dialog>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Repertorio Usuarios"/>
+        </ui:define> 
+        <ui:define name="content" >
+            <h:form id="form"  >
+                <p:panel id="panel" header="Repertorio Usuarios">
+                    <p:commandButton value="Actualizar Lista" action="#{controladorRpu.listar()}" update="form:tbl"/> 
+                    <p:dataTable id="tbl" value="#{controladorRpu.lista}" var="list">
+                        <p:column filterStyle="height:20px;text-transform: uppercase;" filterBy="#{list.repNumero.traNumero}" headerText="Tramite" groupRow="true" sortBy="#{list.repNumero.traNumero}">
+                            <h:outputText value="#{list.repNumero.traNumero.traNumero}" />
+                        </p:column >
+                        <p:column   filterStyle="height:20px;text-transform: uppercase;" filterBy="#{list.repNumero.repNumero}" headerText="Repertorio" sortBy="#{list.repNumero.repNumero}">
+                            <h:outputText value="#{list.repNumero.repNumero}" />
+                        </p:column>
+                        <p:column  headerText="Usuario"  filterStyle="height:20px;text-transform: uppercase;" filterBy="#{list.rpuUser}" sortBy="#{list.rpuUser}">
+                            <h:outputText value="#{list.rpuUser}" />
+                        </p:column>
+                        <p:column  headerText="Nombre" filterBy="#{list.usuId.perId.perNombre} #{list.usuId.perId.perApellidoPaterno} #{list.usuId.perId.perApellidoMaterno}"
+                                   sortBy="#{list.usuId.perId.perNombre} #{list.usuId.perId.perApellidoPaterno} #{list.usuId.perId.perApellidoMaterno}">
+                            <h:outputText value="#{list.usuId.perId.perNombre} #{list.usuId.perId.perApellidoPaterno} #{list.usuId.perId.perApellidoMaterno}" />
+                        </p:column>
+                        <p:column  headerText="Tipo"  filterStyle="height:20px;text-transform: uppercase;" filterBy="#{list.rpuTipo}" sortBy="#{list.rpuTipo}">
+                            <h:outputText value="#{list.rpuTipo}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:composition>
+        <p:dialog id="dlgDereAccn" header="Derechos y Acciones" widgetVar="dialogoDereAccn"  
+                  appendTo="@(body)" modal="true" resizable="true" >
+            <h:form id="frmDerAcc">
+                <style>
+                    .outputText{
+                        color: #1A237E !important;
+                    }
+                    .label{
+                        font-weight: bold !important;
+                    }
+                    .total{
+                        font-size: 30px !important;
+                        color: #f6a821 !important;
+                        font-weight: bold !important;
+                    }
+                </style>
+
+                <div align="right" style="float: right;border: 4px solid #d8d8d8;border-radius: 8px;margin-left: 20px">
+                    <h:panelGrid columns="2" cellspacing="6">
+                        <p:outputLabel for="txtGmAccPorIngr" value="Acciones por Ingresar"
+                                       style="font-size: 20px;font-weight: bold;"/>
+                        <h:outputText 
+                            id="txtGmAccPorIngr"
+                            value="#{controladorInscripcionProceso.numPorcentajeAccionesRestantes}"
+                            class="total"/>
+                        <p:outputLabel for="txtGmTotalAccr" value="Total Acciones Ingresadas"
+                                       style="font-size:20px;font-weight: bold;"/>
+                        <h:outputText id="txtGmTotalAccr" 
+                                      value="#{controladorInscripcionProceso.totalAcc}"
+                                      class="total"/>
+                    </h:panelGrid>
+                </div>
+                <h:panelGrid columns="8" cellpadding="5">
+                    <p:outputLabel for="txtGmRepertorio" value="Repertorio" 
+                                   styleClass="label"/>
+                    <p:outputLabel for="txtGmProforma" value="Tramite"
+                                   styleClass="label"/>
+                    <p:outputLabel for="txtGmFecha" value="Fecha"
+                                   styleClass="label"/>
+                    <p:outputLabel for="txtGmContrato" value="Contrato"
+                                   class="label"/>
+                    <p:outputLabel for="txtGmMatricula" value="Matricula"
+                                   class="label"/>
+                    <p:outputLabel for="txtGmCatastro" value="Catastro"
+                                   class="label"/>
+                    <p:outputLabel for="txtGmPredio" value="Predio"
+                                   class="label"/>
+                    <p:outputLabel for="txtGmEspacial" value="Espacial"
+                                   class="label"/>
+
+
+                    <h:outputText id="txtGmRepertorio" value="#{controladorInscripcionProceso.strNumRepertorio}"
+                                  styleClass="outputText"/>
+                    <h:outputText id="txtGmProforma" value="#{controladorInscripcionProceso.strNumTramite}"
+                                  styleClass="outputText"/>
+                    <h:outputText id="txtGmFecha" value="#{controladorInscripcionProceso.FHR}"
+                                  styleClass="outputText">
+                        <f:convertDateTime pattern="yyyy/MM/dd"/>
+                    </h:outputText>
+                    <h:outputText id="txtGmContrato" value="#{controladorInscripcionProceso.strContratoDescripcion}"
+                                  styleClass="outputText"/>
+                    <h:outputText id="txtGmMatricula" value="#{controladorInscripcionProceso.propiedadMatriculaDerAcc}"
+                                  styleClass="outputText"/>
+                    <h:outputText id="txtGmCatastro" value="#{controladorInscripcionProceso.propiedadMatriculaDerAcc.prdCatastro}"
+                                  styleClass="outputText"/>
+                    <h:outputText id="txtGmPredio" value="#{controladorInscripcionProceso.propiedadMatriculaDerAcc.prdPredio}"
+                                  styleClass="outputText"/> 
+                    <h:outputText id="txtGmEspacial" value="#{controladorInscripcionProceso.propiedadMatriculaDerAcc.prdEspacial}"
+                                  styleClass="outputText"/>
+                </h:panelGrid>
+                <p:separator/>
+
+                <h3>Datos de Propiedad</h3>
+
+
+                <h:panelGrid columns="3" cellpadding="5">
+                    <p:outputLabel for="txtGmDerechos" value="Derechos"/>
+                    <p:inputNumber id="txtGmDerechos" value="#{controladorInscripcionProceso.propiedadDetalleSeleccionada.pdtValor}"
+                                   minValue="0" maxValue="100" decimalPlaces="2" symbol="%" symbolPosition="s"
+                                   required="true" requiredMessage="Debe ingresar un valor en porcentaje de Derechos">
+                        <p:ajax event="change" listener="#{controladorInscripcionProceso.generarDescripcion()}"
+                                update="txtGmDescripcion @form growl"/>
+                    </p:inputNumber>
+
+                    <p:inputTextarea id="txtGmDescripcion"  readonly="true" cols="60"
+                                     value="#{controladorInscripcionProceso.propiedadDetalleSeleccionada.pdtDescripcion}"/>
+                </h:panelGrid>
+
+                <p:separator/>
+                <h3>Datos del Propietario</h3>
+                
+                <h:panelGrid width="750" >
+                    <p:dataTable id="tblComparecientes" scrollable="true"  scrollHeight="200" 
+                                 value="#{controladorInscripcionProceso.listaTramDetComparecientes}" 
+                                                         var="tramDet" selection="#{controladorInscripcionProceso.tramiteDetalleSeleccionado}" 
+                                                         rowKey="#{tramDet.tdtId}" sortBy="#{tramDet.traNumero.traNumero}" >
+                        <p:column headerText="Identificación">
+                            <h:outputText value="#{tramDet.tdtPerIdentificacion}"/>
+                            </p:column>
+                        <p:column headerText="Nombres">
+                            <h:outputText value="#{tramDet.tdtPerNombre}"/>
+                            </p:column>
+                        <p:column headerText="Ap. Paterno">
+                                <h:outputText value="#{tramDet.tdtPerApellidoPaterno}"/>
+                            </p:column>
+                        <p:column headerText="Ap. Materno">
+                            <h:outputText value="#{tramDet.tdtPerApellidoMaterno}"/>
+                            </p:column>
+                        <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                        
+                    </p:dataTable>
+                </h:panelGrid> 
+                
+
+                <div align="right">
+                    <h:panelGrid columns="2">
+                        <p:commandButton  value="Guardar" 
+                                          class="green-btn"
+                                          icon="fa fa-save"
+                                          update="@form growl :formIncidencia:formDerechosAcciones"
+                                          action="#{controladorInscripcionProceso.crearDetallePropiedad()}" 
+                                         />
+                        <p:commandButton  value="Cancelar" 
+                                          class="red-btn"
+                                          icon="fa fa-close"
+                                          process="@this"
+                                          immediate="true"
+                                          onclick="PF('dialogoDereAccn').hide()"
+                                          />
+                    </h:panelGrid>  
+                </div>
+
+
+
+
+
+
+            </h:form>
+        </p:dialog>
+        <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/> 
+    </ui:composition>
+</html>

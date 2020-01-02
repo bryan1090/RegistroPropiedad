@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ParametrosEditDlg" widgetVar="ParametrosEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditParametrosTitle}">
+            <h:form id="ParametrosEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorParametro.selected != null}">
+                        <p:outputLabel value="#{bundle.EditParametrosLabel_prmParametro}" for="prmParametro" />
+                        <p:inputText id="prmParametro" value="#{controladorParametro.selected.prmParametro}" title="#{bundle.EditParametrosTitle_prmParametro}" required="true" requiredMessage="#{bundle.EditParametrosRequiredMessage_prmParametro}" style="text-transform: uppercase"
+                                     validatorMessage="Parametro: Ingresar solo letras">
+                            <f:validateRegex pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/>
+                        </p:inputText>                            
+                        <p:outputLabel value="#{bundle.EditParametrosLabel_prmDescripcion}" for="prmDescripcion" />
+                        <p:inputText id="prmDescripcion" value="#{controladorParametro.selected.prmDescripcion}" style="text-transform: uppercase;" title="#{bundle.EditParametrosTitle_prmDescripcion}" required="true" requiredMessage="#{bundle.EditParametrosRequiredMessage_prmDescripcion}" 
+                                     validatorMessage="Descripción: Ingresar solo letras">
+                            <f:validateRegex pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/>
+                        </p:inputText>
+                        <p:outputLabel value="#{bundle.EditParametrosLabel_prmValor1}" for="prmValor1" />
+                        <p:inputText id="prmValor1" value="#{controladorParametro.selected.prmValor1}" title="#{bundle.EditParametrosTitle_prmValor1}" style="text-transform: uppercase"/>
+                        <p:outputLabel value="#{bundle.EditParametrosLabel_prmValor2}" for="prmValor2" />
+                        <p:inputText id="prmValor2" value="#{controladorParametro.selected.prmValor2}" title="#{bundle.EditParametrosTitle_prmValor2}" />
+                        <p:outputLabel value="#{bundle.EditParametrosLabel_prmValor3}" for="prmValor3" />
+                        <p:calendar id="prmValor3" pattern="dd/MM/yyyy HH:mm:ss" value="#{controladorParametro.selected.prmValor3}" title="#{bundle.EditParametrosTitle_prmValor3}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditParametrosLabel_prmUnidadTiempo}" for="prmUnidadTiempo" />
+                        <p:selectOneMenu id="prmUnidadTiempo" value="#{controladorParametro.selected.prmUnidadTiempo}" title="#{bundle.EditParametrosTitle_prmUnidadTiempo}">
+                            <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                            <f:selectItem itemLabel="DÍA" itemValue="D"/>
+                            <f:selectItem itemLabel="HORA" itemValue="H"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditParametrosLabel_prmCantidadTiempo}" for="prmCantidadTiempo" />
+                        <p:inputText id="prmCantidadTiempo" value="#{controladorParametro.selected.prmCantidadTiempo}" title="#{bundle.EditParametrosTitle_prmCantidadTiempo}" converterMessage="Cantidad Tiempo: Ingresar solo numeros"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorParametro.update}" value="#{bundle.Save}" update="display,:ParametrosListForm:datalist,:growl" oncomplete="handleSubmit(args, 'ParametrosEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorParametro.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="ParametrosEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

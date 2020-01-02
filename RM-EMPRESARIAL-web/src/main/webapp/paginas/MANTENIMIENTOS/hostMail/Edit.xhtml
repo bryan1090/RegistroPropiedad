@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="HostMailEditDlg" widgetVar="HostMailEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditHostMailTitle}">
+            <h:form id="HostMailEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{hostMailController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditHostMailLabel_htmCorreo}" for="htmCorreo" />
+                        <p:inputText id="htmCorreo" value="#{hostMailController.selected.htmCorreo}" title="#{bundle.EditHostMailTitle_htmCorreo}" required="true" requiredMessage="#{bundle.EditHostMailRequiredMessage_htmCorreo}"/>
+                        <p:outputLabel value="#{bundle.EditHostMailLabel_htmContrasenia}" for="htmContrasenia" />
+                        <p:inputText id="htmContrasenia" value="#{hostMailController.selected.htmContrasenia}" title="#{bundle.EditHostMailTitle_htmContrasenia}" required="true" requiredMessage="#{bundle.EditHostMailRequiredMessage_htmContrasenia}"/>
+                        <p:outputLabel value="#{bundle.EditHostMailLabel_htmPuerto}" for="htmPuerto" />
+                        <p:inputText id="htmPuerto" value="#{hostMailController.selected.htmPuerto}" title="#{bundle.EditHostMailTitle_htmPuerto}" required="true" requiredMessage="#{bundle.EditHostMailRequiredMessage_htmPuerto}"/>
+                        <p:outputLabel value="#{bundle.EditHostMailLabel_htmSmtp}" for="htmSmtp" />
+                        <p:inputText id="htmSmtp" value="#{hostMailController.selected.htmSmtp}" title="#{bundle.EditHostMailTitle_htmSmtp}" required="true" requiredMessage="#{bundle.EditHostMailRequiredMessage_htmSmtp}"/>
+                        <p:outputLabel value="#{bundle.EditHostMailLabel_htmRemitente}" for="htmRemitente" />
+                        <p:inputText id="htmRemitente" value="#{hostMailController.selected.htmRemitente}" title="#{bundle.EditHostMailTitle_htmRemitente}" required="true" requiredMessage="#{bundle.EditHostMailRequiredMessage_htmRemitente}"/>
+                        <p:outputLabel value="#{bundle.EditHostMailLabel_htmSeguridad}" for="htmSeguridad" />
+                        <p:inputText id="htmSeguridad" value="#{hostMailController.selected.htmSeguridad}" title="#{bundle.EditHostMailTitle_htmSeguridad}" required="true" requiredMessage="#{bundle.EditHostMailRequiredMessage_htmSeguridad}"/>
+                        <p:outputLabel value="#{bundle.EditHostMailLabel_htmAutentificacion}" for="htmAutentificacion" />
+                        <p:inputText id="htmAutentificacion" value="#{hostMailController.selected.htmAutentificacion}" title="#{bundle.EditHostMailTitle_htmAutentificacion}" required="true" requiredMessage="#{bundle.EditHostMailRequiredMessage_htmAutentificacion}"/>
+                        <p:outputLabel value="#{bundle.EditHostMailLabel_htmFirma}" for="htmFirma" />
+                        <p:inputText id="htmFirma" value="#{hostMailController.selected.htmFirma}" title="#{bundle.EditHostMailTitle_htmFirma}" required="true" requiredMessage="#{bundle.EditHostMailRequiredMessage_htmFirma}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{hostMailController.update}" value="#{bundle.Save}" update="display,:HostMailListForm:datalist,:growl" oncomplete="handleSubmit(args, 'HostMailEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}" onclick="HostMailEditDialog.hide()" immediate="true"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

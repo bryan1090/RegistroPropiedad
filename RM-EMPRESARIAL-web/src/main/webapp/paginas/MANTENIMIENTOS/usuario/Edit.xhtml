@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UsuarioEditDlg" widgetVar="UsuarioEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditUsuarioTitle}">
+            <h:form id="UsuarioEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{usuarioController.usuarioControllerBb.usuario != null}">
+
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_usuLogin}" for="usuLogin" />
+                        <p:inputText id="usuLogin" value="#{usuarioController.usuarioControllerBb.usuario.usuLogin}" style="text-transform: uppercase" title="#{bundle.EditUsuarioTitle_usuLogin}" required="true" requiredMessage="#{bundle.EditUsuarioRequiredMessage_usuLogin}"/>
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_usuContrasenia}" for="usuContrasenia" />
+                        <p:password id="usuContrasenia" value="#{usuarioController.usuarioControllerBb.usuario.usuContrasenia}" feedback="true" redisplay="true" title="#{bundle.EditUsuarioTitle_usuContrasenia}" required="true" requiredMessage="#{bundle.EditUsuarioRequiredMessage_usuContrasenia}"/>
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_usuEmail}" for="usuEmail" />
+                        <p:inputText id="usuEmail" type="email" value="#{usuarioController.usuarioControllerBb.usuario.usuEmail}" title="#{bundle.EditUsuarioTitle_usuEmail}" required="true" requiredMessage="#{bundle.EditUsuarioRequiredMessage_usuEmail}" validatorMessage="Formato de E-mail no válido">
+                            <f:validateRegex  pattern="^((\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)|(\s*))$"/>
+                        </p:inputText>
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_usuEstado}" for="usuEstado" />
+                        <p:selectOneMenu id="usuEstado" value="#{usuarioController.usuarioControllerBb.usuario.usuEstado}" title="#{bundle.EditUsuarioTitle_usuEstado}" required="true" requiredMessage="#{bundle.EditUsuarioRequiredMessage_usuEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_usuFechaInicio}" for="usuFechaInicio" />
+                        <p:calendar id="usuFechaInicio" pattern="dd/MM/yyyy HH:mm:ss" value="#{usuarioController.usuarioControllerBb.usuario.usuFechaInicio}" title="#{bundle.EditUsuarioTitle_usuFechaInicio}" required="true" requiredMessage="#{bundle.EditUsuarioRequiredMessage_usuFechaInicio}" showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_usuFechaFin}" for="usuFechaFin" />
+                        <p:calendar id="usuFechaFin" pattern="dd/MM/yyyy HH:mm:ss" value="#{usuarioController.usuarioControllerBb.usuario.usuFechaFin}" title="#{bundle.EditUsuarioTitle_usuFechaFin}" required="true" requiredMessage="#{bundle.EditUsuarioRequiredMessage_usuFechaFin}" showOn="button"/>
+
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_perId}" for="perId" />
+                        <p:inputText id="perId" value="#{usuarioController.identificacionUsuario}"  required="true" requiredMessage="#{bundle.EditUsuarioRequiredMessage_perId}">
+                            <p:ajax event="change" listener="#{usuarioController.buscarPersona()}" update="@form:perNombre"/>
+                        </p:inputText>
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_perNombre}" for="perNombre" />
+                        <h:outputText id="perNombre" value="#{usuarioController.usuarioControllerBb.usuario.perId.perApellidoPaterno} #{usuarioController.usuarioControllerBb.usuario.perId.perNombre}"/>
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_rolId}" for="rolId" />
+                        <p:selectOneMenu id="rolId" value="#{usuarioController.usuarioControllerBb.usuario.rolId}" required="true" requiredMessage="#{bundle.EditUsuarioRequiredMessage_rolId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{rolController.itemsAvailableSelectOne}"
+                                           var="rolIdItem"
+                                           itemValue="#{rolIdItem}" itemLabel="#{rolIdItem.rolNombre}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_zonId}" for="zonId" />
+                        <p:selectOneMenu id="zonId" value="#{usuarioController.usuarioControllerBb.usuario.zonId}" required="true" requiredMessage="#{bundle.EditUsuarioRequiredMessage_zonId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{zonaController.itemsAvailableSelectOne}"
+                                           var="zonIdItem"
+                                           itemValue="#{zonIdItem}" itemLabel="#{zonIdItem.zonNombre}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_usuFirmaContrasenia}" for="usuFirmaContrasenia" />
+                        <p:password id="usuFirmaContrasenia" value="#{usuarioController.usuarioControllerBb.usuario.usuFirmaContrasenia}" feedback="true" title="#{bundle.EditUsuarioTitle_usuFirmaContrasenia}" />                        
+
+                        <p:outputLabel value="#{bundle.EditUsuarioLabel_usuPathFirma}" for="usuPathFirma" />
+                        <p:inputText id="usuPathFirma" value="#{usuarioController.usuarioControllerBb.usuario.usuPathFirma}" title="#{bundle.EditUsuarioTitle_usuPathFirma}" />
+                        
+                        <p:outputLabel value="Huella digital"/>
+                        <p:commandButton class="blue-btn" icon="fa fa-hand-pointer-o" actionListener="#{controladorHuellaDigitalUtil.capturarHuella()}" value="Capturar huella"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{usuarioController.update}" value="#{bundle.Save}" update="display,:UsuarioListForm:datalist,:growl" oncomplete="PF('UsuarioEditDialog').hide();"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{usuarioController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="UsuarioEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

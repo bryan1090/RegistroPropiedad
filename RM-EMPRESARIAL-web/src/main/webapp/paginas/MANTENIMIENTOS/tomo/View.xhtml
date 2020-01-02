@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TomoViewDlg" widgetVar="TomoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTomoTitle}">
+            <h:form id="TomoViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTomo.selected != null}">
+                        <h:outputText value="#{bundle.ViewTomoLabel_tplId}"/>
+                        <h:outputText value="#{controladorTomo.selected.tplId.tplDescripcion}" title="#{bundle.ViewTomoTitle_tplId}"/>
+                        <h:outputText value="#{bundle.ViewTomoLabel_tomTomo}"/>
+                        <h:outputText value="#{controladorTomo.selected.tomTomo}" title="#{bundle.ViewTomoTitle_tomTomo}"/>
+                        <h:outputText value="#{bundle.ViewTomoLabel_tomAnio}"/>
+                        <h:outputText value="#{controladorTomo.selected.tomAnio}" title="#{bundle.ViewTomoTitle_tomAnio}"/>
+                        <h:outputText value="#{bundle.ViewTomoLabel_tomUser}"/>
+                        <h:outputText value="#{controladorTomo.selected.tomUser}" title="#{bundle.ViewTomoTitle_tomUser}"/>
+                        <h:outputText value="#{bundle.ViewTomoLabel_tomFHR}"/>
+                        <h:outputText value="#{controladorTomo.selected.tomFHR}" title="#{bundle.ViewTomoTitle_tomFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTomo.clear()}" value="#{bundle.Close}" onclick="TomoEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

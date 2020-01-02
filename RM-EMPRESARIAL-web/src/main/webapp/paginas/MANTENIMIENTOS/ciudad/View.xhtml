@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CiudadViewDlg" widgetVar="CiudadViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewCiudadTitle}">
+            <h:form id="CiudadViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorCiudad.selected != null}">
+                        <h:outputText value="#{bundle.ViewCiudadLabel_ciuNombre}"/>
+                        <h:outputText value="#{controladorCiudad.selected.ciuNombre}" style="text-transform: uppercase" title="#{bundle.ViewCiudadTitle_ciuNombre}"/>
+                        <h:outputText value="#{bundle.ViewCiudadLabel_ciuEstado}"/>
+                        <h:outputText value="#{controladorCiudad.selected.ciuEstado}" style="text-transform: uppercase" title="#{bundle.ViewCiudadTitle_ciuEstado}"/>
+                        <h:outputText value="#{bundle.ViewCiudadLabel_ciuFHR}"/>
+                        <h:outputText value="#{controladorCiudad.selected.ciuFHR}" style="text-transform: uppercase" title="#{bundle.ViewCiudadTitle_ciuFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewCiudadLabel_ciuUser}"/>
+                        <h:outputText value="#{controladorCiudad.selected.ciuUser}" style="text-transform: uppercase" title="#{bundle.ViewCiudadTitle_ciuUser}"/>
+                        <h:outputText value="#{bundle.ViewCiudadLabel_ciuCodigo}"/>
+                        <h:outputText value="#{controladorCiudad.selected.ciuCodigo}" style="text-transform: uppercase" title="#{bundle.ViewCiudadTitle_ciuCodigo}"/>
+                        <h:outputText value="#{bundle.ViewCiudadLabel_ciuInicial}"/>
+                        <h:outputText value="#{controladorCiudad.selected.ciuInicial}" style="text-transform: uppercase" title="#{bundle.ViewCiudadTitle_ciuInicial}"/>
+                        <h:outputText value="#{bundle.ViewCiudadLabel_canId}"/>
+                        <h:outputText value="#{controladorCiudad.selected.canId.canNombre}" style="text-transform: uppercase" title="#{bundle.ViewCiudadTitle_canId}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorCiudad.clear()}" value="#{bundle.Close}" onclick="CiudadViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

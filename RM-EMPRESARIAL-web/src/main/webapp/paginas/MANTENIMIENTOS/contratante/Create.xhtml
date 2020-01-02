@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ContratanteCreateDlg" widgetVar="ContratanteCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateContratanteTitle}">
+            <h:form id="ContratanteCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorContratante.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateContratanteLabel_conCodigo}" for="conCodigo" />
+                        <p:inputText id="conCodigo" value="#{controladorContratante.selected.conCodigo}" title="#{bundle.CreateContratanteTitle_conCodigo}" required="true" requiredMessage="#{bundle.CreateContratanteRequiredMessage_conCodigo}"/>
+                        <p:outputLabel value="#{bundle.CreateContratanteLabel_conDescripcion}" for="conDescripcion" />
+                        <p:inputText id="conDescripcion" value="#{controladorContratante.selected.conDescripcion}" style="text-transform: uppercase;" title="#{bundle.CreateContratanteTitle_conDescripcion}" required="true" requiredMessage="#{bundle.CreateContratanteRequiredMessage_conDescripcion}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorContratante.create}" value="#{bundle.Save}" update="display,:ContratanteListForm:datalist,:growl" oncomplete="handleSubmit(args,'ContratanteCreateDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorContratante.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="ContratanteCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

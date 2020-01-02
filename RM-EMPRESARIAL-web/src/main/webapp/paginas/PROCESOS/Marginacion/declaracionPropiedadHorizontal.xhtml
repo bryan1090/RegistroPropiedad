@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Índices"/>
+        </ui:define>
+
+        <ui:define name="content" >
+            <h:form id="form" >
+
+                <p:panel id="pnlPrincipal" header="Declaración de Propiedad Horizontal"  >
+
+                    <h:panelGrid id="pnl1" columns="3">
+                        <h:panelGrid columns="2">
+                            <h:outputText />
+<!--                            <p:selectOneMenu  value="#{newJSFManagedBean.seleccion}" style="width: 142px" >
+                                <f:selectItem itemLabel="Seleccione..." itemValue="" />
+                                <f:selectItem itemLabel="Edificio" itemValue="Edificio" />
+                                <f:selectItem itemLabel="Conjunto Habitacional" itemValue="Conjunto" />
+                            </p:selectOneMenu>-->
+                            <p:outputLabel for="@next" value="Nombre " />
+                            <p:inputText value="#{newJSFManagedBean.nombre}"/>
+                            <p:outputLabel for="@next" value="Lotes " />
+                            <p:inputText required="true" requiredMessage="El numero de Pisos es requerido" value="#{newJSFManagedBean.numFilas}" >
+                                <p:ajax event="change" listener="#{newJSFManagedBean.llenarLista()}"  update=" pnlGrafico dataTable"/>
+                                
+                            </p:inputText>
+                        </h:panelGrid>
+
+                        <p:spacer width="60px"/>
+                        <h:panelGrid id="pnlGrafico" >
+                            <p:dataGrid id="grid"  rendered="#{newJSFManagedBean.mostrar}" value="#{newJSFManagedBean.lista2}" var="item" >
+                                <div align="center" style="width: 200px;background-color: #4CAF50">
+                                    <h:panelGrid columns="1" > 
+                                        <h:outputText style="color: #ffffff" value="#{item}"/>
+                                    </h:panelGrid>
+                                </div>
+                            </p:dataGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+
+
+                    <p:dataTable id="dataTable" value="#{newJSFManagedBean.listaObjetos}" editable="true" editMode="cell" var="item"
+                                 rows="5"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" scrollable="true" scrollHeight="130" resizableColumns="true" paginatorPosition="bottom"  >
+
+                        <p:column headerText="Unidad" sortBy="unidad">
+                            <h:outputText style="font-weight: bold" value="#{item.id}" />
+
+                        </p:column>
+
+                        <p:column headerText="Nombre">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{item.s1}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{item.s1}" /></f:facet>
+                            </p:cellEditor>
+
+                        </p:column>
+
+                        <p:column headerText="UndVivienda">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{item.s2}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{item.s2}" /></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Predio">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{item.int1}" /></f:facet>
+                                <f:facet name="input"><p:inputText value="#{item.int1}" /></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                    </p:dataTable>
+
+                    <h:panelGrid columns="1">
+                        <p:spacer height="10px" width="10px"/>
+                    </h:panelGrid>
+                    <h:panelGroup >
+                        <p:commandButton class="green-btn" icon="fa fa-save" value="Guardar" actionListener="#{newJSFManagedBean.guardar}" update="growl @form"/>
+                        <p:commandButton class="cyan-btn"  icon="fa fa-refresh" process="@this" actionListener="#{newJSFManagedBean.limpiar()}" value="Refrescar"  update="@form"  /> 
+                        <p:commandButton class="red-btn"  icon="fa fa-sign-out" process="@this" actionListener="#{newJSFManagedBean.salir()}" value="Salir"  update="@form"  /> 
+                    </h:panelGroup>
+
+                </p:panel>
+
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

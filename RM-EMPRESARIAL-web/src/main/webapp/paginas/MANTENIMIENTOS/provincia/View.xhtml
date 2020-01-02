@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProvinciaViewDlg" widgetVar="ProvinciaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewProvinciaTitle}">
+            <h:form id="ProvinciaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorProvincia.selected != null}">
+                        <h:outputText value="#{bundle.ViewProvinciaLabel_proNombre}"/>
+                        <h:outputText value="#{controladorProvincia.selected.proNombre}" style="text-transform: uppercase" title="#{bundle.ViewProvinciaTitle_proNombre}"/>
+                        <h:outputText value="#{bundle.ViewProvinciaLabel_proEstado}"/>
+                        <h:outputText value="#{controladorProvincia.selected.proEstado}" style="text-transform: uppercase" title="#{bundle.ViewProvinciaTitle_proEstado}"/>
+                        <h:outputText value="#{bundle.ViewProvinciaLabel_proFHR}"/>
+                        <h:outputText value="#{controladorProvincia.selected.proFHR}" style="text-transform: uppercase" title="#{bundle.ViewProvinciaTitle_proFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewProvinciaLabel_proUser}"/>
+                        <h:outputText value="#{controladorProvincia.selected.proUser}" style="text-transform: uppercase" title="#{bundle.ViewProvinciaTitle_proUser}"/>
+                        <h:outputText value="#{bundle.ViewProvinciaLabel_proCodigo}"/>
+                        <h:outputText value="#{controladorProvincia.selected.proCodigo}" style="text-transform: uppercase" title="#{bundle.ViewProvinciaTitle_proCodigo}"/>
+                        <h:outputText value="#{bundle.ViewProvinciaLabel_proInicial}"/>
+                        <h:outputText value="#{controladorProvincia.selected.proInicial}" style="text-transform: uppercase" title="#{bundle.ViewProvinciaTitle_proInicial}"/>
+                        <h:outputText value="#{bundle.ViewProvinciaLabel_paiId}"/>
+                        <h:outputText value="#{controladorProvincia.selected.proNombre}" style="text-transform: uppercase" title="#{bundle.ViewProvinciaTitle_paiId}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorProvincia.clear()}" value="#{bundle.Close}" onclick="ProvinciaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="HostMailViewDlg" widgetVar="HostMailViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewHostMailTitle}">
+            <h:form id="HostMailViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{hostMailController.selected != null}">
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmCorreo}"/>
+                        <h:outputText value="#{hostMailController.selected.htmCorreo}" title="#{bundle.ViewHostMailTitle_htmCorreo}"/>
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmContrasenia}"/>
+                        <h:outputText value="#{hostMailController.selected.htmContrasenia}" title="#{bundle.ViewHostMailTitle_htmContrasenia}"/>
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmPuerto}"/>
+                        <h:outputText value="#{hostMailController.selected.htmPuerto}" title="#{bundle.ViewHostMailTitle_htmPuerto}"/>
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmSmtp}"/>
+                        <h:outputText value="#{hostMailController.selected.htmSmtp}" title="#{bundle.ViewHostMailTitle_htmSmtp}"/>
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmRemitente}"/>
+                        <h:outputText value="#{hostMailController.selected.htmRemitente}" title="#{bundle.ViewHostMailTitle_htmRemitente}"/>
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmSeguridad}"/>
+                        <h:outputText value="#{hostMailController.selected.htmSeguridad}" title="#{bundle.ViewHostMailTitle_htmSeguridad}"/>
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmAutentificacion}"/>
+                        <h:outputText value="#{hostMailController.selected.htmAutentificacion}" title="#{bundle.ViewHostMailTitle_htmAutentificacion}"/>
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmFirma}"/>
+                        <h:outputText value="#{hostMailController.selected.htmFirma}" title="#{bundle.ViewHostMailTitle_htmFirma}"/>
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmUser}"/>
+                        <h:outputText value="#{hostMailController.selected.htmUser}" title="#{bundle.ViewHostMailTitle_htmUser}"/>
+                        <h:outputText value="#{bundle.ViewHostMailLabel_htmFHR}"/>
+                        <h:outputText value="#{hostMailController.selected.htmFHR}" title="#{bundle.ViewHostMailTitle_htmFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Close}" onclick="HostMailViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

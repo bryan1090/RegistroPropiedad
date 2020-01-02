@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SecuenciaViewDlg" widgetVar="SecuenciaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewSecuenciaTitle}">
+            <h:form id="SecuenciaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorSecuencia.selected != null}">
+                        <h:outputText value="#{bundle.ViewSecuenciaLabel_secCodigo}"/>
+                        <h:outputText value="#{controladorSecuencia.selected.secCodigo}" title="#{bundle.ViewSecuenciaTitle_secCodigo}"/>
+                        <h:outputText value="#{bundle.ViewSecuenciaLabel_secAnio}"/>
+                        <h:outputText value="#{controladorSecuencia.selected.secAnio}" title="#{bundle.ViewSecuenciaTitle_secAnio}"/>
+                        <h:outputText value="#{bundle.ViewSecuenciaLabel_secActual}"/>
+                        <h:outputText value="#{controladorSecuencia.selected.secActual}" title="#{bundle.ViewSecuenciaTitle_secActual}"/>
+                        <h:outputText value="#{bundle.ViewSecuenciaLabel_secUser}"/>
+                        <h:outputText value="#{controladorSecuencia.selected.secUser}" title="#{bundle.ViewSecuenciaTitle_secUser}"/>
+                        <h:outputText value="#{bundle.ViewSecuenciaLabel_secFHR}"/>
+                        <h:outputText value="#{controladorSecuencia.selected.secFHR}" title="#{bundle.ViewSecuenciaTitle_secFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorSecuencia.clear()}" value="#{bundle.Close}" onclick="SecuenciaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

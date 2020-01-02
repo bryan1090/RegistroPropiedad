@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="ProDlg" header="Trámite - Proforma" widgetVar="ProDialogo" modal="true" resizable="false">
+            <p:scrollPanel style="height:500px">
+                <h:form id="ProVerForm">
+                    <h:panelGrid columns="1" style="max-width: 800px">
+                        <h:panelGrid columns="2" style="width: 100%">
+                            <h:panelGrid columns="2" cellpadding="10">
+                                <h:outputText value="N° Trámite:  "  style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traNumero}" style="color: #b30000"/>
+                            </h:panelGrid>
+                            <h:commandLink action="#{controladorVerPRO.generarReporte()}" style="float: right">
+                                <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                            </h:commandLink>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Tipo ingreso"  style="font-weight: bold"/>
+                            <h:selectOneRadio id="TipoIngreso" value="#{controladorVerPRO.tramite.traTipo}" disabled="true">
+                                <f:selectItem itemLabel="Normal" itemValue="N"/>
+                                <f:selectItem itemLabel="Legal" itemValue="L"/>
+                                <f:selectItem itemLabel="Cancelaciones" itemValue="C" />
+                                <f:selectItem itemLabel="Organizaciones" itemValue="O" />                            
+                            </h:selectOneRadio>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <h:panelGrid columns="6" cellpadding="10">
+                            <h:outputText value="CI/RUC/Pas:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traPerIdentificacion}" style="color: #b30000"/>
+                            <h:outputText value="N° de Tramites:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traCantidadTramite}"/>
+                            <h:outputText value="Fecha Entrega:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traFechaEntrega.time}" style="color: #1A237E">
+                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                            </h:outputText>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <h:panelGrid id="pnlIngreso" columns="6" cellpadding="10">
+                            <h:outputText value="Apellido Paterno:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traPerApellidoPaterno}"/>
+                            <h:outputText value="Apellido Materno:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traPerApellidoMaterno}"/>
+                            <h:outputText value="Nombre:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traPerNombre}"/>
+                            <h:outputText value="Notaria:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traNotaria}"/>
+                            <h:outputText value="Juicio:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traJucio}"/>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <h:outputText value="Comparecientes" style="font-weight: bold; font-size: 14px;"/>
+                        <p:dataTable id="ComparecientesLista" value="#{controladorVerPRO.tramiteDetalle}" var="itemCom">
+                            <p:column style="width: 100px;">
+                                <f:facet name="header">
+                                    <h:outputText value="CI/RUC/PAS" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCom.tdtPerIdentificacion}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="NOMBRES" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCom.tdtPerApellidoPaterno} #{itemCom.tdtPerApellidoMaterno} #{itemCom.tdtPerNombre}"/>
+                            </p:column>
+                            <p:column style="width: 150px;">
+                                <f:facet name="header">
+                                    <h:outputText value="CONTRATO" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCom.tdtTtrDescripcion}"/>
+                            </p:column>
+                            <p:column style="width: 150px;">
+                                <f:facet name="header">
+                                    <h:outputText value="COMPARECIENTES" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCom.tdtTpcDescripcion}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:separator/>
+                        <h:outputText value="Cuantía" style="font-weight: bold; font-size: 14px;"/>
+                        <p:dataTable id="CuantiaLista" value="#{controladorVerPRO.tramiteValor}" var="itemCua">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Contrato" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.ttrId.ttrDescripcion}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Parroquia" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.trvParNombre}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="N° Predio" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.traNumPredio}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="N° Catastro" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.trvNumCatastro}" style="float:left"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Valor"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.trvValor}" style="float:left"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:form>
+            </p:scrollPanel>
+        </p:dialog>
+    </ui:composition>
+
+</html>
+

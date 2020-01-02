@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="MargenCreateDlg" widgetVar="MargenCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateMargenTitle}">
+            <h:form id="MargenCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorMargen.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateMargenLabel_marTipo}" for="marTipo" />
+                        <p:inputText id="marTipo" value="#{controladorMargen.selected.marTipo}" title="#{bundle.CreateMargenTitle_marTipo}" required="true" requiredMessage="#{bundle.CreateMargenRequiredMessage_marTipo}"/>
+                        <p:outputLabel value="#{bundle.CreateMargenLabel_marSuperior}" for="marSuperior" />
+                        <p:inputText id="marSuperior" value="#{controladorMargen.selected.marSuperior}" title="#{bundle.CreateMargenTitle_marSuperior}" required="true" requiredMessage="#{bundle.CreateMargenRequiredMessage_marSuperior}"/>
+                        <p:outputLabel value="#{bundle.CreateMargenLabel_marInferior}" for="marInferior" />
+                        <p:inputText id="marInferior" value="#{controladorMargen.selected.marInferior}" title="#{bundle.CreateMargenTitle_marInferior}" required="true" requiredMessage="#{bundle.CreateMargenRequiredMessage_marInferior}"/>
+                        <p:outputLabel value="#{bundle.CreateMargenLabel_marIzquierdo}" for="marIzquierdo" />
+                        <p:inputText id="marIzquierdo" value="#{controladorMargen.selected.marIzquierdo}" title="#{bundle.CreateMargenTitle_marIzquierdo}" required="true" requiredMessage="#{bundle.CreateMargenRequiredMessage_marIzquierdo}"/>
+                        <p:outputLabel value="#{bundle.CreateMargenLabel_marDerecho}" for="marDerecho" />
+                        <p:inputText id="marDerecho" value="#{controladorMargen.selected.marDerecho}" title="#{bundle.CreateMargenTitle_marDerecho}" required="true" requiredMessage="#{bundle.CreateMargenRequiredMessage_marDerecho}"/>
+                        <p:outputLabel value="#{bundle.CreateMargenLabel_marEstado}" for="marEstado" />
+                        <p:selectOneMenu id="marEstado" value="#{controladorMargen.selected.marEstado}" required="true" requiredMessage="#{bundle.CreateMargenRequiredMessage_marEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorMargen.create}" value="#{bundle.Save}" update="display,:MargenListForm:datalist,:growl" oncomplete="handleSubmit(args,'MargenCreateDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}" immediate="true" onclick="MargenCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

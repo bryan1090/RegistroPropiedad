@@ -1,0 +1,621 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Prohibiciones"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:outputStylesheet name="css/textEditor.css" />
+
+            <h:form id="formInscripcionJudicial">
+
+
+                <p:panel id="pnlProhibiciones" header="Prohibiciones" >
+                    <p:panelGrid layout="grid" columns="8" style="display: block;text-align: center">
+                        <p:outputLabel for="txtNumTramite" value="# Trámite"/>
+                        <p:inputText id="txtNumTramite" value="#{controladorInscripcionJudicial.numeroTramite}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtRepertorio" value="Repertorio"/>
+                        <p:inputText id="txtRepertorio" value="#{controladorInscripcionJudicial.numeroRepertorio}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtFecha" value="Fecha"/>
+                        <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFecha" value="#{controladorInscripcionJudicial.fecha}" disabled="true" readonly="true"
+                                    style="color: #1a237e"/>
+                        <p:outputLabel for="txtContrato" value="Contrato"/>
+                        <p:inputText id="txtContrato" value="#{controladorInscripcionJudicial.descripcionContrato}" readonly="true"
+                                     style="color: #1a237e" />
+
+                    </p:panelGrid>
+
+                    <p:layout id="lyt1" style="min-width:400px;min-height:589px;">
+                        <p:layoutUnit position="west" resizable="true" size="480" header="TRÁMITES" minSize="340" maxSize="500" collapsible="true" effect="drop">                                    
+
+                            <h:panelGrid columns="2" >
+                                <p:outputLabel for="txtFechaRepertorio" value="Fecha" />
+                                <p:calendar pattern="dd/MM/yyyy" id="txtFechaRepertorio" value="#{controladorInscripcionJudicial.fecha}" required="true" label="firstname">
+                                    <p:ajax event="dateSelect" listener="#{controladorInscripcionJudicial.llenarDatos()}" update=":formInscripcionJudicial"/>
+                                </p:calendar>                                           
+                            </h:panelGrid>
+
+                            <h:panelGrid id="panelRep" columns="1">      
+                                <p:dataTable id="tblRepertorios" scrollable="true"  scrollHeight="410" 
+                                             value="#{controladorInscripcionJudicial.listaRepertorioFecha}" 
+                                             var="repertorio" selectionMode="single" selection="#{repertorio}" 
+                                             rowKey="#{repertorio.repNumero}" sortBy="#{repertorio.traNumero.traNumero}" > 
+                                    <p:ajax event="rowSelect" listener="#{controladorInscripcionJudicial.onRowSelect}"  
+
+                                            update=" :formInscripcionJudicial" />
+                                    <p:column headerText="# Trámite" groupRow="true">
+                                        <h:outputText value="#{repertorio.traNumero.traNumero}" />
+                                    </p:column>
+                                    <p:column headerText="Repertorio">
+                                        <h:outputText value="#{repertorio.repNumero}" />
+                                    </p:column>                                              
+
+                                    <p:column headerText="Contrato">
+                                        <h:outputText value="#{repertorio.repTtrDescripcion}" />
+                                    </p:column>
+                                    <p:column headerText="Estado">
+                                        <h:outputText value="#{repertorio.estadoProceso}" />
+                                    </p:column>
+                                    <p:column headerText="TERMINAR" groupRow="true">
+                                        <p:commandButton value="TERMINAR #{repertorio.traNumero.traNumero}" class="yellow-btn"
+                                                         update="growl formInscripcionJudicial:pnlProhibiciones "
+                                                         action="#{controladorInscripcionJudicial.terminarProceso(repertorio.traNumero)}"
+                                                         />
+
+                                    </p:column>
+                                </p:dataTable>
+
+                            </h:panelGrid>
+
+                        </p:layoutUnit>
+
+                        <p:layoutUnit id="lyt2" position="center" resizable="true" size="680" minSize="680" maxSize="700">
+                            <p:panel id="pnlJudicial" rendered="#{controladorInscripcionJudicial.renderedPanel}">
+                                <p:commandButton action="#{controladorInscripcionJudicial.procesoTerminar()}"
+                                                 update=":formInscripcionJudicial, growl" 
+                                                 value="Terminar" immediate="true" process="@this"
+                                                 disabled="#{controladorInscripcionJudicial.deshabilitarBoton}"
+                                                 class="green-btn" style="margin-right:20px;" icon="fa fa-save" title="Terminar" >
+                                
+                                <p:confirm header="Confirmación" message="¿Esta seguro que desea continuar?" icon="fa fa-exclamation-triangle" />
+                                </p:commandButton>
+
+
+                                <p:commandButton  value="Suspensión" process="@this" immediate="true"
+                                                  class="red-btn"
+                                                  oncomplete="PF('dlgRznSus').show()" update="formRazonesSuspension" icon="fa fa-ban"
+                                                  rendered="#{controladorInscripcionJudicial.renderedBtnSuspension}"
+                                                  disabled="#{controladorInscripcionJudicial.numeroTramite eq null}">
+                                    <f:setPropertyActionListener target="#{controladorInscripcionJudicialSuspension.numProforma}"
+                                                                 value="#{controladorInscripcionJudicial.numeroTramite}"/>
+                                    <f:setPropertyActionListener target="#{controladorInscripcionJudicialSuspension.numeroRepertorio}"
+                                                                 value="#{controladorInscripcionJudicial.numeroRepertorio}"/>
+                                    <f:setPropertyActionListener target="#{controladorInscripcionJudicialSuspension.numTramite}"
+                                                                 value="#{controladorInscripcionJudicial.numeroTramite}"/>
+                                    <f:setPropertyActionListener target="#{controladorInscripcionJudicialSuspension.listaPropietarioPropiedad}"
+                                                                 value="#{controladorInscripcionJudicial.listaPropiedadPorMatricula}"/>
+                                </p:commandButton>
+
+                            </p:panel>
+
+                            <p:panel header="" id="scrollPanel" rendered="#{controladorInscripcionJudicial.renderedPanel}" 
+                                     style="width: 680px; height: 500px; ">
+
+                                <div align="center">
+                                    <p:outputLabel style="font-weight: bold;"  value="MATRÍCULAS (sobre las cuales se aplicará la Prohibición)" />
+                                </div> 
+
+                                <h:panelGrid id="panelVerMatriculas" columns="2" width="650">      
+                                    <p:dataTable id="tblMatriculas" scrollable="true" scrollHeight="150" 
+                                                 value="#{controladorInscripcionJudicial.listaPropiedadPorMatricula}"
+                                                 var="propietario" sortBy="#{propietario.prdMatricula.prdMatricula}" > 
+
+                                        <p:column  groupRow="true" headerText="Matrícula" style="width: 80px;">
+                                            <h:outputText value="#{propietario.prdMatricula.prdMatricula}" />
+                                        </p:column>
+
+                                        <p:column groupRow="true" headerText="Descripción" style="width: 270px;">
+                                            <h:outputText value="#{propietario.prdMatricula.prdDescripcion2}" />
+                                        </p:column>
+
+                                        <p:column headerText="Propietario" >
+                                            <h:outputText value="#{propietario.pprPerNombre.trim()} #{propietario.pprPerApellidoPaterno.trim()} #{propietario.ppPerApellidoMaterno.trim()}" />
+                                        </p:column>
+
+                                        <p:column headerText="" style="text-align: center; width: 40px;" groupRow="true">
+                                            <p:commandButton icon="fa fa-plus" class="cyan-btn" title="Detalles de Propiedad"
+                                                             oncomplete="PF('dlgPropDetalle').show()" style="width: 27px"
+                                                             update="formPropDetalle" value="#{propietario.prdMatricula.prdMatricula}" 
+                                                             action="#{controladorInscripcionJudicial.cargarPropiedadDetalle(propietario.prdMatricula.prdMatricula)}"
+                                                             disabled="#{propietario.cantidadPropiedadDetalle == 0}">
+
+                                                <f:setPropertyActionListener target="#{controladorInscripcionJudicial.idPersona}"
+                                                                             value="#{propietario.perId.perId}"/>
+                                            </p:commandButton>
+                                        </p:column>
+
+
+                                    </p:dataTable>
+
+
+
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="2">
+
+                                    <p:outputLabel style="font-weight: bold;"  value="COMPARECIENTES" />
+
+                                    <p:commandButton  oncomplete ="PF('dlgComparecientes').show()"
+                                                      update ="formComparecientes" class="green-btn"
+                                                      disabled="#{controladorInscripcionJudicial.deshabilitarBoton}"
+                                                      immediate="true" process="@this" 
+                                                      action="#{controladorInscripcionJudicial.cargarTablaComparecientes()}"
+                                                      style="margin-right:20px;" icon="fa fa-plus"
+                                                      title="Agregar Compareciente" />
+
+                                </h:panelGrid>
+
+
+                                <h:panelGrid id="panelComparecientes" columns="2" width="650">      
+                                    <p:dataTable id="tblComparecientes" scrollable="true" scrollHeight="150"
+                                                 value="#{controladorInscripcionJudicial.listaTramiteDetalle}"
+                                                 var="compareciente" sortBy="#{compareciente.tdtPerTipoIdentificacion}" > 
+
+
+
+                                        <p:column headerText="IDENTIFICACIÓN" width="115">
+                                            <h:outputText value="#{compareciente.tdtPerIdentificacion}" />
+                                        </p:column>
+                                        <p:column headerText="NOMBRES " width="220">
+                                            <h:outputText value="#{compareciente.tdtPerNombre.trim()} #{compareciente.tdtPerApellidoPaterno.trim()} #{compareciente.tdtPerApellidoMaterno.trim()}" />
+                                        </p:column>
+                                        <p:column headerText="TIPO" width="120">
+                                            <h:outputText value="#{compareciente.ttcId.tpcId.tpcDescripcion}" />
+                                        </p:column>
+
+                                        <p:column headerText="PROPIEDADES" style="text-align: center;">
+                                            <p:commandButton title="Seleccionar Propiedades" class="green-btn"
+                                                             icon="fa fa-home" disabled="#{compareciente.ttcId.ttcPropietario eq 'N'}"
+                                                             update="dlgFormPropiedad"
+                                                             oncomplete ="PF('dlgPropiedades').show()"
+                                                             action="#{controladorInscripcionJudicial.seleccionarPropiedades(compareciente.perId.perId)}"/>                                                    
+                                        </p:column>
+
+
+
+                                    </p:dataTable>
+                                </h:panelGrid>
+
+                            </p:panel>
+                            <p:panel id="pnlDocumentos" rendered="#{controladorInscripcionJudicial.renderedPanelTab}"
+                                     style="width: 680px; height: 551px; ">
+
+                                <p:commandButton  value="Suspensión" process="@this" immediate="true"
+                                                  class="red-btn"
+                                                  oncomplete="PF('dlgRznSus').show()" update="formRazonesSuspension" icon="fa fa-ban"
+                                                  rendered="#{controladorInscripcionJudicial.renderedBtnSuspension}"
+                                                  disabled="#{controladorInscripcionJudicial.numeroTramite eq null}">
+                                    <f:setPropertyActionListener target="#{controladorInscripcionJudicialSuspension.numProforma}"
+                                                                 value="#{controladorInscripcionJudicial.numeroTramite}"/>
+                                    <f:setPropertyActionListener target="#{controladorInscripcionJudicialSuspension.numeroRepertorio}"
+                                                                 value="#{controladorInscripcionJudicial.numeroRepertorio}"/>
+                                    <f:setPropertyActionListener target="#{controladorInscripcionJudicialSuspension.numTramite}"
+                                                                 value="#{controladorInscripcionJudicial.numeroTramite}"/>
+                                    <f:setPropertyActionListener target="#{controladorInscripcionJudicialSuspension.listaPropietarioPropiedad}"
+                                                                 value="#{controladorInscripcionJudicial.listaPropiedadPorMatricula}"/>
+
+                                </p:commandButton>
+
+                                <p:tabView id="tabViewInsc"  activeIndex="#{controladorInscripcionJudicial.activeIndex}" 
+                                           rendered="#{controladorInscripcionJudicial.renderedTabView}"
+                                           >
+                                    <p:tab id="tab_1" title="Datos Generales" 
+                                           rendered="#{!controladorInscripcionJudicial.renderedTabRazon}"
+                                           disabled="#{controladorInscripcionJudicial.deshabilitarTabDatosGen}" >
+                                        <h:form id="formDatosGenerales">
+                                            <h:panelGrid columns="2" cellpadding="4">
+                                                <p:outputLabel for="txtParroquia" value="Parroquia" />
+                                                <p:inputText id="txtParroquia" style="width: 450px; text-transform: uppercase;" 
+                                                             required="true" requiredMessage="Ingrese la parroquia"
+                                                             value="#{controladorInscripcionJudicial.parroquias}"/>
+
+                                                <p:outputLabel for="txtDescripcion" value="Descripcion"/>
+                                                <p:inputText id="txtDescripcion" style="width: 450px; text-transform: uppercase;"
+                                                             required="true" requiredMessage="Ingrese la descripción de la parroquia"
+                                                             value="#{controladorInscripcionJudicial.descripcionParroquia}"/>
+                                            </h:panelGrid>
+                                            <h:panelGrid columns="4" cellpadding="4">
+                                                <p:outputLabel for="txtTipoContrato" value="Tipo de Contrato"/>
+                                                <p:inputText id="txtTipoContrato" readonly="true"
+                                                             required="true" requiredMessage="Seleccione un contrato"
+                                                             value="#{controladorInscripcionJudicial.descripcionContrato}"/>
+                                                <p:outputLabel for="txtFechaIngreso" value="Fecha de Ingreso"/>
+                                                <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFechaIngreso"
+                                                            required="true" requiredMessage="Verifique que el repertorio tenga una fecha para la fecha de Ingreso"
+                                                            value="#{controladorInscripcionJudicial.fechaIngreso}" 
+                                                            readonly="true" disabled="false" showOn="false"/>
+                                                <p:outputLabel for="txtFechaDe" value="Fecha Auto"/>
+                                                <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFechaDe" 
+
+                                                            required="true" requiredMessage="Seleccione la Fecha Auto"
+                                                            value="#{controladorInscripcionJudicial.fechaDe}"
+                                                            style="color: #1a237e" >
+
+
+                                                </p:calendar>
+                                                <p:outputLabel for="txtFechaSentencia" value="Fecha de Sentencia"/> 
+                                                <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFechaSentencia" 
+                                                            maxdate="#{controladorInscripcionJudicial.fechaIngreso}"
+
+                                                            required="true" requiredMessage="Seleccione la Fecha de Sentencia"
+                                                            value="#{controladorInscripcionJudicial.fechaSentencia}"
+                                                            style="color: #1a237e">
+
+
+                                                </p:calendar>
+                                                <p:outputLabel for="txtTipoJuicio" value="Tipo de Juicio"/>
+                                                <p:selectOneMenu id="txtTipoJuicio" value="#{controladorInscripcionJudicial.tipoJuicioId}"
+                                                                 required="true" requiredMessage="Seleccione el Tipo de Juicio">
+                                                    <f:selectItems value="#{controladorInscripcionJudicial.listaTipoJuicio}"
+                                                                   var="tipoJuicio" 
+                                                                   itemValue="#{tipoJuicio.tpjId}"
+                                                                   itemLabel="#{tipoJuicio.tpjDescripcion}"                                            
+
+                                                                   />
+
+                                                </p:selectOneMenu>
+                                                <p:outputLabel for="txtNumeroJuicio" value="Número de Juicio"/>
+                                                <p:inputText id="txtNumeroJuicio" 
+                                                             required="true" requiredMessage="Ingrese el Número de Juicio"
+                                                             value="#{controladorInscripcionJudicial.numeroJuicio}"/>
+                                            </h:panelGrid>
+                                            <h:panelGrid columns="2" cellpadding="4">
+                                                <p:outputLabel for="txtJuzgado" value="Juzgado"/>
+                                                <p:inputText id="txtJuzgado" style="width: 450px"
+                                                             required="true" requiredMessage="Ingrese el Número de Juzgado"
+                                                             value="#{controladorInscripcionJudicial.juzgado}"/>
+                                                <p:outputLabel for="txtNotaria" value="Notaria"/>
+                                                <p:inputText id="txtNotaria" style="width: 450px"
+                                                             required="true" requiredMessage="Ingrese el Número de Notaria"
+                                                             value="#{controladorInscripcionJudicial.notaria}"/>
+                                                <p:outputLabel for="txtNumeroOficio" value="Número de Oficio"/>
+                                                <p:inputText id="txtNumeroOficio" style="width: 450px"
+                                                             required="true" requiredMessage="Ingrese el Número de Oficio"
+                                                             value="#{controladorInscripcionJudicial.numeroOficio}"/>
+                                                <p:outputLabel for="txtObservacion" value="Observación"/>
+                                                <p:inputText id="txtObservacion" style="width: 450px; text-transform: uppercase;"
+                                                             required="true" requiredMessage="Ingrese la Observación"
+                                                             value="#{controladorInscripcionJudicial.observacion}"/>
+                                            </h:panelGrid>
+                                            <p:commandButton action="#{controladorInscripcionJudicial.guardarActa()}"
+                                                             update=":formInscripcionJudicial growl formDatosGenerales " 
+                                                             value="Guardar"  process="formDatosGenerales"                                                       
+                                                             class="green-btn" style="margin-right:20px;" icon="fa fa-save" title="Guardar" />
+
+
+                                        </h:form>
+
+                                    </p:tab>
+                                    <p:tab id="tab_2" title="Acta" 
+                                           rendered="#{controladorInscripcionJudicial.renderedTabActa}"
+                                           disabled="#{controladorInscripcionJudicial.deshabilitarTabActa}">
+                                        <h:form id="formActa">
+                                            <p:commandButton action="#{controladorInscripcionJudicial.previsualizarActa()}"
+                                                             update="growl :formPrevisualizar formInscripcionJudicial"
+                                                             value ="Previsualizar Acta"
+                                                             class="blue-btn" process="@form"                                          
+                                                             style="margin-right:20px;" icon="fa fa-file-o" title="Previsualizar Acta"
+                                                             />
+
+                                            <p:commandButton action="#{controladorInscripcionJudicial.sobreEscribirActa()}"
+                                                             update="formInscripcionJudicial:pnlProhibiciones growl  " 
+                                                             value="Guardar Acta"  process="formActa" 
+                                                             disabled="#{controladorInscripcionJudicial.deshabilitarBotonGuardar}"
+                                                             class="green-btn" style="margin-right:20px;" icon="fa fa-save" title="Guardar Acta" />
+
+                                            <h:panelGrid columns="1" cellpadding="10">
+                                                <p:textEditor toolbarVisible="false" id="txtActaCabecera" 
+                                                              widgetVar="actaCabecera" value="#{controladorInscripcionJudicial.cabeceraActa}" 
+                                                              height="185" style="margin-bottom:10px; width: 620px; text-align: justify;"                                                          
+                                                              readonly="true"/>
+
+                                                <p:textEditor toolbarVisible="false" id="txtActaCuerpo" 
+                                                              widgetVar="actaCuerpo" value="#{controladorInscripcionJudicial.cuerpoActa}" 
+                                                              height="240" style="margin-bottom:10px; width: 620px; text-align: justify;"                                                          
+                                                              required="true" requiredMessage="El campo Cuerpo Acta es requerido"
+                                                              readonly="false"/>
+
+                                            </h:panelGrid>
+
+                                        </h:form>
+                                    </p:tab>
+                                    <p:tab id="tab_3" title="Razón"
+                                           rendered="#{controladorInscripcionJudicial.renderedTabRazon}"
+                                           disabled="#{controladorInscripcionJudicial.deshabilitarTabRazon}">
+                                        <h:form id="formRazon">
+                                            <p:commandButton action="#{controladorInscripcionJudicial.guardar()}"
+
+                                                             update="growl :formInscripcionJudicial"
+                                                             value ="Guardar" 
+                                                             class="green-btn" process="formRazon"                                          
+                                                             style="margin-right:20px;" icon="fa fa-save" title="Guardar Razón y Certificado" >
+                                            </p:commandButton>
+                                            <div align="center">
+                                                <p:commandButton  
+                                                    icon="fa fa-plus" 
+                                                    actionListener="#{controladorInscripcionJudicial.sumarSaltoLineaRazon()}"
+                                                    style="margin-top: 5px"
+                                                    process="@this"
+                                                    update="growl formRazon" >
+                                                </p:commandButton>
+
+                                                <p:commandButton  
+                                                    icon="fa fa-minus" 
+                                                    actionListener="#{controladorInscripcionJudicial.restarSaltoLineaRazon()}"
+                                                    style="margin-top: 5px"
+                                                    process="@this"
+                                                    update="growl  formRazon"
+                                                    >
+                                                </p:commandButton>
+                                                <p:selectBooleanButton value="#{controladorInscripcionJudicial.bolAgregarImagenEspacioEnBlancoRazon}"
+                                                                       onLabel="Con Imagen Texto En Blanco"
+                                                                       offLabel="Sin Imagen Texto En Blanco">
+                                                    <p:ajax listener="#{controladorInscripcionJudicial.agregarImagenBlancoRazon()}"
+                                                            update="growl  formRazon"/>
+                                                </p:selectBooleanButton>
+                                            </div>
+                                            <h:panelGrid columns="1" cellpadding="10">                                                    
+                                                <p:media id="pdfRazon"
+                                                         value="#{controladorInscripcionJudicial.urlRazonPdf}"
+                                                         rendered="#{not empty controladorInscripcionJudicial.urlRazonPdf}"
+                                                         style="width:600px;height: 400px"
+                                                         player="pdf"  />
+
+
+
+                                            </h:panelGrid>
+
+                                        </h:form>
+                                    </p:tab>
+                                </p:tabView>
+                            </p:panel>
+                        </p:layoutUnit>
+                    </p:layout>  
+                </p:panel>
+            </h:form>
+
+            <!-- DIALOGO PREVISUALIZAR ACTA -->
+
+            <p:dialog id="dlgFormPreViewActa" widgetVar="dlgPreviewActa" modal="true"
+                      onShow="PF('dlgPreviewActa').initPosition()" header="Previsualizar Acta" >
+
+                <h:form id="formPrevisualizar">
+                    <div align="center">
+                        <div align="center">
+                            <p:commandButton  
+                                icon="fa fa-plus" 
+                                actionListener="#{controladorInscripcionJudicial.sumarSaltoLinea()}"
+                                style="margin-top: 5px"
+                                process="@this"
+                                update="growl formPrevisualizar" >
+                            </p:commandButton>
+
+                            <p:commandButton  
+                                icon="fa fa-minus" 
+                                actionListener="#{controladorInscripcionJudicial.restarSaltoLinea()}"
+                                style="margin-top: 5px"
+                                process="@this"
+                                update="growl  formPrevisualizar"
+                                >
+                            </p:commandButton>
+                            <p:selectBooleanButton value="#{controladorInscripcionJudicial.bolAgregarImagenEspacioEnBlancoActa}"
+                                                   onLabel="Con Imagen Texto En Blanco"
+                                                   offLabel="Sin Imagen Texto En Blanco">
+                                <p:ajax listener="#{controladorInscripcionJudicial.agregarImagenBlancoActa()}"
+                                        update="growl  formPrevisualizar"/>
+                            </p:selectBooleanButton>
+                            <p:commandButton class="green-btn" value="Aceptar" immediate="true" 
+                                             action="#{controladorInscripcionProceso.habilitarGuardar()}"
+                                             oncomplete="PF('dlgPreviewActa').hide()"
+                                             icon="fa fa-check"
+                                             update=":formInscripcionJudicial:tabViewInsc"/>
+                        </div>
+                    </div>
+
+                    <br></br>
+                    <h:panelGroup >                       
+                        <p:media id="pdfActa"
+                                 value="#{controladorInscripcionJudicial.urlActaPdf}"
+                                 rendered="#{not empty controladorInscripcionJudicial.urlActaPdf}"
+                                 style="width:700px;height: 500px"
+                                 player="pdf"  />
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+
+            <p:dialog id="dlgFormComparecientes" widgetVar="dlgComparecientes" modal="true"
+                      onShow="PF('dlgComparecientes').initPosition()" header="Comparecientes" >
+
+                <h:form id="formComparecientes">
+                    <h:panelGroup >    
+                        <h:panelGrid id="panelGridCompareciente" columns="7" >
+                            <p:outputLabel value="Identificación"/>
+                            <p:inputText id="txtIdentificacion" required="true" requiredMessage="Ingrese la identificación"
+                                         title="Identificación"  
+                                         value="#{controladorInscripcionJudicial.tramitesControladorBb.identificacion}" >
+                                <p:ajax listener="#{controladorInscripcionJudicial.buscarPersona()}" 
+                                        update="growl panelGridCompareciente"  
+                                        process="txtIdentificacion" event="change" 
+                                        />
+                            </p:inputText>
+
+                            <p:inputText value="#{controladorInscripcionJudicial.tramitesControladorBb.nombrePersona}"
+                                         style="width: 250px" readonly="true"/>
+
+                            <p:selectOneMenu id="tipoCompareciente" value="#{controladorInscripcionJudicial.tipoComparecienteId}">
+                                <f:selectItems value="#{controladorInscripcionJudicial.listaTipoCompareciente}"
+                                               var="tipoComp" 
+                                               itemValue="#{tipoComp.tpcId}"
+                                               itemLabel="#{tipoComp.tpcDescripcion}"                                            
+
+                                               />
+
+                            </p:selectOneMenu>
+                            <p:commandButton  
+                                action="#{controladorInscripcionJudicial.guardarTramiteDetalle()}"
+                                class="green-btn"
+                                style="margin-right:20px;" icon="fa fa-plus"
+                                title="Agregar Compareciente" 
+                                update="growl formInscripcionJudicial formComparecientes"/>
+
+                            <p:commandButton title="Buscar Persona" icon="fa fa-search" value="Buscar"
+                                             class="orange-btn" immediate="true" process="@this" 
+                                             actionListener="#{controladorFiltradoPersona.prepararFiltrado('CtrlINJ', 'formComparecientes')}"
+                                             oncomplete ="PF('dlgFiltradoPersona').show()"/>
+
+
+                            <p:commandButton title="Crear Nueva Persona" icon="fa fa-user-plus" 
+                                             oncomplete ="PF('dlgNuevaPersona').show()"/>
+
+
+                        </h:panelGrid>  
+                        <div align="center" >
+
+
+                            <h:panelGrid id="panelComparecientes" columns="2" width="650">      
+                                <p:dataTable id="tblComparecientes"  scrollable="true" scrollHeight="150"
+                                             value="#{controladorInscripcionJudicial.listaTramiteDetalle}"
+                                             var="compareciente" sortBy="#{compareciente.tdtPerIdentificacion}" > 
+
+
+
+                                    <p:column headerText="IDENTIFICACIÓN" width="120">
+                                        <h:outputText value="#{compareciente.tdtPerIdentificacion}" />
+                                    </p:column>
+                                    <p:column headerText="NOMBRES" width="220">
+                                        <h:outputText value="#{compareciente.tdtPerNombre.trim()} #{compareciente.tdtPerApellidoPaterno.trim()} #{compareciente.tdtPerApellidoMaterno.trim()}" />
+                                    </p:column>
+
+                                    <p:column headerText="TIPO" width="170">
+                                        <h:outputText value="#{compareciente.ttcId.tpcId.tpcDescripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="" style="text-align: center;">
+                                        <p:commandButton  
+                                            action="#{controladorInscripcionJudicial.eliminarCompareciente(compareciente.tdtId)}"
+                                            class="red-btn" immediate="true" 
+                                            style="margin-right:20px;" icon="fa fa-remove"
+                                            title="Eliminar Compareciente" 
+                                            update="growl :formInscripcionJudicial formComparecientes"/>
+
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid>
+
+
+                        </div>
+
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" immediate="true" onclick="PF('dlgComparecientes').hide()"/>
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgFormPropiedad" widgetVar="dlgPropiedades" modal="true"
+                      onShow="PF('dlgPropiedades').initPosition()" header="Seleccionar Propiedades" >
+
+                <h:form id="formPropiedades">
+                    <h:panelGroup >   
+                        <div align="center" >
+                            <h:panelGrid id="panelPropiedades" columns="2" width="810">      
+                                <p:dataTable id="tblComparecientes"  scrollable="true" scrollHeight="150"
+                                             value="#{controladorInscripcionJudicial.listaPropiedad}"
+                                             var="propiedad" sortBy="#{propiedad.prdMatricula}" rowKey="#{propiedad.prdMatricula}"
+                                             selection="#{controladorInscripcionJudicial.listaPropiedadesSeleccionadas}" >
+                                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>                                                
+                                    <p:column headerText="Nro. Matrícula">
+                                        <h:outputText value="#{propiedad.prdMatricula}" />
+                                    </p:column>
+                                    <p:column headerText="Catastro" >
+                                        <h:outputText value="#{propiedad.prdCatastro}" />
+                                    </p:column>
+                                    <p:column headerText="Predio" >
+                                        <h:outputText value="#{propiedad.prdPredio}" />
+                                    </p:column>
+                                    <p:column headerText="Parroquia">
+                                        <h:outputText value="#{propiedad.prdTdtParNombre}" />
+                                    </p:column>                                                
+
+                                </p:dataTable>
+                            </h:panelGrid>
+
+
+                        </div>
+                        <p:commandButton  
+                            action="#{controladorInscripcionJudicial.guardarPropiedades()}"
+                            class="green-btn" value="Guardar"
+                            style="margin-right:20px;" icon="fa fa-save"
+                            title="Guardar Propiedades" 
+                            update="growl formInscripcionJudicial formComparecientes"/>
+
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" immediate="true" onclick="PF('dlgPropiedades').hide()"/>
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgFormPropDetalle" widgetVar="dlgPropDetalle" modal="true" width="650"
+                      onShow="PF('dlgPropDetalle').initPosition()" header="Detalle Propiedad" >
+                <h:form id="formPropDetalle">
+                    <h:panelGroup>
+                        <h:panelGrid>
+                            <p:dataTable id="tblProDetalle"  scrollable="true" scrollHeight="150"
+                                         value="#{controladorInscripcionJudicial.listaPropiedadDetalle}"
+                                         var="propDet" sortBy="#{propDet.prdMatricula.prdMatricula}" rowKey="#{propDet.pdtId}"
+                                         selection="#{controladorInscripcionJudicial.listaPropDetSeleccionadas}" >
+
+                                <p:column headerText="Nro. Matrícula" style="text-align: center">
+                                    <h:outputText value="#{propDet.prdMatricula.prdMatricula}" />
+                                </p:column>
+                                <p:column headerText="Valor (%)" style="text-align: center">
+                                    <h:outputText value="#{propDet.pdtValor}" />
+                                </p:column>
+                                <p:column headerText="Nombre" >
+                                    <h:outputText value="#{propDet.persona.perNombre.trim()} #{propDet.persona.perApellidoPaterno.trim()} #{propDet.persona.perApellidoMaterno.trim()}" />
+                                </p:column>                                      
+                                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+                            </p:dataTable>
+                        </h:panelGrid>
+                        <p:commandButton  
+                            
+                            class="green-btn" value="Aceptar"
+                            style="margin-right:20px;"
+                            title="Aceptar" onclick="PF('dlgPropDetalle').hide()"
+                            update="growl formInscripcionJudicial formPropDetalle"/>
+
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+
+            <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+            <ui:include src="/paginas/PROCESOS/InscripcionJudicial/suspension.xhtml"/>
+            <ui:include src="/paginas/FiltradoPersona.xhtml"/>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

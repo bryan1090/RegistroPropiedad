@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog header="Crear Compañía" modal="true" widgetVar="dlgNuevaCompania" 
+                  style="width: 600px"
+                  minHeight="40" position="center center" onShow="PF('dlgNuevaCompania').initPosition()">
+            <h:form id="CrearCompaniaFormCab">
+
+                <p:growl id="growl" showDetail="true" sticky="false" life="4000"/> 
+                <p:outputPanel id="plNuevaPersona" style="text-align:left;">             
+                    <p:fieldset legend="Detalle Compañía" >
+                        <h:panelGrid columns="6">
+
+                            <p:outputLabel value="Nombre" for="compNombre" />
+                            <p:inputText id="compNombre"
+                                         style="text-transform: uppercase"
+                                         value="#{controladorNuevasMatriculasPH.nombreComp}"  
+                                         >
+                                 <p:ajax event="change" update="CrearCompaniaFormCab"
+                                            process="@this"
+                                            listener="#{controladorNuevasMatriculasPH.setearDatosCompania()}"/>
+                              
+                            </p:inputText>
+                            <p:outputLabel value="Constructora" for="compConstructora" />
+                            <p:inputText id="compConstructora"
+                                         style="text-transform: uppercase"
+                                         value="#{controladorNuevasMatriculasPH.construcComp}"  
+                                        > 
+                                <p:ajax event="change" listener="#{controladorNuevasMatriculasPH.setearDatosCompania()}"/>
+                            </p:inputText>
+
+                            <p:outputLabel value="Parroquia" for="compParroquia" />                    
+
+                            <p:selectOneMenu id="compParroquia" filter="true" value="#{controladorNuevasMatriculasPH.parroquiaCompania}" style="width:125px">
+                                <f:selectItem value="#{null}" itemLabel="Seleccione una opción" />
+                                <f:selectItems value="#{controladorNuevasMatriculasPH.listaParriquias}" 
+                                               var="parroquia" itemLabel="#{parroquia.parNombre}"
+                                               itemValue="#{parroquia}"/>         
+                                <p:ajax event="change" listener="#{controladorNuevasMatriculasPH.setearDatosCompania()}"/>                 
+                            </p:selectOneMenu>
+
+                        </h:panelGrid>
+                    </p:fieldset>
+                     </p:outputPanel>  
+                     </h:form>
+                    <div style="padding-bottom: 10px"></div> 
+                     <h:form id="CrearCompaniaForm">
+                    <p:outputPanel>   
+                    <p:fieldset legend="Representante Compañía" >
+                        <h:panelGrid columns="6">
+                            <p:outputLabel value="Identificación"/>
+                            <p:inputText id="txtIdentificacion" 
+                                         
+                                         value="#{controladorNuevasMatriculasPH.tramitesControladorBb.identificacion}">
+                                <p:ajax listener="#{controladorNuevasMatriculasPH.buscarPersona()}" 
+                                        update="growl CrearCompaniaForm"  
+                                        process="@form" event="change" 
+                                        />
+                            </p:inputText>
+                            <p:inputText value="#{controladorNuevasMatriculasPH.tramitesControladorBb.nombrePersona}"
+                                         style="width: 250px" readonly="true"/>
+
+                            <p:commandButton title="Crear Nueva Persona" icon="fa fa-user-plus" 
+                                             oncomplete ="PF('dlgNuevaPersona').show()"/>
+                            
+                            <p:commandButton title="Buscar Persona" icon="fa fa-search" value="Buscar"
+                                             class="orange-btn" immediate="true" process="@this" 
+                                             actionListener="#{controladorFiltradoPersona.prepararFiltrado('CtrlPH', 'CrearCompaniaForm')}"
+                                             oncomplete ="PF('dlgFiltradoPersona').show()"/>
+                            
+
+                            <p:commandButton title="Agregar persona a la companía" icon="fa fa-plus" 
+                                             update="CrearCompaniaForm" class="green-btn" 
+                                             action="#{controladorNuevasMatriculasPH.agregarPersonaCompania()}"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid>
+                            <p:dataTable id="tblPersonaCompania" scrollable="true"  scrollHeight="100" style="width: 600px"
+                                         value="#{controladorNuevasMatriculasPH.listaPersonaCompania}" 
+                                         var="persona" rowKey="#{persona.perId}" sortBy="#{persona.perIdentificacion}" > 
+
+                                <p:column headerText="Identificación" groupRow="true">
+                                    <h:outputText value="#{persona.perIdentificacion}" />
+                                </p:column>
+
+                                <p:column headerText="Nombre">
+                                    <h:outputText value="#{persona.perNombre}" />
+                                </p:column>                
+                                <p:column headerText="A. Paterno">
+                                    <h:outputText value="#{persona.perApellidoPaterno}" />
+                                </p:column>
+
+                                <p:column headerText="A. Materno">
+                                    <h:outputText value="#{persona.perApellidoMaterno}" />
+                                </p:column>
+                                 <p:column headerText="">
+                                     <p:commandButton class="red-btn" icon="fa fa-remove"
+                                                      action="#{controladorNuevasMatriculasPH.eliminarRepresentante(persona)}"
+                                                      title="Eliminar"
+                                                      immediate="true" 
+                                                      update="growl CrearCompaniaForm"/>
+                                      
+                                </p:column>
+                            </p:dataTable>                        
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <div align="left">
+                        <p:commandButton value="Guardar" icon="fa fa-save" class="green-btn" 
+                                         action="#{controladorNuevasMatriculasPH.guardarCompania()}"
+                                                   process="@this"
+                                         update="growl CrearCompaniaFormCab CrearCompaniaForm :tabView"/>
+
+                        <p:commandButton class="red-btn" immediate="true" icon="fa fa-close"
+
+                                         value="Cancelar" onclick="PF('dlgNuevaCompania').hide()"/>
+                    </div>
+
+                </p:outputPanel>
+            </h:form>
+        </p:dialog> 
+        <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+        <ui:include src="/paginas/FiltradoPersona.xhtml"/>
+    </ui:composition>
+</html>

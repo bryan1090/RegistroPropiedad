@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoMarginacionViewDlg" widgetVar="TipoMarginacionViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTipoMarginacionTitle}">
+            <h:form id="TipoMarginacionViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTipoMarginacion.selected != null}">
+                        <h:outputText value="#{bundle.ViewTipoMarginacionLabel_tmcNombre}"/>
+                        <h:outputText value="#{controladorTipoMarginacion.selected.tmcNombre}" title="#{bundle.ViewTipoMarginacionTitle_tmcNombre}"/>
+                        <h:outputText value="#{bundle.ViewTipoMarginacionLabel_tmcEstado}"/>
+                        <h:outputText value="#{controladorTipoMarginacion.selected.tmcEstado}" title="#{bundle.ViewTipoMarginacionTitle_tmcEstado}"/>
+                        <h:outputText value="#{bundle.ViewTipoMarginacionLabel_tmcUser}"/>
+                        <h:outputText value="#{controladorTipoMarginacion.selected.tmcUser}" title="#{bundle.ViewTipoMarginacionTitle_tmcUser}"/>
+                        <h:outputText value="#{bundle.ViewTipoMarginacionLabel_tmcFHR}"/>
+                        <h:outputText value="#{controladorTipoMarginacion.selected.tmcFHR}" title="#{bundle.ViewTipoMarginacionTitle_tmcFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTipoMarginacion.clear()}" value="#{bundle.Close}" onclick="TipoMarginacionViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

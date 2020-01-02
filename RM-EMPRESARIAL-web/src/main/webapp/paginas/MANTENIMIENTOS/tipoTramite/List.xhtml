@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListTipoTramiteTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="TipoTramiteListForm">
+                <p:panel header="#{bundle.ListTipoTramiteTitle}">
+                    <p:dataTable id="datalist" value="#{controladorTipoTramite.items}" var="item"
+                                 selectionMode="single" selection="#{controladorTipoTramite.selected}"
+                                 paginator="true" sortBy="#{item.ttrDescripcion}"
+                                 rowKey="#{item.ttrId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                       
+                        <p:column filterBy="#{item.ttrDescripcion}" sortBy="#{item.ttrDescripcion}" filterMatchMode="startsWith" filterStyle="text-transform: uppercase">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoTramiteTitle_ttrDescripcion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ttrDescripcion}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.ttrValor}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoTramiteTitle_ttrValor}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ttrValor}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.ttrValorFijo}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoTramiteTitle_ttrValorFijo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ttrValorFijo}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.ttrUnidadTiempo}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoTramiteTitle_ttrUnidadTiempo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ttrUnidadTiempo}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.ttrCantidadTiempo}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoTramiteTitle_ttrCantidadTiempo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ttrCantidadTiempo}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.tplId.tplDescripcion}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoTramiteTitle_tplId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tplId.tplDescripcion}"/>
+                        </p:column>
+                       
+                        <p:column sortBy="#{item.ttrClase}">
+                            <f:facet name="header">
+                                <h:outputText value="Clase"/>
+                            </f:facet>
+                            <div align="center">
+                                <h:outputText value="#{item.ttrClase}"/>
+                            </div>
+                        </p:column>
+                         <p:column sortBy="#{item.ttrPeso}">
+                            <f:facet name="header">
+                                <h:outputText value="Peso"/>
+                            </f:facet>
+                            <div align="center">
+                                <h:outputText value="#{item.ttrPeso}"/>
+                            </div>
+                        </p:column>
+                        <p:column sortBy="#{item.ttrUser}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoTramiteTitle_ttrUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ttrUser}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.ttrFHR}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoTramiteTitle_ttrFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ttrFHR}" style="text-transform: uppercase">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                             <div align="right">
+                            <p:commandButton id="createButton" icon="ui-icon-plus"  class="green-btn" value="#{bundle.Create}" actionListener="#{controladorTipoTramite.prepareCreate}" update=":TipoTramiteCreateForm" oncomplete="PF('TipoTramiteCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":TipoTramiteViewForm" oncomplete="PF('TipoTramiteViewDialog').show()" disabled="#{empty controladorTipoTramite.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":TipoTramiteEditForm" oncomplete="PF('TipoTramiteEditDialog').show()" disabled="#{empty controladorTipoTramite.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{controladorTipoTramite.destroy}" update=":growl,datalist" disabled="#{empty controladorTipoTramite.selected}">
+                                <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                             </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

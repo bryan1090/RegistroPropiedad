@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog header="Conyugue" modal="true" widgetVar="dlgConyuge" minHeight="40" position="center center" onShow="PF('dlgConyuge').initPosition()">
+            <h:form id="ConyugueFormProf">
+                <p:outputPanel id="gridDetalles" style="text-align:center;">
+                    <p:remoteCommand name="cedula" actionListener="#{controladorTramiteProforma.validarCedula()}" update="growl"/>
+
+                    <p:panelGrid columns="4">
+                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perTipoIdentificacion}"
+                                       for="perTipoIdentificacion" />
+                        <p:inputText rendered="false" maxlength="1" style="text-transform:uppercase;"  
+                                     id="perTipoIdentificacion" value="#{controladorTramiteProforma.tramitesControladorBb.personaConyugue.perTipoIdentificacion}" title="Ingrese C 'Cédula'" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perTipoIdentificacion}"/>
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perIdentificacion}" for="perIdentificacion" />
+                        <p:inputText maxlength="10" disabled="#{controladorTramiteProforma.reTramiteProformaBb.controladorCompareciente.persona.perIdConyuge.perId eq 0 ? true:false }" id="perIdentificacion" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perIdentificacion}" title="#{bundle.CreatePersonaTitle_perIdentificacion}" 
+                                     required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perIdentificacion}" onchange="cedula()"/>
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perApellidoPaterno}" for="perApellidoPaterno" />
+                        <p:inputText style="text-transform:uppercase;" id="perApellidoPaterno" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perApellidoPaterno}" title="#{bundle.CreatePersonaTitle_perApellidoPaterno}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perApellidoPaterno}"/>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perApellidoMaterno}" for="perApellidoMaterno" />
+                        <p:inputText style="text-transform:uppercase;" id="perApellidoMaterno" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perApellidoMaterno}" title="#{bundle.CreatePersonaTitle_perApellidoMaterno}" />
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perNombre}" for="perNombre" />
+                        <p:inputText style="text-transform:uppercase;" id="perNombre" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perNombre}" title="#{bundle.CreatePersonaTitle_perNombre}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perNombre}"/>
+
+                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perFechaNacimiento}" for="perFechaNacimiento" />
+                        <p:calendar rendered="false" id="perFechaNacimiento" pattern="dd/MM/yyyy HH:mm:ss" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perFechaNacimiento}" title="#{bundle.EditPersonaTitle_perFechaNacimiento}" required="true" requiredMessage="#{bundle.EditPersonaRequiredMessage_perFechaNacimiento}" showOn="button"/>
+                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perEstado}" for="perEstado" />
+                        <p:inputText rendered="false" disabled="true" id="perEstado" value="1" title="#{bundle.CreatePersonaTitle_perEstado}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perEstado}"/>
+                        <p:outputLabel rendered="false"  value="#{bundle.CreatePersonaLabel_perUser}" for="perUser" />
+                        <p:inputText rendered="false" disabled="true" id="perUser" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perUser}" title="#{bundle.CreatePersonaTitle_perUser}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perUser}"/>
+                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perFHR}" for="perFHR" />
+                        <p:calendar rendered="false" id="perFHR" pattern="dd/MM/yyyy HH:mm:ss" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perFHR}" title="#{bundle.EditPersonaTitle_perFHR}" required="true" requiredMessage="#{bundle.EditPersonaRequiredMessage_perFHR}" showOn="button"/>
+                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perEstadoCivil}" for="perEstadoCivil" />
+                        <p:inputText rendered="false" id="perEstadoCivil" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perEstadoCivil}" title="#{bundle.CreatePersonaTitle_perEstadoCivil}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perEstadoCivil}"/>
+
+                        <p:outputLabel rendered="false" value="Sexo:" for="cmbSexo" />
+                        <p:selectOneMenu  rendered="false"  id="cmbSexo" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perSexo}" >
+                            <f:selectItem itemLabel="Seleccionar una..." itemValue="" />
+                            <f:selectItems value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.sexo}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel rendered="false" value="Género:" for="cmbSexo" />
+                        <p:selectOneMenu rendered="false"   id="cmbGenero" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perGenero}" >
+                            <f:selectItem itemLabel="Seleccionar una..." itemValue="" />
+                            <f:selectItems value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.sexo}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel rendered="false" value="Discapacidad" for="txtCalidad"/>
+                        <p:selectOneMenu rendered="false"   id="txtCalidad" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perCalidad}" >
+                            <f:selectItem itemLabel="N"/>
+                            <f:selectItem itemLabel="S"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel rendered="false" value="Dirección" for="txtDireccion"/>
+                        <p:inputText rendered="false"  size="50" id="txtDireccion" value="#{controladorTramiteProforma.reTramiteProformaBb.personaConyugue.perDireccion}" ></p:inputText>
+
+                        <p:commandButton value="Guardar" update="gridDetalles frmTramites1:dtCompareciente" actionListener="#{controladorTramiteProforma.guardarConyugue}" onclick="PF('dlgConyuge').hide()" ></p:commandButton>     
+                    </p:panelGrid>
+                    <p:keyFilter for="perIdentificacion" mask="num"/>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>

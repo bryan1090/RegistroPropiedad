@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CuantiaViewDlg" widgetVar="CuantiaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewCuantiaTitle}">
+            <h:form id="CuantiaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorCuantia.selected != null}">
+                       <h:outputText value="#{bundle.ViewCuantiaLabel_cuaValorInicial}"/>
+                        <h:outputText value="#{controladorCuantia.selected.cuaValorInicial}" style="text-transform: uppercase" title="#{bundle.ViewCuantiaTitle_cuaValorInicial}"/>
+                        <h:outputText value="#{bundle.ViewCuantiaLabel_cuaValorFinal}"/>
+                        <h:outputText value="#{controladorCuantia.selected.cuaValorFinal}" style="text-transform: uppercase" title="#{bundle.ViewCuantiaTitle_cuaValorFinal}"/>
+                        <h:outputText value="#{bundle.ViewCuantiaLabel_cuaValorAplica}"/>
+                        <h:outputText value="#{controladorCuantia.selected.cuaValorAplica}" style="text-transform: uppercase" title="#{bundle.ViewCuantiaTitle_cuaValorAplica}"/>
+                        <h:outputText value="#{bundle.ViewCuantiaLabel_cuaPorcentaje}"/>
+                        <h:outputText value="#{controladorCuantia.selected.cuaPorcentaje}" style="text-transform: uppercase" title="#{bundle.ViewCuantiaTitle_cuaPorcentaje}"/>
+                        <h:outputText value="#{bundle.ViewCuantiaLabel_cuaUser}"/>
+                        <h:outputText value="#{controladorCuantia.selected.cuaUser}" style="text-transform: uppercase" title="#{bundle.ViewCuantiaTitle_cuaUser}"/>
+                        <h:outputText value="#{bundle.ViewCuantiaLabel_cuaFHR}"/>
+                        <h:outputText value="#{controladorCuantia.selected.cuaFHR}" style="text-transform: uppercase" title="#{bundle.ViewCuantiaTitle_cuaFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewCuantiaLabel_ttrId}"/>
+                        <h:outputText value="#{controladorCuantia.selected.ttrId.ttrDescripcion}" style="text-transform: uppercase" title="#{bundle.ViewCuantiaTitle_ttrId}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorCuantia.clear()}" value="#{bundle.Close}" onclick="CuantiaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

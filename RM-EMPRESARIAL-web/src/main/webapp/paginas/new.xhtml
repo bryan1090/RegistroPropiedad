@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Nuevo"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content" >
+
+            <h:form id="form" enctype="multipart/form-data">
+                <p:panel header="Panel 1" id="panel" >
+                    <p:tabView>
+                        <p:tab title="Tab1">
+                            
+                            <p:outputLabel for="txt1" value="texto1" />
+                            <h:inputText id="txt1" value="asd" />
+                        </p:tab>
+
+                        <p:tab title="Tab2">
+                            <p:outputLabel for="txt2" value="texto2"/>
+                            <h:inputText id="txt2" value="asd" />
+
+
+                            
+                        </p:tab>
+
+
+                    </p:tabView>
+
+
+                </p:panel>
+
+
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

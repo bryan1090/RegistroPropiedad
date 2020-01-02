@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Marginaciones"></h:outputText>
+        </ui:define>
+
+        <ui:define name="head">
+            head
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form>
+                <p:dataTable id="dtbRepUsu" value="#{controladorMarginacionSelecRep.getListaRepertorio()}"
+                             var="item" rowKey="#{item.rpuId}" 
+                             sortBy="#{item.repNumero.traNumero.traNumero}"
+                             scrollable="true"
+                             scrollHeight="400"
+                             resizableColumns="true" style="width: 100%"
+                             >
+                    <f:facet name="header">
+                        Selección de Repertorio
+                    </f:facet>
+                    <p:column headerText="Tramite" 
+                              filterBy="#{item.repNumero.traNumero.traNumero}" 
+                              filterMatchMode="contains"
+                              groupRow="true">
+                        <h:outputText value="#{item.repNumero.traNumero.traNumero}" />
+                    </p:column>
+                    <p:column headerText="Tipo" 
+                              filterBy="#{item.repNumero.repTtrDescripcion}" 
+                              filterMatchMode="contains"
+                              >
+                        <h:outputText value="#{item.repNumero.repTtrDescripcion}" />
+                    </p:column>
+                    <p:column headerText="Repertorio"
+                              filterBy="#{item.repNumero.repNumero}" 
+                              filterMatchMode="contains">
+                        <h:outputText value="#{item.repNumero.repNumero}" />
+                    </p:column>
+                    <p:column headerText="Fecha">
+                        <h:outputText value="#{item.repNumero.repFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Estado Proc." >
+                        <h:outputText value="#{item.rpuEstadoProceso}"/>
+                    </p:column>
+                    <p:column style="width: 10%">
+                        <p:commandButton class="cyan-btn"
+                                         action="#{controladorMarginacionSelecRep.redireccionar()}"
+                                         icon="fa fa fa-arrow-circle-right fa-2x">
+
+                            <f:setPropertyActionListener target="#{controladorMarginacionSelecRep.repertorioUsuarioSeleccionado}"
+                                                         value="#{item}"/>
+
+                        </p:commandButton>
+
+                    </p:column>
+                    <p:column groupRow="true">
+
+                        <p:commandButton class="yellow-btn" immediate="true"  style="width: content-box"
+                                         value="Matriculación #{item.repNumero.traNumero.traNumero}" 
+                                         action="#{controladorMarginacionSelecRep.cambiarEstado(item.repNumero.traNumero)}" update="growl"  
+                                         >
+                            <f:setPropertyActionListener target="#{controladorMarginacionSelecRep.repertorioUsuarioSelec}"
+                                                         value="#{item}"/>
+
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+            </h:form>
+
+        </ui:define>
+
+    </ui:composition>
+</html>

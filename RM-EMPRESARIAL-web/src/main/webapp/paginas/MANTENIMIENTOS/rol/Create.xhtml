@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RolCreateDlg" widgetVar="RolCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateRolTitle}">
+            <h:form id="RolCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{rolController.rolControllerBb.rol != null}">
+                        <p:outputLabel value="#{bundle.CreateRolLabel_rolNombre}" for="rolNombre" />
+                        <p:inputText id="rolNombre" value="#{rolController.rolControllerBb.rol.rolNombre}" style="text-transform: uppercase" title="#{bundle.CreateRolTitle_rolNombre}" required="true" requiredMessage="#{bundle.CreateRolRequiredMessage_rolNombre}"/>
+                        <p:outputLabel value="#{bundle.CreateRolLabel_rolEstado}" for="rolEstado" />
+                        <p:selectOneMenu id="rolEstado" value="#{rolController.rolControllerBb.rol.rolEstado}" title="#{bundle.CreateRolTitle_rolEstado}" required="true" requiredMessage="#{bundle.CreateRolRequiredMessage_rolEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{rolController.create}" value="#{bundle.Save}" update="display,:RolListForm:datalist,:growl" oncomplete="PF('RolCreateDialog').hide()"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{rolController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="RolCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

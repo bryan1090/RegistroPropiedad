@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog header="Cuantia" modal="true" widgetVar="dlgCuantia" minHeight="40" position="center center" onShow="PF('dlgCuantia').initPosition()">
+            <h:form id="cuantiaForm">
+                <p:outputPanel id="cuantiaPanel" style="text-align:center;width:900px;">
+                    <p:panel>
+
+                        <p:panelGrid columns="6" id="panelCuatia">
+
+                            <p:outputLabel for="cmbCont2" value="Contratos" />
+                            <p:selectOneMenu  id="cmbCont2" value="#{tramitesControlador.tipoTramite.ttrId}" style="width:160px"  required="true" requiredMessage="Seleccione Un Contrato">
+                                <p:ajax event="itemSelect" listener="#{tramitesControlador.validarCuantiaTipo3()}" process="panelCuatia" update="panelCuatia"/>
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                <f:selectItems  value="#{tramitesControlador.listaUnicoTramite}" var="item" itemLabel="#{item.ttrDescripcion}" itemValue="#{item.ttrId}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel rendered="#{tramitesControlador.txtValor}" value="Cuantía" for="txtValor"/>
+                            <p:inputNumber rendered="#{tramitesControlador.txtValor}" id="txtValor" value="#{tramitesControlador.tramiteValor.trvValorBien}">
+                            </p:inputNumber>
+
+                            <p:outputLabel value="N° Predio" for="txtNumPredio"/>
+                            <p:inputText converterMessage="El predio no acepta decimales" style="text-transform: uppercase"
+                                         id="txtNumPredio" value="#{tramitesControlador.tramiteValor.traNumPredio}" />
+
+
+
+                            <p:outputLabel value="N° Catastro" for="txtNumCatastro"/>
+                            <p:inputText converterMessage="El predio no acepta decimales" style="text-transform: uppercase"
+                                         id="txtNumCatastro" value="#{tramitesControlador.tramiteValor.trvNumCatastro}" />
+
+                            <p:outputLabel for="cmbParr" value="Parroquia"/>
+                            <p:selectOneMenu id="cmbParr" value="#{tramitesControlador.tramitesControladorBb.tramite.traParId}"
+                                             filter="true" filterMatchMode="contains" style="width: 150px"
+                                             required="true" requiredMessage="El campo Parroquia, es requerido.">
+                                <f:selectItems value="#{tramitesControlador.tramitesControladorBb.parroquias}" var="theme" itemLabel="#{theme.parNombre}" itemValue="#{theme.parId}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel rendered="#{tramitesControlador.lblCantidad}" id="lblCantidad" value="Cantidad " for="txtCantidad"/>
+                            <p:inputNumber rendered="#{tramitesControlador.txtCantidad}" id="txtCantidad" value="#{tramitesControlador.tramiteValor.trvCantidad}" />
+                            <p:commandButton   id="btnAgregar" value="Agregar" action="#{tramitesControlador.cargarCuantia()}" update=":tabsTramites:frmTramites:txtCuantia tramiteValores panelCuatia growl"   process="panelCuatia" icon="fa fa-plus" />
+                            <p:commandButton  class="cyan-btn" immediate="true" icon="ui-icon-close" value="Salir" title="Salir" id="btnSalir" action="#{tramitesControlador.setearVariables()}"  onclick="PF('dlgCuantia').hide()" update=":tabsTramites:frmTramites:txtCuantia tramiteValores panelCuatia growl"/>
+                        </p:panelGrid>
+
+                    </p:panel>
+                    <p:outputPanel id="tramiteValores" style="text-align:center;" >
+                        <p:dataTable value="#{tramitesControlador.listaTramiteValor}" var="items" id="tblValores"
+                                     scrollable="true"  scrollHeight="200" 
+                                     rowIndexVar="numFila">                                     
+
+                            <p:column headerText="" style="width: 10%;">
+                                <p:commandButton immediate="true" class="red-btn" update="tblValores cuantiaForm:tramiteValores :tabsTramites:frmTramites:txtCuantia" action="#{tramitesControlador.deleteRowCuantia(numFila)}" icon="ui-icon-close" title="Borrar">
+                                    <f:setPropertyActionListener  value="#{items}" target="#{tramitesControlador.tramiteValorSeleccionado}" />
+                                </p:commandButton>
+
+                            </p:column>                        
+
+                            <p:column headerText="Contrato">
+                                <p:outputLabel value="#{items.ttrDescripcion}"></p:outputLabel>
+                            </p:column>
+                            
+                            <p:column headerText="Cert. de Gravamen">
+                                <p:outputLabel value="#{items.trvCertificado}"></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Parroquia">
+                                <p:outputLabel value="#{items.trvParNombre}"></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="N° Predio">
+                                <p:outputLabel value="#{items.traNumPredio}"></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="N° Catastro">
+                                <p:outputLabel value="#{items.trvNumCatastro}"></p:outputLabel>
+
+                            </p:column>
+
+                            <p:column headerText="Valor">
+                                <p:inputNumber readonly="true" inputStyle="border: 0;text-align: center;"  decimalPlaces="2" value="#{items.trvValor}"/>
+
+                            </p:column>
+
+                            <p:column headerText="Cuantía" >
+                                <p:inputNumber readonly="true" inputStyle="border: 0;text-align: center;" decimalPlaces="2" value="#{items.trvValorBien}"/>
+
+                            </p:column>
+                            
+                            
+                            
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>

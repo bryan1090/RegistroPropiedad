@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Recepción de documentos Inscripción"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content" >
+
+            <h:form id="formRecepDocu" enctype="multipart/form-data">
+                <p:growl id="growl" life="3000"/>
+                <p:remoteCommand name="persona" process="txtCiRucPas @this" actionListener="#{recepcionDocumentacionControlador.buscarPersona()}" update="panelRegistro growl :PersonaEditForm"/>
+                <p:remoteCommand name="personaNombre" process="txtCiRucPas @this" actionListener="#{recepcionDocumentacionControlador.actualizaIdentificacion()}" update="txtCiRucPas"/>
+                <p:panel header="Recepción de documentos Inscripción" id="panel">
+
+
+                    <h:panelGrid columns="2">
+                        <h:panelGrid columns="4" id="panelObsicones" cellspacing="20">
+                            <p:outputLabel for="TipoIngreso" value="Tipo ingreso"  style="font-weight: bold"/>
+                            <h:selectOneRadio id="TipoIngreso" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.tramite.traTipo}"
+                                              style="font-size: 17px" >
+                                <p:ajax event="valueChange" listener="#{recepcionDocumentacionControlador.setearParaNuevoDocumento()}" process="@this" update="@form"/>
+                                <f:selectItem  itemLabel="Normal" itemValue="N"  />
+                                <f:selectItem itemLabel="Legal" itemValue="L" />                         
+                            </h:selectOneRadio>
+                        </h:panelGrid>
+
+                        <p:panelGrid   id="panelAsignacion" rendered="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}" columns="5">                        
+                            <p:outputLabel value="Tramites:"  style="font-weight:bold;"/>
+                            <p:outputLabel value="N°Inicial" for="txtNumTramIni" style="font-weight:bold;" />
+                            <h:outputText id="txtNumTramIni" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.numeroTramiteInicial}"   style="color:#b30000; font-weight:bold;"/>
+
+                            <p:outputLabel value="N°Final" for="txtNumTramFin" style="font-weight:bold;" />
+                            <h:outputText id="txtNumTramFin" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.numeroTramiteFinal}"  style="color:#b30000; font-weight:bold;"/>
+
+                        </p:panelGrid>
+
+                    </h:panelGrid>
+
+                    <p:separator/>
+                    <h:panelGrid columns="1" cellpadding="10" id="panelRegistro">
+
+                        <h:panelGrid columns="8" cellpadding="5">
+                            
+                            <p:commandButton id="btnBuscarPersona" immediate="true" icon="fa fa-search"  class="orange-btn" 
+                                             title="Buscar Persona" action="#{controladorFiltradoPersona.prepararFiltrado('CtrlRecTra', 'formRecepDocu')}"
+                                             oncomplete ="PF('dlgFiltradoPersona').show()"/>
+                            <p:commandButton id="crearPersona" immediate="true" icon="fa fa-user-plus"  class="green-btn" 
+                                             oncomplete="PF('dlgNuevaPersona').show()" title="Crear nueva persona"/>
+                            
+                            <p:outputLabel value="CI/RUC/Pas." for="txtCiRucPas"/>
+
+                            <p:inputText id="txtCiRucPas" size="43" readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"
+                                           maxlength="13"
+                                           title="Identificación Persona" style="color: #b30000;font-family: Arial, Helvetica, sans-serif;font-size: 15px;"
+                                           value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.identificacion}"
+                                           onchange="persona()" onkeypress="if (event.keyCode == 13) { return false; }">
+                            </p:inputText>  
+
+                            <p:outputLabel value="N° de Tramites" for="txtNumeroTramite"  />
+                            <p:spinner value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.numeroTramites}" readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}" required="true"  min="1"  size="15" id="txtNumeroTramite">
+                                <p:ajax event="change" listener="#{recepcionDocumentacionControlador.add()}" update="panelTramites" process="@this output"/>
+                            </p:spinner>
+                            <p:outputLabel for="btnFechaEntrega" value="Fecha Entrega"/>
+                            <p:clock id="btnFechaEntrega" pattern="dd-MM-yyyy HH:mm:ss"/>
+
+                        </h:panelGrid>
+                        <p:separator/>
+                        <h:panelGrid id="pnlIngreso" columns="6" cellpadding="5">
+
+                            <p:outputLabel value="Apellido Paterno" for="txtApellidoP"/>
+                            <p:inputText style="text-transform:uppercase;" 
+                                         readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado
+                                                     or not empty recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perIdentificacion}" 
+                                         size="45"  id="txtApellidoP" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perApellidoPaterno}" 
+                                         validatorMessage="Ingrese solo letras en el apellido paterno" > 
+                                <f:validateRegex  pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/>
+                            </p:inputText>
+
+                            <p:outputLabel value="Apellido Materno" for="txtApellidoM"/>
+                            <p:inputText style="text-transform:uppercase;"                                          
+                                         readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado
+                                                     or not empty recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perIdentificacion}" 
+                                         id="txtApellidoM" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perApellidoMaterno}" 
+                                         size="45" validatorMessage="Ingrese solo letras en el apellido materno">  <f:validateRegex  pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/>
+                            </p:inputText>
+
+                            <p:outputLabel value="Nombre" for="txtNombreTram"  />
+                            <p:inputText required="true" requiredMessage="Ingrese nombre"
+                                         style="text-transform:uppercase;"
+                                         readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado
+                                                     or not empty recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perIdentificacion}"  
+                                         id="txtNombreTram" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perNombre}" onchange="personaNombre()" 
+                                         validatorMessage="Ingrese solo letras en el nombre" >
+                                <f:validateRegex pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/>
+                            </p:inputText>
+                            <p:outputLabel value="Mail" for="txtMail"/>
+                            <p:inputText readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"  id="txtMail" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perEmail}" size="45" validatorMessage="Ingrese un email valido" > <f:validateRegex  pattern="^((\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)|(\s*))$"/> </p:inputText>
+
+                            <p:outputLabel value="Sexo" for="cmbSexo" rendered="false"/>
+                            <p:selectOneMenu  disabled="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"  id="cmbSexo" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perSexo}" 
+                                              rendered="false">
+                                <f:selectItem itemLabel="Seleccionar una..." itemValue="" />
+                                <f:selectItems value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.sexo}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Género:" for="cmbGenero" rendered="false"/>
+                            <p:selectOneMenu  disabled="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"  id="cmbGenero" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perSexo}" 
+                                              rendered="false">
+                                <f:selectItem  itemLabel="Seleccionar una..." itemValue="" />
+                                <f:selectItems value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.sexo}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Dirección" for="txtDireccion"/>
+                            <p:inputText readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}" size="45" id="txtDireccion" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perDireccion}" ></p:inputText>
+
+                            <p:outputLabel value="Ciudad" for="cmbCiudad"/>
+                            <p:selectOneMenu  disabled="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}" required="true" requiredMessage="Ciudad, Es un campo requerido"
+                                              id="cmbCiudad" value="#{recepcionDocumentacionControlador.ciudadSeleccionada}" filter="true">
+                                <p:ajax event="itemSelect" listener="#{recepcionDocumentacionControlador.cargarNotariasPorCiudad()}" update="cmbNotaria"/>
+                                <f:selectItem  itemLabel="Seleccionar una..." itemValue="" />
+                                <f:selectItems value="#{recepcionDocumentacionControlador.listaCiudades}" var="ciu" itemLabel="#{ciu.ciuNombre}" itemValue="#{ciu}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Discapacidad" rendered="false"/>
+                            <p:selectBooleanCheckbox disabled="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.filtro}" 
+                                                     rendered="false">
+                                <p:ajax listener="#{recepcionDocumentacionControlador.actualizarCalidad}" />
+                            </p:selectBooleanCheckbox>                            
+
+                            <p:outputLabel value="Teléfono" for="txtTelefono" />
+                            <p:inputText size="45" readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"  id="txtTelefono" 
+                                           value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perTelefono}" 
+                                          />
+
+                            <p:outputLabel value="Celular" for="txtCelular" />
+                            <p:inputText size="45" readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"  id="txtCelular" 
+                                           value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.persona.perCelular}" 
+                                           />
+
+                            <p:outputLabel value="Notaria" for="cmbNotaria" />
+                            <p:selectOneMenu disabled="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"  
+                                             id="cmbNotaria" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.valorNotaria}" panelStyle="width:180px"
+                                             effect="fade" var="t" style="width:160px" filter="true" filterMatchMode="startsWith"
+                                             >
+                                <f:selectItem itemLabel="Seleccionar una..." itemValue="" />
+                                <f:selectItems value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.listaNotarias}" var="theme" itemLabel="#{theme.notNotario}" itemValue="#{theme.notNumero}"/>
+
+                                <p:column style="width:10%">
+                                    <h:outputText styleClass="ui-theme ui-theme-#{theme.notNotario}" />
+                                </p:column>
+
+                                <p:column>
+                                    <h:outputText value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.valorNotaria}" />
+                                </p:column>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Juicio" for="txtJuicio"
+                                           rendered="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.tramite.traTipo eq 'L'}"
+
+                                           />
+                            <p:inputText id="txtJuicio" readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"
+                                         rendered="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.tramite.traTipo eq 'L'}"
+                                         value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.tramite.traJucio}"
+
+                                         />
+
+                            <p:outputLabel value="Juzgado" for="txtJuzgado" 
+                                           rendered="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.tramite.traTipo eq 'L'}"
+                                           />
+
+                            <p:inputText id="txtJuzgado" readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"
+                                         rendered="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.tramite.traTipo eq 'L'}"
+                                         value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.tramite.traNumeroJusgado}" 
+                                         />
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="Observación" for="txtObservacion"/>
+                            <p:inputText readonly="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"  
+                                         size="150" maxlength="40" id="txtObservacion" value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.observacion}" ></p:inputText>
+                        </h:panelGrid>
+
+                        <p:panel id="panelTramites" header="Doc. Recibidos" style="font-size: 9px;font-weight: bold" class="ui-panel-title">
+                            <p:outputPanel id="output">
+                                <p:panelGrid columns="10" layout="grid" style="border: none">
+                                    <ui:repeat var="column" value="#{recepcionDocumentacionControlador.columns}">
+                                        <p:commandButton icon="fa fa-file-o" class="green-btn" value="Trámite #{column.intValue() + 1}"
+                                                         oncomplete="if (!args.validationFailed) PF('dlgDocumentosEntregados').show();" 
+                                                         action="#{recepcionDocumentacionControlador.cargarTramite()}"
+                                                         title="Documentos Entregados" process="@this :formRecepDocu:txtNumeroTramite :formRecepDocu:txtObservacion"
+                                                         update=":frmlistDocEnt :formSeleccionDoc"
+                                                         disabled="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}">
+                                            <f:setPropertyActionListener value="#{column.intValue()}" target="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.num}" />
+                                        </p:commandButton>
+                                    </ui:repeat>
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:panel>
+                    </h:panelGrid>
+
+                    <p:separator/>
+                    <h:panelGrid columns="8">
+
+
+                        <p:commandButton disabled="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"
+                                         class="green-btn" icon="fa fa-save" value="Guardar"
+                                         update="panel growl"  action="#{recepcionDocumentacionControlador.generarTramite}" >
+                        </p:commandButton>
+                        <p:commandButton value="Imprimir" ajax="false"  immediate="true" icon="fa fa-print" 
+                                         disabled="#{!recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"
+                                         action="#{recepcionDocumentacionControlador.generarReporte()}" >
+                        </p:commandButton>
+                        <p:commandButton class="yellow-btn" icon="fa fa-arrow-circle-left" value="Reingreso" immediate="true" 
+                                         disabled="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.estado}"
+                                         action="#{recepcionDocumentacionControlador.preReIngresoTramite()}"  oncomplete="PF('dlgReingreso').show()">
+                            <f:setPropertyActionListener  target="#{recepcionDocumentacionControlador.estadoReIngreso}"
+                                                          value="RVT"/>
+                        </p:commandButton>
+                        <p:commandButton value="Refrescar" class="cyan-btn"  icon="fa fa-refresh" action="#{recepcionDocumentacionControlador.reload}"/>
+                        <p:commandButton class="red-btn"  icon="fa fa-sign-out" process="@this" actionListener="#{recepcionDocumentacionControlador.salir()}" value="Salir"  update="@form"  /> 
+
+                    </h:panelGrid>                   
+
+
+                </p:panel>
+
+                <!--                <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+                
+                                <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                                    <p:graphicImage value="../../resources/imagenes/loading.gif"  style="width: 75px; height: 75px;"/>
+                                </p:dialog>-->
+
+
+            </h:form>
+
+            <p:dialog widgetVar="dlgReingreso" header="Reingreso del Trámite" modal="true" draggable="false" resizable="true">
+                <h:form id="frmReingreso">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Numero de Tramite" />
+                        <p:inputText value="#{recepcionDocumentacionControlador.numTramite}" required="true" 
+                                     requiredMessage="Debe ingresar un número de Trámite">
+                            <p:ajax event="change" listener="#{recepcionDocumentacionControlador.cargarDatosReingresoTramite()}" update="frmReingreso growl"/>
+                        </p:inputText>
+                        <h:outputText value="Revisor"/>
+                        <h:outputText value="#{recepcionDocumentacionControlador.personaReIngreso.perApellidoPaterno}
+                                      #{recepcionDocumentacionControlador.personaReIngreso.perApellidoMaterno} 
+                                      #{recepcionDocumentacionControlador.personaReIngreso.perNombre}"/>
+                        <h:outputText value="CI/RUC/Pas."/>
+                        <h:outputText value="#{recepcionDocumentacionControlador.tramiteReIngreso.traPerIdentificacion}"/>
+                        <h:outputText value="Nombres"/>
+                        <h:outputText value="#{recepcionDocumentacionControlador.tramiteReIngreso.traPerNombre}"/>
+                        <h:outputText value="Observación"/>
+                        <h:outputText value="#{recepcionDocumentacionControlador.tramiteReIngreso.traDescripcion}"/>
+                        <h:outputText value="Fecha Entrega"/>
+                        <h:outputText value="#{recepcionDocumentacionControlador.tramiteReIngreso.traFechaEntrega.time}">
+                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                        </h:outputText>
+
+
+                    </h:panelGrid>
+                    <p:commandButton value="Guardar" class="green-btn" icon="fa fa-save"
+                                     disabled="#{recepcionDocumentacionControlador.tramiteReIngreso == null or recepcionDocumentacionControlador.personaReIngreso == null or recepcionDocumentacionControlador.disabledBtn == true}"
+                                     action="#{recepcionDocumentacionControlador.guardarReingresoTramite()}" update="growl frmReingreso" />
+                    <p:commandButton value="Imprimir" class="blue-btn" icon="fa fa-print" action="#{recepcionDocumentacionControlador.generarReporteTramiteReingreso()}" ajax="false"/>
+                    <p:commandButton value="Cancelar" class="red-btn" icon="fa fa-close" immediate="true" oncomplete="PF('dlgReingreso').hide()" />
+                </h:form>
+
+            </p:dialog>
+
+            <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+            <ui:include src="/paginas/registroTrabajo/documentosEntregados.xhtml"/>
+            <ui:include src="/paginas/FiltradoPersona.xhtml" />
+        </ui:define>
+    </ui:composition>
+
+</html>

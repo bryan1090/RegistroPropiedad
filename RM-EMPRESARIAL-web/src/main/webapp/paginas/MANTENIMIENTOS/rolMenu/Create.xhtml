@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RolMenuCreateDlg" widgetVar="RolMenuCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateRolMenuTitle}">
+            
+            <p:ajax event="close"  listener="#{rolMenuController.handleClose}" />
+
+            <h:form id="RolMenuCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{rolMenuController.selected != null}">
+
+                        <p:outputLabel value="#{bundle.CreateRolMenuLabel_menId}" for="menId" />
+                        <p:selectOneMenu id="menId" value="#{rolMenuController.selected.menId}" required="true" requiredMessage="#{bundle.EditRolMenuRequiredMessage_menId}" filter="true">
+                            <f:selectItems value="#{menuController.itemsAvailableSelectOne}"
+                                           var="menIdItem" itemLabel="#{menIdItem.menNombre}"
+                                           itemValue="#{menIdItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateRolMenuLabel_rolId}" for="rolId" />
+                        <p:selectOneMenu id="rolId" value="#{rolMenuController.selected.rolId}" required="true" requiredMessage="#{bundle.EditRolMenuRequiredMessage_rolId}" filter="true">
+                            <f:selectItems value="#{rolController.itemsAvailableSelectOne}"
+                                           var="rolIdItem" itemLabel="#{rolIdItem.rolNombre}"
+                                           itemValue="#{rolIdItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.CreateRolMenuLabel_rolMenDisplay}" for="rolMenDisplay" />
+                        <p:selectBooleanCheckbox id="rolMenDisplay" value="#{rolMenuController.rolMenDisplay}" title="#{bundle.CreateRolMenuTitle_rolMenDisplay}" required="true" requiredMessage="#{bundle.CreateRolMenuRequiredMessage_rolMenDisplay}"/>
+                        <p:outputLabel value="#{bundle.CreateRolMenuLabel_rolMenAcceso}" for="rolMenAcceso" />
+                        <p:selectBooleanCheckbox id="rolMenAcceso" value="#{rolMenuController.rolMenAcceso}" title="#{bundle.CreateRolMenuTitle_rolMenAcceso}" required="true" requiredMessage="#{bundle.CreateRolMenuRequiredMessage_rolMenAcceso}"/>
+
+                        <p:outputLabel value="#{bundle.CreateRolMenuLabel_rolMenInsert}" for="rolMenInsert" />
+                        <p:selectBooleanCheckbox  id="rolMenInsert" value="#{rolMenuController.rolMenInsert}" title="#{bundle.CreateRolMenuTitle_rolMenInsert}" required="true" requiredMessage="#{bundle.CreateRolMenuRequiredMessage_rolMenInsert}"/>
+                        <p:outputLabel value="#{bundle.CreateRolMenuLabel_rolMenUpdate}" for="rolMenUpdate" />
+                        <p:selectBooleanCheckbox id="rolMenUpdate" value="#{rolMenuController.rolMenUpdate}" title="#{bundle.CreateRolMenuTitle_rolMenUpdate}" required="true" requiredMessage="#{bundle.CreateRolMenuRequiredMessage_rolMenUpdate}"/>
+                        <p:outputLabel value="#{bundle.CreateRolMenuLabel_rolMenDelete}" for="rolMenDelete" />
+                        <p:selectBooleanCheckbox id="rolMenDelete" value="#{rolMenuController.rolMenDelete}" title="#{bundle.CreateRolMenuTitle_rolMenDelete}" required="true" requiredMessage="#{bundle.CreateRolMenuRequiredMessage_rolMenDelete}"/>
+                        <p:outputLabel value="#{bundle.CreateRolMenuLabel_rolMenExcel}" for="rolMenExcel" />
+                        <p:selectBooleanCheckbox id="rolMenExcel" value="#{rolMenuController.rolMenExcel}" title="#{bundle.CreateRolMenuTitle_rolMenExcel}" required="true" requiredMessage="#{bundle.CreateRolMenuRequiredMessage_rolMenExcel}"/>
+                        <p:outputLabel value="#{bundle.CreateRolMenuLabel_rolMenPdf}" for="rolMenPdf" />
+                        <p:selectBooleanCheckbox id="rolMenPdf" value="#{rolMenuController.rolMenPdf}" title="#{bundle.CreateRolMenuTitle_rolMenPdf}" required="true" requiredMessage="#{bundle.CreateRolMenuRequiredMessage_rolMenPdf}"/>
+
+
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save"  actionListener="#{rolMenuController.create}" value="#{bundle.Save}" update="display,:RolMenuListForm:datalist,:growl" oncomplete="handleSubmit(args,'RolMenuCreateDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{rolMenuController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="RolMenuCreateDialog.hide()"/>
+                    
+                        
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                <h:outputText value="Incidencias"/>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="formIncidencia">
+                    <p:growl id="growl" showDetail="true" life="3000"/> 
+                    <p:panel style="border: none" header="Incidencias">
+                        <p:panelGrid columns="2" columnClasses="ui-grid-col-5,ui-grid-col-8" layout="grid" style="border: none">
+                            <p:panel style="height: 500px;border: none ">
+                                <h:panelGrid id="panelRep" columns="1">
+                                    <p:dataTable id="tblIncidencias" value="#{controladorIncidenciaUsuario.listaIncidencias}"
+                                                 selectionMode="single" selection="#{controladorIncidenciaUsuario.incidenciaSeleccionada}" rowKey="#{listInc.incId}"
+                                                 var="listInc" style="text-align-last: center" sortBy="#{listInc.incId}">
+                                        <p:ajax event="rowSelect" resetValues="true"
+                                                listener="#{controladorIncidenciaUsuario.cambioEstado()}" 
+                                                update="@form growl formIncidencia:formIncidenciaActa"/>
+
+                                        <p:column headerText="N° Incidencia" width="60">
+                                            <h:outputText value="#{listInc.incId}" />
+                                        </p:column>
+
+                                        <p:column headerText="Tipo Incidencia">
+                                            <h:outputText value="#{listInc.tidId.tidDescripcion}" />
+                                        </p:column>
+
+                                        <p:column headerText="Estado" width="50">
+                                            <h:outputText value="Activo" rendered="#{listInc.incEstado == 'A'}" style="color: green "/>
+                                            <h:outputText value="Proceso" rendered="#{listInc.incEstado == 'P'}" style="color: orange "/>
+                                            <h:outputText value="Terminado" rendered="#{listInc.incEstado == 'T'}" style="color: red "/>
+                                            <h:outputText value="Entregado" rendered="#{listInc.incEstado == 'E'}" style="color: blue "/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </p:panel>
+
+                            <p:panel id="pnlActa" rendered="#{controladorIncidenciaUsuario.rendPnlActa}">
+                                <ui:include src="incidenciaActa.xhtml"/>
+                            </p:panel>
+
+
+                            <p:panel id="pnlActualizarPersona" style="height: 500px; " rendered=" false">
+                                <p:inputTextarea value="#{controladorIncidenciaUsuario.incidenciaSeleccionada.incDescripcion}" rows="4" cols="117" readonly="true" />
+
+                                <p:tabView>
+                                    <p:tab title="Actualizar Persona" >
+                                        <p:outputLabel for="@next" value="Identificación"/>
+                                        <p:inputText id="txtIdentificacion" value="#{controladorIncidenciaUsuario.personaEncontrada.perIdentificacion}" required="true" requiredMessage="Campo de Busqueda, Es Requerido "/>
+                                        <p:commandButton id="btnBuscar" class="green-btn" icon="fa fa-search" action="#{controladorIncidenciaUsuario.encontrarPersona()}" update="@form" process="@this txtIdentificacion growl"/>
+                                        <p:commandButton id="btnFiltrar" class="orange-btn" value="Filtrar" onclick="PF('dlgFiltradoPersona').show()" update=" :formFiltrado" process="@this"/>
+                                        <p:panel id="pnlActualizarPersona" style="height: 500px;border: none ">
+                                            <div class="ui-g">
+                                                <div class="ui-g-12 ui-md-6 ui-lg-12">
+                                                    <p:inputTextarea value="#{controladorIncidenciaUsuario.incidenciaSeleccionada.incDescripcion}" 
+                                                                     rows="4" autoResize="true" readonly="true" style="width: 100%"/>
+                                                </div>
+                                                <div class="ui-g-12 ui-md-6 ui-lg-12">
+                                                    <p:tabView id="tabIncidencias" binding="#{controladorIncidenciaUsuario.tabView}" 
+                                                               cache="false" dynamic="true" effect="pulsate">
+                                                        <p:tab title="Actualizar Persona" >
+                                                            <p:outputLabel for="@next" value="Identificación"/>
+                                                            <p:inputText id="txtIdentificacion" value="#{controladorIncidenciaUsuario.personaEncontrada.perIdentificacion}">
+                                                                <p:ajax event="change" listener="#{controladorIncidenciaUsuario.encontrarPersona()}"
+                                                                        update="@form" process="@this"/>
+                                                            </p:inputText>
+                                                            <p:commandButton id="btnBuscarPersona" immediate="true" icon="fa fa-search"  class="orange-btn" 
+                                                                             title="Buscar Persona" action="#{controladorFiltradoPersona.prepararFiltrado('IncPro', 'formIncidencia')}"
+                                                                             oncomplete ="PF('dlgFiltradoPersona').show()"/>
+
+                                                            <p:panelGrid columns="6" columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3"
+                                                                         layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                                                <p:outputLabel for="@next" value="Nombre"/>
+                                                                <p:inputText id="txtNombre" value="#{controladorIncidenciaUsuario.personaEncontrada.perNombre}" 
+                                                                             style="text-transform: uppercase" required="true" requiredMessage="El Campo Nombre, Es Requerido"/>
+                                                                <p:outputLabel for="@next" value="Apellido Paterno"/>
+                                                                <p:inputText id="txtApellidoPaterno" value="#{controladorIncidenciaUsuario.personaEncontrada.perApellidoPaterno}" 
+                                                                             style="text-transform: uppercase" required="true" requiredMessage="El Campo Nombre, Es Requerido"/>
+                                                                <p:outputLabel for="@next" value="Apellido Materno"/>
+                                                                <p:inputText id="txtApellidoMaterno" value="#{controladorIncidenciaUsuario.personaEncontrada.perApellidoMaterno}" 
+                                                                             style="text-transform: uppercase" required="true" requiredMessage="El Campo Nombre, Es Requerido"/>
+                                                            </p:panelGrid>
+                                                            <p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-12"
+                                                                         layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                                                <p:outputLabel for="@next" value="Observación"/>
+                                                                <p:inputText id="txtObservacion" value="#{controladorIncidenciaUsuario.incidenciaAuditoria.iadObservacion}" required="true" requiredMessage="Campo Observación,Es Requerido"/>
+                                                                <p:commandButton id="btnActualizar" value="Actualizar" class="green-btn" action="#{controladorIncidenciaUsuario.actualizarDatos()}" 
+                                                                                 update="@form"/>
+                                                            </p:panelGrid>
+                                                        </p:tab>                                          
+                                                    </p:tabView>
+                                                </div>
+                                            </div>
+                                        </p:panel>    
+                                    </p:tab>  
+                                </p:tabView>
+                            </p:panel>
+                        </p:panelGrid>
+                    </p:panel>
+
+                </h:form>
+                 <ui:include src="DerechosYacciones.xhtml"/>
+            <ui:include src="suspension.xhtml"/>  
+            <ui:include src="/paginas/FiltradoPersona.xhtml"/>
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Tramite Usuario"/>
+        </ui:define> 
+        <ui:define name="content" >
+            <h:form   id="form" target="_blank" >
+                <p:panel id="panel" header="Tramite Usuarios" >
+
+                    <p:dataTable  id="tbl"  value="#{controladorTusuario.lista}"  var="list" resizableColumns="false" sortBy="#{list.usuId.usuLogin}">
+                        <p:column  filterBy="#{list.usuId.usuLogin}" sortBy="#{list.usuId.usuLogin}" filterStyle="height:20px;text-transform: uppercase;" headerText="Usuarios">
+                            <div align="center"><h:outputText  value="#{list.usuId.usuLogin}" /></div>
+                        </p:column>
+                        <p:column sortBy="#{list.traNumero.traNumero}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{list.traNumero.traNumero}" headerText="Numero de tramites">
+                            <div align="center"><h:outputText value="#{list.traNumero.traNumero}" /></div>
+                        </p:column>
+                    </p:dataTable>
+                    
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

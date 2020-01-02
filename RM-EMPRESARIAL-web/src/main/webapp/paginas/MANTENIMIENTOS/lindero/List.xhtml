@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListLinderoTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="LinderoListForm">
+                <p:panel header="#{bundle.ListLinderoTitle}">
+                    <p:dataTable id="datalist" value="#{linderoController.items}" var="item"
+                                 selectionMode="single" selection="#{linderoController.selected}"
+                                 paginator="true" sortBy="#{item.ldrNombre}"
+                                 rowKey="#{item.ldrId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column sortBy="#{item.ldrNombre}" filterBy="#{item.ldrNombre}" filterMatchMode="startsWith" filterStyle="text-transform: uppercase">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLinderoTitle_ldrNombre}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ldrNombre}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.prdMatricula.prdPredio}" sortBy="#{item.prdMatricula.prdPredio}" filterMatchMode="startsWith" filterStyle="text-transform: uppercase">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLinderoTitle_prdMatricula}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.prdMatricula.prdPredio}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.ldrUser}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLinderoTitle_ldrUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ldrUser}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.ldrFHR}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListLinderoTitle_ldrFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ldrFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn"  value="#{bundle.Create}" actionListener="#{linderoController.prepareCreate}" update=":LinderoCreateForm" oncomplete="PF('LinderoCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":LinderoViewForm" oncomplete="PF('LinderoViewDialog').show()" disabled="#{empty linderoController.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":LinderoEditForm" oncomplete="PF('LinderoEditDialog').show()" disabled="#{empty linderoController.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{linderoController.destroy}" update=":growl,datalist" disabled="#{empty linderoController.selected}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

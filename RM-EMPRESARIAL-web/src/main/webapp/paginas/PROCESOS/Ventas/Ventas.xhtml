@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Ventas"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:outputStylesheet name="css/textEditor.css" />
+
+            <h:form id="formVentas">
+
+
+
+                <p:panel header="Ventas" >
+                    <p:panelGrid layout="grid" columns="8" style="display: block;text-align: center">
+                        <p:outputLabel for="txtNumTramite" value="# Trámite"/>
+                        <p:inputText id="txtNumTramite" value="#{controladorVentas.numeroTramite}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtRepertorio" value="Repertorio"/>
+                        <p:inputText id="txtRepertorio" value="#{controladorVentas.numeroRepertorio}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtFecha" value="Fecha"/>
+                        <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFecha" value="#{controladorVentas.fecha}" disabled="true" readonly="true"
+                                    style="color: #1a237e"/>
+                        <p:outputLabel for="txtContrato" value="Contrato"/>
+                        <p:inputText id="txtContrato" value="#{controladorVentas.descripcionContrato}" readonly="true"
+                                     style="color: #1a237e" />
+
+                    </p:panelGrid>
+
+
+                    <p:layout style="min-width:400px;min-height:589px;">
+                        <p:layoutUnit position="west" resizable="true" size="480" header="TRÁMITES" minSize="340" maxSize="500" collapsible="true" effect="drop">                                    
+                            <p:panel header="" style="height: 552px; ">
+                                <h:panelGrid columns="2" >
+                                    <p:outputLabel for="txtFechaRepertorio" value="Fecha" />
+                                    <p:calendar pattern="dd/MM/yyyy" id="txtFechaRepertorio" value="#{controladorVentas.fecha}" required="true" label="firstname">
+                                        <p:ajax event="dateSelect" listener="#{controladorVentas.llenarDatos()}" update="formVentas"/>
+                                    </p:calendar>                                           
+                                </h:panelGrid>
+
+                                <h:panelGrid id="panelRep" columns="1">      
+                                    <p:dataTable id="tblRepertorios" scrollable="true"  scrollHeight="410" 
+                                                 value="#{controladorVentas.listaRepertorioFecha}" 
+                                                 var="repertorio" selectionMode="single" selection="#{repertorio}" 
+                                                 rowKey="#{repertorio.repNumero}" sortBy="#{repertorio.traNumero.traNumero}" > 
+                                        <p:ajax event="rowSelect" listener="#{controladorVentas.onRowSelect}"  
+
+                                                update="formVentas" />
+                                        <p:column headerText="# Trámite" groupRow="true">
+                                            <h:outputText value="#{repertorio.traNumero.traNumero}" />
+                                        </p:column>
+                                        <p:column headerText="Repertorio">
+                                            <h:outputText value="#{repertorio.repNumero}" />
+                                        </p:column>                                              
+
+                                        <p:column headerText="Contrato">
+                                            <h:outputText value="#{repertorio.repTtrDescripcion}" />
+                                        </p:column>
+                                        <p:column headerText="Estado">
+                                            <h:outputText value="#{repertorio.estadoProceso}" />
+                                        </p:column>
+                                        <p:column headerText="TERMINAR" groupRow="true">
+                                            <p:commandButton value="TERMINAR #{repertorio.traNumero.traNumero}" class="yellow-btn"
+                                                             update="growl formVentas"
+                                                             />
+
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </h:panelGrid>
+
+
+                            </p:panel>
+
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" resizable="true" size="680" minSize="680" maxSize="700">
+
+                          
+
+                            <p:panel header="" id="scrollPanel" 
+                                     style="width: 680px; height: 500px; ">
+                                
+                                 <h:form id="formGeneral">
+                                <p:dataGrid var="prop" value="#{controladorVentas.listaRepPropiedad}" columns="14" layout="grid"
+                                            rows="12" id="alics"
+                                            >
+
+                                    <f:facet name="header">
+                                        UNIDADES DE VIVIENDA
+                                    </f:facet>
+
+                                    <p:panel header="Nº: #{prop.prdMatricula.prdUnidadVivienda}" style="#{prop.prdMatricula.prdVendio eq 'S' ? 'background: #F9A825':'background: #9CCC65'} ">
+
+                                        <h:panelGrid columns="1" 
+                                                     title="#{prop.prdMatricula.prdMatricula eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">            
+
+                                            <p:commandButton update=":formDetProp" 
+                                                             action="#{controladorVentas.listarDetalleAlicuotas(prop.prdMatricula)}"
+                                                             icon="fa fa-home" style="#{prop.prdMatricula.prdVendio eq 'S' ? 'background: #F9A825;':'background: #9CCC65;'}"
+                                                             oncomplete="PF('dlgPropHij').show()" title="#{prop.prdMatricula.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">                                                
+
+                                            </p:commandButton>
+                                            <p:commandButton update=":formDetProp" 
+                                                             action="#{controladorVentas.listarDetalleAlicuotas(prop)}"
+                                                             icon="fa fa-dollar" style="#{prop.prdMatricula.prdVendio eq 'S' ? 'background: #F9A825;':'background: #9CCC65;'}"
+                                                             title="">                                                
+
+                                            </p:commandButton>
+                                        </h:panelGrid>
+                                    </p:panel>
+
+                                </p:dataGrid>
+
+                                
+                            </h:form>
+
+
+
+                            </p:panel>
+
+
+
+                        </p:layoutUnit>
+                    </p:layout>  
+                </p:panel>
+            </h:form>
+            
+            <p:dialog header="Información Declaratorias" widgetVar="dlgPropHij" modal="true" 
+                                           resizable="false" width="500px">
+                <h:form id="formDetProp">
+                                    <p:outputPanel id="detalleAlicuota" style="text-align:center;">
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">PROPIEDAD</h3>
+                                        <p:panelGrid  columns="2" columnClasses="label,value">
+
+                                            <h:outputText value="Matrícula:" />
+                                            <h:outputText value="#{controladorVentas.propUV.prdMatricula}" />
+
+                                            <h:outputText value="Descripción" />
+                                            <h:outputText value="#{controladorVentas.propUV.prdDescripcion2}" />
+                                            <h:outputText value="Predio" />
+                                            <h:outputText value="#{controladorVentas.propUV.prdPredio}" />
+                                            <h:outputText value="Catastro" />
+                                            <h:outputText value="#{controladorVentas.propUV.prdCatastro}" />
+
+                                        </p:panelGrid>
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">DECLARATORIA</h3>
+                                        <p:dataTable var="alicu"
+                                                     scrollable="true" scrollHeight="150"
+                                                     value="#{controladorVentas.listaAlicuotaMostrar}">
+                                            <p:column headerText="Número">
+                                                <h:outputText value="#{alicu.altNumero}" />
+                                            </p:column>
+
+                                            <p:column headerText="Alicuota">
+                                                <h:outputText value="#{alicu.altAlicuota}" />
+                                            </p:column>
+
+                                            <p:column headerText="Área">
+                                                <h:outputText value="#{alicu.altArea}" />
+                                            </p:column>
+
+                                            <p:column headerText="Piso">
+                                                <h:outputText value="#{alicu.altPiso}" />
+                                            </p:column>
+                                        </p:dataTable>
+
+
+
+                                    </p:outputPanel>
+                    
+                    </h:form>
+                                </p:dialog>
+                  
+
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>

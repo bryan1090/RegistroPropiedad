@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="head">
+
+        </ui:define>
+
+        <ui:define name="title">
+            <h:outputText value="Repertorio"/>
+        </ui:define>
+
+        <ui:define name="content" >
+
+            <h:form id="formRepertorio">
+                <p:panel id="panel" header="Repertorio - Electrónico"  >
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <p:panel style="min-height: 400px; max-height: 500px">  
+                                <h:panelGrid  columns="2" id="plnLibro">
+                                    <p:outputLabel   value="Nro. Repertorio"/>
+                                    <p:inputText id="txtNumRep" style="width: 70px" readonly="true" value="#{controladorRepertorio.repertorio.repNumero}"/>
+                                    <p:outputLabel   value="Nro. Trámite"/>
+                                    <p:inputText id="txtNumTrm" style="width: 70px" readonly="true" value="#{controladorRepertorio.tramiteSeleccionado.traNumero}"/>
+                                    <p:outputLabel   value="Nro. Copias"/>
+                                    <p:inputNumber   style="width: 70px"
+                                                     required="true" requiredMessage="El campo copias, es requerido"
+                                                     decimalPlaces="0" minValue="1"   value="#{controladorRepertorio.numCopias}"/>
+                                </h:panelGrid> 
+
+                                <p:separator/>
+
+                                <p:dataTable id="dtbTramite" value="#{controladorRepertorio.listaTramites}" var="item" rowIndexVar="rowId"
+                                             selectionMode="single" selection="#{controladorRepertorio.tramiteSeleccionado}" rowKey="#{item.traNumero}"
+                                             sortBy="#{item.factura.facFecha}" sortOrder="ascending"
+                                             disabledSelection="#{controladorRepertorio.bolDeshabilitarSel and rowId!=0}"
+                                             >
+                                    <p:ajax event="rowSelect" listener="#{controladorRepertorio.seleccionarTramite()}" 
+                                            update="growl @form"/>
+                                    <!--                                            update="growl @form:datos2 @form:dtbTramite @form:txtNumTrm @form:txtNumRep"/>-->
+
+                                    <p:column style="width: 20%" headerText="Caja"     >
+                                        <h:outputText value="#{item.cajaNombre}" />
+                                    </p:column>
+                                    <p:column style="width: 35%" headerText="Trámite">
+                                        <h:outputText value="#{item.traNumero}" />
+
+                                    </p:column>
+                                    <p:column style="width: 45%" headerText="Fecha" >
+                                        <h:outputText value="#{item.factura.facFecha}"  >
+                                            <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm"/>
+                                        </h:outputText>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                            <p:commandButton value="Imprimir" icon="fa fa-print" onclick="PF('dlgImprimir').show();" />
+
+                        </div>  
+                        <div class="ui-g-9">
+                            <p:panel id="pnlTramDet" style="min-height:450px; max-height: 550px ">
+
+                                <p:dataTable id="datos2" value="#{controladorRepertorio.listaTramitesDetallesSelec}" var="item" 
+                                             rowKey="#{item.tdtTtrDescripcion}" scrollable="true" scrollHeight="450" resizableColumns="false" paginatorPosition="top"
+                                             rowIndexVar="rowNumber"  sortBy="#{item.tdtNumeroRepertorio} #{item.tdtTtrDescripcion} #{item.tdtTtrDescripcion}" sortOrder="ascending"
+                                             disabledSelection="#{rowNumber != 1}"
+                                             >
+                                    <p:ajax event="rowSelect" >
+                                        <f:setPropertyActionListener target="#{controladorRepertorio.tramiteDetalleSeleccionado}" value="#{item}"/>
+                                    </p:ajax>
+
+                                    <p:column groupRow="true" style="width: 15%"  headerText="Repertorio" sortBy=" " filterStyle="height:20px;text-transform: uppercase;" filterBy=" " filterMatchMode="contains" >
+                                        <h:outputText value="#{item.tdtNumeroRepertorio}" />
+                                    </p:column>
+                                    <p:column groupRow="true" style="width: 20%" headerText="Contrato" sortBy=" " filterStyle="height:20px;text-transform: uppercase;" filterBy=" " filterMatchMode="contains" >
+                                        <p:commandButton value="#{item.tdtTtrDescripcion}" id="btnSubir" icon="fa fa-arrow-circle-up" class="yellow-btn" 
+                                                         action="#{controladorRepertorio.subirTipoTramite()}" 
+                                                         immediate="true" update="growl @form">
+                                            <f:setPropertyActionListener target="#{controladorRepertorio.tramiteDetalleSeleccionado}" value="#{item}" />                                           
+                                        </p:commandButton>
+
+                                        <p:commandButton value="#{item.tdtTtrDescripcion}" id="btnBajar" icon="fa fa-arrow-circle-down" class="yellow-btn" 
+                                                         action="#{controladorRepertorio.bajarTipoTramite()}" 
+                                                         immediate="true" update="growl @form">
+                                            <f:setPropertyActionListener target="#{controladorRepertorio.tramiteDetalleSeleccionado}" value="#{item}" />                                           
+                                        </p:commandButton>
+                                    </p:column>
+                                    <p:column style="width: 15%" headerText="Tipo" sortBy=" " filterStyle="height:20px;text-transform: uppercase;" filterBy=" " filterMatchMode="contains" >
+                                        <h:outputText value="#{item.tdtTpcDescripcion}" />
+                                    </p:column>
+                                    <p:column style="width: 35%" headerText="Apellidos y Nombres" sortBy=" " filterStyle="height:20px;text-transform: uppercase;" filterBy=" " filterMatchMode="contains" >
+                                        <h:outputText value="#{item.tdtPerApellidoPaterno} #{item.tdtPerApellidoMaterno} #{item.tdtPerNombre}" />
+                                    </p:column>
+<!--                                    <p:column headerText="Estado Trámite" rowspan="true">
+                                        <h:outputText value="#{controladorRepertorio.listaEstadoReTramite.get(rowNumber) != null}"/>
+                                    </p:column>-->
+                                    <p:column  style="width: 7%" headerText=" "  >
+                                        <p:commandButton id="btnA_#{rowNumber}" icon="fa fa-plus" 
+                                                         action="#{controladorRepertorio.preCrearTramiteDetalle()}"
+                                                         immediate="true"
+                                                         class="green-btn" oncomplete="PF('dlgCrear').show()" 
+                                                         update="growl dlgCrearCompar">
+                                            <f:setPropertyActionListener target="#{controladorRepertorio.tramiteDetalleSeleccionado}" value="#{item}"/>
+                                        </p:commandButton>
+
+                                        <p:commandButton id="btnB_#{rowNumber}" icon="fa fa-trash" class="red-btn" 
+                                                         action="#{controladorRepertorio.eliminarTramiteDetalle()}" 
+                                                         immediate="true" update="growl datos2">
+                                            <f:setPropertyActionListener target="#{controladorRepertorio.tramiteDetalleSeleccionado}" value="#{item}" />
+                                            <p:confirm header="Eliminar Tramite detalle" message="¿Esta seguro de elminar este registro?" icon="pi pi-exclamation-triangle" />
+                                        </p:commandButton>
+                                    </p:column>                               
+
+
+                                </p:dataTable>
+                                <p:commandButton id="btn_confirm" value="Confirmar" class="green-btn" action="#{controladorRepertorio.confirmarTramite()}"
+                                                 disabled="#{empty controladorRepertorio.tramiteSeleccionado}"
+                                                 update="growl @form" style="margin-right:20px;" icon="fa fa-save" title="Confirmar cambio de estado de Trámite">
+                                    <p:confirm header="Actualizar estado tramite" message="¿Esta seguro de cambiar de estado al trámite?" icon="pi pi-exclamation-triangle" />
+                                </p:commandButton> 
+
+
+                            </p:panel>
+
+                        </div> 
+                    </div>
+
+                </p:panel>
+            </h:form>
+
+            <!--           DIALOGOS-->
+
+            <p:dialog id="dlgCrearCompar" header="Crear" widgetVar="dlgCrear" modal="true" minHeight="50"  appendTo="@(body)">
+                <h:form id="formCrearCompar" >
+                    <p:panelGrid columns="2">
+                        <p:outputLabel for="@next" value="Cédula/RUC/Pas:"/>
+                        <h:panelGroup  >
+                            <p:inputText id="txtIdentificacion" value="#{controladorRepertorio.identificacion}"
+                                         required="true" requiredMessage="El campo cedula es requerido">
+                                <p:ajax event="change" listener="#{controladorRepertorio.buscarPersona()}" update=":formCrearCompar  growl" />
+
+                            </p:inputText>
+                            <p:commandButton icon="fa fa-user-plus" immediate="true"
+                                             process="@this" 
+                                             onclick="PF('dlgNuevaPersona').show()"
+                                             />
+                        </h:panelGroup>
+                        <p:outputLabel for="@next" value="Nombre"/>
+                        <h:outputText  value="#{controladorRepertorio.persona.perNombre}"/>
+                        <p:outputLabel for="@next" value="Apellido Paterno"/>
+                        <h:outputText value="#{controladorRepertorio.persona.perApellidoPaterno}"/>
+
+                    </p:panelGrid>
+
+                    <p:commandButton value="Aceptar" action="#{controladorRepertorio.crearTramiteDetalle()}" 
+
+                                     update="growl  dlgCrearCompar formRepertorio:datos2 " 
+                                     style="margin-right:20px;"  title="Confirmar creación de tramite detalle"
+                                     oncomplete="PF('dlgCrear').hide()"
+                                     >
+                        <p:confirm header="Crear nuevo Tramite Detalle" message="¿Esta seguro de escoger este usuario?" icon="pi pi-exclamation-triangle" />
+                    </p:commandButton> 
+                    <p:commandButton value="#{bundle.Cancel}"  immediate="true" onclick="PF('dlgCrear').hide()"/>
+                </h:form>    
+            </p:dialog>
+            
+			 <p:dialog header="Repertorios" widgetVar="dlgImprimir" minHeight="40" modal="true">
+                                <h:form id="frmImprimir">
+                                    <p:outputLabel id="lblFechas"  value="Buscar por Rango de Fechas:" style="font-weight:bold; align-content: center "/> 
+                                    <br />
+                                    <p:row >
+                                        <p:outputLabel value="Fecha Inicio"></p:outputLabel>
+                                        <p:calendar autocomplete="true" pattern="dd/MM/yyyy"  value="#{controladorRepertorio.fechaIni}" >
+                                        </p:calendar>
+                                        <p:outputLabel value="Fecha Fin"></p:outputLabel>
+                                        <p:calendar autocomplete="false"  pattern="dd/MM/yyyy"  value="#{controladorRepertorio.fechaFin}">
+                                        </p:calendar>
+                                        
+                                    </p:row>
+                                    <hr/>
+                                       &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                       <h:commandLink actionListener="#{controladorRepertorio.exportarExcelRepertorio(controladorRepertorio.fechaIni, controladorRepertorio.fechaFin)}" title="Exportar a Excel">
+                                        <p:graphicImage name="/imagenes/excel2.png" width="30" />
+                                    </h:commandLink>
+                                       &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                       &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                       <h:commandLink  actionListener="#{controladorRepertorio.generarPdfLibroRepertorio(controladorRepertorio.fechaIni, controladorRepertorio.fechaFin)}" title="Exportar a PDF">
+                                        <p:graphicImage name="/imagenes/pdf.png" width="30"/>
+                                    </h:commandLink>
+                </h:form>
+            </p:dialog>
+
+
+            <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/> 
+
+        </ui:define>
+    </ui:composition>
+
+</html>

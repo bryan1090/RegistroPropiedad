@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Impresión Certificados"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+
+            <h:form id="frmImpCert">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <p:panel header="Impresión Certificados">
+                            <p:dataTable id="dtCertCarg" value="#{controladorImpresionCertificado.listaCertificadoCarga}" var="item" 
+                                         selection="#{controladorImpresionCertificado.seleccionCertificadoCarga}"
+                                         rowKey="#{item.cdcId}" 
+                                         paginator="true"
+                                         rows="10"
+                                         rowsPerPageTemplate="10,20">
+                                <!--
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Documento" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.cdcDocumento}"/>
+                                </p:column>
+                                -->
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Certificado" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.cdcCertificado}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N. Factura" style="float: left;"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.facId.facNumero}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N. Caja" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.facId.cajId.cajNombre}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.cdcFHR}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                <f:facet name="header">
+                                    <div align="right">
+                                        <p:commandButton action="#{controladorImpresionCertificado.buscarCertificadosYcrearPDF()}" 
+                                                         icon="fa fa-print" value="Imprimir" id="btnImprimirCertificados"
+                                                         update="frmMostrarCertificadosPdf" oncomplete="PF('dlgMostrarCertificadosPDF').show();"/>
+                                        <!--disabled="#{empty controladorImpresionCertificado.seleccionCertificadoCarga}"-->
+                                    </div>
+                                </f:facet>
+                            </p:dataTable>
+                        </p:panel>
+                    </div>
+                </div>
+            </h:form>
+
+            <p:dialog widgetVar="dlgMostrarCertificadosPDF" modal="true" resizable="true" width="80%">
+                <p:ajax event="close" listener="#{controladorImpresionCertificado.redirect()}"/>
+                <h:form id="frmMostrarCertificadosPdf">
+                    <p:media value="#{controladorImpresionCertificado.url}" 
+                             rendered="#{!empty controladorImpresionCertificado.url}"
+                             width="100%" height="550px"
+                             />
+                    <p:panel rendered="#{empty controladorImpresionCertificado.url}" style="padding-top: 200px; padding-bottom: 200px;">
+                        <div align="center">
+                            <h:outputText value="Seleccione al menos un certificado" style="color: red; font-size: 20px"/>
+                        </div>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition>
+			<h:form id="formTraDetalle">
+				<p:growl id="growl" life="3000"/>
+				<p:panel style="border: none">
+
+					<p:panel >
+						<p:panelGrid columns="6" 
+									 columnClasses="ui-grid-col-1,ui-grid-col-1,ui-grid-col-1,ui-grid-col-4,ui-grid-col-1,ui-grid-col-1"
+									 layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel value="N°Contratos" style="font-weight: bold" />
+							<p:inputNumber value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tramite.traNumeroContrato}"
+										   decimalPlaces="0" thousandSeparator="" disabled="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listaTramiteDetalle.size() != 0}"/>
+
+							<p:outputLabel value="Contrato" style="font-weight: bold" />
+							<p:selectOneMenu value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tipoTramiteSeleccionado}"
+											 filter="true" filterMatchMode="startsWith" required="true"
+											 disabled="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listaTramiteDetalle.size() != 0}">
+								<p:ajax event="itemSelect" listener="#{controladorMantenimientoTramite.cargarTipoTramiteCompareciente()}"
+										process="@this" update="comparecienteLista pnlDatos"/>
+								<f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+								<f:selectItems value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listaTipoTramite}" var="tip"
+											   itemLabel="#{tip.ttrDescripcion}" itemValue="#{tip}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="RTD" style="font-weight: bold" />
+							<p:inputText value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tramite.traRtd}"
+										 disabled="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listaTramiteDetalle.size() != 0}"/>
+						</p:panelGrid>
+
+						<br/>
+						<p:separator/>
+						<br/>
+
+						<p:panelGrid id="pnlDatos" columns="9" 
+									 columnClasses="ui-grid-col-1,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1" 
+									 layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:panelGrid columns="2" layout="grid" style="border: none">
+								<p:commandButton id="crearPersona" immediate="true" icon="fa fa-file-o"  class="green-btn" style="width: 25px"
+												 oncomplete="PF('dlgNuevaPersona').show()" title="Crear nueva persona"/>
+								<p:commandButton id="btnFiltrar" class="orange-btn" icon="fa fa-search" style="width: 25px"
+												 actionListener="#{controladorFiltradoPersona.prepararFiltrado('ToolTraAct', 'tabsTools:formTraDetalle:pnlDatos')}" 
+												 oncomplete="PF('dlgFiltradoPersona').show();" immediate="true"/>
+							</p:panelGrid>
+
+							<p:outputLabel value="C.I/RUC/PAS" style="font-weight: bold"/>
+							<p:inputNumber id="txtCiRucPas" decimalPlaces="0" thousandSeparator=""
+										 maxlength="13" required="true" requiredMessage="C.I/RUC/PAS, Es campo obligatorio"
+										 title="Identificación Persona" style="color: #b30000;font-family: Arial, Helvetica, sans-serif;font-size: 15px;"
+										 value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.persona.perIdentificacion}">
+								<p:ajax event="change" process="@this txtCiRucPas" listener="#{controladorMantenimientoTramite.buscarPersona()}" update=":tabsTools:formTraDetalle:pnlDatos growl"/>
+							</p:inputNumber>
+
+							<p:outputLabel value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tramiteDetalle.perId.perApellidoPaterno} 
+										   #{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tramiteDetalle.perId.perApellidoMaterno} 
+										   #{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tramiteDetalle.perId.perNombre}" />
+
+							<p:outputLabel value="Contrato" style="font-weight: bold"/>
+							<p:outputLabel value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tipoTramiteSeleccionado.ttrDescripcion}" style="color: #b30000;font-weight: bold"/>
+							<p:outputLabel value="Compareciente" style="font-weight: bold"/>
+							<p:selectOneMenu id="comparecienteLista" value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tipoTramiteComparecienteSeleccionado}"
+											 filter="true" filterMatchMode="contains" required="true">
+								<f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+								<f:selectItems value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listTipoTramiteCompareciente}" var="compareciente"
+											   itemLabel="#{compareciente.tpcId.tpcDescripcion}" itemValue="#{compareciente}" />
+							</p:selectOneMenu>
+							<p:commandButton class="blue-btn" icon="fa fa-plus" disabled="#{!controladorMantenimientoTramite.blockTabPro}"
+											 action="#{controladorMantenimientoTramite.agregarTramiteDetalle()}"
+											 update=":tabsTools:formTraDetalle"/>
+						</p:panelGrid>
+
+						<br/>
+						<p:separator/>
+						<br/>
+						<p:commandButton class="blue-btn" icon="fa fa-refresh" value="Refrescar" action="#{controladorMantenimientoTramite.recargar()}" process="@this"/>
+						<p:commandButton class="green-btn" icon="fa fa-save" value="Terminar y Guardar" update="tabsTools"
+										 action="#{controladorMantenimientoTramite.guardarTramiteDetalle()}" process="@this"
+										 disabled="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listaTramiteDetalle.size() == 0 and !controladorMantenimientoTramite.bloqueoTra}"/>
+
+					</p:panel>
+
+					<p:panel>
+						<p:dataTable id="tblTraDetalle" value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listaTramiteDetalle}"
+									 var="traDetalle" style="text-align-last: center" rowIndexVar="num"
+									 rendered="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listaTramiteDetalle.size() != 0 }">
+
+							<p:column headerText="N° Repertorio" >
+								<h:outputText value="#{traDetalle.tdtNumeroRepertorio}" />
+							</p:column>
+
+							<p:column headerText="Tipo Trámite">
+								<h:outputText value="#{traDetalle.ttcId.ttrId.ttrDescripcion}" />
+							</p:column>
+
+							<p:column headerText="Tipo Compareciente">
+								<h:outputText value="#{traDetalle.ttcId.tpcId.tpcDescripcion}" />
+							</p:column>
+
+							<p:column headerText="Identificación">
+								<h:outputText value="#{traDetalle.tdtPerIdentificacion}" />
+							</p:column>
+
+							<p:column headerText="Apellido Paterno">
+								<h:outputText value="#{traDetalle.tdtPerApellidoPaterno}" />
+							</p:column>
+
+							<p:column headerText="Apellido Materno">
+								<h:outputText value="#{traDetalle.tdtPerApellidoMaterno}" />
+							</p:column>
+
+							<p:column headerText="Nombre">
+								<h:outputText value="#{traDetalle.tdtPerNombre}" />
+							</p:column>
+
+							<p:column style="width: 25px">
+								<p:commandButton class="red-btn" icon="fa fa-close" action="#{controladorMantenimientoTramite.eliminarTramiteDetalle(num)}" 
+												 update="@form" process="@this tblTraDetalle" disabled="#{!controladorMantenimientoTramite.blockTabPro}">
+									<f:setPropertyActionListener value="#{traDetalle}" 
+																 target="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tramiteDetalleSeleccionado}"/>
+									<f:setPropertyActionListener value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listaRepertorios.get(num)}" 
+																 target="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.repertorioSeleccionado}"/>
+									<f:setPropertyActionListener value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.listTramiteValor.get(num)}" 
+																 target="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.tramiteValorSeleccionado}"/>
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+
+
+				</p:panel>
+			</h:form>
+			<ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+			<ui:include src="/paginas/FiltradoPersona.xhtml"/>
+        </ui:composition>
+
+    </body>
+</html>

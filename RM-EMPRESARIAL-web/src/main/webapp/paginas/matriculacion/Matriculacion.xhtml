@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                <h:outputText value="Matriculacion"></h:outputText>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="formMatriculacion" >
+                    <div class="ui-g">
+                        <div class="ui-g-6">
+                            <p:panel header="Matriculación" style="width: 800px;">
+                                <!--                        <p:panelGrid layout="grid" columns="8" style="display: block;text-align: center">
+                                                            <p:outputLabel for="txtNumTramite" value="# Trámite"/>
+                                                            <p:inputText id="txtNumTramite" value="#{controladorMatriculacion.numTramite}" disabled="true"/>
+                                                            <p:outputLabel for="txtRepertorio" value="Repertorio"/>
+                                                            <p:inputText id="txtRepertorio" value="#{controladorMatriculacion.repertorio}" disabled="true" />
+                                                            <p:outputLabel for="txtFecha" value="Fecha"/>
+                                                            <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFecha" value="#{controladorMatriculacion.FHR}" disabled="true"/>
+                                                            <p:outputLabel for="txtContrato" value="Contrato"/>
+                                                            <p:inputText id="txtContrato" value="#{controladorMatriculacion.contrato}" disabled="true"/>
+                                                        </p:panelGrid>-->
+
+
+
+                                <h:panelGrid columns="2" >
+                                    <p:outputLabel for="txtFechaRepertorio" value="Fecha Repertorio" />
+                                    <p:calendar pattern="dd/MM/yyyy" id="txtFechaRepertorio" value="#{controladorMatriculacion.FHR}" required="true" label="firstname">
+                                        <p:ajax event="dateSelect" listener="#{controladorMatriculacion.llenarDatos()}" update=":formMatriculacion growl"/>
+                                    </p:calendar>
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="1">      
+                                    <p:dataTable id="tblRepertorios" rows="10" value="#{controladorMatriculacion.listaRepertorioUsuarioFecha}" 
+                                                 var="repUsu"  rowKey="#{repUsu.rpuId}" 
+                                                 sortBy="#{repUsu.repNumero.traNumero.traNumero}"
+                                                 scrollable="true" scrollHeight="350"
+                                                 > 
+
+
+                                        <p:column groupRow="true" headerText="# Trámite">
+                                            <h:outputText value="#{repUsu.repNumero.traNumero.traNumero}" />
+                                        </p:column>
+                                        <p:column headerText="Repertorio">
+                                            <h:outputText value="#{repUsu.repNumero.repNumero}" />
+                                        </p:column>
+                                        <p:column headerText="Contrato">
+                                            <h:outputText value="#{repUsu.repNumero.repTtrDescripcion}" />
+                                        </p:column>
+                                        <p:column headerText="Estado Proc." style="text-align: center;">
+                                            <h:outputText value="#{repUsu.rpuEstadoProceso}"/>
+                                        </p:column>
+                                        <p:column style="width: 10%; text-align: center; ">
+
+                                            <p:commandButton action="#{controladorMatriculacion.redireccionar()}" icon="fa fa-arrow-circle-right"
+                                                             oncomplete="#{repUsu.repNumero.traNumero.traClase eq 'J'}? PF('dlgCompareciente').show():''"
+                                                             update="frmComp">
+                                                <f:setPropertyActionListener target="#{controladorMatriculacion.repertorioUsuarioSeleccionado}"
+                                                                             value="#{repUsu}"/>
+                                            </p:commandButton>
+                                        </p:column>
+                                        <p:column style="width: 17%" groupRow="true"
+                                                  >
+                                            <p:commandButton icon="fa fa-save" class="orange-btn" 
+                                                             value="Terminar Proceso #{repUsu.repNumero.traNumero.traNumero}"
+                                                             style="width: 107px"
+                                                             action="#{controladorMatriculacion.terminarProcesoMatriculacion()}"
+                                                             process="@this" immediate="true"
+                                                             update="growl @form"
+                                                             > 
+                                                <f:setPropertyActionListener target="#{controladorMatriculacion.repertorioUsuarioSeleccionado}"
+                                                                             value="#{repUsu}"/>
+
+                                            </p:commandButton>
+                                        </p:column>
+
+
+
+                                    </p:dataTable>
+
+                                </h:panelGrid>
+
+                            </p:panel>
+
+                        </div>
+                    </div>
+
+                </h:form>
+
+                <p:dialog id="dlgCompareciente" header="Compareciente" widgetVar="dlgCompareciente"  
+                          appendTo="@(body)" modal="true" resizable="true" width="700" >
+                    <h:form id="frmComp">
+                        <p:dataTable value="#{controladorMatriculacion.listaTramDetaSelec}"
+                                     var="trmdet"
+                                     rowKey="#{trmdet.tdtId}">
+                            <p:column headerText="Ap. Paterno">
+                                <h:outputText value="#{trmdet.tdtPerApellidoPaterno}"/>
+                            </p:column>
+                            <p:column headerText="Ap. Materno">
+                                <h:outputText value="#{trmdet.tdtPerApellidoMaterno}"/>
+                            </p:column>
+                            <p:column headerText="Nombres">
+                                <h:outputText value="#{trmdet.tdtPerNombre}"/>
+                            </p:column>
+                            <p:column headerText="Tipo">
+                                <h:outputText value="#{trmdet.tdtTpcDescripcion}"/>
+                            </p:column>
+                            <p:column style="width: 10%" >
+                                <p:commandButton  icon="fa fa-chevron-circle-right"
+                                                  action="#{controladorMatriculacion.cargarPropiedades()}"
+                                                  oncomplete="PF('dlgPropiedades').show();"
+                                                  update="frmPrpd">
+                                    <f:setPropertyActionListener target="#{controladorMatriculacion.personaSelec}"
+                                                                 value="#{trmdet.perId}"/>
+                                    
+                                    
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                        
+                        <p:commandButton value="Terminar" icon="fa fa-save" class="green-btn"
+                                         action="#{controladorMatriculacion.terminarAgregarPrpdLegal()}"/>
+
+
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dlgPropiedades" header="Propiedades" widgetVar="dlgPropiedades"  
+                          appendTo="@(body)" modal="true" resizable="true" width="700" >
+                    <h:form id="frmPrpd">
+                        <p:dataTable value="#{controladorMatriculacion.listaPropiedadPorPropietario}"
+                                     var="prpd"
+                                     rowKey="#{prpd.prdMatricula}"
+                                     selection="#{controladorMatriculacion.listaPropiedadSelec}">
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                            <p:column headerText="Matricula">
+                                <h:outputText value="#{prpd.prdMatricula}"/>
+                            </p:column>
+                            <p:column headerText="Catastro">
+                                <h:outputText value="#{prpd.prdCatastro}"/>
+                            </p:column>
+                            <p:column headerText="Predio">
+                                <h:outputText value="#{prpd.prdPredio}"/>
+                            </p:column>
+
+
+                        </p:dataTable>
+                        <p:commandButton  value="Guardar" icon="fa fa-save" class="green-btn"
+                                          action="#{controladorMatriculacion.guardarTrmVlr()}"
+                                          oncomplete="PF('dlgPropiedades').hide();"/>
+                        <p:commandButton value="Cancelar" icon="fa fa-remove" class="red-btn"
+                                         immediate="true"
+                                         process="@this" oncomplete="PF('dlgPropiedades').hide();"/>
+
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListUsuarioTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="UsuarioListForm">
+                <p:panel header="#{bundle.ListUsuarioTitle}">
+                    <p:dataTable id="datalist" value="#{usuarioController.items}" var="item"
+                                 selectionMode="single" selection="#{usuarioController.usuarioControllerBb.usuario}"
+                                 paginator="true"
+                                 rowKey="#{item.usuId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+
+                        <p:column sortBy="#{item.usuLogin}" filterBy="#{item.usuLogin}" filterMatchMode="contains" filterStyle="text-transform: uppercase">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_usuLogin}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usuLogin}"/>
+                        </p:column>
+                        <!--
+                        <p:column sortBy="#{item.usuContrasenia}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_usuContrasenia}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usuContrasenia}"/>
+                        </p:column>-->
+                        <p:column sortBy="#{item.usuEmail}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_usuEmail}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usuEmail}"/>
+                        </p:column>
+                        <!--
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_usuFechaInicio}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usuFechaInicio}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_usuFechaFin}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usuFechaFin}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>-->
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_perId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.perId.perNombre}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_rolId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.rolId.rolNombre}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_zonId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.zonId.zonNombre}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_usuEstado}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usuEstado}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_usuUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usuUser}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_usuFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.usuFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListUsuarioTitle_usuImagen}"/>
+                            </f:facet>
+                            <div align="center">
+                                <p:commandButton  icon="fa fa-upload" 
+                                                  oncomplete="PF('dlgSubirImagen').show();">
+                                    <f:setPropertyActionListener target="#{usuarioController.usuarioSeleccionado}" value="#{item}"/>
+                                </p:commandButton>
+                            </div>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn"  value="#{bundle.Create}" actionListener="#{usuarioController.prepareCreate}" update=":UsuarioCreateForm" oncomplete="PF('UsuarioCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":UsuarioViewForm" oncomplete="PF('UsuarioViewDialog').show()" disabled="#{empty usuarioController.usuarioControllerBb.usuario}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" actionListener="#{usuarioController.prepareEdit()}" update=":UsuarioEditForm" oncomplete="PF('UsuarioEditDialog').show()" disabled="#{empty usuarioController.usuarioControllerBb.usuario}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{usuarioController.destroy}" update=":growl,datalist" disabled="#{empty usuarioController.usuarioControllerBb.usuario}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+
+            <p:dialog id="dialogoSubirImagen"  widgetVar="dlgSubirImagen" modal="true" resizable="false" header="Subir Imagen" position="center center" onShow="PF('dlgSubirImagen').initPosition();" appendTo="@(body)">
+                <h:form>
+                    <p:fileUpload mode="advanced" dragDropSupport="false" fileUploadListener="#{usuarioController.subirImagen}"
+                                  update=":growl @form" label="Escoger..." cancelLabel="Cancelar" uploadLabel="Subir"
+                                  fileLimitMessage="Error, Sólo puede subir 1 archivo." 
+                                  sizeLimit="1000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                                  oncomplete="PF('dlgSubirImagen').hide();">
+                    </p:fileUpload>
+                </h:form>
+            </p:dialog>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PaisEditDlg" widgetVar="PaisEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditPaisTitle}">
+            <h:form id="PaisEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{paisController.selected != null}">
+                        
+                        <p:outputLabel value="#{bundle.EditPaisLabel_paiNombre}" for="paiNombre" />
+                        <p:inputText id="paiNombre" value="#{paisController.selected.paiNombre}" style="text-transform: uppercase" title="#{bundle.EditPaisTitle_paiNombre}" required="true" requiredMessage="#{bundle.EditPaisRequiredMessage_paiNombre}"/>
+                        
+                        <p:outputLabel value="#{bundle.EditPaisLabel_paiEstado}" for="paiEstado" />
+                        <p:selectOneMenu id="paiEstado" value="#{paisController.selected.paiEstado}" required="true" requiredMessage="#{bundle.EditPaisRequiredMessage_paiEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                         <p:outputLabel value="#{bundle.EditPaisLabel_paiUser}" for="paiUser" />
+                        <p:inputText id="paiUser" value="#{paisController.selected.paiUser}" style="text-transform: uppercase" title="#{bundle.EditPaisTitle_paiUser}" required="true" requiredMessage="#{bundle.EditPaisRequiredMessage_paiUser}"/>
+                        <p:outputLabel value="#{bundle.EditPaisLabel_paiCodigo}" for="paiCodigo" />
+                        <p:inputText id="paiCodigo" value="#{paisController.selected.paiCodigo}" style="text-transform: uppercase" title="#{bundle.EditPaisTitle_paiCodigo}" required="true" requiredMessage="#{bundle.EditPaisRequiredMessage_paiCodigo}"/>
+                        <p:outputLabel value="#{bundle.EditPaisLabel_paiInicial}" for="paiInicial" />
+                        <p:inputText id="paiInicial" value="#{paisController.selected.paiInicial}" style="text-transform: uppercase" title="#{bundle.EditPaisTitle_paiInicial}" required="true" requiredMessage="#{bundle.EditPaisRequiredMessage_paiInicial}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{paisController.update}" value="#{bundle.Save}" update="display,:PaisListForm:datalist,:growl" oncomplete="PF('PaisEditDialog').hide()"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{paisController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="PaisEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

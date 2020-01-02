@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PathDocEleCreateDlg" widgetVar="PathDocEleCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreatePathDocEleTitle}">
+            <h:form id="PathDocEleCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="4" rendered="#{pathDocEleController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeRepositorio}" for="pdeRepositorio" />
+                        <p:inputText id="pdeRepositorio" value="#{pathDocEleController.selected.pdeRepositorio}" title="#{bundle.CreatePathDocEleTitle_pdeRepositorio}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeRepositorio}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeRepTemporal}" for="pdeRepTemporal" />
+                        <p:inputText id="pdeRepTemporal" value="#{pathDocEleController.selected.pdeRepTemporal}" title="#{bundle.CreatePathDocEleTitle_pdeRepTemporal}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeRepTemporal}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeLogo}" for="pdeLogo" />
+                        <p:inputText id="pdeLogo" value="#{pathDocEleController.selected.pdeLogo}" title="#{bundle.CreatePathDocEleTitle_pdeLogo}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeLogo}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeReportesJrxml}" for="pdeReportesJrxml" />
+                        <p:inputText id="pdeReportesJrxml" value="#{pathDocEleController.selected.pdeReportesJrxml}" title="#{bundle.CreatePathDocEleTitle_pdeReportesJrxml}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeReportesJrxml}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeFirma}" for="pdeFirma" />
+                        <p:inputText id="pdeFirma" value="#{pathDocEleController.selected.pdeFirma}" title="#{bundle.CreatePathDocEleTitle_pdeFirma}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeFirma}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeCertificado}" for="pdeCertificado" />
+                        <p:inputText id="pdeCertificado" value="#{pathDocEleController.selected.pdeCertificado}" title="#{bundle.CreatePathDocEleTitle_pdeCertificado}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeCertificado}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeCerAutorizado}" for="pdeCerAutorizado" />
+                        <p:inputText id="pdeCerAutorizado" value="#{pathDocEleController.selected.pdeCerAutorizado}" title="#{bundle.CreatePathDocEleTitle_pdeCerAutorizado}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeCerAutorizado}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeCerNoAutorizado}" for="pdeCerNoAutorizado" />
+                        <p:inputText id="pdeCerNoAutorizado" value="#{pathDocEleController.selected.pdeCerNoAutorizado}" title="#{bundle.CreatePathDocEleTitle_pdeCerNoAutorizado}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeCerNoAutorizado}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeCerContingencia}" for="pdeCerContingencia" />
+                        <p:inputText id="pdeCerContingencia" value="#{pathDocEleController.selected.pdeCerContingencia}" title="#{bundle.CreatePathDocEleTitle_pdeCerContingencia}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeCerContingencia}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeCerDevuelto}" for="pdeCerDevuelto" />
+                        <p:inputText id="pdeCerDevuelto" value="#{pathDocEleController.selected.pdeCerDevuelto}" title="#{bundle.CreatePathDocEleTitle_pdeCerDevuelto}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeCerDevuelto}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMailHabilitarAutenticacion}" for="pdeMailHabilitarAutenticacion" />
+                        <p:selectBooleanCheckbox id="pdeMailHabilitarAutenticacion" value="#{pathDocEleController.selected.pdeMailHabilitarAutenticacion}" required="true" requiredMessage="#{bundle.EditPathDocEleRequiredMessage_pdeMailHabilitarAutenticacion}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMailHabilitarSSL}" for="pdeMailHabilitarSSL" />
+                        <p:selectBooleanCheckbox id="pdeMailHabilitarSSL" value="#{pathDocEleController.selected.pdeMailHabilitarSSL}" required="true" requiredMessage="#{bundle.EditPathDocEleRequiredMessage_pdeMailHabilitarSSL}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMailHabilitarDEBUG}" for="pdeMailHabilitarDEBUG" />
+                        <p:selectBooleanCheckbox id="pdeMailHabilitarDEBUG" value="#{pathDocEleController.selected.pdeMailHabilitarDEBUG}" required="true" requiredMessage="#{bundle.EditPathDocEleRequiredMessage_pdeMailHabilitarDEBUG}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMailHost}" for="pdeMailHost" />
+                        <p:inputText id="pdeMailHost" value="#{pathDocEleController.selected.pdeMailHost}" title="#{bundle.CreatePathDocEleTitle_pdeMailHost}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeMailHost}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMailPuerto}" for="pdeMailPuerto" />
+                        <p:inputText id="pdeMailPuerto" value="#{pathDocEleController.selected.pdeMailPuerto}" title="#{bundle.CreatePathDocEleTitle_pdeMailPuerto}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeMailPuerto}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMailServidorDNS}" for="pdeMailServidorDNS" />
+                        <p:inputText id="pdeMailServidorDNS" value="#{pathDocEleController.selected.pdeMailServidorDNS}" title="#{bundle.CreatePathDocEleTitle_pdeMailServidorDNS}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeMailServidorDNS}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMailProtocolo}" for="pdeMailProtocolo" />
+                        <p:inputText id="pdeMailProtocolo" value="#{pathDocEleController.selected.pdeMailProtocolo}" title="#{bundle.CreatePathDocEleTitle_pdeMailProtocolo}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeMailProtocolo}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMailUser}" for="pdeMailUser" />
+                        <p:inputText id="pdeMailUser" value="#{pathDocEleController.selected.pdeMailUser}" title="#{bundle.CreatePathDocEleTitle_pdeMailUser}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeMailUser}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMailPassword}" for="pdeMailPassword" />
+                        <p:inputText id="pdeMailPassword" value="#{pathDocEleController.selected.pdeMailPassword}" title="#{bundle.CreatePathDocEleTitle_pdeMailPassword}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeMailPassword}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeWsRecepcion}" for="pdeWsRecepcion" />
+                        <p:inputText id="pdeWsRecepcion" value="#{pathDocEleController.selected.pdeWsRecepcion}" title="#{bundle.CreatePathDocEleTitle_pdeWsRecepcion}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeWsRecepcion}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeWsAutorizacion}" for="pdeWsAutorizacion" />
+                        <p:inputText id="pdeWsAutorizacion" value="#{pathDocEleController.selected.pdeWsAutorizacion}" title="#{bundle.CreatePathDocEleTitle_pdeWsAutorizacion}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeWsAutorizacion}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMetodoRecepcion}" for="pdeMetodoRecepcion" />
+                        <p:inputText id="pdeMetodoRecepcion" value="#{pathDocEleController.selected.pdeMetodoRecepcion}" title="#{bundle.CreatePathDocEleTitle_pdeMetodoRecepcion}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeMetodoRecepcion}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeNameSpaceURIRecepcion}" for="pdeNameSpaceURIRecepcion" />
+                        <p:inputText id="pdeNameSpaceURIRecepcion" value="#{pathDocEleController.selected.pdeNameSpaceURIRecepcion}" title="#{bundle.CreatePathDocEleTitle_pdeNameSpaceURIRecepcion}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeNameSpaceURIRecepcion}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeMetodoAutorizacion}" for="pdeMetodoAutorizacion" />
+                        <p:inputText id="pdeMetodoAutorizacion" value="#{pathDocEleController.selected.pdeMetodoAutorizacion}" title="#{bundle.CreatePathDocEleTitle_pdeMetodoAutorizacion}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeMetodoAutorizacion}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeNameSpaceURIAutorizacion}" for="pdeNameSpaceURIAutorizacion" />
+                        <p:inputText id="pdeNameSpaceURIAutorizacion" value="#{pathDocEleController.selected.pdeNameSpaceURIAutorizacion}" title="#{bundle.CreatePathDocEleTitle_pdeNameSpaceURIAutorizacion}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeNameSpaceURIAutorizacion}"/>
+                        <p:outputLabel value="#{bundle.CreatePathDocEleLabel_pdeClaveArchivo}" for="pdeClaveArchivo" />
+                        <p:inputText id="pdeClaveArchivo" value="#{pathDocEleController.selected.pdeClaveArchivo}" title="#{bundle.CreatePathDocEleTitle_pdeClaveArchivo}" required="true" requiredMessage="#{bundle.CreatePathDocEleRequiredMessage_pdeClaveArchivo}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{pathDocEleController.create}" value="#{bundle.Save}" update="display,:PathDocEleListForm:datalist,:growl" oncomplete="handleSubmit(args,'PathDocEleCreateDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}" immediate="true" onclick="PathDocEleCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

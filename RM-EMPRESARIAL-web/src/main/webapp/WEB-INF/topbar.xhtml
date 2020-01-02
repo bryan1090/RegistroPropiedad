@@ -1,0 +1,282 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/apollo">
+
+
+    <div class="topbar clearfix">
+        <p:graphicImage class="logo" library="apollo-layout" name="images/rp_registro_propiedad.png" />
+
+        <a id="menu-button" href="#">
+            <i class="fa fa-align-left"></i>
+        </a>
+
+        <a href="#" class="profile">
+            <h:form id="frmPerfil">
+                <span class="username"><h:outputText value="#{dataManagerSesion.usuarioLogeado.usuLogin}"/></span>
+                <p:graphicImage id="imagenUsu" name="#{dataManagerSesion.usuarioLogeado.usuImagen}" library="apollo-layout" style="border-radius: 50%" width="40px" height="40px"/>
+                <i class="fa fa-angle-down"></i>
+            </h:form>
+        </a>
+
+        <!--        <span class="topbar-search">
+                    <input type="text" placeholder="Search"/>
+                    <span class="fa fa-search"></span>
+                </span>-->
+
+        <span class="topbar-themeswitcher">
+            <h:form>
+                <p:inputSwitch value="#{guestPreferences.dark}">
+                    <p:ajax listener="#{guestPreferences.changeScheme}" oncomplete="setTimeout(function() {document.forms[0].submit()}, 500)" />
+                </p:inputSwitch>
+            </h:form>
+        </span>
+
+        <ul class="topbar-menu fadeInDown">
+            <li>
+                <h:form >
+                    <h:link  onclick="PF('dlgPerfilUsuario').show()">
+
+                        <i class="topbar-icon fa fa-fw fa-user"></i>
+                        <span class="topbar-item-name">Perfil</span>
+                        <!--                        <p:confirm header="Cerrar sesión" message="¿Esta seguro de salir?" icon="ui-icon-alert" />-->
+                    </h:link>
+                </h:form>
+                <!--                    <ul>-->
+                <!--                        <li role="menuitem">
+                                            <a href="#">
+                                                <i class="fa fa-fw fa-user"></i>
+                                                <span>Profile</span>
+                                            </a>
+                                        </li>
+                                        <li role="menuitem">
+                                            <a href="#">
+                                                <i class="fa fa-fw fa-user-secret"></i>
+                                                <span>Privacy</span>
+                                            </a>
+                                        </li>
+                                        <li role="menuitem">
+                                            <a href="#">
+                                                <i class="fa fa-fw fa-cog"></i>
+                                                <span>Settings</span>
+                                            </a>
+                                        </li>-->
+                <!--                    <li role="menuitem">
+                
+                                    </li>
+                                    </ul>-->
+
+                <h:form >
+                    <h:link  onclick="PF('dlgContrasena').show()">
+                        <i class="topbar-icon fa fa-fw fa-cog"></i>
+                        <span class="topbar-item-name">Cambiar Contraseña</span>
+                    </h:link>
+                </h:form>
+
+
+
+
+              
+
+                <h:form >
+                    <h:link  onclick="PF('dlgSesion').show()">
+                        <i class="fa fa-fw fa-sign-out"></i>
+                        <span class="topbar-item-name">Salir</span>
+                        <!--                        <p:confirm header="Cerrar sesión" message="¿Esta seguro de salir?" icon="ui-icon-alert" />-->
+                    </h:link>
+                </h:form>
+
+                <p:dialog id="dlgCerrarSesion" widgetVar="dlgSesion" modal="true"
+                          resizable="false" appendTo="@(body)" header="Cerrar Sesión">
+                    <h:form>
+                        <h:panelGrid columns="1">
+                            <h:outputText value="¿Esta seguro de deasear salir?"/>
+                        </h:panelGrid>
+
+                        <p:commandButton value="Si"  action="#{dataManagerSesion.logout()}"
+                                         styleClass="ui-confirmdialog-yes green-btn" icon="ui-icon-check" 
+                                         />
+                        <p:commandButton value="No" immediate="true" onclick="PF('dlgCerrarSesion').hide()"
+                                         styleClass="ui-confirmdialog-no red-btn" icon="ui-icon-close" />
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dlgCambiarContrasena" widgetVar="dlgContrasena" modal="true"
+                          resizable="false" appendTo="@(body)" header="Cambiar Contraseña">
+                    <h:form>
+                        <p:growl id="growl" showDetail="false" sticky="false" life="2000"/>
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="Contraseña Nueva" for="nuevaPassword" />
+                            <p:password id="nuevaPassword" value="#{cambiarContraseña.nuevaPassword}"  required="true" feedback="true"/>
+                            <p:outputLabel value="Repetir Contraseña" for="repetirPassword" />
+                            <p:password id="repetirPassword" value="#{cambiarContraseña.repetirPassword}"  required="true" feedback="true" />
+
+                        </h:panelGrid>
+
+                        <p:commandButton class="green-btn" icon="fa fa-save" action="#{cambiarContraseña.cambiarContraseña()}" value="Cambiar" update="growl" />
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" onclick="HostMailCreateDialog.hide()" immediate="true"/>
+                    </h:form>
+                </p:dialog>
+
+
+                <p:dialog id="dlgVerPerfil" widgetVar="dlgPerfilUsuario" modal="true"
+                          resizable="false" appendTo="@(body)" header="Perfil" position="center center">
+                    <h:form id="PerfilForm">
+                        <h:panelGroup id="display" >
+
+                            <p:panelGrid columns="2">
+
+                                <h:outputText value="Usuario" style="font-weight: bold"/>
+                                <h:outputText value="#{controladorPerfil.usuarioLogin}"/>
+                                <h:outputText value="Apellido Paterno" style="font-weight: bold"/>
+                                <h:outputText value="#{controladorPerfil.apellidoPaterno}" />
+                                <h:outputText value="Apellido Materno" style="font-weight: bold"/>
+                                <h:outputText value="#{controladorPerfil.apellidoMaterno}" />
+                                <h:outputText value="Nombre" style="font-weight: bold"/>
+                                <h:outputText value="#{controladorPerfil.nombre}" />
+                                <h:outputText value="Dirección" style="font-weight: bold"/>
+                                <h:outputText value="#{controladorPerfil.direccion}" />
+                                <h:outputText value="Teléfono" style="font-weight: bold"/>
+                                <h:outputText value="#{controladorPerfil.telefono}" />
+                                <h:outputText value="Celular" style="font-weight: bold"/>
+                                <h:outputText value="#{controladorPerfil.celular}" />
+                                <h:outputText value="Correo Electrónico" style="font-weight: bold"/>
+                                <h:outputText value="#{controladorPerfil.email}" />
+                                <h:outputText value="Imagen de usuario" style="font-weight: bold"/>
+                                <p:fileUpload mode="advanced" dragDropSupport="false" fileUploadListener="#{controladorPerfil.subirImagen}"
+                                              update=":growl @form" label="Escoger..." cancelLabel="Cancelar" uploadLabel="Subir"
+                                              fileLimitMessage="Error, Sólo puede subir 1 archivo." 
+                                              sizeLimit="1000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                                              oncomplete="PF('dlgPerfilUsuario').hide();" />
+                            </p:panelGrid>
+
+
+
+                        </h:panelGroup>
+                    </h:form>
+                </p:dialog>
+
+
+
+
+
+
+
+
+            </li>
+            <li>
+
+                <!--                <ul>
+                                    <li role="menuitem">
+                                        <a href="#">
+                                            <i class="fa fa-fw fa-paint-brush"></i>
+                                            <span>Change Theme</span>
+                                            <span class="topbar-badge">1</span>
+                                        </a>
+                                    </li>
+                                    <li role="menuitem">
+                                        <a href="#">
+                                            <i class="fa fa-fw fa-star-o"></i>
+                                            <span>Favorites</span>
+                                        </a>
+                                    </li>
+                                    <li role="menuitem">
+                                        <a href="#">
+                                            <i class="fa fa-fw fa-lock"></i>
+                                            <span>Lock Screen</span>
+                                            <span class="topbar-badge">3</span>
+                                        </a>
+                                    </li>
+                                    <li role="menuitem">
+                                        <a href="#">
+                                            <i class="fa fa-fw fa-picture-o"></i>
+                                            <span>Wallpaper</span>
+                                        </a>
+                                    </li>
+                                </ul>-->
+            </li>
+            <!--            <li>
+                            <a href="#">
+                                <i class="topbar-icon fa fa-fw fa-envelope-o"></i>
+                                <span class="topbar-item-name">Messages</span>
+                                <span class="topbar-badge">5</span>
+                            </a>
+                            <ul>
+                                <li role="menuitem">
+                                    <a href="#" class="topbar-message">
+                                        <p:graphicImage name="images/avatar1.png" library="apollo-layout" width="35"/>
+                                        <span>Give me a call</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem">
+                                    <a href="#" class="topbar-message">
+                                        <p:graphicImage name="images/avatar2.png" library="apollo-layout" width="35"/>
+                                        <span>Reports attached</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem">
+                                    <a href="#" class="topbar-message">
+                                        <p:graphicImage name="images/avatar3.png" library="apollo-layout" width="35"/>
+                                        <span>About your invoice</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem">
+                                    <a href="#" class="topbar-message">
+                                        <p:graphicImage name="images/avatar2.png" library="apollo-layout" width="35"/>
+                                        <span>Meeting today</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem">
+                                    <a href="#" class="topbar-message">
+                                        <p:graphicImage name="images/avatar4.png" library="apollo-layout" width="35"/>
+                                        <span>Out of office</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>-->
+            <!--            <li>
+                            <a href="#">
+                                <i class="topbar-icon fa fa-fw fa-bell-o"></i>
+                                <span class="topbar-item-name">Notifications</span>
+                                <span class="topbar-badge">2</span>
+                            </a>
+                            <ul>
+                                <li role="menuitem">
+                                    <a href="#">
+                                        <i class="fa fa-fw fa-tasks"></i>
+                                        <span>Pending tasks</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem">
+                                    <a href="#">
+                                        <i class="fa fa-fw fa-calendar-check-o"></i>
+                                        <span>Meeting today</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem">
+                                    <a href="#">
+                                        <i class="fa fa-fw fa-download"></i>
+                                        <span>Download</span>
+                                    </a>
+                                </li>
+                                <li role="menuitem">
+                                    <a href="#">
+                                        <i class="fa fa-fw fa-plane"></i>
+                                        <span>Book flight</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>-->
+            <!--            <li class="topbar-search-item">
+                            <span class="topbar-search">
+                                <input type="text" placeholder="Search"/>
+                                <span class="fa fa-search"></span>
+                            </span>
+                        </li>-->
+        </ul>
+    </div>
+
+</ui:composition>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListPersonaTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="PersonaListForm">
+                <p:growl id="growl" showDetail="true" sticky="false" life="3000"/>  
+                <p:panel header="#{bundle.ListPersonaTitle}">
+                    <p:panel>
+                        <h:form>
+                            <h:panelGrid columns="9" style="width: 100%">
+                                <p:outputLabel for="@next" value="Identificación"/>
+                                <p:inputText id="txtIdentificacion" value="#{personaController.identificacion}" style="text-transform: uppercase"/>
+                                <p:outputLabel for="@next" value="Apellido Paterno"/>
+                                <p:inputText id="txtApellidoPaterno" value="#{personaController.apellidoPaterno}" style="text-transform: uppercase"/>
+                                <p:outputLabel for="@next" value="Apellido Materno"/>
+                                <p:inputText id="txtApellidoMaterno" value="#{personaController.apellidoMaterno}" style="text-transform: uppercase"/>
+                                <p:outputLabel for="@next" value="Nombre"/>
+                                <p:inputText id="txtNombre" value="#{personaController.nombre}" style="text-transform: uppercase"/>
+                                <p:commandButton id="btnBuscarPersonadlg" class="green-btn" icon="fa fa-search" action="#{personaController.filtrarPersona()}" update=":PersonaListForm:datalist growl"/>
+                            </h:panelGrid>
+                        </h:form>
+                    </p:panel><br/>
+                    <p:dataTable id="datalist" value="#{personaController.items}" var="item"
+                                 selectionMode="single" selection="#{personaController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.perId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 emptyMessage="No se encontró ninguna persona"
+                                 >
+
+                        <p:ajax event="rowSelect" update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column sortBy="#{item.perTipoIdentificacion}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPersonaTitle_perTipoIdentificacion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.perTipoIdentificacion}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.perIdentificacion}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPersonaTitle_perIdentificacion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.perIdentificacion}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.perNombre}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPersonaTitle_perNombre}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.perNombre}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.perApellidoPaterno}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPersonaTitle_perApellidoPaterno}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.perApellidoPaterno}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.perApellidoMaterno}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPersonaTitle_perApellidoMaterno}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.perApellidoMaterno}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.perEmail}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPersonaTitle_perEmail}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.perEmail}"/>
+                        </p:column>
+
+                        <p:column sortBy="#{item.perEstado}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListPersonaTitle_perEstado}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.perEstado}"/>
+                        </p:column>
+
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn"  value="#{bundle.Create}" actionListener="#{personaController.prepareCreate}" update=":PersonaCreateForm" oncomplete="PF('PersonaCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":PersonaViewForm" oncomplete="PF('PersonaViewDialog').show()" disabled="#{empty personaController.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" actionListener="#{personaController.prepareEdit()}" update=":PersonaEditForm2" oncomplete="PF('PersonaEditDialog2').show()" disabled="#{empty personaController.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn"  value="#{bundle.Delete}" actionListener="#{personaController.destroy}" update=":growl,datalist" disabled="#{empty personaController.selected}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

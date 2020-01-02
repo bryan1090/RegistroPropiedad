@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="frmUtilPropiedad">
+                <p:panel id="pnlBusqueda">
+                    <p:outputLabel value="Predio"/>
+                    <p:inputText value="#{controladorUtilPropiedad.predio}"/>
+                    <p:outputLabel value="Catastro"/>
+                    <p:inputText value="#{controladorUtilPropiedad.catastro}"/>
+                    <p:commandButton value="Buscar" action="#{controladorUtilPropiedad.buscarPropiedades()}"
+                                     icon="fa fa-search"
+                                     update="@form growl"/>
+                    <p:commandButton value="Crear Propiedad" action="#{controladorUtilPropiedad.prepararPropiedad()}"
+                                     class="green-btn" icon="fa fa-plus"
+
+                                     oncomplete="PF('dialogoCrearPropiedad').show();" 
+                                     update="formNuevasMatriculas growl"/>
+                </p:panel>
+                <p:dataTable id="tblPropiedades" 
+                             value="#{controladorUtilPropiedad.listaPropiedadesBuscadas}" 
+                             var="propiedad"  
+                             scrollable="true" scrollHeight="200"
+                             rowKey="#{propiedad.prdMatricula}" 
+                             > 
+                    <p:column headerText="Matricula">
+                        <h:outputText value="#{propiedad.prdMatricula}"/>
+                    </p:column>
+                    <p:column headerText="Predio">
+                        <h:outputText value="#{propiedad.prdPredio}"/>
+                    </p:column>
+
+                    <p:column headerText="Catastro">
+                        <h:outputText value="#{propiedad.prdCatastro}"/>
+                    </p:column>
+
+                    <p:column headerText="Estado">
+                        <h:outputText value="#{propiedad.prdEstadoRegistro}"/>
+                    </p:column>
+                    <p:column headerText="Propietarios">
+                        
+                            <p:commandButton value="Ver" action="#{controladorUtilPropiedad.buscarPropietarios(propiedad)}"
+                                             icon="fa fa-search" class="cyan-btn"
+                                             oncomplete="PF('dialogoVerPropietarios').show();" update="formVerPropietarios" />
+                            <p:commandButton value="Agregar" 
+                                             icon="fa fa-plus" class="cyan-btn"
+                                             oncomplete="PF('dialogoCrearPropietarios').show();"
+                                             action="#{controladorUtilPropiedad.preCrearPropietario()}"
+                                             update="formCrearPropietarios" >
+                                <f:setPropertyActionListener target="#{controladorUtilPropiedad.propiedadSelec}"
+                                                             value="#{propiedad}"
+                                                             />
+                            </p:commandButton>
+                       
+
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog id="dlgVerPropietarios" header="Ver Propietarios" widgetVar="dialogoVerPropietarios"
+                      appendTo="@(body)" modal="true" resizable="true" width="700">
+                <h:form id="formVerPropietarios">
+                    <p:dataTable id="tblPropietarios" 
+                                 value="#{controladorUtilPropiedad.listaPropietarios}" 
+                                 var="propietario"  
+                                 scrollable="true" scrollHeight="200"
+                                 rowKey="#{propietario.pprId}" 
+                                 > 
+                        <p:column headerText="Identificacion">
+                            <h:outputText value="#{propietario.pprPerIdentificacion}"/>
+                        </p:column>
+                        <p:column headerText="Apellido Pat.">
+                            <h:outputText value="#{propietario.pprPerApellidoPaterno}"/>
+                        </p:column>
+                        <p:column headerText="Apellido Mat.">
+                            <h:outputText value="#{propietario.ppPerApellidoMaterno}"/>
+                        </p:column>
+                        <p:column headerText="Nombres">
+                            <h:outputText value="#{propietario.pprPerNombre}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgCrearPropietarios" header="Crear Propietarios" widgetVar="dialogoCrearPropietarios"
+                      appendTo="@(body)" modal="true" resizable="true" width="700">
+                <h:form id="formCrearPropietarios">
+                    <h:panelGrid columns="6" cellpadding="5" >
+
+                        <p:commandButton id="btnBuscarPersona" immediate="true" icon="fa fa-search"  class="orange-btn" 
+                                         title="Buscar Persona" 
+                                         action="#{controladorFiltradoPersona.prepararFiltrado('ctrlUtilPropiedad', 'formCrearPropietarios')}"
+                                         oncomplete ="PF('dlgFiltradoPersona').show()"
+                                         disabled="#{not empty controladorUtilPropiedad.persona  and not empty controladorUtilPropiedad.persona.perId}"
+                                         />
+                        <p:outputLabel value="CI/RUC/Pas." for="txtCiRucPas"/>
+
+                        <p:inputText id="txtCiRucPas" size="43" 
+                                     readonly="#{not empty controladorUtilPropiedad.persona  and not empty controladorUtilPropiedad.persona.perId}"
+                                     maxlength="13"
+                                     title="Identificación Persona" style="color: #b30000;font-family: Arial, Helvetica, sans-serif;font-size: 15px;"
+                                     value="#{controladorUtilPropiedad.identificacion}"
+                                     onkeypress="if (event.keyCode == 13) {
+                                                 return false;
+                                             }"
+                                     required="true" requiredMessage="El campo cedula es requerido"
+                                     >
+                            <p:ajax process="@this" listener="#{controladorUtilPropiedad.buscarPersona()}"
+                                    update="growl :PersonaEditForm @form"/>
+
+                        </p:inputText>  
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" cellpadding="5" >
+                        <p:outputLabel value="Repertorio" for="txtRepertorio"/>
+
+                        <p:inputNumber id="txtRepertorio"  decimalPlaces="0" minValue="0"
+                                       value="#{controladorUtilPropiedad.numRepertorio}"
+                                       required="true" requiredMessage="El campo repertorio es requerido"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Guardar" action="#{controladorUtilPropiedad.crearPropietario(controladorUtilPropiedad.propiedadSelec)}" 
+                                     update="growl" 
+                                     oncomplete="if(args &amp;&amp; !args.validationFailed) PF('dialogoCrearPropietarios').hide();"
+                                     class="green-btn" icon="fa fa-save"
+                                     />
+                    <p:commandButton value="Cancelar" onclick="PF('dialogoCrearPropietarios').hide();"
+                                     class="red-btn" icon="fa fa-cancel"
+                                     />
+                </h:form>
+            </p:dialog>
+            <ui:include src="dialogoCrearPropiedad.xhtml"/>
+            <ui:include src="/paginas/FiltradoPersona.xhtml" />
+        </ui:define>
+    </ui:composition>
+</html>

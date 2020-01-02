@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoSuspensionViewDlg" widgetVar="TipoSuspensionViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTipoSuspensionTitle}">
+            <h:form id="TipoSuspensionViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension != null}">
+                        <h:outputText value="#{bundle.ViewTipoSuspensionLabel_tpsNombre}"/>
+                        <h:outputText value="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension.tpsNombre}" title="#{bundle.ViewTipoSuspensionTitle_tpsNombre}"/>
+                        <h:outputText value="#{bundle.ViewTipoSuspensionLabel_tpsEstado}"/>
+                        <h:outputText value="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension.tpsEstado}" title="#{bundle.ViewTipoSuspensionTitle_tpsEstado}"/>
+                        <h:outputText value="#{bundle.ViewTipoSuspensionLabel_tpsUser}"/>
+                        <h:outputText value="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension.tpsUser}" title="#{bundle.ViewTipoSuspensionTitle_tpsUser}"/>
+                        <h:outputText value="#{bundle.ViewTipoSuspensionLabel_tpsFHR}"/>
+                        <h:outputText value="#{tipoSuspensionController.tipoSuspensionControllerBb.tipoSuspension.tpsFHR}" title="#{bundle.ViewTipoSuspensionTitle_tpsFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="Revisión" />
+                            <h:outputText value="#{item.tpsRevision ? 'SI':'NO'}"/>
+                        <h:outputText value="Inscripción" />
+                            <h:outputText value="#{item.tpsInscripcion ? 'SI':'NO'}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{tipoSuspensionController.clear()}" value="#{bundle.Close}"  onclick="TipoSuspensionViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

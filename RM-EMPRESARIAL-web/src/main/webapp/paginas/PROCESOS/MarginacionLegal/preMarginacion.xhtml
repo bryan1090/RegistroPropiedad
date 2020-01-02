@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition>
+        <div class="ui-fluid" align="center">
+            <p:panel>
+
+                <h:form id="formMatriculacion2">
+
+                    <p:panel id="pnlPreMatriculacion">
+                        <h:panelGrid columns="4" style="border: none;text-align: center;width: 100%" >
+
+                            <p:outputLabel for="txtRepertorioPopup" value="Repertorio" style="font-weight: bold"/>
+                            <p:outputLabel for="txtTramitePopup" value="#Trámite" style="font-weight: bold"/>
+                            <p:outputLabel for="txtFechaPopup" value="Fecha" style="font-weight: bold"/>
+                            <p:outputLabel for="txtContrato" value="Contrato" style="font-weight: bold"/>
+
+                            <h:outputText id="txtRepertorioPopup" value="#{controladorMarginacionGrupal.repertorioSeleccionado.repNumero}"
+                                          style="color: #1A237E"
+                                          />
+                            <h:outputText id="txtTramitePopup" value="#{controladorMarginacionGrupal.repertorioSeleccionado.traNumero.traNumero}"
+                                          style="color: #1A237E"/>
+                            <h:outputText id="txtFechaPopup" value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}"
+                                          style="color: #1A237E">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                            <h:outputText id="txtContrato" value="#{controladorMarginacionGrupal.repertorioSeleccionado.repTtrDescripcion}" 
+                                          style="color: #1A237E"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+
+                    <br/>
+                    <p:dataTable id="dtbTramVal" value="#{controladorMarginacionGrupal.listaTramiteValor}" 
+                                 var="traval" rowKey="#{traVal.trvId}" 
+                                 editable="true"
+                                 scrollable="true" scrollHeight="200" style="text-align: center"
+                                 rowIndexVar="numFila"
+                                 >
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton value="Nuevo" icon="fa fa-plus" style="width: 80px"
+                                                 class="green-btn"
+                                                 action="#{controladorMarginacionGrupal.preCrearNuevoTramiteValor()}"
+                                                 process="@this" immediate="true"
+                                                 update=":frmIngresoTramVal"
+                                                 oncomplete="PF('dlgCrearTramVal').show()"/>
+                                <p:commandButton icon="fa fa-arrow-circle-left"  value="Regresar"
+                                                 class="cyan-btn"
+                                                 style="width: 80px" 
+                                                 action="#{controladorMarginacionGrupal.redireccionarPaginaSeleccion()}"
+                                                 process="@this" immediate="true"
+                                                 update="growl"/>
+                                <p:commandButton icon="fa fa-stop"  value="Terminar"
+                                                 class="red-btn"
+                                                 style="width: 80px" 
+                                                 action="#{controladorMarginacionGrupal.terminarProceso()}"
+                                                 process="@this" immediate="true"
+                                                 disabled="#{controladorMarginacionGrupal.disabledBtnTerminar}"
+                                                 rendered="#{controladorMarginacionGrupal.renderedBtnTerminar}"
+                                                 update="growl" >
+
+                                    <p:confirm header="Confirmación" message="¿Desea terminar el proceso?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                        <p:column headerText="ID" style="width: 15%">
+                            <h:outputText
+                                          rendered="true"
+                                          value="#{traval.trvId}"/>
+
+                        </p:column>
+                        <p:column headerText="Estado" style="width: 15%">
+                            <h:outputText value="Revisado" style="font-size: medium; color: green"
+                                          rendered="#{traval.trvAccion gt 0}"/>
+
+                            <h:outputText value="No Revisado" style="font-size: medium;color: red"
+                                          rendered="#{traval.trvAccion eq 0 or traval.trvAccion eq null}"/>
+                        </p:column>
+                        <p:column headerText="Gravamen" style="width: 15%;font-size: medium;">
+                            <h:outputText value="#{controladorMarginacionGrupal.verificarGravamenes(traval)}"
+                                          style="#{controladorMarginacionGrupal.verificarGravamenes(traval) eq 'Tiene gravamenes'? 'color:red':
+                                                   controladorMarginacionGrupal.verificarGravamenes(traval) eq 'No Tiene gravamenes'?'color:red':''}"/>
+                        </p:column>
+                        <p:column headerText="Predio">
+                            <h:outputText value="#{traval.traNumPredio}"/>
+                        </p:column>
+
+                        <p:column headerText="Catastro">
+                            <h:outputText value="#{traval.trvNumCatastro}"/>
+                        </p:column>
+
+                        <p:column  headerText="Parroquia">
+                            <h:outputText value="#{traval.trvParNombre}" />
+                        </p:column>
+
+
+
+
+
+                        <p:column headerText="Seleccionar" style="width: 10%">
+                            <p:commandButton class="cyan-btn" icon="fa fa-check" 
+                                             action="#{controladorMarginacionGrupal.seleccionarTramiteValor()}" 
+                                             process="@this"
+                                             immediate="true"
+                                             update="growl   @form :formMarginacion" style="width: 40px">
+                                <f:setPropertyActionListener target="#{controladorMarginacionGrupal.tramiteValorSeleccionado}" 
+                                                             value="#{traval}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="Eliminar" style="width: 10%">
+                            <p:commandButton class="red-btn" icon="fa fa-trash" 
+                                             action="#{controladorMarginacionGrupal.borrarTramiteValor()}" 
+                                             update="@form growl :formMarginacion" style="width: 40px">
+                                <p:confirm header="Eliminar elemento" message="¿Esta seguro?"/>
+                                <f:setPropertyActionListener target="#{controladorMarginacionGrupal.tramiteValorSeleccionado}" 
+                                                             value="#{traval}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:form>
+            </p:panel>
+        </div>
+
+    </ui:composition>
+
+</html>

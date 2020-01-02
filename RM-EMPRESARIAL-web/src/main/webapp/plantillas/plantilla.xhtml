@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="./../resources/css/estilo.css" rel="stylesheet" type="text/css" />
+        <title>
+            <ui:insert name="titulo">
+                
+            </ui:insert>
+        </title>
+    </h:head>
+
+    <h:body>
+
+        <header id="cabecera">
+            <ui:insert name="cabecera">
+                <h1>Documentos Electr&oacute;nicos</h1>
+            </ui:insert>
+        </header>
+
+        <div class="cuerpo">
+            <nav id="menu">
+                <h:form>
+                    <p:growl id="messages" showDetail="false"/>
+                   
+                  <p:menu toggleable="true">
+        <p:submenu label="HOME">
+            <p:menuitem value="Inicio" url="index.xhtml" update="messages" icon="ui-icon-disk" />
+             </p:submenu>
+        <p:submenu label="Procesos">
+            <p:menuitem value="Facturacion" url="pages/factura.xhtml" icon="ui-icon-home"/>
+            <p:menuitem value="Internal" icon="ui-icon-star"/>
+            <p:menuitem value="Zona" icon="ui-icon-star" outcome="paginas/zona.xhml"/>
+        </p:submenu>
+    </p:menu>
+                </h:form>
+            </nav>
+
+            <article class="contenido">
+                <ui:insert name="contenido">
+                    Aqui va el contenido de la página
+                </ui:insert>
+            </article>
+        </div>
+
+        <footer id="pie">
+            <span id="proyecto">Documentacion Electr&oacute;nica.</span>
+           
+        </footer>
+
+    </h:body>
+
+</html>

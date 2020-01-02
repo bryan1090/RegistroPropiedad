@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                <h:outputText value="Reingreso Trámite"/>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+                    <p:growl id="growl" life="2000"/>
+                    <p:panel header="Cajas-Recaudación" >
+                        <p:tabMenu activeIndex="#{param.i}">
+                            <p:menuitem value="Inscripciones" outcome="/paginas/cajas/cajasRecaudacion_Inscripciones" icon="ui-icon">
+                                <f:param name="i" value="0" />
+                            </p:menuitem>
+                            <p:menuitem value="Certificados" outcome="/paginas/cajas/cajasRecaudacion_Certificados" icon="ui-icon">
+                                <f:param name="i" value="1" />
+                            </p:menuitem>
+                            <p:menuitem value="Reingreso-Trámite" outcome="/paginas/cajas/CajasReingresoTramite" icon="ui-icon">
+                                <f:param name="i" value="2" />
+                            </p:menuitem>
+                            <p:menuitem value="Facturacion RM" outcome="/paginas/cajas/facturacionRM.xhtml" icon="ui-icon">
+                                <f:param name="i" value="3" />
+                            </p:menuitem>
+                        </p:tabMenu>
+                        <br/>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-2" styleClass="ui-panelgrid-blank ui-fluid" >
+                            <p:outputLabel value="N° Trámite  " style="font-weight: bold; color: red"/>
+                            <p:inputText value="#{controladorCajasReingresoTramite.numeroTramite}" disabled="#{controladorCajasReingresoTramite.disabledReingreso}">
+                                <p:ajax event="change" listener="#{controladorCajasReingresoTramite.consultarTramiteEnReingreso()}" update="@form" />
+                            </p:inputText>
+                        </p:panelGrid>
+                        <br/>
+                        <p:panel >
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-10,ui-grid-col-2" 
+                                         styleClass="ui-panelgrid-blank ui-fluid" >
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-2" 
+                                             styleClass="ui-panelgrid-blank ui-fluid" >
+                                    <h:outputText value="N° Trámite:  "  style="font-weight: bold"/>
+                                    <h:outputText value="#{controladorCajasReingresoTramite.tramite.traNumero}" style="color: #b30000"/>
+                                </p:panelGrid>
+                            </p:panelGrid>
+                            <p:separator/>
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-5" 
+                                         styleClass="ui-panelgrid-blank ui-fluid" >
+                                <h:outputText value="Tipo ingreso"  style="font-weight: bold"/>
+                                <h:selectOneRadio id="TipoIngreso" value="#{controladorCajasReingresoTramite.tramite.traTipo}" disabled="true">
+                                    <f:selectItem itemLabel="Normal" itemValue="N"/>
+                                    <f:selectItem itemLabel="Legal" itemValue="L"/>
+                                    <f:selectItem itemLabel="Cancelaciones" itemValue="C" />
+                                    <f:selectItem itemLabel="Organizaciones" itemValue="O" />                            
+                                </h:selectOneRadio>
+                            </p:panelGrid>
+                            <p:separator/>
+                            <p:panelGrid columns="6" layout="grid" 
+                                         columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" 
+                                         styleClass="ui-panelgrid-blank ui-fluid" >
+                                <h:outputText value="CI/RUC/Pas:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorCajasReingresoTramite.tramite.traPerIdentificacion}" style="color: #b30000"/>
+                                <h:outputText value="N° de Tramites:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorCajasReingresoTramite.tramite.traCantidadTramite}"/>
+                                <h:outputText value="Fecha Entrega:  " style="font-weight: bold" rendered="#{controladorCajasReingresoTramite.rendFechaEntrega}"/>
+                                <h:outputText value="#{controladorCajasReingresoTramite.tramite.traFechaEntrega.time}"
+                                              style="color: #1A237E" rendered="#{controladorCajasReingresoTramite.rendFechaEntrega}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                </h:outputText>
+                            </p:panelGrid>
+                            <p:separator/>
+                            <p:panelGrid id="pnlIngreso" columns="6" layout="grid" 
+                                         columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" 
+                                         styleClass="ui-panelgrid-blank ui-fluid" >
+                                <h:outputText value="Apellido Paterno:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorCajasReingresoTramite.tramite.traPerApellidoPaterno}"/>
+                                <h:outputText value="Apellido Materno:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorCajasReingresoTramite.tramite.traPerApellidoMaterno}"/>
+                                <h:outputText value="Nombre:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorCajasReingresoTramite.tramite.traPerNombre}"/>
+                                <h:outputText value="Notaria:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorCajasReingresoTramite.tramite.traNotaria}"/>
+                                <h:outputText value="Juicio:  " style="font-weight: bold"/>
+                                <h:outputText value="#{controladorCajasReingresoTramite.tramite.traJucio}"/>
+                            </p:panelGrid>
+                            <p:separator/>
+                            <h:outputText value="Comparecientes" style="font-weight: bold; font-size: 14px;"/>
+                            <br/><br/>
+                            <p:dataTable id="ComparecientesLista" value="#{controladorCajasReingresoTramite.listaTramiteDetalle}" var="itemCom">
+                                <p:column style="width: 100px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="CI/RUC/PAS" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCom.tdtPerIdentificacion}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="NOMBRES" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCom.tdtPerApellidoPaterno} #{itemCom.tdtPerApellidoMaterno} #{itemCom.tdtPerNombre}"/>
+                                </p:column>
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="CONTRATO" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCom.tdtTtrDescripcion}"/>
+                                </p:column>
+                                <p:column style="width: 150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="COMPARECIENTES" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCom.tdtTpcDescripcion}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <p:separator/>
+                            <h:outputText value="Cuantía" style="font-weight: bold; font-size: 14px;"/>
+                            <br/><br/>
+                            <p:dataTable id="CuantiaLista" value="#{controladorCajasReingresoTramite.listaTramiteValor}" var="itemCua">
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Contrato" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.ttrId.ttrDescripcion}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Parroquia" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.trvParNombre}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N° Predio" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.traNumPredio}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N° Catastro" style="float:left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.trvNumCatastro}" style="float:left"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Valor"/>
+                                    </f:facet>
+                                    <h:outputText value="#{itemCua.trvValor}" style="float:left"/>
+                                </p:column>
+                            </p:dataTable>
+
+                            <br/><br/>
+                        </p:panel>
+                        
+                        <p:panel style="text-align: right">
+                            <p:commandButton id="btnNuevo" value="Refrescar" class="cyan-btn"  icon="fa fa-refresh" action="#{controladorCajasReingresoTramite.refrescar()}" update="@form" />
+                            <p:commandButton id="btnGrabar" class="green-btn" icon="fa fa-save"  value="Grabar" action="#{controladorCajasReingresoTramite.reingresarTramite()}" update="@form" disabled="#{controladorCajasReingresoTramite.estadoBtnGuardar}" />
+                            <p:commandButton  id="btnImprimir" icon="fa fa-print" value="Imprimir" action="#{controladorCajasReingresoTramite.generarReporte()}" disabled="#{controladorCajasReingresoTramite.estadoBtnImprimir}" ajax="false" immediate="true"/>
+                            <p:commandButton id="btncierrecaja" class="red-btn" icon="fa fa-window-close" value="Cierre Caja" action="#{controladorCajasReingresoTramite.cerrarCaja()}" />
+                        </p:panel>
+
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

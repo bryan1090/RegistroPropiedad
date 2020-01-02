@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog header="CONYUGUE" modal="true" widgetVar="dlgNuevaPersonaTramProforma" minHeight="40" position="center center" onShow="PF('dlgNuevaPersonaTramProforma').initPosition()">
+            <h:form id="CrearPersonaTramProformaForm">
+                <p:outputPanel id="plNuevaPersona" style="text-align:left;">             
+
+                    <p:panelGrid columns="4">
+
+                        <p:outputLabel value="Tipo Identificación" for="perTipoIdentificacion" />                     
+
+                        <p:selectOneMenu id="perTipoIdentificacion" 
+                                         value="#{controladorCrearPersonaTramiteProforma.persona.perTipoIdentificacion}"
+                                         style="width:125px">
+
+                            <f:selectItem itemLabel="CEDULA" itemValue="C" />
+                            <f:selectItem itemLabel="RUC" itemValue="R" />
+                            <f:selectItem itemLabel="PASAPORTE" itemValue="P" />
+
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perIdentificacion}" for="perIdentificacion" />
+                        <p:inputText maxlength="20"  id="perIdentificacion" readonly="#{tramitesControlador.readOnly}"
+                                     value="#{controladorCrearPersonaTramiteProforma.persona.perIdentificacion}"
+                                     title="#{bundle.CreatePersonaTitle_perIdentificacion}" 
+
+                                     required="true" requiredMessage="Ingrese la identificación" > 
+                            <p:ajax event="change" process="perTipoIdentificacion perIdentificacion"
+                                    listener="#{controladorCrearPersonaTramiteProforma.cargarDatosPorIdentifcacion()}" 
+                                    update="growl perIdentificacion CrearPersonaTramProformaForm" />
+                        </p:inputText>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perApellidoPaterno}" for="perApellidoPaterno" />
+                        <p:inputText style="text-transform:uppercase;" id="perApellidoPaterno" validatorMessage="Ingrese solo letras en el apellido paterno" value="#{controladorCrearPersonaTramiteProforma.persona.perApellidoPaterno}" title="#{bundle.CreatePersonaTitle_perApellidoPaterno}" required="true" requiredMessage="Ingrese el apellido paterno">
+                            <f:validateRegex  pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/> 
+                        </p:inputText>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perApellidoMaterno}" for="perApellidoMaterno" />
+                        <p:inputText style="text-transform:uppercase;" id="perApellidoMaterno" validatorMessage="Ingrese solo letras en el apellido materno" value="#{controladorCrearPersonaTramiteProforma.persona.perApellidoMaterno}" title="#{bundle.CreatePersonaTitle_perApellidoMaterno}">
+                            <f:validateRegex  pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/> 
+                        </p:inputText>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perNombre}" for="perNombre" />
+                        <p:inputText required="true"  style="text-transform:uppercase;" id="perNombre" value="#{controladorCrearPersonaTramiteProforma.persona.perNombre}" title="#{bundle.CreatePersonaTitle_perNombre}" requiredMessage="Ingrese el nombre"/>
+
+                        <p:outputLabel value="Teléfono" for="txtTelefono1"/>
+                        <p:inputMask  mask="9999999999"   id="txtTelefono1" value="#{controladorCrearPersonaTramiteProforma.persona.perTelefono}" ></p:inputMask>                     
+
+                        <p:outputLabel value="Correo Electrónico" for="txtCorreo"/>
+                        <p:inputText  size="50"  id="txtCorreo" value="#{controladorCrearPersonaTramiteProforma.persona.perEmail}" validatorMessage="El email es incorrecto"> <f:validateRegex  pattern="^((\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)|(\s*))$"/></p:inputText>
+
+                        <p:outputLabel value="Celular" for="txtCelular1"/>
+                        <p:inputMask  mask="9999999999"  id="txtCelular1" value="#{controladorCrearPersonaTramiteProforma.persona.perCelular}" ></p:inputMask>
+
+                        <p:outputLabel value="Dirección" for="txtDireccion1"/>
+                        <p:inputText  size="50" id="txtDireccion1" value="#{controladorCrearPersonaTramiteProforma.persona.perDireccion}" ></p:inputText>
+
+                        <p:commandButton  value="#{tramitesControlador.textoBoton}" icon="fa fa-save"
+                                          class="green-btn" update="plNuevaPersona growl" 
+                                          actionListener="#{controladorCrearPersonaTramiteProforma.crearPersona()}" 
+                                          oncomplete="handleSubmit(args,'dlgNuevaPersonaTramProforma');" />   
+                        <p:commandButton class="red-btn" process="CrearPersonaForm" immediate="true"
+                                         actionListener="#{controladorCrearPersonaTramiteProforma.limpiar()}"
+                                         icon="fa fa-close" value="#{bundle.Cancel}" 
+                                         onclick="PF('dlgNuevaPersonaTramProforma').hide()"/>
+                    </p:panelGrid>                                             
+
+                </p:outputPanel>
+            </h:form>
+        </p:dialog> 
+    </ui:composition>
+</html>

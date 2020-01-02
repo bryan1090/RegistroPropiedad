@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PersonaEditDlg2" widgetVar="PersonaEditDialog2" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditPersonaTitle}" position="center center" onShow="PF('PersonaCreateDialog').initPosition();" width="800">
+            <h:form id="PersonaEditForm2">
+                <p:growl id="growl" showDetail="true" sticky="false" life="4000"/> 
+                <h:panelGroup id="display">
+                    <h:panelGrid columns="4" rendered="#{personaController.selected != null}" style="width: 100%">
+
+                        <p:outputLabel value="#{bundle.EditPersonaLabel_perTipoIdentificacion}" for="perTipoIdentificacion" />
+                        <p:selectOneMenu id="perTipoIdentificacion" value="#{personaController.selected.perTipoIdentificacion}" title="#{bundle.EditPersonaTitle_perTipoIdentificacion}" required="true" requiredMessage="#{bundle.EditPersonaRequiredMessage_perTipoIdentificacion}" style="width:125px">
+                            <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                            <f:selectItem itemLabel="CEDULA" itemValue="C" />
+                            <f:selectItem itemLabel="RUC" itemValue="R" />
+                            <f:selectItem itemLabel="PASAPORTE" itemValue="P" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{bundle.EditPersonaLabel_perIdentificacion}" for="perIdentificacion" />
+                        <p:inputText id="perIdentificacion" value="#{personaController.selected.perIdentificacion}" title="#{bundle.EditPersonaTitle_perIdentificacion}" required="true" requiredMessage="#{bundle.EditPersonaRequiredMessage_perIdentificacion}"/>
+
+                        <p:outputLabel value="#{bundle.EditPersonaLabel_perNombre}" for="perNombre" />
+                        <p:inputText id="perNombre" value="#{personaController.selected.perNombre}" style="text-transform: uppercase" title="#{bundle.CreatePersonaTitle_perNombre}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perNombre}"/>
+
+                        <p:outputLabel value="#{bundle.EditPersonaLabel_perApellidoPaterno}" for="perApellidoPaterno" />
+                        <p:inputText id="perApellidoPaterno" value="#{personaController.selected.perApellidoPaterno}" style="text-transform: uppercase" title="#{bundle.CreatePersonaTitle_perApellidoPaterno}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perApellidoPaterno}"/>
+
+                        <p:outputLabel value="#{bundle.EditPersonaLabel_perApellidoMaterno}" for="perApellidoMaterno" />
+                        <p:inputText id="perApellidoMaterno" style="text-transform:uppercase;" value="#{personaController.selected.perApellidoMaterno}" title="#{bundle.CreatePersonaTitle_perApellidoMaterno}" />
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perFechaNacimiento}" for="perFechaNacimiento" />
+                        <p:calendar id="perFechaNacimiento" pattern="dd/MM/yyyy" value="#{personaController.selected.perFechaNacimiento}" title="#{bundle.EditPersonaTitle_perFechaNacimiento}" required="true" requiredMessage="#{bundle.EditPersonaRequiredMessage_perFechaNacimiento}" showOn="button"/>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perFechaDefuncion}" for="perFechaDefuncion" />
+                        <p:calendar id="perFechaDefuncion" pattern="dd/MM/yyyy" value="#{personaController.selected.perFechaDefuncion}" title="#{bundle.EditPersonaTitle_perFechaDefuncion}"  showOn="button"/>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perTelefono}" for="perTelefono" />
+                        <p:inputMask id="perTelefono" mask="999999999" value="#{personaController.selected.perTelefono}" title="#{bundle.CreatePersonaTitle_perTelefono}"></p:inputMask>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perCelular}" for="perCelular" />
+                        <p:inputMask  mask="9999999999"  id="perCelular" value="#{personaController.selected.perCelular}" title="#{bundle.CreatePersonaTitle_perCelular}" ></p:inputMask>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perEmail}" for="perEmail" />
+                        <p:inputText id="perEmail" value="#{personaController.selected.perEmail}" title="#{bundle.CreatePersonaTitle_perEmail}">
+                            <f:validateRegex  pattern="^((\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)|(\s*))$"/>
+                        </p:inputText>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perDireccion}" for="perDireccion" />
+                        <p:inputText id="perDireccion" value="#{personaController.selected.perDireccion}" title="#{bundle.CreatePersonaTitle_perDireccion}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perDireccion}"/>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perSexo}" for="perSexo" />
+                        <p:selectOneMenu id="perSexo" value="#{personaController.selected.perSexo}" title="#{bundle.CreatePersonaTitle_perSexo}" required="true" requiredMessage="Seleccionar sexo" style="width:125px">
+                            <f:selectItem itemLabel="Seleccione uno..." itemValue=""></f:selectItem>
+                            <f:selectItem itemLabel="FEMENINO" itemValue="F"></f:selectItem>
+                            <f:selectItem itemLabel="MASCULINO" itemValue="M"></f:selectItem>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perGenero}" for="perGenero" />                        
+                        <p:selectOneMenu id="perGenero" value="#{personaController.selected.perGenero}" title="#{bundle.CreatePersonaTitle_perGenero}" required="true" requiredMessage="Seleccionar sexo" style="width:125px">
+                            <f:selectItem itemLabel="Seleccione uno..." itemValue=""></f:selectItem>
+                            <f:selectItem itemLabel="FEMENINO" itemValue="F"></f:selectItem>
+                            <f:selectItem itemLabel="MASCULINO" itemValue="M"></f:selectItem>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perEstadoCivil}" for="perEstadoCivil" />
+                        <p:selectOneMenu id="perEstadoCivil" value="#{personaController.selected.perEstadoCivil}" title="#{bundle.CreatePersonaTitle_perEstadoCivil}" required="true" requiredMessage="Seleccionar estado civil" style="width:125px">
+                            <p:ajax event="change" update="busquedaConyuge perIdConyuge perIdConyugeNom btnFiltrar" listener="#{personaController.compConyuge()}"/>
+                            <f:selectItem itemLabel="Seleccione uno..." itemValue=""></f:selectItem>
+                            <f:selectItem itemLabel="SOLTERO/A" itemValue="S"></f:selectItem>
+                            <f:selectItem itemLabel="CASADO/A" itemValue="C"></f:selectItem>
+                            <f:selectItem itemLabel="DIVORCIADO/A" itemValue="D"></f:selectItem>
+                            <f:selectItem itemLabel="VIUDO/A" itemValue="V"></f:selectItem>
+                            <f:selectItem itemLabel="UNIÓN DE HECHO" itemValue="UH"></f:selectItem>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="C.I Conyuge" for="perIdConyuge" />
+                        <h:panelGroup>
+                            <h:panelGrid columns="2">
+                                <p:inputText id="busquedaConyuge" maxlength="20" value="#{personaController.ciConyuge}" autocomplete="false" disabled="#{personaController.disableConyuge}"
+                                             required="true"
+                                             requiredMessage="Ingresar identificacion de conyuge">
+                                    <p:ajax event="change" listener="#{personaController.traerConyuge()}" update="perIdConyuge perIdConyugeNom growl @this"/>
+                                </p:inputText>
+                                <p:commandButton disabled="#{personaController.disableConyuge}" id="btnFiltrar" 
+                                                 class="orange-btn" icon="fa fa-search" 
+                                                 actionListener="#{controladorFiltradoPersona.prepararFiltrado('PerC', ':PersonaEditForm2:perIdConyuge :PersonaEditForm2:perIdConyugeNom :PersonaEditForm2:busquedaConyuge')}" 
+                                                 oncomplete="PF('dlgFiltradoPersona').show();" 
+                                                 immediate="true" process="@this"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+
+                        <p:inputText id="perIdConyuge" disabled="#{personaController.disableConyuge}"
+                                     value="#{personaController.selected.perIdConyuge.perApellidoPaterno.trim()} #{personaController.selected.perIdConyuge.perApellidoMaterno.trim()}" 
+                                     title="#{bundle.CreatePersonaTitle_perIdConyuge}" 
+                                     readonly="true"
+                                     required="true"
+                                     requiredMessage="Ingresar conyuge valido"/>
+
+
+                        <p:inputText id="perIdConyugeNom" disabled="#{personaController.disableConyuge}" value="#{personaController.selected.perIdConyuge.perNombre.trim()}" readonly="true"/>
+
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perDisolucionConyugal}" for="perDisolucionConyugal" />
+                        <p:selectBooleanCheckbox id="perDisolucionConyugal" value="#{personaController.perDisolucionConyugal}" title="#{bundle.CreatePersonaTitle_perDisolucionConyugal}"/>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perCalidad}" for="perCalidad" />
+                        <p:selectBooleanCheckbox id="perCalidad" value="#{personaController.perCalidad}" title="#{bundle.CreatePersonaTitle_perCalidad}"/>
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perEstado}" for="perEstado" />
+                        <p:selectOneMenu id="perEstado" value="#{personaController.selected.perEstado}" title="#{bundle.CreatePersonaTitle_perEstado}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perEstado}" style="width:125px">
+                            <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+
+
+                    </h:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{personaController.update}" value="#{bundle.Save}" update="display,:PersonaListForm:datalist,:growl" oncomplete="PF('PersonaEditDialog2').hide();"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" action="#{personaController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="PF('PersonaEditDialog2').hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <h:form id="formRazonesSuspension" style=" width: 750px">
+            <p:scrollPanel style="height: 550px;" rendered="#{controladorInscripcionSuspension.numProforma != null}">
+                <h:panelGrid columns="6">
+                    <h:panelGrid columns="2" >
+                        <p:outputLabel for="txtNumTramite"  value="Nro. Tramite "/>
+                        <h:panelGroup>
+                            <p:inputText id="txtNumTramite"   readonly="true" value="#{controladorInscripcionSuspension.numProforma}">
+                            </p:inputText>
+
+                        </h:panelGroup>
+
+                    </h:panelGrid>
+                    <p:spacer width="5px" />
+                    <h:panelGrid columns="3">
+                        <p:outputLabel for="txtObservacion"  value="Observación "/>
+                        <p:inputText id="txtObservacion" style="width: 300px" value="#{controladorInscripcionSuspension.observacion}"/>
+                        <p:commandButton icon="fa fa-plus" value="Añadir" actionListener="#{controladorInscripcionSuspension.agregarNuevo()}" update="growl grid grid2 txtObservacion"  /> 
+                    </h:panelGrid>
+                </h:panelGrid>
+
+                <p:separator  />
+
+
+                <div class="ui-g" >
+                    <div class="ui-g-10 ui-g-nopad " >
+                        <p:panel id="pnlTipoSuspension" rendered="#{controladorInscripcionSuspension.mostrarGrid1}" style="border: none">
+                            <p:selectManyCheckbox  style="font-size: 10px;" id="grid"  value="#{controladorInscripcionSuspension.listaIDTipoSuspensionSeleccionados}" layout="responsive" columns="2" >
+                                <f:selectItems value="#{controladorInscripcionSuspension.listaTipoSuspension}"  var="item" itemLabel="#{item.tpsNombre}"  itemValue="#{item.tpsId}" />
+                            </p:selectManyCheckbox>
+                        </p:panel>  
+                    </div>
+                    <div class="ui-g-2" align="center">
+                        <h:panelGrid columns="1" rendered="#{controladorInscripcionSuspension.mostrarGrid1}">
+                            <p:commandButton style="min-width: 90px" update="growl @form formRazonesSuspension :formSuspensionIns "
+                                             icon="fa fa-save" value="Guardar"
+                                             actionListener="#{controladorInscripcionSuspension.insertarTramitesSuspension()}"
+                                             action="#{controladorInscripcion.llenarDatos()}">
+
+                            </p:commandButton> 
+                            <p:commandButton style="min-width: 90px" class="red-btn"  icon="fa fa-sign-out" process="@this" actionListener="#{controladorInscripcionSuspension.salir()}" value="Salir"  update="@form"  /> 
+
+                        </h:panelGrid>
+                    </div>
+                </div>
+                <div class="ui-g" >
+                    <div class="ui-g-10" >
+
+                        <p:panel id="pnlTramiteSuspension" rendered="#{controladorInscripcionSuspension.mostrarGrid2}">
+                            <p:selectManyCheckbox  style="font-size: 9px;" id="grid2"  value="#{controladorInscripcionSuspension.listaIDTramiteSuspensionSeleccionados}" layout="responsive" columns="2">
+                                <f:selectItems value="#{controladorInscripcionSuspension.listaTramiteSuspension}"  var="item" itemLabel="#{item.tmsNombre}"  itemValue="#{item.tmsId}" />
+                            </p:selectManyCheckbox>
+                        </p:panel>  
+                    </div>
+                    <div class="ui-g-2" align="center">
+                        <h:panelGrid columns="1" rendered="#{controladorInscripcionSuspension.mostrarGrid2}">
+
+                            <p:commandButton style="min-width: 90px"
+                                             update="growl @form :formSuspensionIns" 
+                                             icon="fa fa-save" value="Guardar" 
+                                             actionListener="#{controladorInscripcionSuspension.insertarTramitesSuspensionCaso2()}">
+                            </p:commandButton> 
+                            <p:commandButton style="min-width: 90px" class="red-btn"  icon="fa fa-sign-out" process="@this" actionListener="#{controladorInscripcionSuspension.salir()}" value="Salir"  update="@form"  /> 
+                            <p:commandButton style="min-width: 90px" class="cyan-btn" icon="fa fa-refresh" value="Refrescar" 
+                                             action="#{controladorInscripcionSuspension.recargarPagina()}"/>
+                             <p:commandButton value="Imprimir"  style="width: 90px" ajax="false" 
+                                                 icon="fa fa-print" actionListener="#{controladorInscripcionSuspension.descargarPDF()}">
+                                </p:commandButton> 
+                            
+                        </h:panelGrid>
+                    </div>
+                </div>
+            </p:scrollPanel>
+        </h:form>
+
+
+
+    </ui:composition>
+</html>

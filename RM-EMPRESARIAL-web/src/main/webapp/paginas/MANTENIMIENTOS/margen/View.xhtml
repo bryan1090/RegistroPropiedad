@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="MargenViewDlg" widgetVar="MargenViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewMargenTitle}">
+            <h:form id="MargenViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorMargen.selected != null}">
+                        <h:outputText value="#{bundle.ViewMargenLabel_marTipo}"/>
+                        <h:outputText value="#{controladorMargen.selected.marTipo}" title="#{bundle.ViewMargenTitle_marTipo}"/>
+                        <h:outputText value="#{bundle.ViewMargenLabel_marSuperior}"/>
+                        <h:outputText value="#{controladorMargen.selected.marSuperior}" title="#{bundle.ViewMargenTitle_marSuperior}"/>
+                        <h:outputText value="#{bundle.ViewMargenLabel_marInferior}"/>
+                        <h:outputText value="#{controladorMargen.selected.marInferior}" title="#{bundle.ViewMargenTitle_marInferior}"/>
+                        <h:outputText value="#{bundle.ViewMargenLabel_marIzquierdo}"/>
+                        <h:outputText value="#{controladorMargen.selected.marIzquierdo}" title="#{bundle.ViewMargenTitle_marIzquierdo}"/>
+                        <h:outputText value="#{bundle.ViewMargenLabel_marDerecho}"/>
+                        <h:outputText value="#{controladorMargen.selected.marDerecho}" title="#{bundle.ViewMargenTitle_marDerecho}"/>
+                        <h:outputText value="#{bundle.ViewMargenLabel_marEstado}"/>
+                        <h:outputText value="#{controladorMargen.selected.marEstado}" title="#{bundle.ViewMargenTitle_marEstado}"/>
+                        <h:outputText value="#{bundle.ViewMargenLabel_marUser}"/>
+                        <h:outputText value="#{controladorMargen.selected.marUser}" title="#{bundle.ViewMargenTitle_marUser}"/>
+                        <h:outputText value="#{bundle.ViewMargenLabel_marFHR}"/>
+                        <h:outputText value="#{controladorMargen.selected.marFHR}" title="#{bundle.ViewMargenTitle_marFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Close}" onclick="MargenViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

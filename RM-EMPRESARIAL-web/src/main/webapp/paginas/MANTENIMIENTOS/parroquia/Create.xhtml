@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ParroquiaCreateDlg" widgetVar="ParroquiaCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateParroquiaTitle}">
+            <h:form id="ParroquiaCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorParroquia.selected != null}">
+
+                        <p:outputLabel value="#{bundle.CreateParroquiaLabel_parNombre}" for="parNombre" />
+                        <p:inputText id="parNombre" value="#{controladorParroquia.selected.parNombre}" style="text-transform: uppercase" title="#{bundle.CreateParroquiaTitle_parNombre}" required="true" requiredMessage="#{bundle.CreateParroquiaRequiredMessage_parNombre}"/>
+
+                        <p:outputLabel value="#{bundle.CreateParroquiaLabel_parEstado}" for="parEstado" />
+                        <p:selectOneMenu id="parEstado" value="#{controladorParroquia.selected.parEstado}" required="true" requiredMessage="#{bundle.CreateParroquiaRequiredMessage_parEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="#{bundle.CreateParroquiaLabel_parCodigo}" for="parCodigo" />
+                        <p:inputText id="parCodigo" value="#{controladorParroquia.selected.parCodigo}" style="text-transform: uppercase" title="#{bundle.CreateParroquiaTitle_parCodigo}" required="true" requiredMessage="#{bundle.CreateParroquiaRequiredMessage_parCodigo}"/>
+                        <p:outputLabel value="#{bundle.CreateParroquiaLabel_parInicial}" for="parInicial" />
+                        <p:inputText id="parInicial" value="#{controladorParroquia.selected.parInicial}" style="text-transform: uppercase" title="#{bundle.CreateParroquiaTitle_parInicial}" required="true" requiredMessage="#{bundle.CreateParroquiaRequiredMessage_parInicial}"/>
+                        <p:outputLabel value="#{bundle.CreateParroquiaLabel_ciuId}" for="ciuId" />
+                        <p:selectOneMenu id="ciuId" value="#{controladorParroquia.selected.ciuId}" style="text-transform: uppercase" required="true" requiredMessage="#{bundle.EditParroquiaRequiredMessage_ciuId}">
+                            <f:selectItems value="#{controladorCiudad.itemsAvailableSelectOne}"
+                                           var="ciuIdItem"
+                                           itemValue="#{ciuIdItem}" itemLabel="#{ciuIdItem.ciuNombre}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorParroquia.create}" value="#{bundle.Save}" update="display,:ParroquiaListForm:datalist,:growl" oncomplete="PF('ParroquiaCreateDialog').hide();"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorParroquia.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="ParroquiaCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

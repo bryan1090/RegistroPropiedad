@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoIncidenciaEditDlg" widgetVar="TipoIncidenciaEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditTipoIncidenciaTitle}">
+            <h:form id="TipoIncidenciaEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTipoIncidencia.selected != null}">
+                        <p:outputLabel value="#{bundle.EditTipoIncidenciaLabel_tidDescripcion}" for="tidDescripcion" />
+                        <p:inputText id="tidDescripcion" value="#{controladorTipoIncidencia.selected.tidDescripcion}" title="#{bundle.EditTipoIncidenciaTitle_tidDescripcion}" required="true" requiredMessage="#{bundle.EditTipoIncidenciaRequiredMessage_tidDescripcion}"/>
+                        <p:outputLabel value="#{bundle.EditTipoIncidenciaLabel_tidEstado}" for="tidEstado" />
+                        <p:selectOneMenu id="tidEstado" value="#{controladorTipoIncidencia.selected.tidEstado}" required="true" requiredMessage="#{bundle.EditTipoIncidenciaRequiredMessage_tidEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Código Padre" for="tipCodPadre"/>
+                        <p:selectOneMenu id="tipCodPadre" value="#{controladorTipoIncidencia.selected.tipCodigoPadre}" required="true" requiredMessage="Seleccione el Código Padre">
+                            <f:selectItem itemLabel="NINGUNO" itemValue="0"></f:selectItem>
+                            <f:selectItem itemLabel="MODIFICACIÓN ACTA" itemValue="4"></f:selectItem>
+                        </p:selectOneMenu>
+                      
+                        <p:outputLabel value="Código Hijo" for="tipCodHijo"/>
+                        <p:selectOneMenu id="tipCodHijo" value="#{controladorTipoIncidencia.codigoHijo}" required="false" requiredMessage="Seleccione el Código Padre">
+                                <f:selectItem itemLabel="NINGUNO" itemValue="0"></f:selectItem>    
+                                <f:selectItems itemLabel="#{codHijo}" 
+                                           value="#{controladorTipoIncidencia.listaCodigoHijo}"
+                                           var="codHijo"
+                                           itemValue="#{codHijo}"></f:selectItems>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorTipoIncidencia.update}" value="#{bundle.Save}" update="display,:TipoIncidenciaListForm:datalist,:growl" oncomplete="handleSubmit(args, 'TipoIncidenciaEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTipoIncidencia.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="TipoIncidenciaEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

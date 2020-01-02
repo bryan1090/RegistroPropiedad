@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TiempoProcesoCreateDlg" widgetVar="TiempoProcesoCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="Crear Tiempo de Proceso">
+            <h:form id="TiempoProcesoCreateForm">
+                <h:panelGroup id="display" >
+                    <p:panelGrid columns="2" rendered="#{controladorTiempoProceso.selected != null}">
+
+                        <p:outputLabel value="#{bundle.CreateTiempoProcesoLabel_tpoUnidadTiempo}" for="tpoUnidadTiempo" />
+                        <p:selectOneMenu id="tpoUnidadTiempo" value="#{controladorTiempoProceso.selected.tpoUnidadTiempo}" required="true" requiredMessage="#{bundle.CreateTiempoProcesoRequiredMessage_tpoUnidadTiempo}" title="#{bundle.CreateTiempoProcesoTitle_tpoUnidadTiempo}">
+                            <f:selectItem itemValue="D"  itemLabel="Días"/>
+                            <f:selectItem itemValue="H" itemLabel="Horas"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="#{bundle.CreateTiempoProcesoLabel_tpoTiempo}" for="tpoTiempo" />
+                        <p:inputNumber id="tpoTiempo" decimalPlaces="2" value="#{controladorTiempoProceso.selected.tpoTiempo}" title="#{bundle.CreateTiempoProcesoTitle_tpoTiempo}" required="true" requiredMessage="#{bundle.CreateTiempoProcesoRequiredMessage_tpoTiempo}" />
+                        
+                        <p:outputLabel value="#{bundle.CreateTiempoProcesoLabel_estId}" for="estId" />
+                         <p:selectOneMenu id="estId" value="#{controladorTiempoProceso.selected.estId}" 
+                                          required="true" requiredMessage="#{bundle.EditTiempoProcesoRequiredMessage_estId}"
+                                          filter="true" filterMatchMode="contains">
+                             <f:selectItems value="#{controladorEstado.itemsAvailableSelectOne}"
+                                           var="estIdItem"
+                                           itemValue="#{estIdItem}"
+                                           itemLabel="#{estIdItem.estDescripcion}"/>
+                        </p:selectOneMenu>
+                         <p:outputLabel value="#{bundle.CreateTiempoProcesoLabel_ttrId}" for="ttrId" />
+                        <p:selectOneMenu id="ttrId" value="#{controladorTiempoProceso.selected.ttrId}" 
+                                         required="true" requiredMessage="#{bundle.EditTiempoProcesoRequiredMessage_ttrId}"
+                                          filter="true" filterMatchMode="contains">
+                            <f:selectItems value="#{controladorTipoTramite.itemsAvailableSelectOne}"
+                                           var="ttrIdItem"
+                                           itemValue="#{ttrIdItem}"
+                                           itemLabel="#{ttrIdItem.ttrDescripcion}"/>
+                        </p:selectOneMenu>
+                       
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorTiempoProceso.create}" value="#{bundle.Save}" update="display,:TiempoProcesoListForm:datalist,:growl" oncomplete="handleSubmit(args,'TiempoProcesoCreateDialog');"/>
+                    <p:commandButton class="red-btn" immediate="true" icon="fa fa-close"  value="#{bundle.Cancel}" onclick="TiempoProcesoCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UsuarioCajaViewDlg" widgetVar="UsuarioCajaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewUsuarioCajaTitle}">
+            <h:form id="UsuarioCajaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{usuarioCajaController.selected != null}">
+                        <h:outputText value="#{bundle.ViewUsuarioCajaLabel_usuId}"/>
+                        <h:outputText value="#{usuarioCajaController.selected.usuId.usuLogin}" title="#{bundle.ViewUsuarioCajaTitle_usuId}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioCajaLabel_cajId}"/>
+                        <h:outputText value="#{usuarioCajaController.selected.cajId.cajNombre}" title="#{bundle.ViewUsuarioCajaTitle_cajId}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioCajaLabel_uscUser}"/>
+                        <h:outputText value="#{usuarioCajaController.selected.uscUser}" title="#{bundle.ViewUsuarioCajaTitle_uscUser}"/>
+                        <h:outputText value="#{bundle.ViewUsuarioCajaLabel_uscFHR}"/>
+                        <h:outputText value="#{usuarioCajaController.selected.uscFHR}" title="#{bundle.ViewUsuarioCajaTitle_uscFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{usuarioCajaController.clear()}" value="#{bundle.Close}" onclick="UsuarioCajaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">    
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Generar Certificados"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="frmSelAct">
+
+                <div class="ui-g">
+                    <div class="ui-g-8">
+                        <p:panel header="Generar Certificados">
+                            <p:dataTable id="tblActas"  value="#{controladorCertificadosGenerar.listaActasSeleccionadas}" 
+                                         var="acta"  rowKey="#{acta.actNumero}"
+                                         scrollable="true" scrollHeight="350"
+                                         >
+                                <p:column headerText="N° Acta" filterBy="#{acta.actNumero}" filterMatchMode="contains">
+                                    <h:outputText value="#{acta.actNumero}"/>
+                                </p:column>
+                                <p:column headerText="Matrícula" filterBy="#{acta.prdMatricula.prdMatricula}" filterMatchMode="contains">
+                                    <h:outputText value="#{acta.prdMatricula.prdMatricula}"/>
+                                </p:column>
+                                <p:column headerText="Repertorio" filterBy="#{acta.repNumero.repNumero}" filterMatchMode="contains">
+                                    <h:outputText value="#{acta.repNumero.repNumero}"/>
+                                </p:column>
+                                <p:column headerText="Tipo Libro" filterBy="#{acta.tplId.tplDescripcion}" filterMatchMode="contains">
+                                    <h:outputText value="#{acta.tplId.tplDescripcion}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton  value="Generar Certificados"
+                                                      action="#{controladorCertificadosGenerar.generarCertificado(acta)}"
+                                                      oncomplete="PF('dlgGenerarCertificados').show();"
+                                                      update=":frmGenCer"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:panel>
+                    </div>
+                </div>
+            </h:form>
+
+
+
+            <p:dialog widgetVar="dlgGenerarCertificados" modal="true" width="70%" >
+                <h:form id="frmGenCer">
+                    <p:scrollPanel style="height: 400px;text-align: justify">
+                        <h:outputText escape="false" value="#{controladorCertificadosGenerar.certificadoGenerado}"/>
+                    </p:scrollPanel>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+</html>

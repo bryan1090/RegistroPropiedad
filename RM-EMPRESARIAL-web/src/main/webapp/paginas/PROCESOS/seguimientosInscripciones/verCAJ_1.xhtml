@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <ui:composition>
+        <p:dialog id="CajDlg1" header="Cajas - Recaudación" widgetVar="CajDialogo1" modal="true" resizable="false">
+            <p:scrollPanel style="height:500px">
+                <h:form id="CajVerForm1">
+                    <h:panelGrid columns="1" style="max-width: 850px;max-height: 500px">
+                        <h:panelGrid columns="2" style="width: 100%">
+                            <h:outputText/>
+                            <h:outputText/>
+                            <h:commandLink style="float: right" action="#{controladorVerCertificado.generarRide()}">
+                                <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                            </h:commandLink>
+                        </h:panelGrid>
+                        <h:panelGrid columns="6" cellpadding="10">
+                            <h:outputText value="#Factura:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facNumero}" style="color: #b30000"/>
+                            <h:outputText value="Fecha Ingreso  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facFHR.time}" style="color: #1A237E">
+                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                            </h:outputText>
+                            <h:outputText value="Fecha Entrega:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facFechaEntrega.time}" style="color: #1A237E">
+                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                            </h:outputText>
+                            <h:outputText value="Cedula/RUC/Pas:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facPerIdentificacion}" style="color: #b30000"/>
+                            <h:outputText value="Nombre:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facPerNombre}"/>
+                            <h:outputText value="Dirección:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facPerDireccion}"/>
+                            <h:outputText value="Telefono:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facPerTelefono}"/>
+                            <h:outputText value="Mail:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facPerEmail}"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" cellpadding="10">
+                            <h:outputText value="Observación:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facObservacion}"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="4" cellpadding="10">
+                            <h:outputText value="Nro Certificados:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facCertificado}"/>
+                            <h:outputText value="Nro de Derechos:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerCertificado.factura.facNumeroDerecho}"/>
+                        </h:panelGrid>
+                        <p:dataTable id="DetFacLista1" value="#{controladorVerCertificado.facturaDetalle}" var="itemDetFac" rowIndexVar="index">
+                            <p:column style="width: 100px;">
+                                <f:facet name="header">
+                                    <h:outputText value="Línea" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{index+1}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Contrato" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemDetFac.fdtTtrDescripcion}"/>
+                            </p:column>
+                            <p:column style="width: 150px;">
+                                <f:facet name="header">
+                                    <h:outputText value="Tramite" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemDetFac.fdtTraNumero}"/>
+                            </p:column>
+                            <p:column style="width: 150px;">
+                                <f:facet name="header">
+                                    <h:outputText value="Valor" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemDetFac.fdtValor}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:panelGrid  layout="grid" columns="1" style="border: none;text-align: right;background-position: right">
+                            <p:row style="border: none">
+                                <h:outputText value="Subtotal   "/>
+                                <p:inputNumber readonly="true" value="#{controladorVerCertificado.factura.facSubTotal}" style="background-position: left;font-weight:bold" inputStyle="text-align: right"/>
+                            </p:row>
+                            <p:row style="border: none">
+                                <h:outputText value="Iva 12%   "/>
+                                <p:inputNumber readonly="true" value="#{controladorVerCertificado.factura.facIva}" style="background-position: left;font-weight:bold" inputStyle="text-align: right"/>
+                            </p:row>
+                            <p:row style="border: none">
+                                <h:outputText value="Iva 0%   "/>
+                                <p:inputNumber readonly="true" value="#{controladorVerCertificado.factura.facBaseIva}" style="background-position: left;font-weight:bold" inputStyle="text-align: right"/>
+                            </p:row>
+                            <p:row style="border: none">
+                                <h:outputText value="Total   "/>
+                                <p:inputNumber readonly="true" value="#{controladorVerCertificado.factura.facTotal}" style="background-position: left;font-weight:bold" inputStyle="text-align: right"/>
+                            </p:row>
+                        </p:panelGrid>
+                    </h:panelGrid>
+                </h:form>
+            </p:scrollPanel>
+        </p:dialog>
+    </ui:composition>
+
+</html>
+

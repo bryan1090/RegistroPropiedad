@@ -1,0 +1,1509 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!--    <body>-->
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+        </ui:define>
+
+        <ui:define name="content">
+
+            <!--            <style type="text/css">
+                            .ui-log {
+                                left: 500px;
+                                top: 250px;
+                            }
+                        </style>-->
+            <!--            <p:log id="log" />-->
+
+            <style type="text/css">
+                .boton {
+
+                    height: 50px;
+                    width: 24px !important;
+                    font-size: 24px !important;
+
+                }
+
+            </style>
+            <style type="text/css">
+                .colorCelda {
+                    background-color: #FFD54F !important;
+                    background-image: none !important;
+                    color: #000000 !important;
+                }
+            </style>
+
+            <p:panel id="pnlAsigMatr" header="Matriculación PH" >
+                <ui:include src="../MatriculacionPH/preMatriculacion.xhtml"/>
+
+
+                <br/>
+
+
+                <p:panel id="pnlAcciones" header="DECLARATORIA" rendered="#{controladorNuevasMatriculasPH.renderedPanelDeclaratoria}">
+                    <p:tabView id="tabView" rendered="#{controladorNuevasMatriculasPH.mostrarTabView}" 
+                               activeIndex="#{controladorNuevasMatriculasPH.indiceTab}" >
+                        <p:tab id="tab_1" title="Generación de Matrículas" disabled="#{!controladorNuevasMatriculasPH.disabledTab}">
+                            <h:form id="formNuevasMatriculas">
+                                <div align="right">
+                                    <p:commandButton class="green-btn" icon="fa fa-save" 
+                                                     action="#{controladorNuevasMatriculasPH.guardarPropiedad()}" 
+                                                     process="@form" update="growl @form :formMatriculacion2 :pnlAcciones"
+                                                     value="Guardar"/>
+                                </div>
+
+                                <div class="ui-g">
+                                    <div class="ui-g-6">                                        
+
+                                        <p:panel header="Datos De Identificación" >
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtMatricula" value="Matricula" style="text-align: right"/>
+
+                                                <h:panelGrid columns="2" cellspacing="0" border="0" >
+                                                    <p:inputText id="txtMatricula" size="55" readonly="true" style="width: 250px" value="#{controladorNuevasMatriculasPH.matricula}"/>
+
+                                                </h:panelGrid>
+                                                <p:outputLabel for="txtNumero" value="Número/Nombre" style="text-align: right"/> 
+                                                <p:inputText id="txtNumero" style="width: 250px" 
+                                                             required="true" requiredMessage="Ingrese el número"
+                                                             value="#{controladorNuevasMatriculasPH.propiedadNueva.prdUnidadVivienda}" size="55"
+                                                             readonly="false"/>
+                                                <p:outputLabel for="txtCatastro" value="Catastro" style="text-align: right"/>
+                                                <p:inputText id="txtCatastro" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdCatastro}" size="55"
+                                                             readonly="true"/>
+                                                <p:outputLabel for="txtPredio" value="Predio" style="text-align: right"/>
+                                                <p:inputText id="txtPredio" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdPredio}" size="55"
+                                                             readonly="true"/>
+
+                                                <p:outputLabel for="txtParroquiaHistorica" value="Parroquia Historica" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaHistorica" required="true" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdTdtParIdH}" 
+                                                                 filter="true" disabled="true">
+                                                    <p:ajax event="change" update="txtParroquiaActual txtDescripcion" listener="#{controladorNuevasMatriculasPH.seleccionarParroquiaHistorica()}"/>
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaParroquia}" var="parroquia" itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>
+                                                </p:selectOneMenu>                                               
+
+
+                                                <p:outputLabel for="txtParroquiaActual" value="Parroquia Actual" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaActual" required="true" style="width: 250px" 
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdTdtParId}"
+                                                                 disabled="false">
+                                                    <p:ajax event="change" listener="#{controladorNuevasMatriculasPH.seleccionarParroquiaActual()}"/>
+                                                    <p:ajax event="change" update="txtDescripcion txtParroquiaHistorica" process="@this txtNumero" listener="#{controladorNuevasMatriculasPH.llenarDescripcion2()}"/>
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaParroquia}" var="parroquia"
+                                                                   itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>                                            
+                                                </p:selectOneMenu>
+
+                                                <p:outputLabel for="txtEspacial" value="Espacial" style="text-align: right" />
+                                                <h:panelGrid columns="2" cellspacing="5">
+                                                    <p:commandButton class="orange-btn" icon="fa fa-search" onsuccess="PF('dlgMap').show()" 
+                                                                     action="#{controladorNuevasMatriculasPH.verificarPosicion()}"
+                                                                     process="@this txtEspacial txtParroquiaHistorica txtParroquiaActual" update=":formMapa:gmap"/>
+                                                    <p:inputText id="txtEspacial" style="width: 250px" size="45" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdEspacial}"
+                                                                 readonly="true"/>
+                                                </h:panelGrid>
+
+                                                <p:outputLabel for="txtTipo"  value="Tipo" style="text-align: right" />
+                                                <p:selectOneMenu id="txtTipo" required="true" style="width: 250px" filter="true" 
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.tpdId}" >
+                                                    <p:ajax event="change" update="txtDescripcion" process="@this txtNumero" listener="#{controladorNuevasMatriculasPH.llenarDescripcion2()}"/>                                                    
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaTipoPropiedad}" var="tipoPropiedad" 
+                                                                   itemLabel="#{tipoPropiedad.tpdNombre}" itemValue="#{tipoPropiedad}" />
+                                                </p:selectOneMenu>
+
+                                                <p:outputLabel for="txtClase" value="Clase" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtClase" required="true" style="width: 250px" disabled="true" 
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdClasePropiedad}"  >
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItem itemLabel="HORIZONTAL" itemValue="H" />
+                                                    <f:selectItem itemLabel="ORDINARIA" itemValue="O"/>
+                                                    <p:ajax event="change" process="@this" update="pnlLblGrupo pnlTxtGrupo" 
+                                                            listener="#{controladorNuevasMatriculasPH.seleccionarClase()}"/>
+                                                </p:selectOneMenu>                                                
+
+                                                <h:panelGroup id="pnlLblGrupo">
+                                                    <p:outputLabel id="lblTxtGrupo" for="txtGrupo" value="Grupo" 
+                                                                   style="text-align: right"
+                                                                   rendered="#{controladorNuevasMatriculasPH.mostrarComboGrupo}"
+                                                                   />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup id="pnlTxtGrupo">
+                                                    <p:selectOneMenu id="txtGrupo" required="true" style="width: 250px" filter="true" 
+                                                                     value="#{controladorNuevasMatriculasPH.propiedadNueva.tclId}"
+                                                                     rendered="#{controladorNuevasMatriculasPH.mostrarComboGrupo}">
+                                                        <f:selectItem itemLabel="Seleccione uno..."/>
+                                                        <f:selectItems value="#{controladorNuevasMatriculasPH.listaGrupo}" 
+                                                                       var="tipoPropiedadClase" itemLabel="#{tipoPropiedadClase.tclNombre}"
+                                                                       itemValue="#{tipoPropiedadClase}" />
+                                                    </p:selectOneMenu>
+                                                </h:panelGroup>
+                                            </h:panelGrid>
+
+                                            <h:panelGrid cellspacing="10" columns="3" width="100%">
+                                                <p:outputLabel for="txtCompania" value="Compañía Constructora" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtCompania" required="true" 
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdConjuntoId}" filter="true" >
+
+                                                    <f:selectItem itemLabel="Seleccione uno..."  />
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaCompania}" var="compania" itemLabel="#{compania.comNombre}" itemValue="#{compania.comId}"/>
+                                                </p:selectOneMenu>
+
+                                                <p:commandButton icon="fa fa-plus" title="Crear Compañía" class="green-btn"
+                                                                 action="#{controladorNuevasMatriculasPH.listarParroquias()}"
+                                                                 oncomplete="PF('dlgNuevaCompania').show()" process="@this"
+                                                                 update=":CrearCompaniaForm :CrearCompaniaFormCab" />
+                                            </h:panelGrid>  
+                                            <h:panelGrid cellspacing="10" columns="2">
+
+
+                                                <p:outputLabel for="btnCrearLindero" value="Lindero" style="text-align: right"/>
+
+                                                <p:commandButton id="btnCrearLindero" value="Agregar Linderos" immediate="true"
+                                                                 process="@this"
+                                                                 icon="fa fa-plus" class="cyan-btn"
+                                                                 actionListener="#{controladorNuevasMatriculasPH.preCrearLindero()}"  
+                                                                 oncomplete="PF('dlgLinderos').show()"
+                                                                 update=":frmLinderos"/>
+
+                                                <h:outputText />
+                                            </h:panelGrid> 
+                                            <h:panelGrid columns="1" >
+                                                <p:dataTable id="dtbLinderos" value="#{controladorNuevasMatriculasPH.listaLinderos}" 
+                                                             var="item" rowKey="#{item.ldrId}" scrollHeight="50px"
+                                                             style="width: 400px" scrollable="true"
+                                                             >
+
+                                                    <p:column headerText="Nombre">
+                                                        <p:cellEditor>
+                                                            <f:facet name="output"> <h:outputText value="#{item.ldrNombre}"/></f:facet> 
+                                                            <f:facet name="input"><p:inputText value="#{item.ldrNombre}" style="width:96%" /></f:facet>
+                                                        </p:cellEditor>
+                                                    </p:column>
+                                                    <p:column style="width: 15%">
+                                                        <p:commandButton class="red-btn" icon="fa fa-remove" 
+                                                                         immediate="true" 
+                                                                         update="growl
+                                                                         :tabView:formNuevasMatriculas:dtbLinderos "
+
+                                                                         action="#{controladorNuevasMatriculasPH.borrarLindero()}">
+                                                            <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.linderoSeleccionado}"
+                                                                                         value="#{item}"/>
+                                                        </p:commandButton>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </h:panelGrid>
+
+
+
+
+                                        </p:panel>
+                                    </div>
+
+                                    <div class="ui-g-6">
+                                        <p:panel header="Datos Descriptivos" id="panelDatosDesc">
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtSuperficie"  value="Superficie"/>
+                                                <p:inputText id="txtSuperficie" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdSuperficie}" size="60" maxlength="7" required="true" requiredMessage="Superficie Requerida">
+                                                    <p:ajax event="change" listener="#{controladorNuevasMatriculasPH.llenarDescripcion1()}" update="txtSuperficieLetras growl"/>
+                                                </p:inputText>
+                                                <h:outputText/>
+                                                <p:selectOneMenu id="txtSuperficieTipo"  style="width: 250px" 
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.umdId}" 
+                                                                 filter="true" required="true" requiredMessage="Requerido Unidad de Medida">
+                                                    <p:ajax event="change" listener="#{controladorNuevasMatriculasPH.llenarDescripcion1()}"
+                                                            update="txtSuperficieLetras growl"/>
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaUnidMedida}" var="unidMedida" itemLabel="#{unidMedida.umdNombre}" itemValue="#{unidMedida}"/>
+                                                </p:selectOneMenu>
+                                                <h:outputText/>
+                                                <p:inputTextarea id="txtSuperficieLetras" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdDescripcion1}" rows="2"  readonly="true"/>
+                                                <p:outputLabel for="txtDescripcion" value="Descripción"/>
+                                                <p:inputTextarea id="txtDescripcion" style="width: 250px" rows="7"
+                                                                 required="true" requiredMessage="Ingrese la Descripción de la Propiedad"
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdDescripcion2}"/>
+
+                                                <p:outputLabel for="Estado" value="Estado"/>
+                                                <p:selectOneRadio id="Estado" required="true" requiredMessage="El campo estado, es requerido"
+                                                                  value="#{controladorNuevasMatriculasPH.propiedadNueva.prdEstadoPropiedad}"
+                                                                  disabled="#{controladorNuevasMatriculasPH.esPropiedadNueva}"
+                                                                  >
+                                                    <f:selectItem itemLabel="Activo" itemValue="AC"  />                                                   
+                                                </p:selectOneRadio>
+                                            </h:panelGrid>
+                                        </p:panel>
+
+                                        <br/>
+                                        <br/>
+
+
+                                    </div>
+                                </div>
+                            </h:form>
+                        </p:tab>
+                        <p:tab title="TIPO PROPIEDAD" disabled="#{controladorNuevasMatriculasPH.disabledTab}">
+                            <h:form id="formBloque">                                
+
+                                <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                                <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdMatricula}"/>
+                                <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                                <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdDescripcion2}"/>
+                                <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                                <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdUnidadVivienda}"/>
+                                <p:commandButton value="Agregar" icon="fa fa-plus" class="green-btn"
+                                                 oncomplete="PF('dlgBloque').show()"
+                                                 update=":crearBloque" 
+                                                 action="#{controladorNuevasMatriculasPH.nuevoBloque()}"/>
+                                <div align="center">
+                                    <h:panelGrid id="panelBloque" columns="1" width="90%">      
+                                        <p:dataTable id="tblBloque" scrollable="true"  scrollHeight="410" 
+                                                     value="#{controladorNuevasMatriculasPH.listaBloque}"
+                                                     var="bloque" rowKey="#{bloque.bloId}" sortBy="#{bloque.prdMatricula.prdMatricula}"
+                                                     > 
+
+                                            <p:column headerText="Nro. Matrícula" 
+                                                      style="text-align: center;width: 15%" >
+                                                <h:outputText value="#{bloque.prdMatricula.prdMatricula}" />
+                                            </p:column>
+                                            <p:column headerText="Nombre" style="width: 30%;" filterBy="#{bloque.bloNombre}" >
+                                                <h:outputText value="#{bloque.bloNombre}" />
+                                            </p:column>  
+                                            <p:column headerText="Código" style="text-align: center;width: 10%">
+                                                <h:outputText value="#{bloque.bloCodigo}" />
+                                            </p:column>  
+                                            <p:column headerText="Tipo" 
+                                                      style="width: 30%" filterBy="#{bloque.bloTipo}" 
+                                                      filterMatchMode="contains">
+                                                <h:outputText value="#{bloque.bloTipo}" />
+                                            </p:column>                                           
+                                            <p:column headerText="SubTipo" style="width: 30%;" filterBy="#{bloque.bloSubTipo}" >
+                                                <h:outputText value="#{bloque.bloSubTipo}" />
+                                            </p:column>
+                                            <p:column headerText="" style="text-align: center;width: 10%">
+                                                <p:commandButton icon="fa fa-close" class="red-btn" title="Eliminar Bloque"                                                             
+                                                                 update="growl tblBloque"                                                             
+                                                                 action="#{controladorNuevasMatriculasPH.eliminarBloque(bloque)}"/>
+                                            </p:column>
+                                        </p:dataTable>
+
+                                    </h:panelGrid>
+                                </div>
+                            </h:form>
+                        </p:tab>
+                        <p:tab id="tab_2" title="MATRICULA PH" disabled="#{controladorNuevasMatriculasPH.disabledTab}">
+
+                            <h:form id="formGenerarMatriculas" >
+                                <h:panelGrid columns="7">                                
+
+                                    <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                                    <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdMatricula}"/>
+                                    <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                                    <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdDescripcion2}"/>
+                                    <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                                    <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdUnidadVivienda}"/>
+
+                                </h:panelGrid>
+                                <p:commandButton value="Agregar" icon="fa fa-plus" class="green-btn"
+                                                 oncomplete="PF('dlgNuevasMatricHijas').show()"
+                                                 update=":formNuevasMatriculasHijas" 
+                                                 action="#{controladorNuevasMatriculasPH.nuevaMatriculaHija()}"/>
+                                <p:commandButton value="Verificar Alicuotas" icon="fa fa-check-circle-o" class="cyan-btn"                                                
+                                                 style="display: inline-block"
+                                                 update=":formNuevasMatriculasHijas formGenerarMatriculas"
+                                                 action="#{controladorNuevasMatriculasPH.sumarAlicuotaPropiedades()}"/>        
+                                <h:panelGroup rendered="#{controladorNuevasMatriculasPH.totalAlicuotasPropiedad eq 100}">
+                                    <div align="center" style="display: inline-block;width: 100px; height: 20px;
+                                         border: 1px solid #d3d3d3; font-size: 16px; padding-bottom: 3px;
+                                         border-radius: 10px; background-color: palegreen">
+                                        <h:outputText value="#{controladorNuevasMatriculasPH.totalAlicuotasPropiedad}"/>
+                                    </div>
+                                </h:panelGroup> 
+                                <h:panelGroup rendered="#{controladorNuevasMatriculasPH.totalAlicuotasPropiedad le 100}">
+                                    <div align="center" style="display: inline-block;width: 100px; height: 20px;
+                                         border: 1px solid #d3d3d3; font-size: 16px; padding-bottom: 3px;
+                                         border-radius: 10px; background-color: #ffd333">
+                                        <h:outputText value="#{controladorNuevasMatriculasPH.totalAlicuotasPropiedad}"/>
+                                    </div>
+                                </h:panelGroup> 
+                                <h:panelGrid id="panelRep" columns="1">      
+                                    <p:dataTable id="tblMatriculasHijas" scrollable="true"  scrollHeight="410" 
+                                                 value="#{controladorNuevasMatriculasPH.listaPropiedadHija}"
+                                                 var="propiedad" rowKey="#{propiedad.prdMatricula}" sortBy="#{propiedad.prdMatricula}"
+                                                 > 
+
+                                        <p:column headerText="Nro. Matrícula" 
+                                                  style="text-align: center;width: 10%"
+                                                  filterBy="#{propiedad.prdMatricula}" filterMatchMode="contains">
+                                            <h:outputText value="#{propiedad.prdMatricula}" />
+                                        </p:column>
+                                        <p:column headerText="Unidad Vivienda" 
+                                                  style="text-align: center;width: 7%" filterBy="#{propiedad.prdUnidadVivienda}" 
+                                                  filterMatchMode="contains">
+                                            <h:outputText value="#{propiedad.prdUnidadVivienda}" />
+                                        </p:column>
+                                        <p:column headerText="Descripción" style="width: 28%;">
+                                            <h:outputText value="#{propiedad.prdDescripcion2}" />
+                                        </p:column>
+
+                                        <p:column headerText="Predio" style="text-align: center;width: 10%" filterBy="#{propiedad.prdPredio}" filterMatchMode="contains">
+                                            <h:outputText value="#{propiedad.prdPredio}" />
+                                        </p:column>
+
+                                        <p:column headerText="Catastro" style="text-align: center;width: 10%" filterBy="#{propiedad.prdCatastro}" filterMatchMode="contains">
+                                            <h:outputText value="#{propiedad.prdCatastro}" />
+                                        </p:column>
+                                        <p:column headerText="Bloque" style="text-align: center;width: 10%">
+                                            <h:outputText value="#{propiedad.prdBloque}" />
+                                        </p:column>
+                                        <p:column headerText="Alicuota" style="text-align: center;width: 10%">
+                                            <h:outputText value="#{propiedad.prdAlicuota}" />
+                                        </p:column>
+
+                                        <p:column headerText="" style="text-align: center">
+                                            <p:commandButton icon="fa fa-pencil" class="cyan-btn" title="Editar Propiedad"                                                             
+                                                             oncomplete="PF('dlgNuevasMatricHijas').show()"
+                                                             update=":formNuevasMatriculasHijas" 
+                                                             disabled="#{propiedad.prdAgregado eq 'A'}" 
+                                                             action="#{controladorNuevasMatriculasPH.cargarPropiedadHija(propiedad)}"/>
+
+
+                                        </p:column>
+                                        <p:column headerText="" style="text-align: center">
+                                            <p:commandButton icon="fa fa-close" class="red-btn" title="Eliminar Propiedad"                                                             
+                                                             update="growl tblMatriculasHijas :formNuevasMatriculasHijas :formMatriculacion2" 
+                                                             disabled="#{propiedad.prdAgregado eq 'A'}" 
+                                                             action="#{controladorNuevasMatriculasPH.eliminarPropiedad(propiedad)}"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </h:panelGrid>
+
+
+
+
+                            </h:form>
+                        </p:tab>                                          
+                        <p:tab id="tab_TmpAlicuota" title="COMPONENTES PH" disabled="#{controladorNuevasMatriculasPH.disabledTab}">
+                            <h:form id="formGenerarDeclaratorias">                               
+                                <h:panelGrid columns="7">
+                                    <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                                    <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdMatricula}"/>
+                                    <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                                    <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdDescripcion2}"/>
+                                    <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                                    <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdUnidadVivienda}"/>
+                                </h:panelGrid>
+                                <p:commandButton value="Agregar" icon="fa fa-plus" class="green-btn"
+                                                 oncomplete="PF('dlgNuevaAlicuotaTmp').show()"
+                                                 update=":CrearAlicuotaTmpForm" process="@this"
+                                                 action="#{controladorNuevasMatriculasPH.nuevaAlicuotaTmp()}"/>
+                                <p:commandButton value="Verificar Alicuotas" icon="fa fa-check-circle-o" class="cyan-btn"                                                
+                                                 style="display: inline-block"
+                                                 update="growl :CrearAlicuotaTmpForm formGenerarDeclaratorias :tabView"
+                                                 action="#{controladorNuevasMatriculasPH.sumarAlicuotaTmpAlicuota()}"/>        
+                                <h:panelGroup rendered="#{controladorNuevasMatriculasPH.totalAlicuotasPropiedad eq 100}">
+                                    <div align="center" style="display: inline-block;width: 100px; height: 20px;
+                                         border: 1px solid #d3d3d3; font-size: 16px; padding-bottom: 3px;
+                                         border-radius: 10px; background-color: palegreen">
+                                        <h:outputText value="#{controladorNuevasMatriculasPH.totalAlicuotasTmpAlic}"/>
+                                    </div>
+                                </h:panelGroup> 
+                                <h:panelGroup rendered="#{controladorNuevasMatriculasPH.totalAlicuotasPropiedad le 100}">
+                                    <div align="center" style="display: inline-block;width: 100px; height: 20px;
+                                         border: 1px solid #d3d3d3; font-size: 16px; padding-bottom: 3px;
+                                         border-radius: 10px; background-color: #ffd333">
+                                        <h:outputText value="#{controladorNuevasMatriculasPH.totalAlicuotasTmpAlic}"/>
+                                    </div>
+                                </h:panelGroup> 
+                                <h:panelGrid id="panelRep" columns="1">      
+                                    <p:remoteCommand name="onRowEdit" update="tblAlicuotasTmp tabView:formUniViv tabView" />
+                                    <p:dataTable id="tblAlicuotasTmp" scrollable="true"  scrollHeight="410"
+
+                                                 editable="true" 
+                                                 value="#{controladorNuevasMatriculasPH.listaTmpAlicuotas}"
+                                                 var="tmpAlicuota" rowKey="#{tmpAlicuota.talId}" sortBy="#{tmpAlicuota.talMatricula}"
+                                                 > 
+
+                                        <p:ajax event="rowEdit" listener="#{controladorNuevasMatriculasPH.onRowEdit}" oncomplete="onRowEdit()"/>       
+                                        <p:ajax event="rowEditCancel" listener="#{controladorNuevasMatriculasPH.onRowCancel}" update="tblAlicuotasTmp" />
+
+                                        <p:column headerText="Número" style="text-transform: uppercase;width:15%" 
+                                                  filterBy="#{tmpAlicuota.talNumero}" filterMatchMode="contains">
+                                            <h:outputText value="#{tmpAlicuota.talNumero}" />
+                                        </p:column>
+
+                                        <p:column headerText="Bloque" style="text-transform: uppercase; width:15%" 
+                                                  filterBy="#{tmpAlicuota.talArea}" filterMatchMode="contains">
+                                            <h:outputText value="#{tmpAlicuota.talArea}" />
+                                        </p:column>
+                                        <p:column headerText="Piso" style="text-transform: uppercase;" 
+                                                  filterBy="#{tmpAlicuota.talPiso}" filterMatchMode="contains">
+                                            <h:outputText value="#{tmpAlicuota.talPiso}" /> 
+                                        </p:column>                                                                              
+
+                                        <p:column headerText="Alicuota" >  
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{tmpAlicuota.talAlicuota}">
+                                                      <f:convertNumber pattern="#0.000000"/>
+                                                    </h:outputText></f:facet>
+                                                <f:facet name="input"><p:inputNumber id="AlAlic" value="#{tmpAlicuota.talAlicuota}" decimalPlaces="6" maxValue="100"/></f:facet>
+                                            </p:cellEditor>                                                 
+                                        </p:column>            
+                                        <p:column headerText="Descripción" style="text-transform: uppercase">
+                                            <h:outputText value="#{tmpAlicuota.talDescripcion}" />                                                         
+                                        </p:column>
+
+                                        <p:column headerText="Observación" style="text-transform: uppercase">
+                                            <p:cellEditor >
+                                                <f:facet name="output"><h:outputText value="#{tmpAlicuota.talObservacion}" style="text-transform: uppercase" /></f:facet>
+                                                <f:facet name="input"><p:inputText id="AlObs" value="#{tmpAlicuota.talObservacion}" style="text-transform: uppercase; text-align: center;width:96%"/></f:facet>
+                                            </p:cellEditor>              
+                                        </p:column>     
+
+
+                                        <p:column headerText="ELIMINAR" style="text-align: center">
+                                            <p:commandButton icon="fa fa-close" class="red-btn" title="Eliminar Componente PH"                                                             
+                                                             disabled="#{tmpAlicuota.talEstado eq 'I'}" 
+                                                             update="growl tblAlicuotasTmp tabView:formUniViv tabView:formGenerarDeclaratorias tabView" 
+                                                             action="#{controladorNuevasMatriculasPH.eliminarTmpAlicuota(tmpAlicuota)}"/>
+                                        </p:column>
+                                        <p:column style="width:35px">
+                                            <p:rowEditor rendered="#{(tmpAlicuota.talEstado eq 'A' or tmpAlicuota.talEstado eq 'N') and tmpAlicuota.taPrincipal eq '0'}"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+
+                                </h:panelGrid>
+
+
+
+
+                            </h:form>
+                        </p:tab>
+                        <p:tab title="CREAR UNIDAD DE VIVIENDA" disabled="#{controladorNuevasMatriculasPH.disabledTabUndViv}">
+                            <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                            <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdMatricula}"/>
+                            <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdDescripcion2}"/>
+                            <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdUnidadVivienda}"/>
+                            <h:form id="formUniViv">
+                                <br></br>
+                                <p:outputLabel value="BLOQUE " style="font-weight: bolder"/>
+                                <p:selectOneMenu id="bloqueMenu" style="width: 150px" 
+                                                 value="#{controladorNuevasMatriculasPH.bloqueNombreFiltro}">
+                                    <f:selectItem itemLabel="TODOS" itemValue="TODOS" />
+                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaBloque}" 
+                                                   var="bloq"
+                                                   itemLabel="#{bloq.bloNombre}" itemValue="#{bloq.bloNombre}" />            
+                                    <p:ajax event="change" update="formUniViv" 
+                                            listener="#{controladorNuevasMatriculasPH.filtrarPorBloque()}" />   
+                                </p:selectOneMenu>
+
+                                <h:panelGrid columns="3" cellspacing="10">
+                                    <p:panel>
+                                        <h:panelGrid columns="1" cellspacing="10" width="450px" >
+
+                                            <p:dataTable id="tblProp" scrollable="true"  scrollHeight="350"  
+
+                                                         selection="#{controladorNuevasMatriculasPH.propiedadHijaSelec}"
+                                                         value="#{controladorNuevasMatriculasPH.listaPropiedadHijaUV}" 
+                                                         var="prop" rowKey="#{prop.prdMatricula}" sortBy="#{prop.prdMatricula}" > 
+
+                                                <f:facet name="header">
+                                                    Propiedades PH
+                                                </f:facet>
+                                                <p:column headerText="Matrícula" style="width: 20%" 
+                                                          filterMatchMode="contains" 
+                                                          filterBy="#{prop.prdMatricula}">
+                                                    <h:outputText value="#{prop.prdMatricula}" />
+                                                </p:column>
+                                                <p:column headerText="Pred" style="width: 12%">
+                                                    <h:outputText value="#{prop.prdPredio}" />
+                                                </p:column>
+                                                <p:column headerText="Cat" style="width: 12%">
+                                                    <h:outputText value="#{prop.prdCatastro}" />
+                                                </p:column>
+                                                <p:column headerText="Alc" style="width: 12%">
+                                                    <h:outputText value="#{prop.prdAlicuota}" />
+                                                </p:column>
+                                                <p:column headerText="Descripción" style="width: 34%">
+                                                    <h:outputText value="#{prop.prdDescripcion2}" />
+                                                </p:column>
+                                                <p:column selectionMode="single" style="width: 10%" />
+
+                                            </p:dataTable>
+
+                                            <p:separator/>
+
+                                            <p:dataTable id="tblTmpAlic" scrollable="true"  scrollHeight="350" 
+                                                         selection="#{controladorNuevasMatriculasPH.listaTmpAlicuotasSelec}"
+                                                         value="#{controladorNuevasMatriculasPH.listaTmpAlicuotasUV}" 
+                                                         var="alicu" rowKey="#{alicu.talId}" sortBy="#{alicu.talNumero}" > 
+                                                <f:facet name="header">
+                                                    Componentes PH
+                                                </f:facet>   
+                                                <p:column headerText="Número" filterMatchMode="contains" 
+                                                          filterBy="#{alicu.talNumero}" style="width: 25%">
+                                                    <h:outputText value="#{alicu.talNumero}" />
+                                                </p:column>
+                                                <p:column headerText="Alicuota" style="width: 25%">
+                                                    <h:outputText value="#{alicu.talAlicuota}" />
+                                                </p:column>
+                                                <p:column headerText="Descripción" style="text-transform: uppercase;width: 40%">
+                                                    <h:outputText value="#{alicu.talDescripcion}" />
+                                                </p:column>
+                                                <p:column selectionMode="multiple" style="width: 10%"/>
+
+                                            </p:dataTable>
+
+
+                                        </h:panelGrid>
+                                    </p:panel> 
+                                    <h:panelGrid columns="1" cellspacing="10">
+                                        <p:commandButton icon="fa fa-chevron-right" class="green-btn" process="@form"
+                                                         update="tabView formUniViv tabView:formGeneral tabView:formGenerarMatriculas:tblMatriculasHijas tabView:formUniViv" 
+                                                         title="Crear Unidad de Vivienda"
+                                                         action="#{controladorNuevasMatriculasPH.crearUnidadVivienda()}"/>
+                                        <p:commandButton icon="fa fa-chevron-left" class="orange-btn" process="@form"
+                                                         update="tabView formUniViv tabView:formGeneral tabView:formGenerarMatriculas:tblMatriculasHijas tabView:formUniViv" 
+                                                         title="Deshacer Unidad de Vivienda"
+                                                         action="#{controladorNuevasMatriculasPH.deshacerUnidadVivienda()}"/>
+
+                                    </h:panelGrid>
+                                    <p:panel>
+                                        <h:panelGrid columns="1" cellspacing="1">
+                                            <p:dataTable id="tblAlicUV" scrollable="true"  scrollHeight="820" 
+                                                         selection="#{controladorNuevasMatriculasPH.listaAlicuotasUVSelec}"
+                                                         value="#{controladorNuevasMatriculasPH.listaAlicuotasUV}" 
+                                                         var="alic" rowKey="#{alic.altId}"                                                          
+                                                         sortBy="#{alic.prdMatricula.prdMatricula}" > 
+
+                                                <f:facet name="header">
+                                                    Unidades de Vivienda
+                                                </f:facet>
+
+                                                <p:column headerText="Matríc." 
+                                                          filterMatchMode="contains" 
+                                                          filterBy="#{alic.prdMatricula.prdMatricula}"
+                                                          groupRow="true" style="width: 17%">
+                                                    <h:outputText value="#{alic.prdMatricula.prdMatricula}"/>
+                                                </p:column>
+                                                <p:column headerText="Pred" groupRow="true" style="width: 12%">
+                                                    <h:outputText value="#{alic.prdMatricula.prdPredio}" />
+                                                </p:column>
+                                                <p:column headerText="Cat" groupRow="true" style="width: 12%">
+                                                    <h:outputText value="#{alic.prdMatricula.prdCatastro}" />
+                                                </p:column>  
+                                                <p:column headerText="Núm" style="width: 14%">
+                                                    <h:outputText value="#{alic.altNumero}" />
+                                                </p:column>
+                                                <p:column headerText="Alc" style="width: 14%">
+                                                    <h:outputText value="#{alic.altAlicuota}" />
+                                                </p:column>      
+                                                <p:column headerText="Desc." style="text-transform: uppercase;width: 22%">
+                                                    <h:outputText value="#{alic.altDescripcion}" />
+                                                </p:column>
+                                                <p:column selectionMode="multiple" style="width: 9%"/>
+
+                                            </p:dataTable>
+
+                                        </h:panelGrid>
+                                    </p:panel>
+                                </h:panelGrid>
+
+                            </h:form>
+
+
+                        </p:tab>
+
+                        <p:tab title="UNIDADES DE VIVIENDA" disabled="#{controladorNuevasMatriculasPH.disabledTab}">
+                            <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                            <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdMatricula}"/>
+                            <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdDescripcion2}"/>
+                            <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdUnidadVivienda}"/>
+
+                            <h:form id="formGeneral">
+                                <p:dataGrid var="prop" value="#{controladorNuevasMatriculasPH.listaPropiedadHija}" columns="14" layout="grid"
+                                            rows="12" id="alics"
+                                            >
+
+
+
+                                    <p:panel header="Nº: #{prop.prdUnidadVivienda}" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825':'background: #9CCC65'} ">
+
+                                        <h:panelGrid columns="1" 
+                                                     title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">            
+
+                                            <p:commandButton update="tabView:formGeneral:detalleAlicuota" styleClass="boton"
+                                                             action="#{controladorNuevasMatriculasPH.listarDetalleAlicuotas(prop)}"
+                                                             icon="fa fa-home" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825;':'background: #9CCC65;'}"
+                                                             oncomplete="PF('dlgPropHij').show()" title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">                                                
+
+                                            </p:commandButton>
+                                        </h:panelGrid>
+                                    </p:panel>
+
+                                </p:dataGrid>
+
+                                <p:dialog header="Información Declaratorias" widgetVar="dlgPropHij" modal="true" 
+                                          showEffect="fade" hideEffect="fade" resizable="false" width="550px">
+                                    <p:outputPanel id="detalleAlicuota" style="text-align:center;">
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">PROPIEDAD PH</h3>
+                                        <p:panelGrid  columns="2" columnClasses="label,value">
+
+                                            <h:outputText value="Matrícula:" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdMatricula}" />
+
+                                            <h:outputText value="Descripción" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdDescripcion2}" />
+                                            <h:outputText value="Unidad" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdUnidadVivienda.toUpperCase()}" />
+                                            <h:outputText value="Predio" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdPredio}" />
+                                            <h:outputText value="Catastro" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdCatastro}" />
+
+                                        </p:panelGrid>
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">COMPONENTES PH</h3>
+                                        <p:dataTable var="alicu"
+                                                     scrollable="true" scrollHeight="150"
+                                                     value="#{controladorNuevasMatriculasPH.listaAlicuotaMostrar}">
+                                            <p:column headerText="Número">
+                                                <h:outputText value="#{alicu.altNumero}" />
+                                            </p:column>
+
+                                            <p:column headerText="Alicuota">
+                                                <h:outputText value="#{alicu.altAlicuota}" />
+                                            </p:column>
+
+                                            <p:column headerText="Bloque">
+                                                <h:outputText value="#{alicu.altArea}" />
+                                            </p:column>
+
+                                            <p:column headerText="Piso">
+                                                <h:outputText value="#{alicu.altPiso}" />
+                                            </p:column>
+                                            <p:column headerText="Descripción">
+                                                <h:outputText value="#{alicu.altDescripcion}" />
+                                            </p:column>
+
+                                        </p:dataTable>
+
+
+
+                                    </p:outputPanel>
+                                </p:dialog>
+                            </h:form>
+                        </p:tab>
+                        <!-- TAB ACLARATORIA-->
+                        <!-- TAB ACLARATORIA-->
+                        <p:tab id="tab_2Elim" title="ELIMINAR UV" 
+                               disabled="#{controladorNuevasMatriculasPH.disabledTab}"
+                               rendered="#{controladorNuevasMatriculasPH.rendTabAclaratoriaEliminarProp}">
+                            <h:form id="formEliminarMatriculas" >
+                                <h:panelGrid columns="7">                                
+
+                                    <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                                    <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdMatricula}"/>
+                                    <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                                    <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdDescripcion2}"/>
+                                    <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                                    <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdUnidadVivienda}"/>
+
+                                </h:panelGrid>                           
+
+                                <h:panelGrid id="panelElimProp" columns="1">      
+                                    <p:dataTable id="tblMatriculasHijasElim" scrollable="true"  scrollHeight="410" 
+                                                 value="#{controladorNuevasMatriculasPH.listaPropiedadHija}"
+                                                 rowStyleClass="#{propiedad.prdVendio eq 'S' ? 'colorCelda' : null}"
+                                                 var="propiedad" rowKey="#{propiedad.prdMatricula}" sortBy="#{propiedad.prdMatricula}"
+                                                 > 
+                                        <p:column headerText="Nro. Matrícula" 
+                                                  style="text-align: center;width: 10%"
+                                                  filterBy="#{propiedad.prdMatricula}" filterMatchMode="contains">
+                                            <h:outputText value="#{propiedad.prdMatricula}" />
+                                        </p:column>
+                                        <p:column headerText="Unidad Vivienda" 
+                                                  style="text-align: center;width: 7%" filterBy="#{propiedad.prdUnidadVivienda}" 
+                                                  filterMatchMode="contains">
+                                            <h:outputText value="#{propiedad.prdUnidadVivienda}" />
+                                        </p:column>
+                                        <p:column headerText="Descripción" style="width: 28%;">
+                                            <h:outputText value="#{propiedad.prdDescripcion2}" />
+                                        </p:column>
+
+                                        <p:column headerText="Predio" style="text-align: center;width: 10%" filterBy="#{propiedad.prdPredio}" filterMatchMode="contains">
+                                            <h:outputText value="#{propiedad.prdPredio}" />
+                                        </p:column>
+
+                                        <p:column headerText="Catastro" style="text-align: center;width: 10%" filterBy="#{propiedad.prdCatastro}" filterMatchMode="contains">
+                                            <h:outputText value="#{propiedad.prdCatastro}" />
+                                        </p:column>
+                                        <p:column headerText="Bloque" style="text-align: center;width: 10%">
+                                            <h:outputText value="#{propiedad.prdBloque}" />
+                                        </p:column>
+                                        <p:column headerText="Alicuota" style="text-align: center;width: 10%">
+                                            <h:outputText value="#{propiedad.prdAlicuota}" />
+                                        </p:column> 
+                                         <p:column headerText="Vendida" style="text-align: center;width: 10%">
+                                             <h:outputText value="#{propiedad.prdVendio eq 'S' ? 'VENDIDA' : 'NO VENDIDA'}" />
+                                        </p:column> 
+                                        <p:column headerText="" style="text-align: center">
+                                            <p:commandButton icon="fa fa-close" class="red-btn" title="Eliminar Propiedad"                                                             
+                                                             update="growl tabView" disabled="#{propiedad.prdVendio eq 'S'}"                                                              
+                                                             action="#{controladorNuevasMatriculasPH.aclaratoria(propiedad)}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGrid>
+                            </h:form>
+                        </p:tab>  
+
+
+
+                    </p:tabView>
+                </p:panel>
+                <!-- PANEL REVOCATORIA-->
+                <!-- PANEL REVOCATORIA-->
+                <!-- PANEL REVOCATORIA-->
+                <!-- PANEL REVOCATORIA-->
+                <!-- PANEL REVOCATORIA-->
+                <p:panel id="pnlAccionesRev" header="REVOCATORIA" rendered="#{controladorNuevasMatriculasPH.renderedPanelRevocatoria}">
+                    <p:tabView id="tabViewRev" rendered="#{controladorNuevasMatriculasPH.renderedPanelRevocatoria}" 
+                               activeIndex="#{controladorNuevasMatriculasPH.indiceTab}" >
+                        <p:tab id="tab_1Rev" title="Generación de Matrículas" disabled="#{!controladorNuevasMatriculasPH.disabledTab}">
+                            <h:form id="formNuevasMatriculas">                               
+
+                                <div class="ui-g">
+                                    <div class="ui-g-6">                                        
+
+                                        <p:panel header="Datos De Identificación" >
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtMatriculaRev" value="Matricula" style="text-align: right"/>
+
+                                                <h:panelGrid columns="2" cellspacing="0" border="0" >
+                                                    <p:inputText id="txtMatriculaRev" size="55" readonly="true" style="width: 250px" value="#{controladorNuevasMatriculasPH.matricula}"/>
+
+                                                </h:panelGrid>
+                                                <p:outputLabel for="txtNumeroRev" value="Número/Nombre" style="text-align: right"/> 
+                                                <p:inputText id="txtNumeroRev" style="width: 250px"                                                              
+                                                             value="#{controladorNuevasMatriculasPH.propiedadNueva.prdUnidadVivienda}" size="55"
+                                                             readonly="true"/>
+                                                <p:outputLabel for="txtCatastroRev" value="Catastro" style="text-align: right"/>
+                                                <p:inputText id="txtCatastroRev" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdCatastro}" size="55"
+                                                             readonly="true"/>
+                                                <p:outputLabel for="txtPredioRev" value="Predio" style="text-align: right"/>
+                                                <p:inputText id="txtPredioRev" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdPredio}" size="55"
+                                                             readonly="true"/>
+                                                <p:outputLabel for="txtEspacialRev" value="Espacial" style="text-align: right" />
+
+                                                <p:inputText id="txtEspacialRev" style="width: 250px" size="45" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdEspacial}"
+                                                             readonly="true"/>
+
+                                                <p:outputLabel for="txtParroquiaHistoricaRev" value="Parroquia Historica" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaHistoricaRev" required="true" style="width: 250px"                                                                  
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdTdtParIdH}" 
+                                                                 disabled="true">                                                    
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaParroquia}" var="parroquia" itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>
+                                                </p:selectOneMenu>                                               
+
+
+                                                <p:outputLabel for="txtParroquiaActualRev" value="Parroquia Actual" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaActualRev" required="true" style="width: 250px" 
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdTdtParId}"
+                                                                 disabled="true">                                                    
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaParroquia}" var="parroquia"
+                                                                   itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>                                            
+                                                </p:selectOneMenu>
+                                                <p:outputLabel for="txtTipoRev"  value="Tipo" style="text-align: right" />
+                                                <p:selectOneMenu id="txtTipoRev" required="true" style="width: 250px"
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.tpdId}"
+                                                                 disabled="true">                                                    
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaTipoPropiedad}" var="tipoPropiedad" 
+                                                                   itemLabel="#{tipoPropiedad.tpdNombre}" itemValue="#{tipoPropiedad}" />
+                                                </p:selectOneMenu>
+
+                                                <p:outputLabel for="txtClaseRev" value="Clase" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtClaseRev" required="true" style="width: 250px" disabled="true" 
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdClasePropiedad}"  >
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItem itemLabel="HORIZONTAL" itemValue="H" />
+                                                    <f:selectItem itemLabel="ORDINARIA" itemValue="O"/>                                                   
+                                                </p:selectOneMenu>                                                
+
+                                                <h:panelGroup id="pnlLblGrupoRev">
+                                                    <p:outputLabel id="lblTxtGrupoRev" for="txtGrupoRev" value="Grupo" 
+                                                                   style="text-align: right"
+                                                                   rendered ="true"
+                                                                   />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup id="pnlTxtGrupoRev">
+                                                    <p:selectOneMenu id="txtGrupoRev" required="true" style="width: 250px" filter="true" 
+                                                                     value="#{controladorNuevasMatriculasPH.propiedadNueva.tclId}"
+                                                                     rendered="true" disabled="true">
+                                                        <f:selectItem itemLabel="Seleccione uno..."/>
+                                                        <f:selectItems value="#{controladorNuevasMatriculasPH.listaGrupo}" 
+                                                                       var="tipoPropiedadClase" itemLabel="#{tipoPropiedadClase.tclNombre}"
+                                                                       itemValue="#{tipoPropiedadClase}" />
+                                                    </p:selectOneMenu>
+                                                </h:panelGroup>
+                                            </h:panelGrid>
+
+                                            <h:panelGrid cellspacing="10" columns="3" width="100%">
+                                                <p:outputLabel for="txtCompaniaRev" value="Compañía Constructora" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtCompaniaRev" disabled="true"
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdConjuntoId}" filter="true" >
+
+                                                    <f:selectItem itemLabel="Seleccione uno..."  />
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaCompania}" var="compania" itemLabel="#{compania.comNombre}" itemValue="#{compania.comId}"/>
+                                                </p:selectOneMenu>
+
+                                            </h:panelGrid>  
+                                            <h:panelGrid cellspacing="10" columns="2">
+                                                <p:outputLabel value="Lindero" style="text-align: right"/>                                            
+
+                                                <h:outputText />
+                                            </h:panelGrid> 
+                                            <h:panelGrid columns="1" >
+                                                <p:dataTable id="dtbLinderosRev" value="#{controladorNuevasMatriculasPH.listaLinderos}" 
+                                                             var="item" rowKey="#{item.ldrId}" scrollHeight="50px"
+                                                             style="width: 400px" scrollable="true"
+                                                             >                                                    
+                                                    <p:column headerText="LINDEROS">                                                       
+
+                                                        <h:outputText value="#{item.ldrNombre}" style="width:96%" />
+
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                            </h:panelGrid>
+
+
+
+
+                                        </p:panel>
+                                    </div>
+
+                                    <div class="ui-g-6">
+                                        <p:panel header="Datos Descriptivos" id="panelDatosDescRev">
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtSuperficieRev"  value="Superficie"/>
+                                                <p:inputText id="txtSuperficieRev" style="width: 250px" 
+                                                             readonly="true"
+                                                             value="#{controladorNuevasMatriculasPH.propiedadNueva.prdSuperficie}" size="60" maxlength="7" required="true" requiredMessage="Superficie Requerida">
+
+                                                </p:inputText>
+                                                <h:outputText/>
+                                                <p:selectOneMenu id="txtSuperficieTipoRev"  style="width: 250px" 
+                                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.umdId}" 
+                                                                 filter="true" disabled="true">
+
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaUnidMedida}" var="unidMedida" itemLabel="#{unidMedida.umdNombre}" itemValue="#{unidMedida}"/>
+                                                </p:selectOneMenu>
+                                                <h:outputText/>
+                                                <p:inputTextarea id="txtSuperficieLetrasRev" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdDescripcion1}" rows="2"  readonly="true"/>
+                                                <p:outputLabel for="txtDescripcionRev" value="Descripción"/>
+                                                <p:inputTextarea id="txtDescripcionRev" style="width: 250px" 
+                                                                 required="true" requiredMessage="Ingrese la Descripción de la Propiedad"
+                                                                 rows="7" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdDescripcion2}"  readonly="true"/>
+
+                                                <p:outputLabel for="EstadoRev" value="Estado"/>
+                                                <p:selectOneRadio id="EstadoRev" required="true" requiredMessage="El campo estado, es requerido"
+                                                                  value="#{controladorNuevasMatriculasPH.propiedadNueva.prdEstadoPropiedad}"
+                                                                  disabled="#{controladorNuevasMatriculasPH.esPropiedadNueva}"
+                                                                  >
+                                                    <f:selectItem itemLabel="Activo" itemValue="AC"  />                                                   
+                                                </p:selectOneRadio>
+                                            </h:panelGrid>
+                                        </p:panel>
+
+                                        <br/>
+                                        <br/>
+
+
+                                    </div>
+                                </div>
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab title="UNIDADES DE VIVIENDA" disabled="false">
+                            <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                            <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdMatricula}"/>
+                            <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdDescripcion2}"/>
+                            <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorNuevasMatriculasPH.propiedadPadreMostrar.prdUnidadVivienda}"/>
+
+                            <h:form id="formGeneralRev">
+                                <p:dataGrid var="prop" value="#{controladorNuevasMatriculasPH.listaPropiedadHija}" columns="14" layout="grid"
+                                            rows="12" id="alics"
+                                            >
+                                    <p:panel header="Nº: #{prop.prdUnidadVivienda}" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825':'background: #9CCC65'} ">
+
+                                        <h:panelGrid columns="1" style="padding-left: 30%;"
+                                                     title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">            
+
+                                            <p:commandButton update="tabViewRev:formGeneralRev:detalleAlicuotaRev" styleClass="boton"
+                                                             action="#{controladorNuevasMatriculasPH.listarDetalleAlicuotas(prop)}"
+                                                             icon="fa fa-home" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825;':'background: #9CCC65;'}"
+                                                             oncomplete="PF('dlgPropHijRev').show()" title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">                                                
+
+                                            </p:commandButton>
+                                        </h:panelGrid>
+                                    </p:panel>
+
+                                </p:dataGrid>
+
+                                <p:dialog header="Información Declaratorias" widgetVar="dlgPropHijRev" modal="true" 
+                                          showEffect="fade" hideEffect="fade" resizable="false" width="550px">
+                                    <p:outputPanel id="detalleAlicuotaRev" style="text-align:center;">
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">PROPIEDAD PH</h3>
+                                        <p:panelGrid  columns="2" columnClasses="label,value">
+
+                                            <h:outputText value="Matrícula:" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdMatricula}" />
+
+                                            <h:outputText value="Descripción" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdDescripcion2}" />
+                                            <h:outputText value="Unidad" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdUnidadVivienda.toUpperCase()}" />
+                                            <h:outputText value="Predio" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdPredio}" />
+                                            <h:outputText value="Catastro" />
+                                            <h:outputText value="#{controladorNuevasMatriculasPH.propUV.prdCatastro}" />
+
+                                        </p:panelGrid>
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">COMPONENTES PH</h3>
+                                        <p:dataTable var="alicu"
+                                                     scrollable="true" scrollHeight="150"
+                                                     value="#{controladorNuevasMatriculasPH.listaAlicuotaMostrar}">
+                                            <p:column headerText="Número">
+                                                <h:outputText value="#{alicu.altNumero}" />
+                                            </p:column>
+
+                                            <p:column headerText="Alicuota">
+                                                <h:outputText value="#{alicu.altAlicuota}" />
+                                            </p:column>
+
+                                            <p:column headerText="Bloque">
+                                                <h:outputText value="#{alicu.altArea}" />
+                                            </p:column>
+
+                                            <p:column headerText="Piso">
+                                                <h:outputText value="#{alicu.altPiso}" />
+                                            </p:column>
+                                            <p:column headerText="Descripción">
+                                                <h:outputText value="#{alicu.altDescripcion}" />
+                                            </p:column>
+
+                                        </p:dataTable>
+
+
+
+                                    </p:outputPanel>
+                                </p:dialog>
+                            </h:form>
+                        </p:tab>
+
+
+
+                    </p:tabView>
+                </p:panel>
+
+            </p:panel>
+
+            <!--            DIALOGOS-->
+
+            <p:dialog id="dlgBuscarPropiedad" modal="true" header="Buscar propiedad" widgetVar="dlgBuscarPropiedad">
+                <h:form id="frmBusqueda">
+                    <p:inputText value="#{controladorNuevasMatriculasPH.numDocumento}"/>
+                    <p:commandButton icon="fa fa-search" value="Buscar"  action="#{controladorNuevasMatriculasPH.buscar()}" update="@form"/>
+                    <h:panelGrid columns="1">
+
+                        <p:messages showDetail="false" >
+                            <p:autoUpdate />
+                        </p:messages>
+                        <h:panelGroup>
+                            <p:commandButton  class="green-btn" icon="fa fa-save" value="Seleccionar"
+                                              action="#{controladorNuevasMatriculasPH.seleccionarPropiedad()}" 
+                                              disabled="#{!controladorNuevasMatriculasPH.boolDocEncontrado}"
+                                              update="growl @form :tabView:formNuevasMatriculas" 
+                                              style="margin-right:20px;"  title="Confirmar selección"
+                                              oncomplete="PF('dlgBuscarPropiedad').hide()"
+                                              >
+                            </p:commandButton> 
+                            <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}"  immediate="true" onclick="PF('dlgBuscarPropiedad').hide()"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgBuscarPropiedadUnf" modal="true" header="Buscar propiedad (Unificación)"
+                      widgetVar="dlgBuscarPropiedadUnf"
+                      width="60%">
+                <h:form id="frmBusquedaUnf">
+                    <p:dataTable value="#{controladorNuevasMatriculasPH.listaTramiteValorUnf}" 
+                                 var="traval" rowKey="#{traval.trvId}"  >
+
+                        <p:column headerText="Catastro">
+                            <h:outputText value="#{traval.trvNumCatastro}"/>
+                        </p:column>
+
+                        <p:column  headerText="Parroquia">
+                            <h:outputText value="#{traval.trvParNombre}" />
+                        </p:column>
+
+                        <p:column headerText="Predio">
+                            <h:outputText value="#{traval.traNumPredio}"/> 
+                        </p:column>
+
+                        <p:column headerText="Seleccionar" style="width: 10%">
+                            <p:commandButton class="cyan-btn" icon="fa fa-check" 
+                                             action="#{controladorNuevasMatriculasPH.buscarPropiedadUnf(traval)}" 
+                                             update="@form growl :tabView:formUnificaciones" style="width: 40px">
+                            </p:commandButton>
+                        </p:column>
+
+                    </p:dataTable>
+
+
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgLinderos" modal="true" header="Linderos" widgetVar="dlgLinderos">
+                <h:form id="frmLinderos">
+
+                    <h:panelGrid columns="3">
+                        <p:outputLabel for="txtLindero" value="Nombre"/>
+                        <p:inputText id="txtLindero" value="#{controladorNuevasMatriculasPH.linderoSeleccionado.ldrNombre}"
+                                     required="true" requiredMessage="El campo Nombre, es requerido"/>
+                        <p:commandButton  class="green-btn" icon="fa fa-plus" 
+                                          action="#{controladorNuevasMatriculasPH.crearLindero()}" 
+                                          update="growl @form :tabView:formNuevasMatriculas:dtbLinderos 
+                                          :formNuevasMatriculasHijas:tabViewNuevasMat:dtbLinderos" 
+                                          />
+                    </h:panelGrid>
+
+
+
+
+                    <h:panelGroup>
+
+                        <p:commandButton class="blue-btn" icon="fa fa-close" 
+                                         value="Cerrar" immediate="true"
+                                         onclick="PF('dlgLinderos').hide()"/>
+
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgBuscarPropiedadDiv" modal="true" header="Buscar propiedad(Divisiones)" widgetVar="dlgBuscarPropiedadDiv">
+                <h:form id="frmBusquedaDiv">
+                    <p:inputText value="#{controladorNuevasMatriculasPH.numDocumento}"/>
+                    <p:commandButton icon="fa fa-search" value="Buscar"  action="#{controladorNuevasMatriculasPH.buscar()}" update="@form"/>
+                    <h:panelGrid columns="1">
+
+                        <p:messages showDetail="false" >
+                            <p:autoUpdate />
+                        </p:messages>
+                        <h:panelGroup>
+                            <p:commandButton  class="green-btn" icon="fa fa-save" value="Seleccionar"
+                                              action="#{controladorNuevasMatriculasPH.seleccionarPropiedadDiv()}" 
+                                              disabled="#{!controladorNuevasMatriculasPH.boolDocEncontrado}"
+                                              update="growl @form " 
+                                              style="margin-right:20px;"  title="Confirmar selección"
+                                              oncomplete="PF('dlgBuscarPropiedadDiv').hide()"
+                                              >
+                            </p:commandButton> 
+                            <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}"  immediate="true" onclick="PF('dlgBuscarPropiedadDiv').hide()"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <!--DIALOGO NUEVAS MATRICULAS HIJAS -->
+
+            <p:dialog id="dlgNuevasMatHijas" modal="true" widgetVar="dlgNuevasMatricHijas" header="Propiedad" height="500">
+                <h:form id="formNuevasMatriculasHijas">
+                    <p:tabView id="tabViewNuevasMat" activeIndex="#{controladorNuevasMatriculasPH.indiceTabNuevaProp}">
+                        <p:tab title="Datos De Identificación">
+
+
+                            <h:panelGrid columns="2" cellspacing="10">
+
+                                <p:outputLabel for="txtUnidViv" value="Unidad Vivienda" style="text-align: right"/>
+                                <p:inputText id="txtUnidViv" size="55" readonly="false" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdUnidadVivienda}"/>
+
+
+
+                                <p:outputLabel for="txtCatastro" value="Catastro" style="text-align: right"/>
+                                <p:inputText id="txtCatastro" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdCatastro}" size="55"
+                                             readonly="false" lang="true" />
+                                <p:outputLabel for="txtPredio" value="Predio" style="text-align: right"/>
+                                <p:inputText id="txtPredio" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdPredio}" size="55"
+                                             readonly="false"/>
+                                <p:outputLabel for="txtEspacial" value="Espacial" style="text-align: right" />
+                                <p:inputText id="txtEspacial" style="width: 250px" size="45" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdEspacial}"
+                                             required="true" requiredMessage="Ingrese el campo Espacial"
+                                             readonly="true"/>
+
+                                <p:outputLabel for="txtCompania" value="Compañía Constructora" style="text-align: right"/>
+                                <p:selectOneMenu id="txtCompania" required="true" style="width: 250px" disabled="true"
+                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdConjuntoId}" filter="true" >
+
+                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaCompania}" var="compania" itemLabel="#{compania.comNombre}" itemValue="#{compania.comId}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel for="txtParroquiaHistorica" value="Parroquia Historica" style="text-align: right"/>
+                                <p:selectOneMenu id="txtParroquiaHistorica" required="true" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdTdtParIdH}" 
+                                                 filter="true" disabled="true">
+                                    <p:ajax event="change" update="txtParroquiaActual txtDescripcion" listener="#{controladorNuevasMatriculasPH.seleccionarParroquiaHistorica()}"/>
+                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaParroquia}" var="parroquia" itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel for="txtParroquiaActual" value="Parroquia Actual" style="text-align: right"/>
+                                <p:selectOneMenu id="txtParroquiaActual" required="true" style="width: 250px" 
+                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdTdtParId}"
+                                                 >
+                                    <p:ajax event="change" listener="#{controladorNuevasMatriculasPH.seleccionarParroquiaActual()}"/>
+                                    <p:ajax event="change" update="txtDescripcion txtParroquiaHistorica" process="@this :formNuevasMatriculasHijas:tabViewNuevasMat:txtUnidViv" listener="#{controladorNuevasMatriculasPH.llenarDescripcion2PropHija()}"/>
+                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaParroquia}" var="parroquia"
+                                                   itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>                                            
+                                </p:selectOneMenu>
+
+
+                                <p:outputLabel for="txtTipo"  value="Tipo" style="text-align: right" />
+                                <p:selectOneMenu id="txtTipo" required="true" style="width: 250px" 
+                                                 filter="true"
+                                                 requiredMessage="Seleccione el Tipo"
+                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.tpdId}" >
+                                    <p:ajax event="change" update="txtDescripcion" process="@this :formNuevasMatriculasHijas:tabViewNuevasMat:txtUnidViv" listener="#{controladorNuevasMatriculasPH.llenarDescripcion2PropHija()}"/>                                                    
+                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaTipoPropiedad}" var="tipoPropiedad" 
+                                                   itemLabel="#{tipoPropiedad.tpdNombre}" itemValue="#{tipoPropiedad}" />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel for="txtClase" value="Clase" style="text-align: right"/>
+                                <p:selectOneMenu id="txtClase" required="true" style="width: 250px" requiredMessage="Seleccione la Clase"
+                                                 disabled="true"
+                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdClasePropiedad}"  >
+                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                    <f:selectItem itemLabel="HORIZONTAL" itemValue="H" />
+                                    <f:selectItem itemLabel="ORDINARIA" itemValue="O"/>
+                                    <p:ajax event="change" process="@this" update="pnlLblGrupo pnlTxtGrupo" 
+                                            listener="#{controladorNuevasMatriculasPH.seleccionarClase()}"/>
+                                </p:selectOneMenu>                                                
+
+                                <h:panelGroup id="pnlLblGrupo">
+                                    <p:outputLabel id="lblTxtGrupo" for="txtGrupo" value="Grupo" 
+                                                   style="text-align: right"
+                                                   rendered="#{controladorNuevasMatriculasPH.mostrarComboGrupo}"
+                                                   />
+                                </h:panelGroup>
+
+                                <h:panelGroup id="pnlTxtGrupo">
+                                    <p:selectOneMenu id="txtGrupo" required="true" style="width: 250px" filter="true" requiredMessage="Seleccione el Grupo"
+                                                     disabled="true"
+                                                     value="#{controladorNuevasMatriculasPH.propiedadNueva.tclId}"
+                                                     rendered="#{controladorNuevasMatriculasPH.mostrarComboGrupo}">
+                                        <f:selectItem itemLabel="Seleccione uno..."/>
+                                        <f:selectItems value="#{controladorNuevasMatriculasPH.listaGrupo}" 
+                                                       var="tipoPropiedadClase" itemLabel="#{tipoPropiedadClase.tclNombre}"
+                                                       itemValue="#{tipoPropiedadClase}" />
+                                    </p:selectOneMenu>
+                                </h:panelGroup> 
+
+
+
+                            </h:panelGrid>
+
+                        </p:tab>
+                        <p:tab title="Linderos">
+                            <p:outputLabel for="btnCrearLindero" value="Lindero" style="text-align: right"/>
+
+                            <p:commandButton id="btnCrearLindero" value="Agregar Linderos" immediate="true"
+                                             process="@this"
+                                             icon="fa fa-plus" class="cyan-btn"
+                                             actionListener="#{controladorNuevasMatriculasPH.preCrearLindero()}"  
+                                             oncomplete="PF('dlgLinderos').show()"
+                                             update=":frmLinderos"/>
+                            <h:panelGrid columns="1" >
+
+                                <p:dataTable id="dtbLinderos" value="#{controladorNuevasMatriculasPH.listaLinderos}" 
+                                             var="item" rowKey="#{item.ldrId}" style="width: 300px"
+                                             scrollable="true" scrollHeight= "20px"
+                                             >
+                                    <p:column headerText="Nombre">
+                                        <p:cellEditor>
+                                            <f:facet name="output"> <h:outputText value="#{item.ldrNombre}"/></f:facet> 
+                                            <f:facet name="input"><p:inputText value="#{item.ldrNombre}"  /></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column style="width: 15%">
+                                        <p:commandButton class="red-btn" icon="fa fa-remove" 
+                                                         immediate="true" 
+                                                         update="growl dtbLinderos"
+
+                                                         action="#{controladorNuevasMatriculasPH.borrarLindero()}">
+                                            <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.linderoSeleccionado}"
+                                                                         value="#{item}"/>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid> 
+
+
+
+                        </p:tab>
+                        <p:tab title="Datos Descriptivos">
+
+                            <h:panelGrid columns="2" cellspacing="10">
+                                <p:outputLabel for="txtSuperficie"  value="Superficie"/>
+                                <p:inputText id="txtSuperficie" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdSuperficie}" size="60" maxlength="7" required="true" requiredMessage="Superficie Requerida">
+                                    <p:ajax event="change" listener="#{controladorNuevasMatriculasPH.llenarDescripcion1()}" update="txtSuperficieLetras growl"/>
+                                </p:inputText>
+                                <h:outputText/>
+                                <p:selectOneMenu id="txtSuperficieTipo"  style="width: 250px" 
+                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.umdId}" 
+                                                 filter="true" required="true" requiredMessage="Requerido Unidad de Medida">
+                                    <p:ajax event="change" listener="#{controladorNuevasMatriculasPH.llenarDescripcion1()}"
+                                            update="txtSuperficieLetras growl"/>
+                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaUnidMedida}" var="unidMedida" itemLabel="#{unidMedida.umdNombre}" itemValue="#{unidMedida}"/>
+                                </p:selectOneMenu>
+                                <h:outputText/>
+                                <p:inputTextarea id="txtSuperficieLetras" style="width: 250px" value="#{controladorNuevasMatriculasPH.propiedadNueva.prdDescripcion1}" rows="2"  readonly="true"/>
+                                <p:outputLabel for="txtDescripcion" value="Descripción"/>
+                                <p:inputTextarea id="txtDescripcion" style="width: 250px" rows="7"
+                                                 required="true" requiredMessage="Ingrese la Descripción de la Propiedad"
+                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdDescripcion2}"/>
+
+                                <p:outputLabel for="Estado" value="Estado"/>
+                                <p:selectOneRadio id="Estado" required="true" requiredMessage="El campo estado, es requerido"
+                                                  value="#{controladorNuevasMatriculasPH.propiedadNueva.prdEstadoPropiedad}"
+                                                  disabled="#{controladorNuevasMatriculasPH.esPropiedadNueva}"
+                                                  >
+                                    <f:selectItem itemLabel="Activo" itemValue="AC"  />                                                   
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+
+
+
+
+                        </p:tab>
+                        <p:tab title="Bloque">
+
+                            <h:panelGrid columns="2" cellspacing="10">
+
+                                <p:outputLabel for="txtEtapa" value="Etapa"/>
+                                <p:inputTextarea id="txtEtapa" style="width: 210px;text-transform: uppercase" rows="1"
+                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdEtapa}"  />
+
+                                <p:outputLabel for="txtSupermanzana" value="SuperManzana"/>
+                                <p:inputTextarea id="txtSupermanzana" style="width: 210px;text-transform: uppercase" rows="1"
+                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdSuperManzana}"  />
+
+                                <p:outputLabel for="txtBloque" value="Bloque"/>
+                                <p:selectOneMenu id="txtBloque" style="width: 200px"  
+                                                 required="true" requiredMessage="Seleccione el Bloque" 
+                                                 value="#{controladorNuevasMatriculasPH.propiedadNueva.prdBloque}">
+
+                                    <f:selectItems value="#{controladorNuevasMatriculasPH.listaBloque}" 
+                                                   var="bloq"
+                                                   itemLabel="#{bloq.bloNombre}" itemValue="#{bloq.bloNombre}" />
+
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>            
+
+
+
+                            <div align="right">
+                                <p:commandButton class="green-btn" icon="fa fa-save" 
+                                                 action="#{controladorNuevasMatriculasPH.guardarPropiedadHija()}" 
+                                                 process="@form" update="growl @form :pnlAcciones tabView:formUniViv tabView:formEliminarMatriculas tabView:formGenerarMatriculas :formMatriculacion2"
+                                                 value="Guardar"/>
+                            </div>
+
+
+
+                        </p:tab>
+
+
+                    </p:tabView>
+                </h:form>               
+
+
+            </p:dialog>
+
+
+            <!-- DIALOGO CREAR COMPONENTE -->
+            <p:dialog id="idDlgAlicuota" widgetVar="dlgAlicuota" position="center center" 
+                      onShow="PF('dlgAlicuota').initPosition()" header="Crear Componente PH">
+                <h:form id="formDlgAlicuota">
+                    <h:panelGrid columns="2" width="280px" >
+                        <p:outputLabel for="txtMatricula" value="Matricula"/>
+                        <p:inputTextarea id="txtMatricula" style="width: 127px" rows="1"
+                                         value="#{controladorNuevasMatriculasPH.alicuota.prdMatricula}" 
+                                         readonly="true"/>
+                        <p:outputLabel for="txtNumAlicuota" value="Número"/>
+                        <p:inputTextarea id="txtNumAlicuota" style="width: 127px;text-transform: uppercase" rows="1" required="true"
+                                         requiredMessage="Ingrese el Número de Alicuota"
+                                         value="#{controladorNuevasMatriculasPH.alicuota.altNumero}" 
+                                         readonly="false"/>
+                        <p:outputLabel for="txtAlicuota" value="Alicuota"/>
+                        <p:inputNumber id="txtAlicuota" style="width: 110px" required="true" maxValue="1"
+                                       requiredMessage="Ingrese la Alicuota" decimalPlaces="6"
+                                       value="#{controladorNuevasMatriculasPH.alicuota.altAlicuota}" 
+                                       readonly="false"/>
+                        <p:outputLabel for="txtArea" value="Bloque"/>
+                        <p:inputTextarea id="txtArea" style="width: 127px;text-transform: uppercase"  rows="1" required="true"
+                                         requiredMessage="Ingrese el Bloque"
+                                         value="#{controladorNuevasMatriculasPH.alicuota.altArea}" 
+                                         readonly="false"/>
+
+                        <p:outputLabel for="txtPiso" value="Piso"/>
+                        <p:inputTextarea id="txtPiso" style="width: 127px;text-transform: uppercase"  rows="1" required="true"
+                                         requiredMessage="Ingrese el Piso"
+                                         value="#{controladorNuevasMatriculasPH.alicuota.altPiso}" 
+                                         readonly="false"/>
+                        <p:outputLabel for="txtDescripcion" value="Nombre Unidad"/>
+                        <p:inputTextarea id="txtDescripcion" style="width: 127px;text-transform: uppercase"   rows="1" required="true"
+                                         requiredMessage="Ingrese el Nombre de la Unidad"
+                                         value="#{controladorNuevasMatriculasPH.alicuota.altDescripcion}" 
+                                         readonly="false"/>
+                        <p:outputLabel for="txtObservación" value="Observación"/>
+                        <p:inputTextarea id="txtObservación" style="width: 127px;text-transform: uppercase"   rows="1" required="false"
+
+                                         value="#{controladorNuevasMatriculasPH.alicuota.altObservacion}" 
+                                         readonly="false"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Guardar" icon="fa fa-save" class="green-btn"
+                                     action="#{controladorNuevasMatriculasPH.guardarAlicuota()}"
+                                     update="tabView:formGenerarMatriculas formDlgAlicuota growl formDlgTblAlicuota"/>
+                    <p:commandButton class="red-btn" immediate="true" icon="fa fa-close"                                         
+                                     value="Cancelar" onclick="PF('dlgAlicuota').hide()"/>
+                </h:form>
+            </p:dialog>
+
+            <!-- VER COMPONENTE-->
+
+            <p:dialog id="idDlgTabAlicuota" widgetVar="dlgVerAlicuotas" position="center center" 
+                      onShow="PF('dlgVerAlicuotas').initPosition()" header="COMPONENTE PH">
+                <h:form id="formDlgTblAlicuota">
+                    <h:panelGrid columns="1" width="680px" >
+                        <p:commandButton icon="fa fa-plus" class="green-btn" title="Crear Componente PH" value="Crear Componente PH"
+                                         update="formDlgAlicuota" oncomplete="PF('dlgAlicuota').show()"
+                                         />
+
+
+
+                        <p:dataTable id="dtbAlicuotas" scrollable="true"  scrollHeight="150" 
+                                     value="#{controladorNuevasMatriculasPH.listaAlicuota}" 
+                                     var="alicuota" rowKey="#{alicuota.altId}" sortBy="#{alicuota.altId}"
+                                     > 
+
+
+                            <p:column headerText="Nro. Matrícula" groupRow="true">
+                                <h:outputText value="#{alicuota.prdMatricula.prdMatricula}" />
+                            </p:column>
+                            <p:column headerText="Número" >
+                                <h:outputText value="#{alicuota.altNumero}" />
+                            </p:column>
+                            <p:column headerText="Alicuota" >
+                                <h:outputText value="#{alicuota.altAlicuota}" />
+                            </p:column>
+                            <p:column headerText="Bloque" >
+                                <h:outputText value="#{alicuota.altArea}" />
+                            </p:column>
+                            <p:column headerText="Descripción" >
+                                <h:outputText value="#{alicuota.altDescripcion}" />
+                            </p:column>
+                            <p:column headerText="Observación" >
+                                <h:outputText value="#{alicuota.altObservacion}" />
+                            </p:column>
+                            <p:column headerText="Eliminar" >
+                                <p:commandButton class="red-btn" icon="fa fa-close" update="dtbAlicuotas"
+                                                 action="#{controladorNuevasMatriculasPH.eliminarAlicuota(alicuota)}"/>
+                            </p:column>    
+
+
+                        </p:dataTable>
+
+                    </h:panelGrid>
+                    <p:commandButton class="red-btn" immediate="true" icon="fa fa-close"                                         
+                                     value="Salir" onclick="PF('dlgVerAlicuotas').hide()"/>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog widgetVar="dlgMap" modal="true" resizable="false" closable="false" position="center center"
+                      responsive="true" width="1000" height="600">
+                <h:form id="formMapa">
+                    <p:growl id="growl" life="3000"/>
+                    <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyC7R9us6s7z77X-uy5zaAc6DzUM6u0-7c4"></script>
+                    <p:gmap id="gmap" widgetVar="map" center="#{controladorNuevasMatriculasPH.centerGeoMap}" 
+                            zoom="#{controladorNuevasMatriculasPH.zoom}" 
+                            type="ROADMAP" style="width:100%;height:500px" 
+                            model="#{controladorNuevasMatriculasPH.geoModel}" >
+                        <p:ajax event="stateChange" listener="#{controladorNuevasMatriculasPH.onZoomAction}"/>
+                        <p:ajax event="pointSelect" listener="#{controladorNuevasMatriculasPH.onPointSelect}" update="growl gmap" />
+                    </p:gmap>
+                    <br/>
+                    <p:panelGrid columns="5" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" styleClass="ui-panelgrid-blank ui-fluid" >
+                        <p:outputLabel for="@next" value="Dirección"/>
+                        <p:inputText id="txtDireccionP" value="#{controladorNuevasMatriculasPH.direccion}" 
+                                     placeholder="Barrio Calle principal N°casa"
+                                     required="true" requiredMessage="Dirección, Campo Requerido"/>
+                        <p:commandButton class="orange-btn" icon="fa fa-map-marker" value="Buscar"
+                                         action="#{controladorNuevasMatriculasPH.localizarPorDireccion()}"
+                                         update="gmap txtDireccionP growl"/>
+                        <p:commandButton class="green-btn" icon="fa fa-save" value="Guardar" process="gmap @this"
+                                         action="#{controladorNuevasMatriculasPH.guadarLocalizacion()}" 
+                                         onclick="PF('dlgMap').hide()" update="growl :tabView:formNuevasMatriculas:txtEspacial"/>
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Salir" process="@this"
+                                         onclick="PF('dlgMap').hide()"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <!--DIALOGOS-->
+
+            <ui:include src="../MatriculacionPH/CrearNuevoTramiteValor.xhtml"/>
+            <ui:include src="../MatriculacionPH/crearCompania.xhtml"/>
+            <ui:include src="../MatriculacionPH/crearAlicuotaTmp.xhtml"/>
+            <ui:include src="../MatriculacionPH/bloque.xhtml"/>
+
+        </ui:define>
+
+    </ui:composition>
+
+    <!--    </body>-->
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ParametroPathViewDlg" widgetVar="ParametroPathViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewParametroPathTitle}">
+            <h:form id="ParametroPathViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorParametroPath.selected != null}">
+                        
+                        <h:outputText value="#{bundle.ViewParametroPathLabel_prpTipo}"/>
+                        <h:outputText value="#{controladorParametroPath.selected.prpTipo}" title="#{bundle.ViewParametroPathTitle_prpTipo}"/>
+                        <h:outputText value="#{bundle.ViewParametroPathLabel_prpPath}"/>
+                        <h:outputText value="#{controladorParametroPath.selected.prpPath}" title="#{bundle.ViewParametroPathTitle_prpPath}"/>
+                        <h:outputText value="#{bundle.ViewParametroPathLabel_prpFechaInicio}"/>
+                        <h:outputText value="#{controladorParametroPath.selected.prpFechaInicio}" title="#{bundle.ViewParametroPathTitle_prpFechaInicio}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewParametroPathLabel_prpFechaFin}"/>
+                        <h:outputText value="#{controladorParametroPath.selected.prpFechaFin}" title="#{bundle.ViewParametroPathTitle_prpFechaFin}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewParametroPathLabel_prpEstado}"/>
+                        <h:outputText value="#{controladorParametroPath.selected.prpEstado}" title="#{bundle.ViewParametroPathTitle_prpEstado}"/>
+                        <h:outputText value="#{bundle.ViewParametroPathLabel_prpUser}"/>
+                        <h:outputText value="#{controladorParametroPath.selected.prpUser}" title="#{bundle.ViewParametroPathTitle_prpUser}"/>
+                        <h:outputText value="#{bundle.ViewParametroPathLabel_prpFHR}"/>
+                        <h:outputText value="#{controladorParametroPath.selected.prpFHR}" title="#{bundle.ViewParametroPathTitle_prpFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Close}" onclick="ParametroPathViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

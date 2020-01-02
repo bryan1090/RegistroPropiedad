@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListTiempoProcesoTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="TiempoProcesoListForm">
+                <p:panel header="Lista de Tiempos de Proceso">
+                    <p:dataTable id="datalist" value="#{controladorTiempoProceso.items}" var="item"
+                                 selectionMode="single" selection="#{controladorTiempoProceso.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.tpoId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <!--                        <p:column>
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{bundle.ListTiempoProcesoTitle_tpoId}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{item.tpoId}"/>
+                                                </p:column>-->
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTiempoProcesoTitle_tpoUnidadTiempo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpoUnidadTiempo eq 'D' ? 'Días':'Horas'}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTiempoProcesoTitle_tpoTiempo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpoTiempo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTiempoProcesoTitle_tpoEstado}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpoEstado}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTiempoProcesoTitle_tpoFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpoFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTiempoProcesoTitle_tpoUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpoUser}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTiempoProcesoTitle_estId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.estId.estDescripcion}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTiempoProcesoTitle_ttrId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ttrId.ttrDescripcion}"/>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" class="green-btn" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{controladorTiempoProceso.prepareCreate}" update=":TiempoProcesoCreateForm" oncomplete="PF('TiempoProcesoCreateDialog').show()"/>
+                                <p:commandButton id="viewButton" class="blue-btn"  icon="ui-icon-search" value="#{bundle.View}" update=":TiempoProcesoViewForm" oncomplete="PF('TiempoProcesoViewDialog').show()" disabled="#{empty controladorTiempoProceso.selected.tpoId}"/>
+                                <p:commandButton id="editButton"  class="cyan-btn" icon="ui-icon-pencil" value="#{bundle.Edit}" update=":TiempoProcesoEditForm" oncomplete="PF('TiempoProcesoEditDialog').show()" disabled="#{empty controladorTiempoProceso.selected.tpoId}"/>
+                                <p:commandButton id="deleteButton" class="red-btn" icon="ui-icon-trash"  value="#{bundle.Delete}" actionListener="#{controladorTiempoProceso.destroy}" update=":growl,datalist" disabled="#{empty controladorTiempoProceso.selected.tpoId}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

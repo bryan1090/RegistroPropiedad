@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListCuantiaTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="CuantiaListForm">
+                <p:panel header="#{bundle.ListCuantiaTitle}">
+                    <p:dataTable id="datalist" value="#{controladorCuantia.items}" var="item"
+                                 selectionMode="single" selection="#{controladorCuantia.selected}"
+                                 paginator="true" sortBy="#{item.ttrId.ttrDescripcion}"
+                                 rowKey="#{item.cuaId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.ttrId.ttrDescripcion}" sortBy="#{item.ttrId.ttrDescripcion}" filterMatchMode="startsWith">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCuantiaTitle_ttrId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ttrId.ttrDescripcion}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.cuaValorInicial}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCuantiaTitle_cuaValorInicial}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cuaValorInicial}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.cuaValorFinal}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCuantiaTitle_cuaValorFinal}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cuaValorFinal}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.cuaValorAplica}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCuantiaTitle_cuaValorAplica}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cuaValorAplica}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.cuaPorcentaje}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCuantiaTitle_cuaPorcentaje}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cuaPorcentaje}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.cuaUser}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCuantiaTitle_cuaUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cuaUser}" style="text-transform: uppercase"/>
+                        </p:column>
+                        <p:column sortBy="#{item.cuaFHR}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCuantiaTitle_cuaFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cuaFHR}" style="text-transform: uppercase">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                            <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn"  value="#{bundle.Create}" actionListener="#{controladorCuantia.prepareCreate}" update=":CuantiaCreateForm" oncomplete="PF('CuantiaCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":CuantiaViewForm" oncomplete="PF('CuantiaViewDialog').show()" disabled="#{empty controladorCuantia.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":CuantiaEditForm" oncomplete="PF('CuantiaEditDialog').show()" disabled="#{empty controladorCuantia.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{controladorCuantia.destroy}" update=":growl,datalist" disabled="#{empty controladorCuantia.selected}">
+                            <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                            
+                            </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

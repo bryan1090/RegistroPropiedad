@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                <h:outputText value="Inscripcion"></h:outputText>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="formInscripcion">
+                    <p:growl id="growl1" showDetail="true" sticky="true" life="50" />
+                    <p:panel header="Inscripcion" >
+                        <p:panelGrid layout="grid" columns="8" style="display: block;text-align: center">
+                            <p:outputLabel for="txtNumTramite" value="# Trámite"/>
+                            <p:inputText id="txtNumTramite" value="#{controladorMatriculacion.numTramite}" disabled="true"/>
+                            <p:outputLabel for="txtRepertorio" value="Repertorio"/>
+                            <p:inputText id="txtRepertorio" value="#{controladorMatriculacion.repertorio}" disabled="true" />
+                            <p:outputLabel for="txtFecha" value="Fecha"/>
+                            <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFecha" value="#{controladorMatriculacion.FHR}" disabled="true"/>
+                            <p:outputLabel for="txtContrato" value="Contrato"/>
+                            <p:inputText id="txtContrato" value="#{controladorMatriculacion.contrato}" disabled="true"/>
+                        </p:panelGrid>
+                        <p:panelGrid>
+                            
+                            
+                            
+                        </p:panelGrid>
+
+                        <table align="center">
+                            <tbody>
+                                <tr align="top" bottom="top" >
+                                    <td><p:panel header="" style="width: 350px; height: 520px; ">
+                                            <h:panelGrid columns="2" >
+                                                <p:outputLabel for="txtFechaRepertorio" value="Fecha Repertorio" />
+                                                <p:calendar pattern="dd/MM/yyyy" id="txtFechaRepertorio" value="#{controladorMatriculacion.FHR}" required="true" label="firstname">
+                                                    <p:ajax event="dateSelect" listener="#{controladorMatriculacion.llenarDatos()}" update=":formMatriculacion ,formMatriculacion2:txtRepertorioPopup ,formMatriculacion2:txtTramitePopup ,formMatriculacion2:txtParroquiaPopup growl1"/>
+                                                </p:calendar>
+                                            </h:panelGrid>
+
+                                            <h:panelGrid columns="1">      
+                                                <p:dataTable id="tblRepertorios" rows="10" value="#{controladorMatriculacion.listaRepertorioFecha}" 
+                                                             var="list" selectionMode="single" selection="#{list}" rowKey="#{list.repNumero}" sortBy="#{list.traNumero.traNumero}" > 
+                                                    <p:ajax event="rowSelect" listener="#{controladorMatriculacion.onRowSelect}"  update=" :formMatriculacion ,:formMatriculacion2 " oncomplete="PF('dlg1').show();"/>
+                                                    <p:column headerText="Repertorio">
+                                                        <h:outputText value="#{list.repNumero}" />
+                                                    </p:column>
+
+                                                    <p:column headerText="# Trámite">
+                                                        <h:outputText value="#{list.traNumero.traNumero}" />
+                                                    </p:column>
+
+                                                    <p:column headerText="Contrato">
+                                                        <h:outputText value="#{list.repTtrDescripcion}" />
+                                                    </p:column>
+                                                </p:dataTable>
+
+                                            </h:panelGrid>
+
+                                            <h:panelGrid columns="3" style="display: block;text-align: center" >
+                                                <p:commandButton id="btnNuevaPropiedad" class="green-btn" value="Nueva Propiedad" action="#{controladorMatriculacion.redireccionarNuevaPropiedad()}"  disabled="#{controladorMatriculacion.estadoBotonNuevaPropiedad}" update="growl1 formMatriculacion:btnEditarPropiedad"/>
+                                                <p:commandButton id="btn" class="blue-btn" value="icono2"  disabled="#{controladorMatriculacion.estadoBotonNuevaPropiedad}"/>
+                                                <p:commandButton id="btnEditarPropiedad" class="orange-btn" value="Editar Propiedad" action="#{controladorMatriculacion.redireccionarEditarPropiedad()}" disabled="#{controladorMatriculacion.estadoBotonEditarPropiedad}"/>
+                                            </h:panelGrid>
+                                        </p:panel>
+                                    </td>
+
+                                    <td>
+                                        <p:panel header="" style="width: 690px; height: 520px;">
+
+                                        </p:panel>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </p:panel>
+                </h:form>
+
+                <h:panelGroup id="parentPanel" rendered="#{controladorMatriculacion.mostrarDlg}">
+                    <p:dialog id="dialog3" header="Parroquia del Contrato" modal="true" widgetVar="dlg1" minHeight="40" rendered="false" >
+                        <p:ajax event="close" listener="#{controladorMatriculacion.setearCamposdeFormulario()}" update=" :formMatriculacion :formMatriculacion3"/>
+                        <h:form id="formMatriculacion2">
+                            <p:growl id="growl" life="50" />
+
+                            <p:panelGrid style="border: none;text-align: center" >
+
+                                <p:row style="border: none" >
+                                    <p:column style="border: none;text-align: left" ><p:outputLabel for="txtRepertorioPopup" value="Repertorio"/></p:column>
+                                    <p:column style="border: none;text-align: left" ><p:outputLabel for="txtTramitePopup" value="# Trámite"/></p:column>
+                                    <p:column style="border: none;text-align: left" ><p:outputLabel for="txtFechaPopup" value="Fecha"/></p:column>
+                                </p:row>
+
+                                <p:row style="border: none" >
+                                    <p:column style="border: none" ><p:inputText id="txtRepertorioPopup" value="#{controladorMatriculacion.tramiteDetalle.tdtNumeroRepertorio}" disabled="true"/></p:column>
+                                    <p:column style="border: none" ><p:inputText id="txtTramitePopup" value="#{controladorMatriculacion.tramiteDetalle.traNumero.traNumero}" disabled="true"/></p:column>
+                                    <p:column style="border: none" ><p:inputText id="txtFechaPopup" value="#{controladorMatriculacion.fechaPopup}" disabled="true"/></p:column>
+                                    <!--                                <p:column style="border: none" ><p:calendar pattern="dd/MM/yyyy HH:mm:ss" id="txtFechaPopup" value="" disabled="true" /></p:column>-->
+                                </p:row>
+
+                                <p:row style="border: none" >
+                                    <p:column colspan="3" style="border: none;text-align: left" ><p:outputLabel for="txtParroquiaPopup" value="Parroquia del Contrato"/></p:column>
+                                </p:row>
+
+                                <p:row style="border: none" >
+                                    <p:column colspan="3" style="border: none" >
+                                        <p:selectOneMenu id="txtParroquiaPopup" value="#{controladorMatriculacion.idParroquia}" style="text-align: center;width: 400px" filter="true" filterMatchMode="startsWith" panelStyle="width: 200px" >
+                                            <f:selectItem itemLabel="#{controladorMatriculacion.tramiteDetalle.tdtParNombre}" itemValue="#{controladorMatriculacion.tramiteDetalle.tdtParId}" />
+                                            <f:selectItems value="#{controladorMatriculacion.listaParroquia}" var="listaParroquias" itemLabel="#{listaParroquias.parNombre}" itemValue="#{listaParroquias.parId}"/>
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row style="border: none">
+                                    <p:column colspan="3" style="border: none;text-align: right">
+                                        <p:commandButton class="green-btn" icon="fa fa-save" action="#{controladorMatriculacion.llenarDatosRepertorioUsuario()}" oncomplete="PF('dlg1').hide(); PF('confirmacion').show(); " update="@form growl"/>
+                                        <p:commandButton class="cyan-btn"  icon="fa fa-undo" oncomplete="PF('dlg1').hide()" update="@form"/>
+                                    </p:column>
+                                </p:row>
+
+                            </p:panelGrid>
+
+                        </h:form>
+                    </p:dialog>
+                </h:panelGroup >
+                <p:dialog modal="true" widgetVar="confirmacion" minHeight="40">
+                    <h:form id="formMatriculacion3">
+                        <p:panelGrid style="text-align: center">
+                            <p:row style="border: none">
+                                <p:column style="border: none;text-align: right"><p:outputLabel for="txtConfNumeroTramite" value="# Trámite: "/></p:column>
+                                <p:column style="border: none;text-align: left"><p:inputText id="txtConfNumeroTramite" value="#{controladorMatriculacion.numeroTramite}" readonly="true"/></p:column>
+                            </p:row>
+                            <p:row style="border: none">
+                                <p:column style="border: none;text-align: right"><p:outputLabel for="txtConfNombrePersona" value="Asesor: "/></p:column>
+                                <p:column style="border: none;text-align: left"><p:inputText id="txtConfNombrePersona" value="#{controladorMatriculacion.nombrePersona}" readonly="true" size="50"/></p:column>
+                            </p:row>
+                            <p:row style="border: none">
+                                <p:column style="border: none" colspan="2"><p:commandButton value="Aceptar" onclick="PF('confirmacion').hide()" /></p:column>
+                            </p:row>
+
+                        </p:panelGrid>
+
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                Cajas-Anulación-Comprobantes  
+            </ui:define>
+
+            <script type="text/javascript">
+//<![CDATA[
+                function start() {
+                    PF('statusDialog').show();
+                }
+
+                function stop() {
+                    PF('statusDialog').hide();
+                }
+//]]>
+            </script>  
+
+            <ui:define name="content">
+                <h:form id="formCajas">
+                    <p:growl id="growl" life="3000"/>
+                    <f:passThroughAttribute name="autocomplete" value="off"/>
+
+                    <p:panel header="Anulación de Comprobantes" style="text-align: center">
+
+                        <p:panel>
+                            <h:panelGrid id="pnlFiltro" columns="3" style="width: 100%">
+                                <h:panelGrid id="pnlFactura" rendered="#{!controladorAnulacionComprobantes.consultaComprobantesBb.filtro}">
+                                    <p:row>
+                                        <p:column >
+                                            <p:selectBooleanCheckbox id="slcFactura" value="#{controladorAnulacionComprobantes.consultaComprobantesBb.filtro}" >
+                                                <p:ajax update="pnlFiltro :formCajas:pnlFechas "  listener="#{controladorAnulacionComprobantes.busquedaPorFactura()}" />
+                                            </p:selectBooleanCheckbox>
+                                            <p:outputLabel id="lblFactura"  value="&nbsp;&nbsp;&nbsp;Buscar por Número de Factura"/>
+                                        </p:column>
+                                    </p:row>
+                                </h:panelGrid>
+                                <h:panelGrid id="pnlFechas" rendered="#{controladorAnulacionComprobantes.consultaComprobantesBb.filtro}">
+                                    <p:row>
+                                        <p:column>
+                                            <p:selectBooleanCheckbox id="slcFechas"  value="#{controladorAnulacionComprobantes.consultaComprobantesBb.filtro}" >
+                                                <p:ajax update="pnlFiltro pnlFactura "  listener="#{controladorAnulacionComprobantes.busquedaPorFechas()}" />
+                                            </p:selectBooleanCheckbox>
+                                            <p:outputLabel id="lblFechas"  value="&nbsp;&nbsp;&nbsp;Buscar por Rango de Fechas"/> 
+                                        </p:column>
+                                    </p:row>
+                                </h:panelGrid>
+                                <h:panelGrid>
+                                    <p:row rendered="#{!controladorAnulacionComprobantes.consultaComprobantesBb.filtro}" style="border: none">
+                                        <p:column>
+                                            <p:outputLabel value="Fecha Inicio&nbsp;&nbsp;&nbsp;"/>
+                                            <p:calendar value="#{controladorAnulacionComprobantes.consultaComprobantesBb.fechaIinicio}" pattern="dd/MM/yyyy" mask="true"/>
+                                            <p:outputLabel value="&nbsp;&nbsp;&nbsp;Fecha Fin&nbsp;&nbsp;&nbsp;"/>
+                                            <p:calendar value="#{controladorAnulacionComprobantes.consultaComprobantesBb.fechaFin}" pattern="dd/MM/yyyy" mask="true"/>
+                                        </p:column>
+                                    </p:row>
+                                    <p:row rendered="#{controladorAnulacionComprobantes.consultaComprobantesBb.filtro}" style="border: none "   >
+                                        <p:column>
+                                            <p:outputLabel value="Número Factura&nbsp;&nbsp;&nbsp;"/>
+                                            <p:inputText value="#{controladorAnulacionComprobantes.consultaComprobantesBb.numeroFactura}"/>
+                                        </p:column>
+                                    </p:row>
+                                </h:panelGrid>
+                                <h:panelGrid style="width: 100%">
+                                    <p:row>
+                                        <p:column>
+                                            <div align="right">
+                                                <p:commandButton id="btnBuscar" icon="fa fa-search" class="green-btn" update="dtValores" value="Buscar" action="#{controladorAnulacionComprobantes.listarPorFechaFacturas}"/>
+                                            </div>
+                                        </p:column>
+                                    </p:row>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:panel><br/>
+                        <p:dataTable id="dtValores" var="factura" value="#{controladorAnulacionComprobantes.consultaComprobantesBb.listaFactura}"
+                                     scrollable="true" scrollHeight="400">
+                            <p:column headerText="Número Factura" style="text-align-last: center" width="110">
+                                <h:outputText value="#{factura.facNumero}"/>
+                            </p:column>
+                            <p:column headerText="Identificación" style="text-align-last: center"  >
+                                <p:outputLabel value="#{factura.perId.perIdentificacion}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Cliente" style="text-align-last: center" width="200"> 
+                                <h:outputText value="#{factura.perId.perApellidoPaterno} #{factura.perId.perApellidoMaterno} #{factura.perId.perNombre}"/>
+                            </p:column>
+                            <p:column headerText="Fecha" style="text-align-last: center"> 
+                                <p:outputLabel value="#{factura.facFecha}" >
+                                    <f:convertDateTime pattern="dd/MM/YYYY"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Estado" style="text-align-last: center" > 
+                                <p:outputLabel value="ACTIVO" rendered="#{factura.facEstado eq 'A'}" style="color: #76be45; font-weight: bold"></p:outputLabel>
+                                <p:outputLabel value="ANULADO" rendered="#{factura.facEstado eq 'I'}" style="color: red; font-weight: bold"></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="NV" style="text-align-last: center" width="25"> 
+                                <h:commandLink title="Generar NV"  action="#{controladorAnulacionComprobantes.generarNV()}">
+                                    <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                    <f:setPropertyActionListener  value="#{factura}" target="#{controladorAnulacionComprobantes.consultaComprobantesBb.facturaSeleccionada}"/>
+                                </h:commandLink>
+                            </p:column>
+                            <p:column headerText="Anulación" style="text-align-last: center" width="290"> 
+                                <h:panelGrid columns="2" style="border: 1px solid transparent">
+                                    <p:commandButton value="Anular Factura" action="#{controladorAnulacionComprobantes.anularFactura()}" icon="fa fas fa-ban" class="red-btn" disabled="#{factura.facEstado eq 'I'}" update=":formCajas:dtValores">
+                                        <f:setPropertyActionListener value="#{factura}" target="#{controladorAnulacionComprobantes.consultaComprobantesBb.facturaSeleccionada}"/>
+                                        <p:confirm header="Confirmación" message="¿Está seguro de anular esta factura?" icon="ui-icon-alert" />
+                                    </p:commandButton>      
+                                    <p:commandButton value="Anular Trámite" action="#{controladorAnulacionComprobantes.anularTramite()}" icon="fa fa fas fa-ban" class="red-btn" disabled="#{factura.facEstado eq 'I'}" update=":formCajas:dtValores">
+                                        <f:setPropertyActionListener value="#{factura}" target="#{controladorAnulacionComprobantes.consultaComprobantesBb.facturaSeleccionada}"/>
+                                        <p:confirm header="Confirmación" message="¿Está seguro de anular este trámite?" icon="ui-icon-alert" />
+                                    </p:commandButton>  
+                                </h:panelGrid>
+                            </p:column>
+                            
+                        </p:dataTable>
+
+                    </p:panel>
+                    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                        <p:graphicImage  value="../../resources/imagenes/loading.gif"  style="width: 75px; height: 75px;"/>
+                    </p:dialog>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes green-btn" icon="fa fas fa-check-circle"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no red-btn" icon="fa fas fa-window-close" />
+                    </p:confirmDialog>
+                </h:form>
+
+                <p:dialog header="Mensaje SRI"  widgetVar="dlgMensaje" width="500"
+                          modal="true" position="center center" 
+                          onShow="PF('dlgMensaje').initPosition()">
+                    <h:form id="formMsjSri">
+                        <p:panel style="border: none">
+                            <p:outputLabel value="FACTURA N° #{controladorAnulacionComprobantes.consultaComprobantesBb.facturaSeleccionada.facNumero}"
+                                           style="float: right;color: darkred;font-weight: bold" />
+                            <br/>
+                            <br/>
+
+                            <p:separator/>
+
+                            <br/>
+
+                            <p:dataTable value="#{controladorAnulacionComprobantes.listarespuestaSRI}" var="listMensajes"
+                                         scrollable="true" scrollHeight="300" style="text-align-last: center">
+                                <p:column headerText="Mensaje">
+                                    <h:outputText value="#{listMensajes.EMsgMensaje}" />
+                                </p:column>
+
+                                <p:column headerText="Tipo">
+                                    <h:outputText value="#{listMensajes.EMsgTipo}" />
+                                </p:column>
+
+                                <p:column headerText="Ver">
+                                    <p:commandButton onclick="PF('dlgVer').show()" update=":formVer" icon="fa fa-external-link" action="#{controladorAnulacionComprobantes.obtenerInformacion(listMensajes)}" />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog header="Informacion"  widgetVar="dlgVer" width="1100" height="150" 
+                          modal="true" position="center center" 
+                          onShow="PF('dlgMensaje').initPosition()">
+                    <h:form id="formVer">
+                        <p:panel style="border: none">
+                            <p:dataTable value="#{controladorAnulacionComprobantes.listaVer}" var="Mensajes"
+                                         scrollable="true"  style="text-align-last: left">
+                                <p:column headerText="Documento" width="70">
+                                    <h:outputText value="#{Mensajes.EMsgDocumento}" />
+                                </p:column>
+
+                                <p:column headerText="Serie" width="50">
+                                    <h:outputText value="#{Mensajes.EMsgSerie}" />
+                                </p:column>
+
+                                <p:column headerText="Nùmero" width="60">
+                                    <h:outputText value="#{Mensajes.EMsgNumero}" />
+                                </p:column>
+                                <p:column headerText="Estado">
+                                    <h:outputText value="#{Mensajes.EMsgEstado}" />
+                                </p:column>
+
+                                <p:column headerText="Detalle" width="120">
+                                    <h:outputText value="#{Mensajes.EMsgDetalle}" />
+                                </p:column>
+
+                                <p:column headerText="Programa" width="60">
+                                    <h:outputText value="#{Mensajes.EMsgPrograma}" />
+                                </p:column>
+
+                                <p:column headerText="Clave" width="50">
+                                    <h:outputText value="#{Mensajes.EMsgClave}" />
+                                </p:column>
+
+                                <p:column headerText="Autotizaciòn" width="100">
+                                    <h:outputText value="#{Mensajes.EMsgAutorizacion}" />
+                                </p:column>
+
+                                <p:column headerText="Usuario" width="50">
+                                    <h:outputText value="#{Mensajes.EMsgUser}" />
+                                </p:column>
+
+                                <p:column headerText="Fecha" width="90">
+                                    <h:outputText value="#{Mensajes.EMsgFHR}" >
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Error SRI">
+                                    <h:outputText value="#{Mensajes.EMsgErrorSri}" />
+                                </p:column>
+
+                                <p:column headerText="Còdigo SRI">
+                                    <h:outputText value="#{Mensajes.EMsgCodigoSri}" />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

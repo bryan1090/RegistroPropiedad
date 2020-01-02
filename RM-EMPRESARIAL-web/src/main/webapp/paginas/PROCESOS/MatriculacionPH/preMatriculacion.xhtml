@@ -1,0 +1,286 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition>
+        <div class="ui-fluid" align="center">
+            <p:panel >
+
+                <h:form id="formMatriculacion2">
+
+                    <p:panel id="pnlPreMatriculacion" >
+                        <h:panelGrid columns="4" style="border: none;text-align: center;width: 100%" >
+
+                            <p:outputLabel for="txtRepertorioPopup" value="Repertorio" style="font-weight: bold"/>
+                            <p:outputLabel for="txtTramitePopup" value="#Trámite" style="font-weight: bold"/>
+                            <p:outputLabel for="txtFechaPopup" value="Fecha" style="font-weight: bold"/>
+                            <p:outputLabel for="txtContrato" value="Contrato" style="font-weight: bold"/>
+
+                            <h:outputText id="txtRepertorioPopup" value="#{controladorNuevasMatriculasPH.repertorioSeleccionado.repNumero}"
+                                          style="color: #1A237E"
+                                          />
+                            <h:outputText id="txtTramitePopup" value="#{controladorNuevasMatriculasPH.repertorioSeleccionado.traNumero.traNumero}"
+                                          style="color: #1A237E"/>
+                            <h:outputText id="txtFechaPopup" value="#{controladorNuevasMatriculasPH.repertorioSeleccionado.repFHR}"
+                                          style="color: #1A237E">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                            <h:outputText id="txtContrato" value="#{controladorNuevasMatriculasPH.repertorioSeleccionado.repTtrDescripcion}" 
+                                          style="color: #1A237E"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <br/>
+
+
+                    
+                    <p:panel header="PROPIEDAD" toggleable="true" toggleSpeed="500"
+                             rendered="#{controladorNuevasMatriculasPH.renderedPanelPropiedad}">
+                    <p:dataTable id="dtbTramVal" value="#{controladorNuevasMatriculasPH.listaTramiteValor}" 
+                                 var="traval" rowKey="#{traVal.trvId}" 
+                                 editable="true"
+                                 scrollable="true" scrollHeight="200" style="text-align: center"
+                                 rowIndexVar="numFila"
+                                 >
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton value="Nuevo" icon="fa fa-plus" style="width: 80px"
+                                                 class="green-btn" disabled="#{controladorNuevasMatriculasPH.listaTramiteValor.size() eq 1}"
+                                                 action="#{controladorNuevasMatriculasPH.preCrearNuevoTramiteValor()}"
+                                                 process="@this" immediate="true"
+                                                 update=":frmIngresoTramVal"
+                                                 oncomplete="PF('dlgCrearTramVal').show()"/>
+                                <p:commandButton icon="fa fa-arrow-circle-left"  value="Regresar"
+                                                 class="cyan-btn"
+                                                 style="width: 80px" 
+                                                 action="#{controladorNuevasMatriculasPH.redireccionarPaginaSeleccion()}"
+                                                 process="@this" immediate="true"
+                                                 update="growl"/>
+                                <p:commandButton icon="fa fa-stop"  value="Terminar"
+                                                 class="red-btn"
+                                                 style="width: 80px" 
+                                                 action="#{controladorNuevasMatriculasPH.terminarProceso()}"
+                                                 process="@this" immediate="true"
+                                                 disabled="#{controladorNuevasMatriculasPH.disabledBtnTerminar}"
+                                                 rendered="#{controladorNuevasMatriculasPH.renderedBtnTerminar}"
+                                                 update="growl" >
+                                    
+                                <p:confirm header="Confirmación" message="¿Desea terminar el proceso?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Estado" style="width: 15%">
+                            <!--                            <h:panelGrid style="font-size: medium;font-weight: bold;"
+                                                                     >-->
+                            <h:outputText value="Revisado" style="font-size: medium;font-weight: bold; color: green"
+                                          rendered="#{traval.trvAccion gt 0}"/>
+                            <!--                            </h:panelGrid>-->
+                            <!--                            <h:panelGrid style="font-size: medium;font-weight: bold;"
+                                                                     >-->
+                            <h:outputText value="No Revisado" style="font-size: medium;font-weight: bold;color: red"
+                                          rendered="#{traval.trvAccion eq 0 or traval.trvAccion eq null}"/>
+                            <!--                            </h:panelGrid>-->
+                        </p:column>
+                        <p:column headerText="Catastro">
+                            <p:cellEditor>
+                                <f:facet name="output"> <h:outputText value="#{traval.trvNumCatastro}" style="text-transform: uppercase"/></f:facet> 
+                                <f:facet name="input"><p:inputText value="#{traval.trvNumCatastro}" style="width:96%;text-transform: uppercase" /></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                         <p:column headerText="Predio">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{traval.traNumPredio}"/></f:facet> 
+                                <f:facet name="input"><p:inputText value="#{traval.traNumPredio}" style="width:96%" label="Year"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column  headerText="Parroquia">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{traval.trvParNombre}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{traval.trvParNombre}" style="width:100%">
+                                        <f:selectItems value="#{controladorNuevasMatriculasPH.listaParroquia}" var="item"
+                                                       itemLabel="#{item.parNombre}" itemValue="#{item.parNombre}" />
+
+
+                                    </h:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                       
+
+                        <p:column  headerText="Editar" style="width:7%;" >
+                            <p:rowEditor rendered="#{!traval.tienePropHija}" />
+                        </p:column>
+
+                        
+
+                        <p:column headerText="Seleccionar" style="width: 10%">
+                            <p:commandButton class="cyan-btn" icon="fa fa-check" 
+                                             action="#{controladorNuevasMatriculasPH.seleccionarTramiteValor()}" 
+                                             process="@this"
+                                             immediate="true"
+                                             update="growl :pnlAsigMatr :pnlAcciones :pnlAccionesRev" style="width: 40px">
+                                <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.tramiteValorSeleccionado}" 
+                                                             value="#{traval}"/>
+                                <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.indiceTab}" 
+                                                             value="0"/>
+                                 <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.disabledTab}" 
+                                                             value="true"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="Eliminar" style="width: 10%">
+                            <p:commandButton class="red-btn" icon="fa fa-trash" disabled="#{traval.tienePropHija}" 
+                                             action="#{controladorNuevasMatriculasPH.borrarTramiteValor()}" 
+                                             update="@form growl :tabView" style="width: 40px">
+                                <p:confirm header="Eliminar elemento" message="¿Esta seguro?"/>
+                                <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.tramiteValorSeleccionado}" 
+                                                             value="#{traval}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                        
+                        </p:panel>
+                    
+                    <!-- *********************** PANEL REVOCATORIA ************************* -->
+                    
+                    
+                    <p:panel id="panelRevocatoria" header="PROPIEDAD" toggleable="true" 
+                             toggleSpeed="500" rendered="#{controladorNuevasMatriculasPH.renderedPanelPropiedadRev}">                        
+                    
+                    <h:outputLabel value="#{controladorNuevasMatriculasPH.mensajeRev}" 
+                                   style="font-size: 20px; color: red;font-weight: bolder"
+                                   rendered="#{controladorNuevasMatriculasPH.renderedMensaje}"/>
+                        
+                        <p:dataTable id="dtbTramValR" value="#{controladorNuevasMatriculasPH.listaTramiteValor}" 
+                                 var="traval" rowKey="#{traVal.trvId}" 
+                                 editable="true"
+                                 scrollable="true" scrollHeight="200" style="text-align: center"
+                                 rowIndexVar="numFila"
+                                 >
+                        <f:facet name="header">
+                            <div align="right">
+                                
+                                <p:commandButton value="Procesar Revocatoria" 
+                                                 class="green-btn" style="width: 100px"
+                                                 disabled="#{controladorNuevasMatriculasPH.disabledBtnProcRevoc}"
+                                                 action="#{controladorNuevasMatriculasPH.procesarRevocatoria()}"
+                                                 process="@this" immediate="true"
+                                                 update="formMatriculacion2"
+                                                 >
+                                 <p:confirm header="Confirmación" message="¿Desea realizar la Revocatoria?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:commandButton icon="fa fa-arrow-circle-left"  value="Regresar"
+                                                 class="cyan-btn"
+                                                 style="width: 80px" 
+                                                 action="#{controladorNuevasMatriculasPH.redireccionarPaginaSeleccion()}"
+                                                 process="@this" immediate="true"
+                                                 update="growl"/>
+                                <p:commandButton icon="fa fa-stop"  value="Terminar"
+                                                 class="red-btn"
+                                                 style="width: 80px" 
+                                                 action="#{controladorNuevasMatriculasPH.terminarProceso()}"
+                                                 process="@this" immediate="true"
+                                                 disabled="#{controladorNuevasMatriculasPH.disabledBtnTerminar}"
+                                                 rendered="#{controladorNuevasMatriculasPH.renderedBtnTerminar}"
+                                                 update="growl" >
+                                    
+                                <p:confirm header="Confirmación" message="¿Desea terminar el proceso?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Estado" style="width: 15%">
+                            <!--                            <h:panelGrid style="font-size: medium;font-weight: bold;"
+                                                                     >-->
+                            <h:outputText value="Revisado" style="font-size: medium;font-weight: bold; color: green"
+                                          rendered="#{traval.trvAccion gt 0}"/>
+                            <!--                            </h:panelGrid>-->
+                            <!--                            <h:panelGrid style="font-size: medium;font-weight: bold;"
+                                                                     >-->
+                            <h:outputText value="No Revisado" style="font-size: medium;font-weight: bold;color: red"
+                                          rendered="#{traval.trvAccion eq 0 or traval.trvAccion eq null}"/>
+                            <!--                            </h:panelGrid>-->
+                        </p:column>
+                        <p:column headerText="Catastro">
+                            <p:cellEditor>
+                                <f:facet name="output"> <h:outputText value="#{traval.trvNumCatastro}"/></f:facet> 
+                                <f:facet name="input"><p:inputText value="#{traval.trvNumCatastro}" style="width:96%" /></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                         <p:column headerText="Predio">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{traval.traNumPredio}"/></f:facet> 
+                                <f:facet name="input"><p:inputText value="#{traval.traNumPredio}" style="width:96%" label="Year"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column  headerText="Parroquia">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{traval.trvParNombre}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu value="#{traval.trvParNombre}" style="width:100%">
+                                        <f:selectItems value="#{controladorNuevasMatriculasPH.listaParroquia}" var="item"
+                                                       itemLabel="#{item.parNombre}" itemValue="#{item.parNombre}" />
+
+
+                                    </h:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                       
+
+                        <p:column  headerText="Editar" style="width:7%;" >
+                            <p:rowEditor rendered="#{!traval.tienePropHija}"/>
+                        </p:column>
+
+                        
+
+                        <p:column headerText="Seleccionar" style="width: 10%">
+                            <p:commandButton class="cyan-btn" icon="fa fa-check" 
+                                             action="#{controladorNuevasMatriculasPH.propiedadesVendidas()}" 
+                                             process="@this"
+                                             immediate="true"
+                                             update="growl :pnlAsigMatr formMatriculacion2:panelRevocatoria :pnlAcciones :pnlAccionesRev" style="width: 40px">
+                                <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.tramiteValorSeleccionado}" 
+                                                             value="#{traval}"/>
+                                <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.indiceTab}" 
+                                                             value="0"/>
+                                 <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.disabledTab}" 
+                                                             value="true"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="Eliminar" style="width: 10%">
+                            <p:commandButton class="red-btn" icon="fa fa-trash" disabled="#{traval.tienePropHija}"
+                                             action="#{controladorNuevasMatriculasPH.borrarTramiteValor()}" 
+                                             update="@form growl :tabView" style="width: 40px">
+                                <p:confirm header="Eliminar elemento" message="¿Esta seguro?"/>
+                                <f:setPropertyActionListener target="#{controladorNuevasMatriculasPH.tramiteValorSeleccionado}" 
+                                                             value="#{traval}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                        
+                        </p:panel>
+                    
+                    
+                    
+
+                </h:form>
+            </p:panel>
+        </div>
+    </ui:composition>
+
+</html>

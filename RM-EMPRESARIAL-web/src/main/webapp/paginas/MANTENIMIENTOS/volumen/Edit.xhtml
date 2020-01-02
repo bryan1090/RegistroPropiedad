@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="VolumenEditDlg" widgetVar="VolumenEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditVolumenTitle}">
+            <h:form id="VolumenEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="1" rendered="#{controladorVolumen.selected != null}">
+                        <p:panelGrid columns="2" style="width: 100%">
+                            <p:outputLabel value="Tipo de libro:" for="tplId" />
+                            <p:selectOneMenu id="tplId" value="#{controladorVolumen.tplId}" required="true" requiredMessage="El campo Tipo de Libro, es requrido.">
+                                <p:ajax event="change" listener="#{controladorVolumen.cargarListaTomo()}" update="tomId"/>
+                                <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                                <f:selectItems value="#{controladorTipoLibro.itemsAvailableSelectOne}"
+                                           var="tplIdItem"
+                                           itemValue="#{tplIdItem.tplId}" itemLabel="#{tplIdItem.tplDescripcion}"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                        <p:panelGrid columns="4" style="width: 100%">
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_tomId}" for="tomId" />
+                            <p:selectOneMenu id="tomId" value="#{controladorVolumen.selected.tomId}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_tomId}" converter="ConvertidorTomId">
+                                <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                                <f:selectItems value="#{controladorVolumen.listaTomo}"
+                                           var="tomIdItem"
+                                           itemValue="#{tomIdItem}" itemLabel="#{tomIdItem.tomTomo}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleVolumen}" for="vleVolumen" />
+                            <p:inputText id="vleVolumen" value="#{controladorVolumen.selected.vleVolumen}" title="#{bundle.EditVolumenTitle_vleVolumen}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleVolumen}"/>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleHojas}" for="vleHojas" />
+                            <p:inputText id="vleHojas" value="#{controladorVolumen.selected.vleHojas}" title="#{bundle.EditVolumenTitle_vleHojas}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleHojas}"/>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleFojaInicial}" for="vleFojaInicial" />
+                            <p:inputText id="vleFojaInicial" value="#{controladorVolumen.selected.vleFojaInicial}" title="#{bundle.EditVolumenTitle_vleFojaInicial}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleFojaInicial}"/>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleFojaFinal}" for="vleFojaFinal" />
+                            <p:inputText id="vleFojaFinal" value="#{controladorVolumen.selected.vleFojaFinal}" title="#{bundle.EditVolumenTitle_vleFojaFinal}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleFojaFinal}"/>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleEstado}" for="vleEstado" />
+                            <p:selectOneMenu id="vleEstado" value="#{controladorVolumen.selected.vleEstado}" title="#{bundle.EditVolumenTitle_vleEstado}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleEstado}">
+                                <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                                <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                                <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleFila}" for="vleFila" />
+                            <p:inputText id="vleFila" value="#{controladorVolumen.selected.vleFila}" title="#{bundle.EditVolumenTitle_vleFila}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleFila}"/>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleColumna}" for="vleColumna" />
+                            <p:inputText id="vleColumna" value="#{controladorVolumen.selected.vleColumna}" title="#{bundle.EditVolumenTitle_vleColumna}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleColumna}"/>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleEstante}" for="vleEstante" />
+                            <p:inputText id="vleEstante" value="#{controladorVolumen.selected.vleEstante}" title="#{bundle.EditVolumenTitle_vleEstante}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleEstante}"/>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleBloque}" for="vleBloque" />
+                            <p:inputText id="vleBloque" value="#{controladorVolumen.selected.vleBloque}" title="#{bundle.EditVolumenTitle_vleBloque}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleBloque}"/>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleInscripcionInicial}" for="vleInscripcionInicial" />
+                            <p:inputText id="vleInscripcionInicial" value="#{controladorVolumen.selected.vleInscripcionInicial}" title="#{bundle.EditVolumenTitle_vleInscripcionInicial}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleInscripcionInicial}"/>
+                            <p:outputLabel value="#{bundle.EditVolumenLabel_vleInscripcionFinal}" for="vleInscripcionFinal" />
+                            <p:inputText id="vleInscripcionFinal" value="#{controladorVolumen.selected.vleInscripcionFinal}" title="#{bundle.EditVolumenTitle_vleInscripcionFinal}" required="true" requiredMessage="#{bundle.EditVolumenRequiredMessage_vleInscripcionFinal}"/>
+
+
+                        </p:panelGrid>
+
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorVolumen.update}" value="#{bundle.Save}" update="display,:VolumenListForm:datalist,:growl" oncomplete="handleSubmit(args, 'VolumenEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorVolumen.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="VolumenEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="VolumenViewDlg" widgetVar="VolumenViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewVolumenTitle}">
+            <h:form id="VolumenViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorVolumen.selected != null}">
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleVolumen}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleVolumen}" title="#{bundle.ViewVolumenTitle_vleVolumen}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleHojas}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleHojas}" title="#{bundle.ViewVolumenTitle_vleHojas}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleFojaInicial}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleFojaInicial}" title="#{bundle.ViewVolumenTitle_vleFojaInicial}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleFojaFinal}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleFojaFinal}" title="#{bundle.ViewVolumenTitle_vleFojaFinal}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleEstado}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleEstado}" title="#{bundle.ViewVolumenTitle_vleEstado}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleUser}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleUser}" title="#{bundle.ViewVolumenTitle_vleUser}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleFHR}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleFHR}" title="#{bundle.ViewVolumenTitle_vleFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleFila}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleFila}" title="#{bundle.ViewVolumenTitle_vleFila}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleColumna}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleColumna}" title="#{bundle.ViewVolumenTitle_vleColumna}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleEstante}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleEstante}" title="#{bundle.ViewVolumenTitle_vleEstante}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleBloque}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleBloque}" title="#{bundle.ViewVolumenTitle_vleBloque}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_tomId}"/>
+                        <h:outputText value="#{controladorVolumen.selected.tomId.tomTomo}" title="#{bundle.ViewVolumenTitle_tomId}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleInscripcionFinal}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleInscripcionFinal}" title="#{bundle.ViewVolumenTitle_vleInscripcionFinal}"/>
+                        <h:outputText value="#{bundle.ViewVolumenLabel_vleInscripcionInicial}"/>
+                        <h:outputText value="#{controladorVolumen.selected.vleInscripcionInicial}" title="#{bundle.ViewVolumenTitle_vleInscripcionInicial}"/>                        
+
+
+
+
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorVolumen.clear()}" value="#{bundle.Close}" immediate="true" onclick="VolumenViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

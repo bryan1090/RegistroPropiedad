@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RolMenuViewDlg" widgetVar="RolMenuViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewRolMenuTitle}">
+            <h:form id="RolMenuViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{rolMenuController.selected != null}">
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_menId}"/>
+                        <h:outputText value="#{rolMenuController.selected.menId.menNombre}" title="#{bundle.ViewRolMenuTitle_menId}"/>
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolId}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolId.rolNombre}" title="#{bundle.ViewRolMenuTitle_rolId}"/>
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolMenDisplay}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolMenDisplay}" title="#{bundle.ViewRolMenuTitle_rolMenDisplay}"/>                        
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolMenAcceso}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolMenAcceso}" title="#{bundle.ViewRolMenuTitle_rolMenAcceso}"/>
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolMenInsert}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolMenInsert}" title="#{bundle.ViewRolMenuTitle_rolMenInsert}"/>
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolMenUpdate}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolMenUpdate}" title="#{bundle.ViewRolMenuTitle_rolMenUpdate}"/>
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolMenDelete}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolMenDelete}" title="#{bundle.ViewRolMenuTitle_rolMenDelete}"/>
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolMenExcel}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolMenExcel}" title="#{bundle.ViewRolMenuTitle_rolMenExcel}"/>
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolMenPdf}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolMenPdf}" title="#{bundle.ViewRolMenuTitle_rolMenPdf}"/>
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolMenUser}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolMenUser}" title="#{bundle.ViewRolMenuTitle_rolMenUser}"/>
+                        
+                        <h:outputText value="#{bundle.ViewRolMenuLabel_rolMenFHR}"/>
+                        <h:outputText value="#{rolMenuController.selected.rolMenFHR}" title="#{bundle.ViewRolMenuTitle_rolMenFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                       
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{rolMenuController.clear()}" value="#{bundle.Close}" onclick="RolMenuViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

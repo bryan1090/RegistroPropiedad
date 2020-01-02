@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoPropiedadEditDlg" widgetVar="TipoPropiedadEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditTipoPropiedadTitle}">
+            <h:form id="TipoPropiedadEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTipoPropiedad.selected != null}">
+                        <p:outputLabel value="#{bundle.EditTipoPropiedadLabel_tpdNombre}" for="tpdNombre" />
+                        <p:inputText id="tpdNombre" value="#{controladorTipoPropiedad.selected.tpdNombre}" style="text-transform: uppercase;" title="#{bundle.EditTipoPropiedadTitle_tpdNombre}" required="true" requiredMessage="#{bundle.EditTipoPropiedadRequiredMessage_tpdNombre}"/>
+                        <p:outputLabel value="#{bundle.EditTipoPropiedadLabel_tpdEstado}" for="tpdEstado" />
+                        <p:selectOneMenu id="tpdEstado" value="#{controladorTipoPropiedad.selected.tpdEstado}" required="true" requiredMessage="#{bundle.EditTipoPropiedadTitle_tpdEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorTipoPropiedad.update}" value="#{bundle.Save}" update="display,:TipoPropiedadListForm:datalist,:growl" oncomplete="handleSubmit(args, 'TipoPropiedadEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTipoPropiedad.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="TipoPropiedadEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

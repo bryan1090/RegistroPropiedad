@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:composition>
+        <p:dialog id="dlgDE" header="Agregar Documentos" closable="false" resizable="false" modal="true" widgetVar="dlgDocumentosEntregados" minHeight="40" position="center center" onShow="PF('dlgDocumentosEntregados').initPosition();" width="900">
+              
+            <h:form id="frmlistDocEnt">
+                <style>
+                    .pgrind-center{
+                        text-align: center;
+                    }
+                </style>
+                <p:panel >
+                    <p:panelGrid columns="5" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-3,ui-grid-col-2,ui-grid-col-5" 
+                                 styleClass="ui-panelgrid-blank ui-fluid" >
+                        <h:outputText value="CI/RUC/Pas. Responsable: " style="font-weight: bold;border-right: 50px"/>                                                                       
+                        <p:inputText id="numIdent" style="width: 150px" maxlength="13"
+                                     value="#{recepcionDocumentacionControlador.identificacionResponsable}">
+                            <p:ajax event="change" listener="#{recepcionDocumentacionControlador.buscarPersonaResponsable()}" update="@form growl :frmlistDocEnt:ttrId :PersonaEditForm"/>
+                        </p:inputText>
+                        <p:commandButton class="green-btn" title="Buscar responsable" process="@this"
+                                         icon="fa fa-search" style="float: right;width: auto"
+                                         action="#{controladorFiltradoPersona.prepararFiltrado('CtrlRecTraI', 'frmlistDocEnt')}"
+                                         oncomplete ="PF('dlgFiltradoPersona').show()"/>
+                        <h:outputText value="Responsable: " style="font-weight: bold"/>                        
+                        <h:outputText value="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.personaResponsable.perApellidoPaterno} #{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.personaResponsable.perApellidoMaterno} #{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.personaResponsable.perNombre}"/>
+                    </p:panelGrid>
+                </p:panel>
+
+                <p:panelGrid columns="5" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-10,ui-grid-col-1,ui-grid-col-2,ui-grid-col-2" 
+                             styleClass="ui-panelgrid-blank ui-fluid" >
+                    <p:outputLabel for="ttrId" value="Tipo Trámite:" />
+                    <p:selectOneMenu id="ttrId" value="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.tipoTramite}" style="width: 620px"
+                                     filter="true" filterMatchMode="startsWith" required="true" disabled="#{recepcionDocumentacionControlador.disableComboTipoTramite}">
+                        <p:ajax event="itemSelect" listener="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.onSelectTipoTramite()}" update="@form" oncomplete="PF('dlgDocumentosEntregados').initPosition();"/>
+                        <p:ajax event="itemSelect" listener="#{recepcionDocumentacionControlador.limpiarListasObservaciones()}" update="@form" oncomplete="PF('dlgDocumentosEntregados').initPosition();"/>
+                        <f:selectItem itemLabel="Seleccionar..." itemValue="" />
+                        <f:selectItems value="#{recepcionDocumentacionControlador.listaTipoTramites}"
+                                       var="ttrIdItem"
+                                       itemValue="#{ttrIdItem}" itemLabel="#{ttrIdItem.ttrDescripcion}"/>
+                    </p:selectOneMenu>
+
+                    <p:commandButton process="@this" class="yellow-btn" update="dlgSelect" 
+                                     style="color: black"
+                                     action="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.prepararAgregarDocumento()}"
+                                     disabled="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.tipoTramite.ttrId == null}"
+                                     icon="fa fa-plus" oncomplete="PF('dlgSeleccionarDocumentos').show();">
+                    </p:commandButton>
+
+
+                </p:panelGrid>
+                <p:dataTable id="listDoc" value="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.listaDocumentoEntregaTramite}"
+                             var="det" rowIndexVar="numF" scrollable="true" scrollHeight="200">
+                    <p:column style="text-align-last: center">
+                        <f:facet name="header">
+                            <h:outputText value="Documento"/>
+                        </f:facet>
+                        <h:outputText value="#{det.dteId.dteDescripcion}"/>
+                    </p:column>
+                    <p:column style="text-align-last: center" groupRow="true">
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Trámite"/>
+                        </f:facet>
+                        <h:outputText value="#{det.ttrId.ttrDescripcion}"/>
+                    </p:column>
+                    <p:column style="text-align-last: center" groupRow="true">
+                        <f:facet name="header">
+                            <h:outputText value="Responsable"/>
+                        </f:facet>
+                        <h:outputText value="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.listaPersonaResponsable.get(numF)}"/>
+                    </p:column>
+                    <p:column width="50">
+                        <div align="center">
+                            <p:commandButton class="red-btn" immediate="true" update="@form"
+                                             icon="ui-icon-close" process="@this" 
+                                             title="Borrar" action="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.borrarFila()}">
+                                <f:setPropertyActionListener value="#{det}" target="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.documentoEntregaTramiteSeleccionado}" />
+                                <f:setPropertyActionListener value="#{numF}" target="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.docSeleccionado}" />
+                                <f:setPropertyActionListener value="#{det.ttrId.ttrId.toString()}" target="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.personaResponsableSeleccionada}" />
+                            </p:commandButton>
+                        </div>
+                    </p:column>
+                </p:dataTable>
+                <div align="right">
+                    <h:panelGrid columns="1" >                        
+
+                        <p:commandButton class="red-btn" icon="fa fa-sign-out" value="Cerrar"  process="@this :formRecepDocu" update="@form :frmlistDocEnt :formSeleccionDoc"
+                                         action="#{recepcionDocumentacionControlador.guardarEnMemoria()}" oncomplete="PF('dlgDocumentosEntregados').hide();"/>
+                    </h:panelGrid>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgSelect" header="Seleccionar Documentos" resizable="false" 
+                  modal="true" widgetVar="dlgSeleccionarDocumentos" minHeight="40" 
+                  position="center center" onShow="PF('dlgDocumentosEntregados').initPosition();" width="550">
+            <h:form id="formSeleccionDoc">
+                <p:growl id="growl" showDetail="false" sticky="false" life="4000"/>
+                <p:panel>
+                    <h:panelGrid columns="2" style="width: 100%">
+                        <h:panelGrid columns="4">
+                            <h:outputText value="Tipo de Trámite: " style="font-weight: bold;"/>
+                            <h:outputText value="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.tipoTramite.ttrDescripcion}"/>
+                            <h:outputText value="Responsable: " style="font-weight: bold;padding-left: 15px"/>
+                            <h:outputText value="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.personaResponsable.perApellidoPaterno} #{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.personaResponsable.perApellidoMaterno} #{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.personaResponsable.perNombre}"/>
+                        </h:panelGrid>
+
+                    </h:panelGrid>
+                </p:panel><br/>
+                <p:panel>
+                    <h:panelGrid columns="3" style="width: 100%">
+                        <h:outputLabel value="Observación:" style="padding-right: 5px"/>
+                        <p:inputText id="txtObserv"                                     
+                                     value="#{recepcionDocumentacionControlador.observacion}" style="text-transform: uppercase;width: 350px"/>
+                        <p:commandButton id="btnAñadir" class="yellow-btn" icon="fa fa-plus" process="@this txtObserv formSeleccionDoc" 
+                                         action="#{recepcionDocumentacionControlador.añadirNuevoDocumentoEntregaTramite()}" 
+                                         style="width: auto;" update="txtObserv gridAdicional growl formSeleccionDoc"/>
+                    </h:panelGrid>
+
+                </p:panel><br/>
+                
+                <p:scrollPanel style="height: 300px"    >
+                    
+                    <p:selectManyCheckbox id="grid" value="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.listaDocumentoEntregaTramiteSeleccion}" layout="grid" columns="2" converter="convertidorCheck">
+                        <f:selectItems value="#{recepcionDocumentacionControlador.contrAgregarDocumentosEntregados.listaDocumentoEntregaTramiteFiltrado}"
+                                       var="dteIdItem" itemLabel="#{dteIdItem.dteId.dteDescripcion}" itemValue="#{dteIdItem}"/>
+                    </p:selectManyCheckbox>
+                    <p:selectManyCheckbox id="gridAdicional" value="#{recepcionDocumentacionControlador.listaObservacionesSeleccionadas}" layout="grid" columns="2">
+                        <f:selectItems value="#{recepcionDocumentacionControlador.listaObservaciones}"
+                                       var="oserv" itemLabel="#{oserv}" itemValue="#{oserv}"/>
+                    </p:selectManyCheckbox>
+                           
+                </p:scrollPanel>
+                 
+                <div align="right">
+                    <h:panelGrid columns="2">
+                        <p:commandButton id="btnGuardar" class="greenimmimmediate-btn" value="Guardar" update="@form :frmlistDocEnt growl"
+                                         icon="fa fa-save" oncomplete="PF('dlgSeleccionarDocumentos').hide();" style="float: right" process=":formRecepDocu:txtNumeroTramite @form"
+                                         action="#{recepcionDocumentacionControlador.verificarNumTramites()}"/>
+                        <p:commandButton class="red-btn" value="Salir" immediate="true" process="@this"
+                                         icon="fa fa-close" oncomplete="PF('dlgSeleccionarDocumentos').hide();"/>
+                    </h:panelGrid>
+                </div>
+            </h:form>
+        </p:dialog>
+        
+    </ui:composition>
+</html>

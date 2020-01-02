@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListTipoDescuentoTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="TipoDescuentoListForm">
+                <p:panel header="#{bundle.ListTipoDescuentoTitle}">
+                    <p:dataTable id="datalist" value="#{tipoDescuentoController.items}" var="item"
+                                 selectionMode="single" selection="#{tipoDescuentoController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.tpdId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                      
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoDescuentoTitle_tpdDescripcion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpdDescripcion}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoDescuentoTitle_tpdPorcentaje}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpdPorcentaje}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoDescuentoTitle_tpdIdentificacion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpdIdentificacion}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Persona"/>
+                            </f:facet>
+                            <h:outputText value="#{tipoDescuentoController.crearNombrePersona(item.tpdIdentificacion)}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoDescuentoTitle_tpdFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpdFHR}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoDescuentoTitle_tpdUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpdUser}"/>
+                        </p:column>
+                       
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoDescuentoTitle_tpdPublico}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tpdPublico}"/>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn" 
+                                                 value="#{bundle.Create}"
+                                                 actionListener="#{tipoDescuentoController.prepareCreate}" update=":TipoDescuentoCreateForm" oncomplete="PF('TipoDescuentoCreateDialog').show()"/>
+                            <p:commandButton id="viewButton" actionListener="#{tipoDescuentoController.prepareEdit}" icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":TipoDescuentoViewForm" oncomplete="PF('TipoDescuentoViewDialog').show()" disabled="#{empty tipoDescuentoController.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" 
+                                             value="#{bundle.Edit}" update=":TipoDescuentoEditForm"
+                                             oncomplete="PF('TipoDescuentoEditDialog').show()"
+                                             actionListener="#{tipoDescuentoController.prepareEdit}"
+                                             disabled="#{empty tipoDescuentoController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{tipoDescuentoController.destroy}" update=":growl,datalist" disabled="#{empty tipoDescuentoController.selected}">
+                            <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+            <ui:include src="/paginas/FiltradoPersona.xhtml"/>
+            <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

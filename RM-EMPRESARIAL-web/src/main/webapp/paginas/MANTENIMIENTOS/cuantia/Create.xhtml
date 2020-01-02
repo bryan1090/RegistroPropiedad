@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CuantiaCreateDlg" widgetVar="CuantiaCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateCuantiaTitle}">
+            <h:form id="CuantiaCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorCuantia.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateCuantiaLabel_cuaValorInicial}" for="cuaValorInicial" />
+                        <p:inputText id="cuaValorInicial" value="#{controladorCuantia.selected.cuaValorInicial}" style="text-transform: uppercase" title="#{bundle.CreateCuantiaTitle_cuaValorInicial}" required="true" requiredMessage="#{bundle.CreateCuantiaRequiredMessage_cuaValorInicial}"/>
+                        <p:outputLabel value="#{bundle.CreateCuantiaLabel_cuaValorFinal}" for="cuaValorFinal" />
+                        <p:inputText id="cuaValorFinal" value="#{controladorCuantia.selected.cuaValorFinal}" style="text-transform: uppercase" title="#{bundle.CreateCuantiaTitle_cuaValorFinal}" required="true" requiredMessage="#{bundle.CreateCuantiaRequiredMessage_cuaValorFinal}"/>
+                        <p:outputLabel value="#{bundle.CreateCuantiaLabel_cuaValorAplica}" for="cuaValorAplica" />
+                        <p:inputText id="cuaValorAplica" value="#{controladorCuantia.selected.cuaValorAplica}" style="text-transform: uppercase" title="#{bundle.CreateCuantiaTitle_cuaValorAplica}" required="true" requiredMessage="#{bundle.CreateCuantiaRequiredMessage_cuaValorAplica}"/>
+                        <p:outputLabel value="#{bundle.CreateCuantiaLabel_cuaPorcentaje}" for="cuaPorcentaje" />
+                        <p:inputText id="cuaPorcentaje" value="#{controladorCuantia.selected.cuaPorcentaje}" style="text-transform: uppercase" title="#{bundle.CreateCuantiaTitle_cuaPorcentaje}" required="true" requiredMessage="#{bundle.CreateCuantiaRequiredMessage_cuaPorcentaje}"/>
+                        <p:outputLabel value="#{bundle.CreateCuantiaLabel_ttrId}" for="ttrId" />
+                        <p:selectOneMenu id="ttrId" value="#{controladorCuantia.idTipoTramite}" style="text-transform: uppercase" required="true" requiredMessage="#{bundle.EditCuantiaRequiredMessage_ttrId}">
+                            <f:selectItems value="#{controladorTipoTramite.itemsAvailableSelectOne}"
+                                           var="ttrIdItem" itemLabel="#{ttrIdItem.ttrDescripcion}"
+                                           itemValue="#{ttrIdItem.ttrId}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{controladorCuantia.create}" value="#{bundle.Save}" update="display,:CuantiaListForm:datalist,:growl" oncomplete="handleSubmit(args,'CuantiaCreateDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorCuantia.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="CuantiaCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

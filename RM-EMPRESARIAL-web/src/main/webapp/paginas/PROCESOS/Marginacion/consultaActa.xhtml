@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                <h:outputText value="Consulta Acta"></h:outputText>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="formMarginacion">
+
+                    <p:panel header="Consulta De Acta" >
+
+
+                        <div class="ui-g">
+                            <div class="ui-g-3">
+
+                                <p:panel id="pnl1" style="min-height: 520px; max-height: 620px">
+
+                                    <div class="ui-fluid">
+                                        <h:panelGrid id="pnlBusqueda" columns="2" >
+                                            <p:outputLabel   value="Libro"/>
+                                            <p:selectOneMenu id="lbxLibro" value="#{controladorConsultaActa.IDtipoLibroSeleccionado}" 
+                                                             required="true" requiredMessage="El campo Tipo Libro, es requerido"
+                                                             filter="true" filterMatchMode="contains" 
+                                                                 style="width: 160px" 
+                                                             >  
+                                                <f:selectItem itemValue = "" itemLabel = "Seleccione..." /> 
+                                                <f:selectItems value="#{controladorConsultaActa.getlistaTipoLibro()}" var="item"
+                                                               itemValue="#{item.tplId}" itemLabel="#{item.tplDescripcion}"/>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel for="cldFecha" value="Fecha" />
+                                            <p:calendar pattern="dd/MM/yyyy" mask="true" id="cldFecha" value="#{controladorConsultaActa.fechaRep}"
+                                                        required="true" requiredMessage="El campo fecha, es requerido"       />
+
+                                            <p:outputLabel for="txtNumRepertorio"  value="Reper."/>
+                                            <p:inputText id="txtNumRepertorio" value="#{controladorConsultaActa.repertorioNumero2}"
+                                                         required="true" requiredMessage="El campo Repertorio, es requerido"    >     
+
+                                            </p:inputText>
+                                            
+                                                <p:outputLabel for="rbtnTipo" value="Tipo" />
+                                                <p:selectOneRadio id="rbtnTipo" value="#{controladorConsultaActa.tipo}">
+                                                    <f:selectItem itemLabel="Inscripción" itemValue="I" />
+                                                    <f:selectItem itemLabel="Escritura" itemValue="E" />
+                                                </p:selectOneRadio>
+                                            
+                                        </h:panelGrid>
+                                        <h:panelGrid columns="1">
+                                            <p:commandButton value="Buscar" icon="fa fa-search" action="#{controladorConsultaActa.buscarActa()}"
+                                                             process="@this pnlBusqueda"
+                                                             update="@form :formMarginacion:pnlProceso :formMarginacion:pnlActa growl"/>
+                                        </h:panelGrid>
+                                    </div>
+
+                                    <p:separator  />
+                                    <div class="ui-fluid">
+                                        <h:panelGrid  columns="2" id="pnlProceso">                                             
+
+                                            <p:outputLabel for="txtRepertorio"  value="Repertorio "/>
+                                            <p:inputText id="txtRepertorio" value="#{controladorConsultaActa.actaSeleccionada.repNumero.repNumero}" readonly="true"/>
+
+                                            <p:outputLabel value="Fecha" />
+                                            <p:calendar id="Fecha1" readonly="true" value="#{controladorConsultaActa.actaSeleccionada.repNumero.repFHR}"
+                                                        readonlyInput="true" showOn="none" pattern="dd/MM/yyyy"/>
+
+                                            <p:outputLabel for="txtInscripcion"  value="Inscripción "/>
+                                            <p:inputText id="txtInscripcion" value="#{controladorConsultaActa.actaSeleccionada.actInscripcion}" readonly="true"/>
+
+                                            <p:outputLabel for="txtFojas"  value="Fojas "/>
+                                            <p:inputText id="txtFojas" value="#{controladorConsultaActa.actaSeleccionada.actFoja}" readonly="true"/>
+
+                                            <p:outputLabel for="txtTomo"  value="Tomo "/>
+                                            <p:inputText id="txtTomo" value="#{controladorConsultaActa.actaSeleccionada.actTomo}" readonly="true"/>
+
+                                            <p:outputLabel for="txtVolumen"  value="Volumen "/>
+                                            <p:inputText id="txtVolumen" value="#{controladorConsultaActa.actaSeleccionada.actVolumen}" readonly="true"/>
+
+                                            <p:outputLabel for="txtBIS"  value="BIS "/>
+                                            <p:inputText id="txtBIS" value="#{controladorConsultaActa.actaSeleccionada.actBis}" readonly="true"/>
+                                        </h:panelGrid>
+
+                                    </div>
+
+                                </p:panel>
+
+                            </div>
+
+                            <div class="ui-g-6">
+                                <p:panel id="pnlActa" style="min-height: 520px; max-height: 620px">
+                                    <p:commandButton value="Descargar Acta RTF" actionListener="#{controladorConsultaActa.buscarActa()}"
+                                                     rendered="#{controladorConsultaActa.rendBtnDescargarRTF and controladorConsultaActa.actaSeleccionada.actMigrado eq 'SI'}"
+                                                     immediate="true" class="cyan-btn"
+                                                     ajax="false" icon="pi pi-arrow-down">
+                                        <p:fileDownload value="#{controladorConsultaActa.file}" />
+                                    </p:commandButton> 
+                                    <p:scrollPanel mode="native" style="height:510px;" rendered="#{!empty controladorConsultaActa.actaSeleccionada and controladorConsultaActa.actaSeleccionada.actMigrado ne 'SI'}">
+                                        <p:textEditor widgetVar="editor1" value="#{controladorConsultaActa.actaSeleccionada.actActaPdf}" 
+                                                      toolbarVisible="false"
+                                                      readonly="true"
+                                                      rendered="#{controladorConsultaActa.actaSeleccionada.actMigrado ne 'SI'}"
+                                                      />
+
+
+                                    </p:scrollPanel>
+                                    <p:media value="#{controladorConsultaActa.urlPDF}" width="100%" height="510px"
+                                             rendered="#{not empty controladorConsultaActa.urlPDF and controladorConsultaActa.actaSeleccionada.actMigrado eq 'SI'}"/>
+        <!--                                <iframe id="iframeCenter" src="#{controladorConsultaActa.dirArchivoComoRecurso}"   
+                                                frameborder="0" width="100%" height="300px"/>  -->
+        <!--                                <p:media value="#{controladorConsultaActa.url}" rendered="#{!empty controladorConsultaActa.url}"
+                                                 width="100%" height="200px"
+                                                 />-->
+                                </p:panel>
+                            </div>
+
+                            <div class="ui-g-3" >
+                                <p:panel id="pnlMarginacionP" style="min-height: 520px; max-height: 620px">
+
+                                    <h:panelGrid columns="1"  id="pnlMarginacion" style=";">
+                                        <p:scrollPanel mode="native" style="height:255px;"   rendered="#{!empty controladorConsultaActa.actaSeleccionada}">
+
+                                            <p:dataGrid  value="#{controladorConsultaActa.listaMarginacion}"  var="item" columns="1"
+
+                                                         layout="grid">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Antiguas"/>
+                                                </f:facet>
+                                                <h:panelGrid columns="2" >
+                                                    <h:outputText value="Fecha: "/>
+                                                    <h:outputText value="#{item.mrgFHR}">
+                                                        <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                                    </h:outputText>
+                                                    <h:outputText value="Responsable: "/>
+                                                    <h:outputText value="#{item.mrgUser}"/>
+
+                                                    <h:outputText value="Alterno: "/>
+                                                    <h:outputText value="#{item.mrgAlt1}" />
+
+                                                    <h:outputText value="Repertorio: "/>
+                                                    <h:outputText value="#{item.mrgAlt2}"/>
+
+                                                    <h:outputText value="Fecha: "/>
+                                                    <h:outputText value="#{item.mrgFch}">
+                                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                    </h:outputText>
+                                                </h:panelGrid>
+                                                <hr style="border-style: dotted"/>
+
+                                            </p:dataGrid>
+                                        </p:scrollPanel>
+
+                                        <p:scrollPanel mode="native" style="height:255px;"  rendered="#{!empty controladorConsultaActa.actaSeleccionada}">
+
+                                            <p:dataGrid  value="#{controladorConsultaActa.listaMarginacionNuevos}" var="item" columns="1"
+                                                         layout="grid">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Nuevas"/>
+                                                </f:facet>
+                                                <h:panelGrid columns="2">
+                                                    <h:outputText value="Fecha: "/>
+                                                    <h:outputText value="#{item.mrgFHR}">
+                                                        <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                                    </h:outputText>
+                                                    <h:outputText value="Responsable: "/>
+
+                                                    <h:outputText value="#{item.mrgUser}"/>
+                                                    <h:outputText value="Alterno: "/>
+
+                                                    <h:outputText value="#{item.mrgAlt1}"/>
+                                                    <h:outputText value="Repertorio: "/>
+
+                                                    <h:outputText value="#{item.mrgAlt2}"/>
+                                                    <h:outputText value="Fecha: "/>
+                                                    <h:outputText value="#{item.mrgFch}">
+                                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                    </h:outputText>
+                                                </h:panelGrid>
+                                                <hr style="border-style: dotted"/>
+
+                                            </p:dataGrid>
+                                        </p:scrollPanel>
+
+                                    </h:panelGrid>
+                                </p:panel>
+                            </div>
+                        </div>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog header="Crear Marginación" widgetVar="dlgCrearMarg"
+                          modal="true" minHeight="50" appendTo="@(body)" >
+                    <h:form id="frmIngreso">
+                        <p:growl id="growl2" sticky="true" />
+                        <h:panelGrid columns="1">
+
+                            <p:inputTextarea rows="5" cols="50" counter="display" maxlength="#{100}" 
+                                             counterTemplate="{0}/100 palabras restantes." 
+                                             value="#{controladorConsultaActa.nuevaMarginacion.mrgAlt1}"
+                                             required="true" requiredMessage="El campo alterno 1,es requerido"/>
+                            <br />
+                            <h:outputText id="display" />
+                        </h:panelGrid>
+                        <p:commandButton value='Aceptar' class="green-btn" title="Confirmar marginación"
+                                         update="growl @form :formMarginacion:pnlMarginacionP" action="#{controladorConsultaActa.guardarmarginacion()}"
+                                         oncomplete="PF('dlgCrearMarg').hide()"
+                                         />
+
+                        <p:commandButton value="#{bundle.Cancel}"  immediate="true"
+                                         class="red-btn"
+                                         onclick="PF('dlgCrearMarg').hide()"/>
+                    </h:form>          
+
+                </p:dialog>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

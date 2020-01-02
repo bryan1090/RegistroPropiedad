@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                Reimpresión de Formulario Web
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+                    <p:growl id="growl" life="2000" showDetail="true"/>
+                    <p:panel>
+                        <p:panelGrid id="pnlFiltro"  columns="1" style="border: none;text-align: right;background-position: right">
+                            <p:panelGrid id="pnlFactura" rendered="#{!controladorFormularioWeb.estadoRenderFiltro}">
+                                <p:outputLabel id="lblFactura"  value="Buscar por Número de Trámite"/> 
+                                <p:selectBooleanCheckbox id="slcFactura" value="#{controladorFormularioWeb.estadoRenderFiltro}" >
+                                    <p:ajax update="pnlFiltro pnlFechas tblFormularios"  listener="#{controladorFormularioWeb.busquedaPorFactura()}" />
+                                </p:selectBooleanCheckbox>
+                            </p:panelGrid>
+                            <p:panelGrid id="pnlFechas" rendered="#{controladorFormularioWeb.estadoRenderFiltro}">
+                                <p:outputLabel id="lblFechas"  value="Buscar por Rango de Fechas"/> 
+                                <p:selectBooleanCheckbox id="slcFechas"  value="#{controladorFormularioWeb.estadoRenderFiltro}" >
+                                    <p:ajax update="pnlFiltro pnlFactura tblFormularios"  listener="#{controladorFormularioWeb.busquedaPorFechas()}" />
+                                </p:selectBooleanCheckbox>
+                            </p:panelGrid>
+                            <p:row rendered="#{!controladorFormularioWeb.estadoRenderFiltro}" style="border: none">
+                                <p:outputLabel value="Fecha Inicio"></p:outputLabel>
+                                <p:calendar  value="#{controladorFormularioWeb.fechaInicio}" pattern="dd-MM-yyyy" required="true" requiredMessage="Fecha de Inicio Requerida Para La Búsqueda"/>
+                                <p:outputLabel value="Fecha Fin"></p:outputLabel>
+                                <p:calendar value="#{controladorFormularioWeb.fechaFin}" pattern="dd-MM-yyyy" required="true" requiredMessage="Fecha de Fin Requerida Para La Búsqueda"/>
+                                <br/>
+                                <p:commandButton id="btnBusqueda" class="green-btn" icon="fa fa-search" action="#{controladorFormularioWeb.buscarFormularioWeb()}" update="tblFormularios growl"/>
+                            </p:row>
+                            <p:row rendered="#{controladorFormularioWeb.estadoRenderFiltro}" style="border: none "   >
+                                <p:column style="border: none;text-align: left">
+                                    <p:outputLabel for="txtNumTramite" value="Número de Trámite"/>
+                                    <p:inputText id="txtNumTramite" value="#{controladorFormularioWeb.numeroFormulario}" required="true" requiredMessage="No Existe Parametro de Busqueda" >
+                                        <p:ajax event="change" listener="#{controladorFormularioWeb.buscarFormularioWeb()}" update="tblFormularios growl"/>
+                                    </p:inputText>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel>
+                        <p:dataTable id="tblFormularios" value="#{controladorFormularioWeb.listaFormularioWeb}" var="listaFormulario" style="text-align-last: center">
+                            <p:column headerText="Número de Formulario">
+                                <h:outputText value="#{listaFormulario.flwId}"/>
+                            </p:column>
+
+                            <p:column headerText="Tipo de Documento">
+                                <h:outputText value="#{listaFormulario.tdwId.tdwNombre}" />
+                            </p:column>
+
+                            <p:column headerText="Fecha">
+                                <h:outputText value="#{listaFormulario.flwFecha.time}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Pdf">
+                                <p:commandLink title="Generar Form" action="#{controladorFormularioWeb.generarFormulario()}" ajax="false" immediate="true">
+                                    <p:graphicImage name="/imagenes/pdf.png" width="24"/>
+                                    <f:setPropertyActionListener  value="#{listaFormulario}" target="#{controladorFormularioWeb.formularioSeleccionado}"/>
+                                </p:commandLink><br/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

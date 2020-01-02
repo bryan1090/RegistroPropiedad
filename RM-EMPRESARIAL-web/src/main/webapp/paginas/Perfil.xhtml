@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Perfil"></h:outputText>
+        </ui:define>
+
+
+        <ui:define name="content">
+            <h:form id="PerfilForm">
+                <h:panelGroup id="display" >
+                    <div align="center">
+
+                        <p:panelGrid columns="2">
+                            <h:outputText value="Usuario" style="font-weight: bold"/>
+                            <h:outputText value="#{controladorPerfil.usuarioLogin}"/>
+                            <h:outputText value="Apellido Paterno" style="font-weight: bold"/>
+                            <h:outputText value="#{controladorPerfil.apellidoPaterno}" />
+                            <h:outputText value="Apellido Materno" style="font-weight: bold"/>
+                            <h:outputText value="#{controladorPerfil.apellidoMaterno}" />
+                            <h:outputText value="Nombre" style="font-weight: bold"/>
+                            <h:outputText value="#{controladorPerfil.nombre}" />
+                            <h:outputText value="Dirección" style="font-weight: bold"/>
+                            <h:outputText value="#{controladorPerfil.direccion}" />
+                            <h:outputText value="Teléfono" style="font-weight: bold"/>
+                            <h:outputText value="#{controladorPerfil.telefono}" />
+                            <h:outputText value="Celular" style="font-weight: bold"/>
+                            <h:outputText value="#{controladorPerfil.celular}" />
+                            <h:outputText value="Correo Electrónico" style="font-weight: bold"/>
+                            <h:outputText value="#{controladorPerfil.email}" />
+
+
+                        </p:panelGrid>
+
+
+                    </div>
+
+                </h:panelGroup>
+            </h:form>
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>

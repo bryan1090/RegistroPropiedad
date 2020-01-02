@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Entrega"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:outputStylesheet name="css/textEditor.css" />
+
+            <h:form id="formEntregas">
+                <p:growl id="growl" showDetail="true" sticky="false" life="3000"/>
+
+                <p:panel header="Entrega" >
+
+                    <p:panelGrid columns="5" layout="grid" styleClass="ui-fluid"
+                                 columnClasses="ui-grid-col-1,ui-grid-col-1,ui-grid-col-5,ui-grid-col-4,ui-grid-col-2" >
+                        <p:commandButton value="Entregar" class="green-btn"                                                 
+                                         action="#{controladorEntregas.entregar()}"
+                                         process="@form" update="growl formEntregas"
+                                         />
+                        <p:outputLabel value="Descripción" style="padding-left: 15px"/>
+                        <p:inputText value="#{controladorEntregas.descripcionEntrega}"
+                                     style="width: 350px"/>
+
+                        <p:outputLabel value=""/>
+                        <p:commandButton icon="fa fa-search" value="Volver A Buscar" class="blue-btn" action="#{controladorEntregas.refresh()}" update="@form"/>
+
+                    </p:panelGrid>    
+
+                    <br/>
+
+                    <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-10,ui-grid-col-2"  styleClass="ui-fluid">
+
+                        <p:panel style="border: none">
+
+                            <h:panelGrid id="panelRep" columns="1">      
+                                <p:dataTable id="tblRepertorios" scrollable="true"  scrollHeight="410" 
+                                             value="#{controladorEntregas.listaRepertorioFecha}" 
+                                             var="list"  
+                                             selection="#{controladorEntregas.listaRepertorioSeleccionados}"
+                                             rowKey="#{list.repNumero}" sortBy="#{list.traNumero.traNumero}" > 
+                                    <p:column headerText="# Trámite" groupRow="true" filterBy="#{list.traNumero.traNumero}" filterMatchMode="contains" filterStyle="text-transform: uppercase">
+                                        <h:outputText value="#{list.traNumero.traNumero}" />
+                                    </p:column>
+
+                                    <p:column headerText="Repertorio" filterBy="#{list.repNumero}" filterMatchMode="contains" filterStyle="text-transform: uppercase">
+                                        <h:outputText value="#{list.repNumero}" />
+                                    </p:column>
+
+                                    <p:column headerText="Contrato" filterBy="#{list.repTtrDescripcion}" filterMatchMode="contains" filterStyle="text-transform: uppercase">
+                                        <h:outputText value="#{list.repTtrDescripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Fecha Recepción" filterBy="#{list.repTtrDescripcion}" filterMatchMode="contains" filterStyle="text-transform: uppercase">
+                                        <h:outputText value="#{list.traNumero.traFechaRecepcion.time}" >
+                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column selectionMode="multiple" style="width:16px;text-align:center" groupRow="true" selectRow="true">
+                                        <h:outputLabel value="#{list.traNumero.traNumero}" style="visibility: hidden"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <p:panel style="border: none">
+                            <p:commandButton id="btnImprimir" icon="fa fa-print" class="orange-btn" value="Imprimir" ajax="false" update="@form"
+                                             disabled="#{controladorEntregas.estadoImprimir}" action="#{controladorEntregas.imprimirTramitesEntregados()}"/>
+                        </p:panel>
+                    </p:panelGrid>
+
+
+
+
+
+                </p:panel>
+            </h:form>
+
+
+            <p:dialog id="dlgBusqueda" widgetVar="dlgBusqueda" visible="true" modal="true" closable="false"
+                      position="center" responsive="true" >
+                <h:form>
+                    <p:panel style="border: none" rendered="#{controladorEntregas.estadoBusqueda}">
+                        
+                            <p:outputLabel value="Buscar Por Persona" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{controladorEntregas.estadoBusqueda}">
+                                <p:ajax update="@form" />
+                            </p:selectBooleanCheckbox>
+                        
+
+                        <br/>
+                        <p:separator/>
+                        <br/>
+                        <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                                     columnClasses="ui-grid-col-2, ui-grid-col-7, ui-grid-col-4">
+                            <p:outputLabel for="txtFechaRepertorio" value="Fecha" />
+                            <p:calendar pattern="dd/MM/yyyy" id="txtFechaRepertorio" value="#{controladorEntregas.FHR}" required="true" label="firstname"/>
+                            <p:commandButton icon="fa fa-search" value="Buscar" class="green-btn" onsuccess="PF('dlgBusqueda').hide()"
+                                             action="#{controladorEntregas.llenarDatos()}" update=":formEntregas"/>
+                            <p:outputLabel value="" />
+                            <p:outputLabel value="" />
+                            <p:commandButton icon="fa fa-close" value="Salir" class="cyan-btn" onsuccess="PF('dlgBusqueda').hide()" update=":formEntregas" />
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel style="border: none" rendered="#{!controladorEntregas.estadoBusqueda}">
+
+                        
+                            <p:outputLabel value="Buscar Por Fecha" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{controladorEntregas.estadoBusqueda}">
+                                <p:ajax update="@form" />
+                            </p:selectBooleanCheckbox>
+                        
+
+                        <br/>
+                        <p:separator/>
+                        <br/>
+
+                        <p:panelGrid columns="5" layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                                     columnClasses="ui-grid-col-3, ui-grid-col-3,ui-grid-col-3, ui-grid-col-3,ui-grid-col-2">
+                            <p:outputLabel value="Identificación" style="font-weight: bold"/>
+                            <p:inputText value="#{controladorEntregas.persona.perIdentificacion}" />
+                            <p:outputLabel value="Apellido Paterno" style="font-weight: bold"/>
+                            <p:inputText value="#{controladorEntregas.persona.perApellidoPaterno}" style="text-transform: uppercase"/>
+                            <p:commandButton icon="fa fa-search" value="Buscar" class="green-btn" onsuccess="PF('dlgBusqueda').hide()"
+                                             action="#{controladorEntregas.llenarDatosPorIdentificacion()}" update=":formEntregas"/>
+                            <p:outputLabel value="Apellido Materno" style="font-weight: bold"/>
+                            <p:inputText value="#{controladorEntregas.persona.perApellidoMaterno}" style="text-transform: uppercase"/>
+                            <p:outputLabel value="Nombre" style="font-weight: bold"/>
+                            <p:inputText value="#{controladorEntregas.persona.perNombre}" style="text-transform: uppercase"/>
+                            <p:commandButton icon="fa fa-close" value="Salir" class="cyan-btn" onsuccess="PF('dlgBusqueda').hide()" update=":formEntregas" />
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+
+</html>

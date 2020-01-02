@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListTipoCertificadoTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="TipoCertificadoListForm">
+                <p:panel header="#{bundle.ListTipoCertificadoTitle}">
+                    <p:dataTable id="datalist" value="#{tipoCertificadoController.items}" var="item"
+                                 selectionMode="single" selection="#{tipoCertificadoController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.troId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoCertificadoTitle_troNombre}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.troNombre}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoCertificadoTitle_troValor}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.troValor}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoCertificadoTitle_troUnidadTiempo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.troUnidadTiempo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoCertificadoTitle_troCantidadTiempo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.troCantidadTiempo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoCertificadoTitle_troIva}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.troIva}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoCertificadoTitle_troTipo}"/>
+                            </f:facet>
+                            <h:outputText rendered="#{item.troTipo eq 'G'}" value="GRAVAMEN"/>
+                            <h:outputText rendered="#{item.troTipo eq 'R'}" value="BIENES RAÍCES"/>
+                            <h:outputText rendered="#{item.troTipo eq 'B'}" value="BÚSQUEDA"/>
+                            <h:outputText rendered="#{item.troTipo eq 'N'}" value="NOMBRAMIENTOS"/>
+                            <h:outputText rendered="#{item.troTipo eq 'P'}" value="PROPIEDAD"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoCertificadoTitle_troUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.troUser}"/>
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoCertificadoTitle_troFhr}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.troFhr}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn"  value="#{bundle.Create}" actionListener="#{tipoCertificadoController.prepareCreate}" update=":TipoCertificadoCreateForm" oncomplete="PF('TipoCertificadoCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":TipoCertificadoViewForm" oncomplete="PF('TipoCertificadoViewDialog').show()" disabled="#{empty tipoCertificadoController.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":TipoCertificadoEditForm" oncomplete="PF('TipoCertificadoEditDialog').show()" disabled="#{empty tipoCertificadoController.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{tipoCertificadoController.destroy}" update=":growl,datalist" disabled="#{empty tipoCertificadoController.selected}"/>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

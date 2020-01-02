@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <p:growl id="growl" life="3000" sticky="false"/>
+
+        <h:form>
+            <p:confirmDialog  widgetVar="dlgConfirmacion" global="true">
+                <p:commandButton value="Si" type="button"  
+                                 styleClass="ui-confirmdialog-yes green-btn" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no red-btn" icon="ui-icon-close" />
+            </p:confirmDialog>
+
+        </h:form>
+
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title><ui:insert name="title">PrimeFaces Apollo</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="apollo-layout" />
+        <h:outputScript name="js/layout.js" library="apollo-layout" />
+        <h:outputStylesheet library="css" name="jsfcrud.css"/>
+        <h:outputScript library="js" name="jsfcrud.js"/>
+        <ui:insert name="head">
+
+        </ui:insert>
+
+    </h:head>
+
+    <h:body >
+
+        <div class="layout-wrapper layout-#{guestPreferences.layoutMode}">
+
+
+            <ui:include src="topbar.xhtml" />
+            <ui:include src="menu.xhtml" />
+
+            <div class="layout-content">
+                <div class="layout-content-container">
+                    <ui:insert name="content" />
+
+                </div>
+            </div>
+
+            <ui:include src="footer.xhtml" />
+
+            <div class="layout-mask"></div>
+        </div>
+
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="/resources/imagenes/loading.gif"  style="width: 75px; height: 75px;"/>
+        </p:dialog>
+
+
+
+
+
+        <!--
+                <p:ajaxExceptionHandler type="java.lang.NullPointerException"
+                                        update="exceptionDialog"
+                                        onexception="PF('exceptionDialog').show();" />
+        
+                <p:ajaxExceptionHandler type="java.lang.IllegalArgumentException"
+                                        update="exceptionDialog"
+                                        onexception="PF('exceptionDialog').show();" />
+                <p:ajaxExceptionHandler type="java.lang.IllegalStateException"
+                                        update="exceptionDialog"
+                                        onexception="PF('exceptionDialog').show();" />-->
+
+        <p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException"
+                                update="exceptionDialog"
+                                onexception="PF('DialogoVistaExpirada').show();" />
+                
+
+        <p:ajaxExceptionHandler type="java.lang.Throwable"
+                                update="exceptionDialog"
+                                onexception="PF('exceptionDialog').show();" />
+
+        <p:dialog id="exceptionDialog" modal="true" 
+                  widgetVar="exceptionDialog"
+                  height="120px"
+                  header=" "
+                  appendTo="@(body)">
+            <!--            <div align='center'>
+                            <p:graphicImage value="/resources/imagenes/caraTriste.png" />
+                        </div>-->
+            <h1 style="font-weight: bold;color: red;text-align: center">¡Error!</h1>
+
+            <h2 >Datos no Validos o Error de configuración.</h2>
+            <h2>Intente de nuevo y si el error persiste contactar al Administrador</h2>
+<!--            <h4>Causa: #{pfExceptionHandler.type} </h4>-->
+
+<!--            Message: #{pfExceptionHandler.message} <br/>
+            StackTrace: <h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /> <br />-->
+
+            <!--            <p:button class="cyan-btn" onclick="document.location.href = document.location.href;"
+                                  value="Refrescar"
+                                  rendered="#{pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'}" />-->
+            <p:button class="red-btn" value="Cerrar" onclick="PF('exceptionDialog').hide();" />
+        </p:dialog>
+
+        <p:dialog id="DialogoVistaExpirada" modal="true" 
+                  widgetVar="DialogoVistaExpirada"
+                  closable="false"
+                  height="120px"
+                  header="Sesión expirada"
+                  appendTo="@(body)">
+            <h2 >La sesión ha expirado, se regresará a la página de login.</h2>
+            <br></br>
+            <p:button class="cyan-btn" onclick="document.location.href = document.location.href;"
+                      value="Aceptar"
+                      outcome="/login.xhtml"/>
+        </p:dialog>
+
+        <!--        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+                    <f:facet name="start">
+                        <i class="ajax-status-icon fa fa-spinner fa-spin"></i>
+                    </f:facet>
+        
+                    <f:facet name="complete">
+                        <h:outputText />
+                    </f:facet>
+                </p:ajaxStatus>-->
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="apollo-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="apollo-layout" />
+
+
+
+    </h:body>
+
+</html>

@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="Buscar Propiedad PH"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <p:panel header="Buscar Propiedad PH">
+               
+                <h:form id="frmBusqueda">
+                    <h:panelGrid columns="5">
+                        <h:outputLabel for="tipoBusqueda" value="Tipo de Búsqueda" style="font-weight: bolder"/>
+                         <p:selectOneRadio id="tipoBusqueda" 
+                                           required="true" requiredMessage="Seleccione el tipo de Búsqueda"
+                                           value="#{controladorBuscarMatriculas.tipoBusquedaStr}">
+            <f:selectItem itemLabel="Bloque" itemValue="bloque" />
+            <f:selectItem itemLabel="Conjunto" itemValue="conjunto" />            
+            <p:ajax event="valueChange" listener="#{controladorBuscarMatriculas.tipoBusqueda()}"
+                                            update="frmBusqueda frmPropiedad plPropiedad:formGeneral" />
+        </p:selectOneRadio>
+                          <h:outputLabel value="Conjunto" for="cbxConjunto" style="float: right;font-weight: bolder" 
+                                                   rendered="#{controladorBuscarMatriculas.renderedBuscarPorConjunto}"/>
+                                    <h:outputLabel value="Bloque" for="cbxBloque" style="float: right;font-weight: bolder" 
+                                                   rendered="#{controladorBuscarMatriculas.renderedBuscarPorBloque}"/>
+                                
+                               
+                                    <p:selectOneMenu id="cbxConjunto" value="#{controladorBuscarMatriculas.comId}" 
+                                                     rendered="#{controladorBuscarMatriculas.renderedBuscarPorConjunto}"
+                                                     filter="true" required="true">
+                                        <p:ajax event="change" listener="#{controladorBuscarMatriculas.cargarCompania()}" />
+                                        <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                                        <f:selectItems value="#{controladorBuscarMatriculas.listaCompania}"
+                                                       var="item" itemValue="#{item.comId}" itemLabel="#{item.comNombre} - #{item.parId.parNombre}"/>
+                                    </p:selectOneMenu>
+                                    <p:selectOneMenu id="cbxBloque" value="#{controladorBuscarMatriculas.bloqueNombre}" 
+                                                     rendered="#{controladorBuscarMatriculas.renderedBuscarPorBloque}"
+                                                     filter="true" required="true">                                        
+                                        <f:selectItem itemLabel="Seleccione uno..." itemValue=""/>
+                                        <f:selectItems value="#{controladorBuscarMatriculas.listaBloqueNombre}"
+                                                       var="item" itemValue="#{item}" itemLabel="#{item}"/>
+                                    </p:selectOneMenu>
+                                                        
+                         <p:commandButton class="green-btn" icon="fa fa-search" value="Buscar"
+                                                     action="#{controladorBuscarMatriculas.buscarPropiedades()}" update="frmPropiedad:dtbPropiedades plPropiedad"/>
+                          </h:panelGrid>
+                    
+                </h:form>
+                <hr/>
+                <p:panel style="height: 280px">
+                    <h:form id="frmPropiedad">
+                    <p:dataTable id="dtbPropiedades" value="#{controladorBuscarMatriculas.listaPropiedad}"
+                                 var="prop" 
+                                 scrollable="true" scrollHeight="200" widgetVar="tblProp">
+                        <p:column filterBy="#{prop.prdMatricula}" headerText="Matrícula" style="width: 100px; text-align: center" filterMatchMode="contains">                         
+                            <h:outputText value="#{prop.prdMatricula}"/>
+                        </p:column>
+                        <p:column filterBy="#{prop.prdCatastro}" headerText="Catastro" style="width: 100px; text-align: center" filterMatchMode="contains">                            
+                            <h:outputText value="#{prop.prdCatastro}"/>
+                        </p:column>
+                        <p:column filterBy="#{prop.prdPredio}" headerText="Predio" style="width: 100px; text-align: center" filterMatchMode="contains">                                                                                    
+                            <h:outputText value="#{prop.prdPredio}"/>
+                        </p:column>                        
+                        <p:column filterBy="#{prop.prdBloque}" headerText="Bloque" rendered="#{controladorBuscarMatriculas.tipoBusquedaStr eq 'conjunto'}" filterMatchMode="contains">
+                            <h:outputText value="#{prop.prdBloque}"/>
+                        </p:column>
+                         <p:column filterBy="#{prop.prdConjunto}" headerText="Conjunto" rendered="#{controladorBuscarMatriculas.tipoBusquedaStr eq 'bloque'}" filterMatchMode="contains">
+                             <h:outputText value="#{prop.prdConjunto}"/>
+                        </p:column>                        
+                         
+                        <p:column filterBy="#{prop.prdTdtParNombre}" headerText="Parroquia" style="width: 200px; text-align: center" filterMatchMode="contains">                          
+                            <h:outputText value="#{prop.prdTdtParNombre}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Descripción"/>
+                            </f:facet>
+                            <h:outputText value="#{prop.prdDescripcion2}"/>
+                        </p:column>
+                        <p:column style="width: 10%">
+                            <f:facet name="header">
+                                <h:outputText value="Seleccionar"/>
+                            </f:facet>
+                            <div align="center">
+                                <h:form>
+                                    <p:commandButton class="cyan-btn" icon="fa fa-check" 
+                                                     process="@this"
+                                                     immediate="true" style="width: 40px" update="plPropiedad"
+                                                     action="#{controladorBuscarMatriculas.buscarPropiedadesHijas()}">
+                                        <f:setPropertyActionListener target="#{controladorBuscarMatriculas.propiedadSeleccionada}" 
+                                                                     value="#{prop}"/>
+                                    </p:commandButton>
+                                </h:form>
+                            </div>
+                        </p:column>
+                    </p:dataTable>
+                        </h:form>
+                </p:panel>
+                <hr/>
+                <p:tabView id="plPropiedad">
+                    <p:tab title="GENERAL">
+                    <h:form id="formGeneral">
+                        <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                    <p:outputLabel value=" #{controladorBuscarMatriculas.propiedadSeleccionada.prdMatricula}"/>
+                    <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                    <p:outputLabel value=" #{controladorBuscarMatriculas.propiedadSeleccionada.prdDescripcion2}"/>
+                    <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                    <p:outputLabel value=" #{controladorBuscarMatriculas.propiedadSeleccionada.prdConjunto}"/>
+                        <br/>
+                        <p:dataGrid var="prop" value="#{controladorBuscarMatriculas.listaPropiedadesHijas}" columns="14" layout="grid"
+                                    rows="12" id="alics">
+                            <p:panel header="Nº: #{prop.prdUnidadVivienda}" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825':'background: #9CCC65'} ">
+                                <h:panelGrid columns="1" 
+                                             title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">
+                                    <p:commandButton  styleClass="boton" update=":infAlic"
+                                                      action="#{controladorBuscarMatriculas.listarDetalleAlicuotas(prop)}"
+                                                      icon="fa fa-home" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825;':'background: #9CCC65;'}"
+                                                      oncomplete="PF('dlgPropHij').show()" title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:dataGrid>
+
+                      
+                    </h:form>
+                        </p:tab>
+                    <p:tab title="LISTA">
+                        <h:form id="lista">
+                            <p:dataTable value="#{controladorBuscarMatriculas.listaPropiedadesHijas}"
+                                         var="prop" rowKey="#{prop.prdMatricula}" sortBy="#{prop.prdMatricula}">
+                                <p:column headerText="Matrícula">
+                                    <h:outputText value="#{prop.prdMatricula}"/>
+                                </p:column>
+                                <p:column headerText="Unidad">
+                                    <h:outputText value="#{prop.prdUnidadVivienda}"/>
+                                </p:column>
+                                <p:column headerText="Predio">
+                                    <h:outputText value="#{prop.prdPredio}"/>
+                                </p:column>
+                                <p:column headerText="Catastro">
+                                    <h:outputText value="#{prop.prdCatastro}"/>
+                                </p:column>
+                                <p:column headerText="Descripción">
+                                    <h:outputText value="#{prop.prdDescripcion2}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton  styleClass="boton" update=":infAlic"
+                                                      action="#{controladorBuscarMatriculas.listarDetalleAlicuotas(prop)}"
+                                                      icon="fa fa-home" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825;':'background: #9CCC65;'}"
+                                                      oncomplete="PF('dlgPropHij').show()" title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">
+                                    </p:commandButton>
+                                </p:column>
+                    </p:dataTable>
+                            </h:form>
+                        </p:tab>
+                </p:tabView>>
+
+            </p:panel>
+              <p:dialog header="Información Declaratorias" widgetVar="dlgPropHij" modal="true" 
+                                  showEffect="fade" hideEffect="fade" resizable="false" width="1000px">
+                  <h:form id="infAlic">
+                            <p:panel style="text-align: left">
+                                <p:outputLabel value=" Propiedad Padre: " style="color: blue;"/>
+                                <p:outputLabel value=" #{controladorBuscarMatriculas.propiedadSeleccionada.prdConjunto}"/>
+                            </p:panel>
+                            <p:outputPanel id="detalleAlicuota" style="text-align:center;">
+                                <h3 style="font-weight: bolder;color: #1E88E5">PROPIEDAD PH</h3>
+                                <p:panelGrid  columns="2" columnClasses="label,value" style="width: 100%">
+
+                                    <h:outputText value="Matrícula:" />
+                                    <h:outputText value="#{controladorBuscarMatriculas.propUV.prdMatricula}" />
+
+                                    <h:outputText value="Descripción" />
+                                    <h:outputText value="#{controladorBuscarMatriculas.propUV.prdDescripcion2}" />
+                                    <h:outputText value="Unidad" />
+                                    <h:outputText value="#{controladorBuscarMatriculas.propUV.prdUnidadVivienda.toUpperCase()}" />
+                                    <h:outputText value="Predio" />
+                                    <h:outputText value="#{controladorBuscarMatriculas.propUV.prdPredio}" />
+                                    <h:outputText value="Catastro" />
+                                    <h:outputText value="#{controladorBuscarMatriculas.propUV.prdCatastro}" />
+
+                                </p:panelGrid>
+
+
+                                <h3 style="font-weight: bolder;color: #1E88E5">COMPONENTES PH</h3>
+                                <p:dataTable var="alicu"
+                                             scrollable="true" scrollHeight="150"
+                                             value="#{controladorBuscarMatriculas.listaAlicuotaMostrar}">
+                                    <p:column headerText="Número">
+                                        <h:outputText value="#{alicu.altNumero}" />
+                                    </p:column>
+
+                                    <p:column headerText="Alicuota">
+                                        <h:outputText value="#{alicu.altAlicuota}" />
+                                    </p:column>
+
+                                    <p:column headerText="Bloque">
+                                        <h:outputText value="#{alicu.altArea}" />
+                                    </p:column>
+
+                                    <p:column headerText="Piso">
+                                        <h:outputText value="#{alicu.altPiso}" />
+                                    </p:column>
+                                    <p:column headerText="Descripción">
+                                        <h:outputText value="#{alicu.altDescripcion}" />
+                                    </p:column>
+
+                                </p:dataTable>
+
+
+
+                            </p:outputPanel>
+                      </h:form>
+                        </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

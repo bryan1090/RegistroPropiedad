@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListTipoMarginacionTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="TipoMarginacionListForm">
+                <p:panel header="#{bundle.ListTipoMarginacionTitle}">
+                    <p:dataTable id="datalist" value="#{controladorTipoMarginacion.items}" var="item"
+                                 selectionMode="single" selection="#{controladorTipoMarginacion.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.tmcId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column filterBy="#{item.tmcNombre}" sortBy="#{item.tmcNombre}" filterMatchMode="startsWith" filterStyle="text-transform: uppercase">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoMarginacionTitle_tmcNombre}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tmcNombre}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.tmcEstado}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoMarginacionTitle_tmcEstado}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tmcEstado}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.tmcUser}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoMarginacionTitle_tmcUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tmcUser}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoMarginacionTitle_tmcFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tmcFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus"  class="green-btn" value="#{bundle.Create}" actionListener="#{controladorTipoMarginacion.prepareCreate}" update=":TipoMarginacionCreateForm" oncomplete="PF('TipoMarginacionCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":TipoMarginacionViewForm" oncomplete="PF('TipoMarginacionViewDialog').show()" disabled="#{empty controladorTipoMarginacion.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":TipoMarginacionEditForm" oncomplete="PF('TipoMarginacionEditDialog').show()" disabled="#{empty controladorTipoMarginacion.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash"  class="red-btn" value="#{bundle.Delete}" actionListener="#{controladorTipoMarginacion.destroy}" update=":growl,datalist" disabled="#{empty controladorTipoMarginacion.selected}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

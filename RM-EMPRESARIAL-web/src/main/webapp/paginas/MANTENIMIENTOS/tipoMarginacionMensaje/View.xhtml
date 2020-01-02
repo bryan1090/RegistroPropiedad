@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoMarginacionMensajeViewDlg" widgetVar="TipoMarginacionMensajeViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTipoMarginacionMensajeTitle}">
+            <h:form id="TipoMarginacionMensajeViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tipoMarginacionMensajeController.selected != null}">
+                        <h:outputText value="#{bundle.ViewTipoMarginacionMensajeLabel_tmmMensaje}"/>
+                        <h:outputText value="#{tipoMarginacionMensajeController.selected.tmmMensaje}" title="#{bundle.ViewTipoMarginacionMensajeTitle_tmmMensaje}"/>
+                        <h:outputText value="#{bundle.ViewTipoMarginacionMensajeLabel_tmmVariable}"/>
+                        <h:outputText value="#{tipoMarginacionMensajeController.selected.tmmVariable}" title="#{bundle.ViewTipoMarginacionMensajeTitle_tmmVariable}"/>
+                        <h:outputText value="#{bundle.ViewTipoMarginacionMensajeLabel_tmmOrden}"/>
+                        <h:outputText value="#{tipoMarginacionMensajeController.selected.tmmOrden}" title="#{bundle.ViewTipoMarginacionMensajeTitle_tmmOrden}"/>
+                        <h:outputText value="#{bundle.ViewTipoMarginacionMensajeLabel_tmcId}"/>
+                        <h:outputText value="#{tipoMarginacionMensajeController.selected.tmcId.tmcNombre}" title="#{bundle.ViewTipoMarginacionMensajeTitle_tmcId}"/>
+                        <h:outputText value="#{bundle.ViewTipoMarginacionMensajeLabel_tmmEstado}"/>
+                        <h:outputText value="#{tipoMarginacionMensajeController.selected.tmmEstado}" title="#{bundle.ViewTipoMarginacionMensajeTitle_tmmEstado}"/>
+                        <h:outputText value="#{bundle.ViewTipoMarginacionMensajeLabel_tmmUser}"/>
+                        <h:outputText value="#{tipoMarginacionMensajeController.selected.tmmUser}" title="#{bundle.ViewTipoMarginacionMensajeTitle_tmmUser}"/>
+                        <h:outputText value="#{bundle.ViewTipoMarginacionMensajeLabel_tmmFHR}"/>
+                        <h:outputText value="#{tipoMarginacionMensajeController.selected.tmmFHR}" title="#{bundle.ViewTipoMarginacionMensajeTitle_tmmFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{tipoMarginacionMensajeController.clear()}" value="#{bundle.Close}" onclick="TipoMarginacionMensajeViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

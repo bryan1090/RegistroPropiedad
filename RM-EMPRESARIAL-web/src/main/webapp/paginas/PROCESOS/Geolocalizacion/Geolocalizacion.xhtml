@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                <h:outputText value="GeoLocalización"/>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+                    <p:growl id="growl" life="3000"/>
+                    <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyC7R9us6s7z77X-uy5zaAc6DzUM6u0-7c4"></script>
+                    <p:panel>
+                        <p:gmap id="gmap" widgetVar="map" center="#{controladorGeolocalizacion.centerGeoMap}" 
+                                mapTypeControl="false" 
+                                zoom="#{controladorGeolocalizacion.zoom}" 
+                                type="ROADMAP" style="width:100%;height: 480px"
+                                model="#{controladorGeolocalizacion.geoModel}" >
+                            <p:ajax event="overlaySelect" listener="#{controladorGeolocalizacion.cargarInfoPropiedad}"
+                                    update=":formInfoProp" onsuccess="PF('dlgInfoProp').show()"/>
+                        </p:gmap>
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-6,ui-grid-col-6" styleClass="ui-panelgrid-blank ui-fluid" >
+                            <p:panel header="Ubicación por parroquia">
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-8,ui-grid-col-4" styleClass="ui-panelgrid-blank ui-fluid" >
+                                    <p:selectOneMenu id="parroquia" value="#{controladorGeolocalizacion.parroquia}"
+                                                     filter="true" filterMatchMode="contains" required="true">
+                                        <f:selectItem itemLabel="Seleccione una parroquia" itemValue="" />
+                                        <f:selectItems value="#{controladorGeolocalizacion.listaParroquias}" var="parroquia"
+                                                       itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia}"/>
+                                    </p:selectOneMenu>
+                                    <p:commandButton class="yellow-btn" icon="fa fa-map-marker" value="Buscar" update="gmap" style="width: 75px"
+                                                     process="@this parroquia gmap" action="#{controladorGeolocalizacion.localizarPorParroquia()}"/>
+
+                                </p:panelGrid>
+                            </p:panel>
+
+                            <p:panel header="Ubicación por propiedad">
+                                <p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4" styleClass="ui-panelgrid-blank ui-fluid" >
+                                    <p:inputText id="mapPredio" placeholder="Predio" value="#{controladorGeolocalizacion.predio}"/>
+                                    <p:inputText id="mapCatastro" placeholder="Catastro" value="#{controladorGeolocalizacion.catastro}"/>
+                                    <p:commandButton class="yellow-btn" icon="fa fa-map-marker" value="Buscar" update="gmap"
+                                                     process="@this mapPredio mapCatastro gmap" style="width: 75px"
+                                                     action="#{controladorGeolocalizacion.localizarPorPropiedad()}"/>
+                                </p:panelGrid>
+
+                            </p:panel>     
+
+                        </p:panelGrid>
+                        <p:panel header="Ubicación por dirección">
+                            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-10,ui-grid-col-1" styleClass="ui-panelgrid-blank ui-fluid" >
+                                <p:inputText id="txtDireccionP" value="#{controladorGeolocalizacion.direccion}" 
+                                             placeholder="Barrio Calle principal N°casa"
+                                             required="true" requiredMessage="Dirección, Campo Requerido"/>
+                                <p:commandButton class="yellow-btn" icon="fa fa-map-marker" value="Buscar"
+                                                 process="txtDireccionP @this gmap"
+                                                 action="#{controladorGeolocalizacion.localizarPorDireccion()}"
+                                                 update="gmap txtDireccionP growl"/>
+                            </p:panelGrid>
+                        </p:panel>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog header="Información Propiedad" widgetVar="dlgInfoProp" width="700" resizable="false" draggable="false" modal="true">
+                    <h:form id="formInfoProp">
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-6,ui-grid-col-6" style="border: none" >
+                            <p:panel header="Datos De Identificación" >
+                                <p:panelGrid columns="2" columnClasses="ui-grid-col-4,ui-grid-col-8" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel for="txtMatricula" value="Matricula" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtMatricula" value="#{controladorGeolocalizacion.propiedadSeleccionada.prdMatricula}" readonly="true"/>
+                                    <p:outputLabel for="txtCatastro" value="Catastro" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtCatastro" value="#{controladorGeolocalizacion.propiedadSeleccionada.prdCatastro}" readonly="true"/>
+                                    <p:outputLabel for="txtPredio" value="Predio" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtPredio" value="#{controladorGeolocalizacion.propiedadSeleccionada.prdPredio}" readonly="true"/>
+                                    <p:outputLabel for="txtEspacial" value="Espacial" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtEspacial" value="#{controladorGeolocalizacion.propiedadSeleccionada.prdEspacial}" readonly="true"/>
+                                    <p:outputLabel for="txtParroquiaHistorica" value="Parroquia Historica" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtParroquiaHistorica" value="#{controladorGeolocalizacion.propiedadSeleccionada.prdTdtParNombreH}" readonly="true"/>
+                                    <p:outputLabel for="txtParroquiaActual" value="Parroquia Actual" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtParroquiaActual" value="#{controladorGeolocalizacion.propiedadSeleccionada.prdTdtParNombre}" readonly="true"/>
+                                    <p:outputLabel for="txtTipo"  value="Tipo" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtTipo" value="#{controladorGeolocalizacion.propiedadSeleccionada.tpdId.tpdNombre}" readonly="true"/>
+                                    <p:outputLabel for="txtClase" value="Clase" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtClase" value="#{controladorGeolocalizacion.propiedadSeleccionada.tclId.tclNombre}" readonly="true"/>
+                                </p:panelGrid>
+                            </p:panel>
+
+                            <p:panel header="Datos Descriptivos" >
+                                <p:panelGrid columns="2" columnClasses="ui-grid-col-4,ui-grid-col-8" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel for="txtSuperficie"  value="Superficie" style="font-weight: bold"/>
+                                    <p:inputText id="txtSuperficie" value="#{controladorGeolocalizacion.propiedadSeleccionada.prdSuperficie} #{controladorGeolocalizacion.propiedadSeleccionada.umdId.umdNombre}" readonly="true"/>
+                                    <p:outputLabel for="txtDescripcion" value="Descripción" style="font-weight: bold"/>
+                                    <p:inputTextarea id="txtDescripcion" rows="7" value="#{controladorGeolocalizacion.propiedadSeleccionada.prdDescripcion2}" readonly="true"/>
+                                    <p:outputLabel value="Estado" style="font-weight: bold"/>
+                                    <p:inputText value="ACTIVO" style="color: blue;font-weight: bold" rendered="#{controladorGeolocalizacion.propiedadSeleccionada.prdEstadoPropiedad == 'AC'}" readonly="true"/>
+                                    <p:inputText value="ANULADO" style="color: blue;font-weight: bold" rendered="#{controladorGeolocalizacion.propiedadSeleccionada.prdEstadoPropiedad == 'AN'}" readonly="true"/>
+                                    <p:inputText value="PROHIBIDO" style="color: blue;font-weight: bold" rendered="#{controladorGeolocalizacion.propiedadSeleccionada.prdEstadoPropiedad == 'PR'}" readonly="true"/>
+                                    <p:inputText value="PROHIBICIÓN LEVANTADA" style="color: blue;font-weight: bold" rendered="#{controladorGeolocalizacion.propiedadSeleccionada.prdEstadoPropiedad == 'PL'}" readonly="true"/>
+                                </p:panelGrid><br/>
+                                <p:dataTable id="dtbLinderos" value="#{controladorGeolocalizacion.listaLinderos}" var="item">
+                                    <p:column headerText="Linderos">
+                                        <h:outputText value="#{item.ldrNombre}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="MenuEditDlg" widgetVar="MenuEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditMenuTitle}">
+            <h:form id="MenuEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{menuController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditMenuLabel_menNombre}" for="menNombre" />
+                        <p:inputText id="menNombre" value="#{menuController.selected.menNombre}" title="#{bundle.EditMenuTitle_menNombre}" required="true" requiredMessage="#{bundle.EditMenuRequiredMessage_menNombre}"/>
+                        <p:outputLabel value="#{bundle.EditMenuLabel_menLink}" for="menLink" />
+                        <p:inputText id="menLink" value="#{menuController.selected.menLink}" title="#{bundle.EditMenuTitle_menLink}" required="true" requiredMessage="#{bundle.EditMenuRequiredMessage_menLink}"/>
+                        <p:outputLabel value="#{bundle.EditMenuLabel_menPadre}" for="menPadre" />
+                        <p:selectOneMenu id="menPadre" value="#{menuController.selected.menPadre}" title="#{bundle.CreateMenuTitle_menIcono}" 
+                                         filter="true" filterMatchMode="startsWith" >
+                            <f:selectItem itemLabel="Ninguno" itemValue="#{menuController.ninguno}" />
+                            <f:selectItems value="#{menuController.itemsAvailableSelectOne}"
+                                           var="menuPadr" itemLabel="#{menuPadr.menNombre}"
+                                           itemValue="#{menuPadr}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditMenuLabel_menIcono}" for="menIcono" />
+                        <p:inputText id="menIcono" value="#{menuController.selected.menIcono}" title="#{bundle.EditMenuTitle_menIcono}" />
+                        <p:outputLabel value="#{bundle.EditMenuLabel_menEstado}" for="menEstado" />
+                        <p:selectOneMenu id="menEstado" value="#{menuController.selected.menEstado}" required="true" requiredMessage="#{bundle.CreateMenuRequiredMessage_menEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{menuController.update}" value="#{bundle.Save}" update="display,:MenuListForm:datalist,:growl" oncomplete="handleSubmit(args, 'MenuEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{menuController.clear()}" value="#{bundle.Cancel}" immediate="true" onclick="MenuEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

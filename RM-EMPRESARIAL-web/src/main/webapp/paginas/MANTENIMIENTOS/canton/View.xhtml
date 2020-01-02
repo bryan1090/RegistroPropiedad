@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CantonViewDlg" widgetVar="CantonViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewCantonTitle}">
+            <h:form id="CantonViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorCanton.selected != null}">
+                        <h:outputText value="#{bundle.ViewCantonLabel_canNombre}"/>
+                        <h:outputText value="#{controladorCanton.selected.canNombre}" style="text-transform: uppercase" title="#{bundle.ViewCantonTitle_canNombre}"/>
+                        <h:outputText value="#{bundle.ViewCantonLabel_canEstado}"/>
+                        <h:outputText value="#{controladorCanton.selected.canEstado}" style="text-transform: uppercase" title="#{bundle.ViewCantonTitle_canEstado}"/>
+                        <h:outputText value="#{bundle.ViewCantonLabel_canFHR}"/>
+                        <h:outputText value="#{controladorCanton.selected.canFHR}" style="text-transform: uppercase" title="#{bundle.ViewCantonTitle_canFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewCantonLabel_canUser}"/>
+                        <h:outputText value="#{controladorCanton.selected.canUser}" style="text-transform: uppercase" title="#{bundle.ViewCantonTitle_canUser}"/>
+                        <h:outputText value="#{bundle.ViewCantonLabel_canCodigo}"/>
+                        <h:outputText value="#{controladorCanton.selected.canCodigo}" style="text-transform: uppercase" title="#{bundle.ViewCantonTitle_canCodigo}"/>
+                        <h:outputText value="#{bundle.ViewCantonLabel_canInicial}"/>
+                        <h:outputText value="#{controladorCanton.selected.canInicial}" style="text-transform: uppercase" title="#{bundle.ViewCantonTitle_canInicial}"/>
+                        <h:outputText value="#{bundle.ViewCantonLabel_proId}"/>
+                        <h:outputText value="#{controladorCanton.selected.proId.proNombre}" style="text-transform: uppercase" title="#{bundle.ViewCantonTitle_proId}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorCanton.clear()}" value="#{bundle.Close}" onclick="CantonViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,656 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                <h:outputText value="Indices Propiedades"/>
+            </ui:define>
+
+            <ui:define name="content">
+
+
+                <h:form id="formPrincipal">
+
+                    <p:growl id="growl" showDetail="false" life="3000"/>
+
+                    <p:panel>
+                        <p:panelGrid columns="10" columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-2"
+                                     layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                            <p:outputLabel for="txtnumMatricula" value="N° Matricula"/>
+                            <p:inputText id="txtnumMatricula" value="#{controladorIndiceConsulta.numMatricula}" validatorMessage="Solo puede ingresar numeros en campo N° Matricula">
+                                <f:validateRegex pattern="^([0-9])*$"/>
+                            </p:inputText>
+                            <p:outputLabel for="txtPredio" value="Predio"/>
+                            <p:inputText id="txtPredio" value="#{controladorIndiceConsulta.predio}" style="text-transform: uppercase"/>
+                            <p:outputLabel for="txtCatastro" value="Catastro"/>
+                            <p:inputText id="txtCatastro" value="#{controladorIndiceConsulta.catastro}" style="text-transform: uppercase"/>
+                            <p:outputLabel for="txtnumRepertorio" value="N°Repertorio"/>
+                            <p:inputText id="txtnumRepertorio" value="#{controladorIndiceConsulta.numRepertorio}" validatorMessage="Solo puede ingresar numeros en campo N° Repertorio">
+                                <f:validateRegex pattern="^([0-9])*$"/>
+                            </p:inputText>
+                            <p:commandButton id="btnFiltrar" icon="fa fa-search" actionListener="#{controladorIndiceConsulta.procesarConsulta()}" update="tblPersonasConsultadas growl"/>
+                        </p:panelGrid>
+                        <br/>
+                        <p:dataTable id="tblPersonasConsultadas" value="#{controladorIndiceConsulta.listaDePropiedades}" var="listP" rowIndexVar="numF"
+                                     scrollable="true" scrollHeight="420" style="text-align-last: center" sortBy="#{listP.prdMatricula}" >
+
+                            <p:column headerText="N° Matricula" style="text-align-last: center" filterMatchMode="contains"
+                                      filterStyle="height:20px;text-transform: uppercase;" filterBy="#{listP.prdMatricula}" groupRow="true">
+
+                                <p:commandLink id="btnInfPropiedad" style="color: orange"
+                                               action="#{controladorIndiceConsulta.consultarInformacionPropiedad()}"
+                                               onsuccess="PF('dlgInfoProp').show()" update=":formListaPropiedades @form :formInfoProp">
+                                    <h:outputText value="#{listP.prdMatricula}" style="font-weight: bold;text-decoration: underline"/>
+                                    <f:setPropertyActionListener value="#{listP}" target="#{controladorIndiceConsulta.propiedadSeleccionada}" />
+                                </p:commandLink>
+                            </p:column>
+
+                            <p:column headerText="Predio" style="text-align-last: center" filterMatchMode="contains"
+                                      filterStyle="height:20px;text-transform: uppercase;" filterBy="#{listP.prdPredio}" groupRow="true">
+                                <h:outputText value="#{listP.prdPredio}" />
+                            </p:column>
+
+                            <p:column headerText="Catastro" style="text-align-last: center" filterMatchMode="contains"
+                                      filterStyle="height:20px;text-transform: uppercase;" filterBy="#{listP.prdCatastro}" groupRow="true">
+                                <h:outputText value="#{listP.prdCatastro}" />
+                            </p:column>
+
+                            <p:column headerText="Tipo Propiedad" style="text-align-last: center" filterMatchMode="contains"
+                                      filterStyle="height:20px;text-transform: uppercase;" filterBy="#{listP.tpdId.tpdNombre}" groupRow="true">
+                                <h:outputText value="#{listP.tpdId.tpdNombre}" />
+                            </p:column>
+
+                            <p:column headerText="Parroquía" style="text-align-last: center" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{listP.prdTdtParNombreH}" groupRow="true">
+                                <h:outputText value="#{listP.prdTdtParNombreH}"/>
+                            </p:column>
+
+                            <p:column headerText="N° Repertorio" style="text-align-last: center" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{controladorIndiceConsulta.listaRepertorioPropiedades.get(numF)}" groupRow="true"
+                                      rendered="#{controladorIndiceConsulta.numRepertorio != '^' }">
+                                <h:outputText value="#{controladorIndiceConsulta.listaRepertorioPropiedades.get(numF)}" />
+                            </p:column>
+
+                            <p:column headerText="Trámite" style="text-align-last: center" filterMatchMode="contains"
+                                      filterStyle="height:20px;text-transform: uppercase;" filterBy="#{controladorIndiceConsulta.listaTipoTtrRepertorio.get(numF)}" groupRow="true"
+                                      rendered="#{controladorIndiceConsulta.numRepertorio != '^'}">
+                                <h:outputText value="#{controladorIndiceConsulta.listaTipoTtrRepertorio.get(numF)}" />
+                            </p:column>
+
+                            <p:column headerText="Gravamen Propiedad" style="text-align-last: center" groupRow="true">
+                                <h:outputText value="GRAVAMENES" style="color: red;font-weight: bold" rendered="#{controladorIndiceConsulta.listaGravamenesExistentes.get(numF) != ''}"/>
+                            </p:column>
+
+                            <p:column headerText="Ver" width="45" style="text-align-last: center" groupRow="true">
+                                <p:commandButton id="btnListaPropietariosComparados" icon="fa fa-eye" value="Ver #{listP.prdMatricula} #{controladorIndiceConsulta.listaRepertorioPropiedades.get(numF)}" class="green-btn"
+                                                 action="#{controladorIndiceConsulta.listarDatosPropiedad()}" style="width: 50px;height: 24px"
+                                                 onsuccess="PF('dlgListaPropiedades').show()" update=":formListaPropiedades @form :formInfoProp">
+                                    <f:setPropertyActionListener value="#{listP}" target="#{controladorIndiceConsulta.propiedadSeleccionada}" />
+                                    <f:setPropertyActionListener value="#{controladorIndiceConsulta.listaRepertorioPropiedades.get(numF)}" target="#{controladorIndiceConsulta.numRepertorioSeleccionado}" />
+                                    <f:setPropertyActionListener value="#{controladorIndiceConsulta.listaTipoTtrRepertorio.get(numF)}" target="#{controladorIndiceConsulta.tipoRepertorio}" />
+                                    <f:setPropertyActionListener value="#{controladorIndiceConsulta.listaGravamenesExistentes.get(numF)}" target="#{controladorIndiceConsulta.existenciaGravamen}" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+
+                <p:dialog header="Índice Propiedad" widgetVar="dlgListaPropiedades" modal="true" draggable="false" height="540" width="1200" position="center center">
+                    <p:ajax event="close" listener="#{controladorIndiceConsulta.redirect()}" update=":formPrincipal"/>
+                    <h:form id="formListaPropiedades">
+                        <p:panelGrid columns="10" 
+                                     columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-3" 
+                                     layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                            <p:outputLabel value="N° Matrícula" style="font-weight: bold"/>
+                            <p:inputText value="#{controladorIndiceConsulta.propiedadSeleccionada.prdMatricula}" readonly="true"/>
+                            <p:outputLabel value="Catastro" style="font-weight: bold"/>
+                            <p:inputText value="#{controladorIndiceConsulta.propiedadSeleccionada.prdCatastro}" readonly="true"/>
+                            <p:outputLabel value="Predio" style="font-weight: bold"/>
+                            <p:inputText value="#{controladorIndiceConsulta.propiedadSeleccionada.prdPredio}" readonly="true"/>
+                            <p:outputLabel value="N° Repertorio" style="font-weight: bold" rendered="#{controladorIndiceConsulta.numRepertorio != ''}"/>
+                            <p:inputText value="#{controladorIndiceConsulta.numRepertorioSeleccionado}" readonly="true" rendered="#{controladorIndiceConsulta.numRepertorio != ''}"/>
+                            <p:outputLabel value="Tipo Repertorio" style="font-weight: bold" rendered="#{controladorIndiceConsulta.numRepertorio != ''}"/>
+                            <p:inputText value="#{controladorIndiceConsulta.tipoRepertorio}" readonly="true" rendered="#{controladorIndiceConsulta.numRepertorio != ''}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" 
+                                     columnClasses="ui-grid-col-1,ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid"
+                                     layout="grid">
+                            <p:outputLabel value="Descripción" style="font-weight: bold"/>
+                            <p:inputText value="#{controladorIndiceConsulta.propiedadSeleccionada.prdDescripcion2}" readonly="true"/>
+                        </p:panelGrid>
+                        <br/>
+                        <p:tabView>
+                            <p:tab title="Propietario">
+                                <p:dataTable id="tblPersonasConsultadas" value="#{controladorIndiceConsulta.listaPropietariosPropS}" var="listPropS"
+                                             scrollable="true" scrollHeight="300" style="text-align-last: right" rowIndexVar="numFP">
+                                    <p:column headerText="Identificación" style="text-align-last: center">
+                                        <p:commandLink id="btnInfPropietario" style="color: orange"
+                                                       action="#{controladorIndiceConsulta.consultarInformacionPropiedad()}"
+                                                       onsuccess="PF('dlgInfPropietario').show()" update="@form :formInfoPropietario">
+                                            <h:outputText value="#{listPropS.perId.perIdentificacion}" style="font-weight: bold;text-decoration: underline"/>
+                                            <f:setPropertyActionListener value="#{listPropS}" target="#{controladorIndiceConsulta.propietarioSeleccionado}" />
+                                        </p:commandLink>
+                                    </p:column>
+
+                                    <p:column headerText="Apellido Paterno" style="text-align-last: center">
+                                        <h:outputText value="#{listPropS.perId.perApellidoPaterno}" />
+                                    </p:column>
+
+                                    <p:column headerText="Apellido Materno" style="text-align-last: center">
+                                        <h:outputText value="#{listPropS.perId.perApellidoMaterno}" />
+                                    </p:column>
+
+                                    <p:column headerText="Nombre" style="text-align-last: center">
+                                        <h:outputText value="#{listPropS.perId.perNombre}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tipo Compareciente" style="text-align-last: center">
+                                        <h:outputText value="#{controladorIndiceConsulta.listaTraDetalleDesc.get(numFP)}" />
+                                    </p:column>
+                                    
+                                    <p:column headerText="Tipo Contrato" style="text-align-last: center">
+                                        <h:outputText value="#{controladorIndiceConsulta.listaContratoDesc.get(numFP)}" />
+                                    </p:column>
+
+                                    <p:column headerText="Predio" style="text-align-last: center">
+                                        <h:outputText value="#{listPropS.prdMatricula.prdPredio}" />
+                                    </p:column>
+
+                                    <p:column headerText="Catastro" style="text-align-last: center">
+                                        <h:outputText value="#{listPropS.prdMatricula.prdCatastro}" />
+                                    </p:column>
+
+                                    <p:column headerText="Gravamen Propietario" style="text-align-last: center">
+                                        <h:outputText value="GRAVAMENES" style="color: red;font-weight: bold" rendered="#{controladorIndiceConsulta.listaGravamenesPersonas.get(numFP) != ''}"/>
+                                    </p:column>
+
+                                    <p:column headerText="N° Repertorio" style="text-align-last: center" rendered="#{controladorIndiceConsulta.numRepertorio == ''}">
+                                        <h:outputText value="#{listPropS.prdRepertorio}" />
+                                    </p:column>
+
+                                    <p:column headerText="Estado" style="text-align-last: center">
+                                        <h:outputText value="ACTIVO" style="color: green;font-weight: bold" rendered="#{listPropS.pprEstado == 'A'}"/>
+                                        <h:outputText value="INACTIVO" style="color: black;font-weight: bold" rendered="#{listPropS.pprEstado == 'I'}"/>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Acta">
+                                <p:dataTable id="tblActasConsultadas" value="#{controladorIndiceConsulta.listaActas}" var="listActa"
+                                             scrollable="true" scrollHeight="300" style="text-align-last: right" sortBy="#{listActa.actNumero}">
+                                    <p:column headerText="N° Acta" style="text-align-last: center">
+                                        <h:outputText value="#{listActa.actNumero}" />
+                                    </p:column>
+
+                                    <p:column headerText="N° Inscripción" style="text-align-last: center">
+                                        <h:outputText value="#{listActa.actInscripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tipo de Libro" style="text-align-last: center">
+                                        <h:outputText value="#{listActa.tplId.tplDescripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="N° Repertorio" style="text-align-last: center" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{listActa.repNumero.repNumero}">
+                                        <h:outputText value="#{listActa.repNumero.repNumero}" />
+                                    </p:column>
+
+                                    <p:column headerText="Descripción Repertorio" style="text-align-last: center">
+                                        <h:outputText value="#{listActa.repNumero.repTtrDescripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Fecha" style="text-align-last: center">
+                                        <h:outputText value="#{listActa.actFch}" >
+                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column style="text-align-last: center;width: 100px">
+                                        <p:commandButton icon="fa fa-eye" value="Ver Acta" class="green-btn" action="#{controladorIndiceConsulta.consultarMarginaciones()}"
+                                                         onsuccess="PF('dlgVistaActa').show()" update="@form :formVerActa">
+                                            <f:setPropertyActionListener value="#{listActa}" target="#{controladorIndiceConsulta.actaSeleccionada}" />
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <p:column style="text-align-last: center;width: 110px">
+                                        <p:commandButton icon="fa fa-eye" value="Ver Razón" action="#{controladorIndiceConsulta.obtenerRazonActa()}" class="orange-btn"
+                                                         onsuccess="PF('dlgVistaRazon').show()" update="@form :formVerRazon">
+                                            <f:setPropertyActionListener value="#{listActa}" target="#{controladorIndiceConsulta.actaSeleccionada}" />
+                                        </p:commandButton>
+                                    </p:column>
+
+
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Certificado">
+                                <p:dataTable id="tblCertificadosConsultados" value="#{controladorIndiceConsulta.listaCertificados}" var="listCer"
+                                             scrollable="true" scrollHeight="300" style="text-align-last: right" sortBy="#{listCer.certificadoPK.cerNumero}">
+                                    <p:column headerText="N° Certificado" style="text-align-last: center">
+                                        <h:outputText value="#{listCer.certificadoPK.cerNumero}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tipo de Certificado" style="text-align-last: center">
+                                        <h:outputText value="#{listCer.troId.troNombre}" />
+                                    </p:column>
+
+                                    <p:column headerText="Fecha" style="text-align-last: center">
+                                        <h:outputText value="#{listCer.cerFechaIngreso}" >
+                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column style="text-align-last: center;width: 120px">
+                                        <p:commandButton icon="fa fa-eye" value="Ver Certificado" class="green-btn"
+                                                         onsuccess="PF('dlgVistaCertificado').show()" update="@form :formVerCertificado">
+                                            <f:setPropertyActionListener value="#{listCer}" target="#{controladorIndiceConsulta.certificadoSeleccionado}" />
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Gravamen">
+                                <p:dataTable id="tblGravamenesConsultados" value="#{controladorIndiceConsulta.listaGravamen}" var="listGrav"
+                                             scrollable="true" scrollHeight="300" style="text-align-last: right" sortBy="#{listGrav.prdMatricula.prdMatricula}">
+
+                                    <p:column headerText="N° Matrícula" style="text-align-last: center">
+                                        <h:outputText value="#{listGrav.prdMatricula.prdMatricula}" />
+                                    </p:column>
+
+                                    <p:column headerText="N° Repertorio" style="text-align-last: center" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{listGrav.repNumero.repNumero}">
+                                        <h:outputText value="#{listGrav.repNumero.repNumero}" />
+                                    </p:column>
+
+                                    <p:column headerText="Descripción" style="text-align-last: center">
+                                        <h:outputText value="#{listGrav.graDescripcion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Estado" style="text-align-last: center">
+                                        <h:outputText value="#{listGrav.graEstado}" style="font-weight: bold"/>
+                                    </p:column>
+
+                                    <p:column headerText="Fecha" style="text-align-last: center">
+                                        <h:outputText value="#{listGrav.graFHR}" >
+                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Digital">
+                                <p:dataTable id="datos2" value="#{controladorIndiceConsulta.listaRepertoriosDigi}" var="listaDig" 
+                                             scrollable="true" scrollHeight="300" style="text-align-last: center" sortBy="#{listaDig.repNumero.traNumero.traNumero} #{listaDig.rtdEstado}">
+                                    <p:column groupRow="true" headerText="Tramite" filterStyle="height:20px;text-transform: uppercase;"
+                                              filterBy="#{listaDig.repNumero.traNumero.traNumero}">
+                                        <h:outputText value="#{listaDig.repNumero.traNumero.traNumero}" />
+                                    </p:column>
+
+                                    <p:column  headerText="Nombre Archivo" style="width: 15%" filterStyle="text-transform: uppercase;" filterBy="#{listaDig.rtdNombreArchivo}" filterMatchMode="contains" >
+                                        <h:outputText value="#{listaDig.rtdNombreArchivo}" />
+                                    </p:column>                           
+
+                                    <p:column  headerText="Usuario">
+                                        <h:outputText value="#{listaDig.rtdUser}" />
+                                    </p:column>
+                                    <p:column  headerText="Fecha" >
+                                        <h:outputText  value="#{listaDig.rtdFHR}" >
+                                            <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column  headerText="Estado">
+                                        <h:outputText value="ACTIVO" style="color: green;font-weight: bold" rendered="#{listaDig.rtdEstado == 'A'}"/>
+                                        <h:outputText value="INACTIVO" style="color: black;font-weight: bold" rendered="#{listaDig.rtdEstado == 'I'}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Abrir" style="width: 7%;">
+                                        <h:commandLink title="Abrir PDF en un nuevo tab" action="#{controladorIndiceConsulta.abrirArchivo()}" target="_blank">
+                                            <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                                            <f:setPropertyActionListener value="#{listaDig}" target="#{controladorIndiceConsulta.repertorioDigitalSeleccionado}"/>
+                                        </h:commandLink>  
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>
+                             <p:tab title="Suspensiones">
+                                 <p:dataTable  sortFunction="#{listasus.tdtTtrDescripcion}" id="Suspensiones" value="#{controladorIndiceConsulta.listaSuspensiones}" var="listasus" 
+                                                     scrollable="true" scrollHeight="250" style="text-align-last: center">
+                                            <p:column headerText="N° Tramite" width="30">
+                                                <h:outputText value="#{listasus.traNumero.traNumero}" />
+                                            </p:column>
+
+                                            <p:column headerText="Fecha Entrega" style="width: 30px">
+                                                <h:outputText value="#{listasus.traNumero.traFechaEntrega.time}"  >
+                                                    <f:convertDateTime  pattern="dd/MM/yyyy"/>
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column  headerText="Ver" style="width: 30px;" >
+                                                <p:commandButton value="#{listasus.traNumero.traNumero}" update="@form ProVerForm" class="cyan-btn"  onclick="PF('ProDialogo').show();" action="#{controladorVerPRO.mostrar(listasus.traNumero.traNumero)}" icon="fa fa-external-link" title="Ver" style="background-position-y: 20px">
+
+                                                </p:commandButton>
+                                            </p:column>
+
+                                        </p:dataTable>
+                                    </p:tab>
+                            
+                        </p:tabView>
+                        <br/>
+                        <p:panel style="text-align-last: center" rendered="#{controladorIndiceConsulta.existenciaGravamen == 'A'}">
+                            <p:outputLabel value="PROPIEDAD CON GRAVAMENES" style="color: red;font-weight: bold;font-size: 60px" />
+                        </p:panel>
+
+                    </h:form>
+                </p:dialog>
+
+
+                <p:dialog header="Datos" widgetVar="dlgInfPropietario" modal="true" draggable="false" width="1000" position="center">
+                    <h:form id="formInfoPropietario">
+                        <p:panel header="Propietario">
+                            <p:panelGrid columns="4" 
+                                         columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" 
+                                         layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="Identificacion" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdentificacion}" readonly="true"/>
+                                <p:outputLabel value="Nombre" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perNombre}" readonly="true"/>
+                                <p:outputLabel value="Apellido Paterno" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perApellidoPaterno}" readonly="true"/>
+                                <p:outputLabel value="Apellido Materno" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perApellidoMaterno}" readonly="true"/>
+                            </p:panelGrid>
+                            <p:panelGrid columns="4" 
+                                         columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" 
+                                         layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="Teléfono" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perTelefono}" readonly="true"/>
+                                <p:outputLabel value="Celular" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perCelular}" readonly="true"/>
+                                <p:outputLabel value="E-mail" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perEmail}" readonly="true"/>
+                                <p:outputLabel value="Dirección" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perDireccion}" readonly="true"/>
+                            </p:panelGrid>
+
+                        </p:panel>
+
+                        <p:panel header="Conyugue" rendered="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdConyuge.perId != 0}">
+                            <p:panelGrid columns="4" 
+                                         columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" 
+                                         layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="Identificacion" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdConyuge.perIdentificacion}" readonly="true"/>
+                                <p:outputLabel value="Nombre" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdConyuge.perNombre}" readonly="true"/>
+                                <p:outputLabel value="Apellido Paterno" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdConyuge.perApellidoPaterno}" readonly="true"/>
+                                <p:outputLabel value="Apellido Materno" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdConyuge.perApellidoMaterno}" readonly="true"/>
+                            </p:panelGrid>
+                            <p:panelGrid columns="4" 
+                                         columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" 
+                                         layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                <p:outputLabel value="Teléfono" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdConyuge.perTelefono}" readonly="true"/>
+                                <p:outputLabel value="Celular" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdConyuge.perCelular}" readonly="true"/>
+                                <p:outputLabel value="E-mail" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdConyuge.perEmail}" readonly="true"/>
+                                <p:outputLabel value="Dirección" style="font-weight: bold"/>
+                                <p:inputText value="#{controladorIndiceConsulta.propietarioSeleccionado.perId.perIdConyuge.perDireccion}" readonly="true"/>
+                            </p:panelGrid>
+
+                        </p:panel>
+
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog header="Acta" dynamic="true" width="1000"
+                          widgetVar="dlgVistaActa" modal="true" draggable="false" >
+                    <h:form id="formVerActa">
+                        <p:panelGrid columns="2" 
+                                     columnClasses="ui-grid-col-10,ui-grid-col-3" 
+                                     layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                            <p:panel id="pnlActa">
+                                <p:scrollPanel mode="native" style="height:510px;" rendered="#{!empty controladorIndiceConsulta.actaSeleccionada}">
+                                    <p:textEditor widgetVar="editor1" value="#{controladorIndiceConsulta.actaSeleccionada.actActa}" 
+                                                  toolbarVisible="false"
+                                                  readonly="true"
+                                                  />
+                                </p:scrollPanel>
+                            </p:panel>
+                            <p:panel id="pnlMarginacionP" >
+
+                                <h:panelGrid columns="1"  id="pnlMarginacion">
+                                    <p:scrollPanel mode="native" style="height:320px"   rendered="#{!empty controladorIndiceConsulta.actaSeleccionada}">
+
+                                        <p:dataGrid  value="#{controladorIndiceConsulta.listaMarginacion}"  var="itemMar" columns="1"
+                                                     emptyMessage="No se encontráron marginaciones con esta acta"
+                                                     layout="grid">
+                                            <f:facet name="header">
+                                                <h:outputText value="Marginaciones"/>
+                                            </f:facet>
+                                            <h:panelGrid columns="2" >
+                                                <h:outputText value="Fecha: "/>
+                                                <h:outputText value="#{itemMar.mrgFHR}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                                </h:outputText>
+                                                <h:outputText value="Responsable: "/>
+                                                <h:outputText value="#{itemMar.mrgUser}"/>
+
+                                                <h:outputText value="Alterno: "/>
+                                                <h:outputText value="#{itemMar.mrgAlt1}" />
+
+                                                <h:outputText value="Repertorio: "/>
+                                                <h:outputText value="#{itemMar.mrgAlt2}"/>
+
+                                                <h:outputText value="Fecha: "/>
+                                                <h:outputText value="#{itemMar.mrgFch}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                </h:outputText>
+                                            </h:panelGrid>
+                                            <hr style="border-style: dotted"/>
+
+                                        </p:dataGrid>
+                                    </p:scrollPanel>
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog header="Razón" position="center center" width="600" height="520"
+                          widgetVar="dlgVistaRazon" modal="true" draggable="false" resizable="false">
+                    <h:form id="formVerRazon">
+
+                        <p:panel id="pnlActa">
+                            <p:scrollPanel mode="native" style="height:510px;" rendered="#{!empty controladorIndiceConsulta.razon}">
+                                <p:textEditor widgetVar="editor1" value="#{controladorIndiceConsulta.razon.razHtml}" 
+                                              toolbarVisible="false"
+                                              readonly="true"
+                                              />
+                            </p:scrollPanel>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog header="Certificado" dynamic="true" width="1000"
+                          widgetVar="dlgVistaCertificado" modal="true" draggable="false" >
+                    <h:form id="formVerCertificado">
+                        <p:panel id="pnlActa">
+                            <p:scrollPanel mode="native" style="height:510px" rendered="#{!empty controladorIndiceConsulta.certificadoSeleccionado}">
+                                <p:textEditor widgetVar="editor1" value="#{controladorIndiceConsulta.certificadoSeleccionado.cerCertificado}" 
+                                              toolbarVisible="false"
+                                              readonly="true"
+                                              />
+                            </p:scrollPanel>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog header="Información Propiedad" widgetVar="dlgInfoProp" width="700" resizable="false" draggable="false" modal="true">
+                    <h:form id="formInfoProp">
+                        <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-6,ui-grid-col-6" style="border: none" >
+                            <p:panel header="Datos De Identificación" >
+                                <p:panelGrid columns="2" columnClasses="ui-grid-col-4,ui-grid-col-8" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel for="txtMatricula" value="Matricula" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtMatricula" value="#{controladorIndiceConsulta.propiedadConsultada.prdMatricula}" readonly="true"/>
+                                    <p:outputLabel for="txtCatastro" value="Catastro" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtCatastro" value="#{controladorIndiceConsulta.propiedadConsultada.prdCatastro}" readonly="true"/>
+                                    <p:outputLabel for="txtPredio" value="Predio" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtPredio" value="#{controladorIndiceConsulta.propiedadConsultada.prdPredio}" readonly="true"/>
+                                    <p:outputLabel for="txtEspacial" value="Espacial" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtEspacial" value="#{controladorIndiceConsulta.propiedadConsultada.prdEspacial}" readonly="true"/>
+                                    <p:outputLabel for="txtParroquiaHistorica" value="Parroquia Historica" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtParroquiaHistorica" value="#{controladorIndiceConsulta.propiedadConsultada.prdTdtParNombreH}" readonly="true"/>
+                                    <p:outputLabel for="txtParroquiaActual" value="Parroquia Actual" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtParroquiaActual" value="#{controladorIndiceConsulta.propiedadConsultada.prdTdtParNombre}" readonly="true"/>
+                                    <p:outputLabel for="txtTipo"  value="Tipo" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtTipo" value="#{controladorIndiceConsulta.propiedadConsultada.tpdId.tpdNombre}" readonly="true"/>
+                                    <p:outputLabel for="txtClase" value="Clase" style="text-align-last: right;font-weight: bold"/>
+                                    <p:inputText id="txtClase" value="#{controladorIndiceConsulta.propiedadConsultada.tclId.tclNombre}" readonly="true"/>
+                                </p:panelGrid>
+                            </p:panel>
+
+                            <p:panel header="Datos Descriptivos" >
+                                <p:panelGrid columns="2" columnClasses="ui-grid-col-4,ui-grid-col-8" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                                    <p:outputLabel for="txtSuperficie"  value="Superficie" style="font-weight: bold"/>
+                                    <p:inputText id="txtSuperficie" value="#{controladorIndiceConsulta.propiedadConsultada.prdSuperficie} #{controladorIndiceConsulta.propiedadConsultada.umdId.umdNombre}" readonly="true"/>
+                                    <p:outputLabel for="txtDescripcion" value="Descripción" style="font-weight: bold"/>
+                                    <p:inputTextarea id="txtDescripcion" rows="7" value="#{controladorIndiceConsulta.propiedadConsultada.prdDescripcion2}" readonly="true"/>
+                                    <p:outputLabel value="Estado" style="font-weight: bold"/>
+                                    <p:inputText value="ACTIVO" style="color: blue;font-weight: bold" rendered="#{controladorIndiceConsulta.propiedadConsultada.prdEstadoPropiedad == 'AC'}" readonly="true"/>
+                                    <p:inputText value="ANULADO" style="color: blue;font-weight: bold" rendered="#{controladorIndiceConsulta.propiedadConsultada.prdEstadoPropiedad == 'AN'}" readonly="true"/>
+                                    <p:inputText value="PROHIBIDO" style="color: blue;font-weight: bold" rendered="#{controladorIndiceConsulta.propiedadConsultada.prdEstadoPropiedad == 'PR'}" readonly="true"/>
+                                    <p:inputText value="PROHIBICIÓN LEVANTADA" style="color: blue;font-weight: bold" rendered="#{controladorIndiceConsulta.propiedadConsultada.prdEstadoPropiedad == 'PL'}" readonly="true"/>
+                                </p:panelGrid><br/>
+                                <p:dataTable id="dtbLinderos" value="#{controladorIndiceConsulta.listaLinderos}" var="item">
+                                    <p:column headerText="Linderos">
+                                        <h:outputText value="#{item.ldrNombre}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+                
+                  <p:dialog id="ProDlg" header="Trámite - Proforma" widgetVar="ProDialogo" modal="true" resizable="false">
+            <p:scrollPanel style="height:600px">
+                <h:form id="ProVerForm">
+                    <h:panelGrid columns="1" style="max-width: 800px">
+                        <h:panelGrid columns="2" style="width: 100%">
+                            <h:panelGrid columns="2" cellpadding="10">
+                                <h:outputText value="N° Trámite:  "  style="font-weight: bold"/>
+                                <h:outputText value="#{controladorVerPRO.tramite.traNumero}" style="color: #b30000"/>
+                            </h:panelGrid>
+                            <h:commandLink action="#{controladorVerPRO.generarReporte()}" style="float: right">
+                                <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                            </h:commandLink>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Tipo ingreso"  style="font-weight: bold"/>
+                            <h:selectOneRadio id="TipoIngreso" value="#{controladorVerPRO.tramite.traTipo}" disabled="true">
+                                <f:selectItem itemLabel="Normal" itemValue="N"/>
+                                <f:selectItem itemLabel="Legal" itemValue="L"/>
+                                <f:selectItem itemLabel="Cancelaciones" itemValue="C" />
+                                <f:selectItem itemLabel="Organizaciones" itemValue="O" />                            
+                            </h:selectOneRadio>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <h:panelGrid columns="6" cellpadding="10">
+                            <h:outputText value="CI/RUC/Pas:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traPerIdentificacion}" style="color: #b30000"/>
+                            <h:outputText value="N° de Tramites:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traCantidadTramite}"/>
+                            <h:outputText value="Fecha Entrega:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traFechaEntrega.time}" style="color: #1A237E">
+                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                            </h:outputText>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <h:panelGrid id="pnlIngreso" columns="6" cellpadding="10">
+                            <h:outputText value="Apellido Paterno:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traPerApellidoPaterno}"/>
+                            <h:outputText value="Apellido Materno:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traPerApellidoMaterno}"/>
+                            <h:outputText value="Nombre:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traPerNombre}"/>
+                            <h:outputText value="Notaria:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traNotaria}"/>
+                            <h:outputText value="Juicio:  " style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerPRO.tramite.traJucio}"/>
+                        </h:panelGrid>
+                        <p:separator/>
+                        <h:outputText value="Comparecientes" style="font-weight: bold; font-size: 14px;"/>
+                        <p:dataTable id="ComparecientesLista" value="#{controladorVerPRO.tramiteDetalle}" var="itemCom">
+                            <p:column style="width: 100px;">
+                                <f:facet name="header">
+                                    <h:outputText value="CI/RUC/PAS" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCom.tdtPerIdentificacion}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="NOMBRES" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCom.tdtPerApellidoPaterno} #{itemCom.tdtPerApellidoMaterno} #{itemCom.tdtPerNombre}"/>
+                            </p:column>
+                            <p:column style="width: 150px;">
+                                <f:facet name="header">
+                                    <h:outputText value="CONTRATO" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCom.tdtTtrDescripcion}"/>
+                            </p:column>
+                            <p:column style="width: 150px;">
+                                <f:facet name="header">
+                                    <h:outputText value="COMPARECIENTES" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCom.tdtTpcDescripcion}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:separator/>
+                        <h:outputText value="Cuantía" style="font-weight: bold; font-size: 14px;"/>
+                        <p:dataTable id="CuantiaLista" value="#{controladorVerPRO.tramiteValor}" var="itemCua">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Contrato" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.ttrId.ttrDescripcion}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Parroquia" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.trvParNombre}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="N° Predio" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.traNumPredio}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="N° Catastro" style="float:left"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.trvNumCatastro}" style="float:left"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Valor"/>
+                                </f:facet>
+                                <h:outputText value="#{itemCua.trvValor}" style="float:left"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:form>
+            </p:scrollPanel>
+        </p:dialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

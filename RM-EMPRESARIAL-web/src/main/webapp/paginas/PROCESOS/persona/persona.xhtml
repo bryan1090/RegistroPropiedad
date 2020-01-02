@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog header="Crear Persona" modal="true" widgetVar="dlgNuevaPersona" minHeight="40" position="center center" onShow="PF('dlgNuevaPersona').initPosition()">
+            <h:form id="CrearPersonaForm">
+                <p:growl id="growl" showDetail="true" sticky="false" life="4000"/> 
+                <p:outputPanel id="plNuevaPersona" style="text-align:left;">
+
+                    <h:panelGrid columns="4">
+
+                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perIdentificacion}" for="perIdentificacion" style="font-weight: bold"/>
+                        <p:inputText maxlength="10"  id="perIdentificacion" value="#{controladorCrearPersona.persona.perIdentificacion}" title="#{bundle.CreatePersonaTitle_perIdentificacion}" 
+                                     rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'C' or controladorCrearPersona.persona.perTipoIdentificacion eq 'N'}"
+                                     required="true" requiredMessage="Ingrese la identificación"> 
+                            <p:ajax event="change" listener="#{controladorCrearPersona.traer()}" update="@form growl"/>
+                        </p:inputText>
+                        <p:inputText maxlength="13"  id="perIdentificacion1" value="#{controladorCrearPersona.persona.perIdentificacion}" title="#{bundle.CreatePersonaTitle_perIdentificacion}" 
+                                     rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'R' or controladorCrearPersona.persona.perTipoIdentificacion eq 'P'}"
+                                     required="true" requiredMessage="Ingrese la identificación" > 
+                            <p:ajax event="change" listener="#{controladorCrearPersona.traer()}" update="@form growl"/>
+                        </p:inputText>
+                        <p:outputLabel value="Tipo Identificación" for="perTipoIdentificacion" style="font-weight: bold"/>
+
+                        <p:selectOneMenu id="perTipoIdentificacion" value="#{controladorCrearPersona.persona.perTipoIdentificacion}" style="width:125px">
+                            <p:ajax process="@this" update="plNuevaPersona"></p:ajax>
+                            <f:selectItem itemLabel="CEDULA" itemValue="C" />
+                            <f:selectItem itemLabel="RUC" itemValue="R" />
+                            <f:selectItem itemLabel="PASAPORTE" itemValue="P" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Apellido Paterno" for="perApellidoPaterno" rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'N'}" style="font-weight: bold"/>
+                        <p:outputLabel value="Apellido Paterno" for="perApellidoPaterno" rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'C'}" style="font-weight: bold"/>
+                        <p:outputLabel value="Apellido Paterno" for="perApellidoPaterno" rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'P'}" style="font-weight: bold"/>
+                        <p:outputLabel value="Nombre Comercial" for="perApellidoPaterno" rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'R'}" style="font-weight: bold"/>
+
+                        <p:inputText style="text-transform:uppercase;" id="perApellidoPaterno"
+                                     validatorMessage="Ingrese solo letras en el apellido paterno"
+                                     value="#{controladorCrearPersona.persona.perApellidoPaterno}" 
+                                     title="#{bundle.CreatePersonaTitle_perApellidoPaterno}"
+                                     required="#{controladorCrearPersona.persona.perTipoIdentificacion ne 'R'}"  requiredMessage="Ingrese el apellido paterno"
+                                     >
+                            <f:validateRegex 
+                                             pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/> 
+                        </p:inputText>
+                        
+                        
+                        <p:outputLabel value="Apellido Materno" for="perApellidoMaterno" style="font-weight: bold"/>
+                        <p:inputText style="text-transform:uppercase;" id="perApellidoMaterno" validatorMessage="Ingrese solo letras en el apellido materno" value="#{controladorCrearPersona.persona.perApellidoMaterno}" title="#{bundle.CreatePersonaTitle_perApellidoMaterno}">
+                            <f:validateRegex  pattern="^[a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/> 
+                        </p:inputText>
+
+                        <p:outputLabel value="Nombres" for="perNombre" rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'N'}" style="font-weight: bold"/>
+                        <p:outputLabel value="Nombres" for="perNombre" rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'C'}" style="font-weight: bold"/>
+                        <p:outputLabel value="Nombres" for="perNombre" rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'P'}" style="font-weight: bold"/>
+                        <p:outputLabel value="Razón Social" for="perNombre" rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'R'}" style="font-weight: bold"/>
+                        <p:inputText required="true"  style="text-transform:uppercase;" id="perNombre" value="#{controladorCrearPersona.persona.perNombre}" title="#{bundle.CreatePersonaTitle_perNombre}" requiredMessage="Ingrese el nombre">
+                        </p:inputText>
+
+                        <p:outputLabel value="Teléfono" for="txtTelefono1" style="font-weight: bold"/>
+                        <p:inputMask  mask="999999999"   id="txtTelefono1" value="#{controladorCrearPersona.persona.perTelefono}" ></p:inputMask>                     
+
+                        <p:outputLabel value="Correo Electrónico" for="txtCorreo" style="font-weight: bold"/>
+                        <p:inputText  size="50"  id="txtCorreo" value="#{controladorCrearPersona.persona.perEmail}" validatorMessage="El email es incorrecto">
+                            <f:validateRegex  pattern="^((\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)|(\s*))$"/>
+                        </p:inputText>
+
+                        <p:outputLabel value="Celular" for="txtCelular1" style="font-weight: bold"/>
+                        <p:inputMask  mask="9999999999"  id="txtCelular1" value="#{controladorCrearPersona.persona.perCelular}" ></p:inputMask>
+
+                        <p:outputLabel value="Dirección" for="txtDireccion1" style="font-weight: bold"/>
+                        <p:inputText  size="50" id="txtDireccion1" value="#{controladorCrearPersona.persona.perDireccion}" style="text-transform: uppercase"/>
+
+                        <p:outputLabel value="Estado Civil" style="font-weight: bold"/>
+                        <p:selectOneMenu id="car" value="#{controladorCrearPersona.persona.perEstadoCivil}">
+                            <f:selectItem itemLabel="Selecciona Uno" itemValue="" />
+                            <f:selectItem itemLabel="SOLTERO/A" itemValue="S" />
+                            <f:selectItem itemLabel="CASADO/A" itemValue="C" />
+                            <f:selectItem itemLabel="VIUDO/A" itemValue="V" />
+                            <f:selectItem itemLabel="DIVORCIADO/A" itemValue="D" />
+                            <f:selectItem itemLabel="UNION DE HECHO" itemValue="UH" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Disolución Conyugal" style="font-weight: bold"
+                                       rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'P' or controladorCrearPersona.persona.perTipoIdentificacion eq 'C'}"/>                       
+                         <p:selectBooleanCheckbox 
+                             rendered="#{controladorCrearPersona.persona.perTipoIdentificacion eq 'P' or controladorCrearPersona.persona.perTipoIdentificacion eq 'C'}"
+                             value="#{controladorCrearPersona.disolucionConyugal}"/>
+
+                    </h:panelGrid>
+                    <div align="center">
+                        <p:commandButton value="Guardar" icon="fa fa-save" class="green-btn" update="plNuevaPersona growl"  action="#{controladorCrearPersona.crearPersona()}"/><!--oncomplete="handleSubmit(args,'dlgNuevaPersona');"-->
+                        <p:commandButton value="Refrescar" class="cyan-btn"  icon="fa fa-refresh" action="#{controladorCrearPersona.limpiar()}" process="@this" update="plNuevaPersona" immediate="true"/>
+                        <p:commandButton class="blue-btn" process="@this" update="plNuevaPersona" immediate="true" action="#{controladorCrearPersona.limpiar()}" icon="fa fa-close" value="Salir" onclick="PF('dlgNuevaPersona').hide()"/>
+                    </div>
+
+                </p:outputPanel>
+            </h:form>
+        </p:dialog> 
+    </ui:composition>
+</html>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Índices"/>
+        </ui:define>
+
+        <ui:define name="content" >
+<script type="text/javascript">
+    
+     </script>
+
+            <h:form id="form" enctype="multipart/form-data" style="font-size: 10px">
+                <f:passThroughAttribute name="autocomplete" value="off"/>
+                <p:panel id="pnlPrincipal" header="Consulta de Índices"  >
+                    <h:panelGrid id="pnlIngreso">
+                        <h:panelGrid columns="5">
+                            <h:panelGrid columns="1">
+                                <p:outputLabel for="txtCedula" value="Cedula " style="font-weight: bold"/>
+                                <p:inputText id="txtCedula"   style="text-transform:uppercase" value="#{indicesController.indice.indCedula}" />   
+                            </h:panelGrid>
+                            <h:panelGrid columns="1">
+                                <p:outputLabel for="txtApellidoPaterno" value="Ap. Paterno " style="font-weight: bold"/>
+                                <p:inputText id="txtApellidoPaterno"  style="text-transform:uppercase" converter="upper" value="#{indicesController.indice.indApellidop1}"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="1">
+                                <p:outputLabel for="txtApellidoMaterno"   value="Ap. Materno " style="font-weight: bold"/>
+                                <p:inputText id="txtApellidoMaterno" style="text-transform:uppercase" converter="upper" value="#{indicesController.indice.indApellidom1}"/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="1">
+                                <p:outputLabel for="txtNombres"   value="Nombres " style="font-weight: bold"/>
+                                <p:inputText id="txtNombres" style="text-transform:uppercase" converter="upper"  value="#{indicesController.indice.indNombres1}"/>
+                            </h:panelGrid>
+                                <p:messages  id="messages"  style="font-size: 20px;text-transform: uppercase;;"  showDetail="true" closable="true">
+                                    <p:autoUpdate />
+                                </p:messages>
+<!--                                <h:outputText style="font-size: 28px;text-transform: uppercase;color: #eb2521"  value="#{indicesController.seleccionado.indLibro}"/>-->
+
+                        </h:panelGrid>
+                        <h:panelGroup>
+                            <p:commandButton icon="fa fa-search" class="green-btn" update="@form" process="@this txtCedula txtApellidoPaterno txtApellidoMaterno txtNombres"  actionListener="#{indicesController.buscar()}" value="Buscar" />
+                            <p:spacer width="20"/>
+                            <p:outputLabel for="@next" value=" Personas Naturales " />
+                            <p:selectBooleanCheckbox value="#" />
+                            <p:outputLabel for="@next" value=" Personas Jurídicas " />
+                            <p:selectBooleanCheckbox value="#"/>
+                            <p:spacer width="20"/>
+                            <p:outputLabel value="Inicio " for="txtFechaInicio" />
+                            <p:calendar id="txtFechaInicio" pattern="dd/MM/yyyy" value="#{indicesController.fechaInicio}"/>
+                            <p:outputLabel value="Fin " for="txtFechaFin" />
+                            <p:calendar id="txtFechaFin" pattern="dd/MM/yyyy" value="#{indicesController.fechaFin}"/>
+
+
+                        </h:panelGroup>
+
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="4">
+                        <p:commandButton icon="fa fa-book" actionListener="#" value="Inscripciones" />
+                        <p:commandButton icon="fa fa-ban" actionListener="#" value="Prohibición" />
+                        <p:commandButton  class="cyan-btn" process="@this" icon="fa fa-refresh" actionListener="#{indicesController.limpiar()}" update="@form" value="Refrescar" />
+                        <p:commandButton class="red-btn"  icon="fa fa-sign-out" process="@this" actionListener="#{indicesController.salir()}" value="Salir"  update="@form"  /> 
+
+                    </h:panelGrid> 
+
+
+
+                    <p:dataTable id="datos" value="#{indicesController.listaIndices}" var="item" selectionMode="single" selection="#{indicesController.seleccionado}" rowKey="#{item.indicesPK}" 
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,20" scrollable="true" scrollHeight="130" resizableColumns="true" paginatorPosition="bottom"  >
+                        <p:ajax event="rowSelect" listener="#{indicesController.seleccionar()}" update="@form"/>
+                        <p:column headerText="Apellido Paterno" sortBy="#{item.indApellidop1}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.indApellidop1}" filterMatchMode="contains" >
+                            <h:outputText value="#{item.indApellidop1}" />
+                        </p:column>
+
+                        <p:column headerText="Apellido Materno" sortBy="#{item.indApellidom1}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.indApellidom1}" filterMatchMode="contains">
+                            <h:outputText value="#{item.indApellidom1}" />
+                        </p:column>
+
+                        <p:column headerText="Nombres" style="word-wrap: normal;" sortBy="#{item.indNombres1}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.indNombres1}" filterMatchMode="contains">
+                            <h:outputText value="#{item.indNombres1}" />
+                        </p:column>
+
+                        <p:column headerText="Cédula" sortBy="#{item.indCedula}" filterBy="#{item.indCedula}" filterStyle="height:20px" filterMatchMode="contains">
+                            <h:outputText value="#{item.indCedula}" />
+                        </p:column>
+                    </p:dataTable>
+
+
+
+
+
+
+
+                    <h:panelGrid id="pnlInfo" columns="4">
+                        <p:outputLabel for="txtContrato" value="Contrato " style="font-weight: bold"/>
+                        <h:inputText id="txtContrato" disabled="true" value="#{indicesController.seleccionado.indContrato}"/>  
+                        <p:outputLabel for="txtFechaInscripcion" value="Fecha inscrip. " style="font-weight: bold"/>
+                        <h:inputText id="txtFechaInscripcion" disabled="true" value="#{indicesController.seleccionado.indFecha}"/> 
+                        <p:outputLabel for="txtFojas" value="Fojas " style="font-weight: bold"/>
+                        <h:inputText id="txtFojas" disabled="true" value="#{indicesController.seleccionado.indFojas}"/> 
+                        <p:outputLabel for="txtTomo" value="Tomo " style="font-weight: bold"/>
+                        <h:inputText id="txtTomo" disabled="true" value="#{indicesController.seleccionado.indTomo}"/> 
+                        <p:outputLabel for="txtLibro" value="Libro  " style="font-weight: bold"/>
+                        <h:inputText id="txtLibro" disabled="true" value="#{indicesController.seleccionado.indLibro}"/> 
+
+                        <p:outputLabel for="txtParroquia" value="Parroquia " style="font-weight: bold"/>
+                        <h:inputText id="txtParroquia" disabled="true" value="#{indicesController.seleccionado.indParroquia}"/>  
+                        <p:outputLabel for="txtCuantia" value="Cuantía  " style="font-weight: bold"/>
+                        <h:inputText id="txtCuantia" disabled="true" value="#{indicesController.seleccionado.indCuantia}"/> 
+                        <p:outputLabel for="txtInscripcion" value="Inscripción  " style="font-weight: bold"/>
+                        <h:inputText id="txtInscripcion" disabled="true" value="#{indicesController.seleccionado.indInscripcion}"/> 
+                        <p:outputLabel for="txtRepertorio" value="Repertorio:  " style="font-weight: bold"/>
+                        <h:inputText id="txtRepertorio" disabled="true" value="#{indicesController.seleccionado.indRepertorio}"/> 
+                        <p:outputLabel for="txtVolumen" value="Volumen   " style="font-weight: bold"/>
+                        <h:inputText id="txtVolumen" disabled="true" value="#{indicesController.seleccionado.indVolumen}"/>
+
+
+
+
+                    </h:panelGrid>
+
+
+
+
+
+                </p:panel>
+
+
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

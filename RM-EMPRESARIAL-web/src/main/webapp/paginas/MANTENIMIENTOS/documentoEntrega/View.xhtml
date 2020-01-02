@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentoEntregaViewDlg" widgetVar="DocumentoEntregaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewDocumentoEntregaTitle}">
+            <h:form id="DocumentoEntregaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorDocumentoEntrega.selected != null}">
+                        <h:outputText value="#{bundle.ViewDocumentoEntregaLabel_dteDescripcion}"/>
+                        <h:outputText value="#{controladorDocumentoEntrega.selected.dteDescripcion}" title="#{bundle.ViewDocumentoEntregaTitle_dteDescripcion}"/>
+                        <h:outputText value="#{bundle.ViewDocumentoEntregaLabel_dteEstado}"/>
+                        <h:outputText value="#{controladorDocumentoEntrega.selected.dteEstado}" title="#{bundle.ViewDocumentoEntregaTitle_dteEstado}"/>
+                        <h:outputText value="#{bundle.ViewDocumentoEntregaLabel_dteUser}"/>
+                        <h:outputText value="#{controladorDocumentoEntrega.selected.dteUser}" title="#{bundle.ViewDocumentoEntregaTitle_dteUser}"/>
+                        <h:outputText value="#{bundle.ViewDocumentoEntregaLabel_dteFHR}"/>
+                        <h:outputText value="#{controladorDocumentoEntrega.selected.dteFHR}" title="#{bundle.ViewDocumentoEntregaTitle_dteFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" actionListener="#{controladorDocumentoEntrega.clear()}" icon="fa fa-close" value="#{bundle.Close}" onclick="DocumentoEntregaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Impresión Certificados"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+
+            <h:form id="frmImpCert">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <p:panel header="Impresión Certificados">
+                            <p:panel>
+                                <h:panelGrid columns="2" style="width: 100%">
+                                    <h:form id="busqueda">
+                                        <p:growl id="growl" showDetail="false" sticky="true"/> 
+                                        <h:panelGrid columns="3" style="width: 100%">
+                                            <h:panelGroup>
+                                                <h:panelGrid columns="2" cellspacing="10">
+                                                    <div style="width: 90px">
+                                                        Fecha: 
+                                                    </div>
+                                                    <p:calendar value="#{controladorImpresionCertificadosUsuario.cerFHR}" pattern="dd/MM/yyyy"/>
+                                                </h:panelGrid>
+                                            </h:panelGroup>
+                                            
+                                            <p:commandButton value="Buscar" class="green-btn" actionListener="#{controladorImpresionCertificadosUsuario.buscarPorFecha()}" 
+                                                     icon="fa fa-search" process="busqueda" update=":frmImpCert:dtCertCarg growl :frmImpCert:imprimirCer" style="float: right"/>
+                                        </h:panelGrid>
+                                    </h:form>
+                                    <p:commandButton id="imprimirCer" action="#{controladorImpresionCertificadosUsuario.buscarCertificadosYcrearPDF()}" 
+                                                     icon="fa fa-print" class="cyan-btn" value="Imprimir" disabled="#{empty controladorImpresionCertificadosUsuario.listaCertificadoCarga or controladorImpresionCertificadosUsuario.btnDisablePorFecha}"
+                                                     update=":frmMostrarReimpCertificadosPdf :frmImpCert:dtCertCarg" oncomplete="PF('dlgMostrarReimpCertificadosPDF').show();"/>
+                                </h:panelGrid>
+                            </p:panel><br/>
+                            <p:dataTable id="dtCertCarg" value="#{controladorImpresionCertificadosUsuario.listaCertificadoCarga}" var="item">
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Certificado" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.cdcCertificado}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N. Factura" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.facId.facNumero}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="N. Caja" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.facId.cajId.cajNombre}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha" style="float: left"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.cdcFHR}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                    </div>
+                </div>
+            </h:form>
+
+            <p:dialog widgetVar="dlgMostrarReimpCertificadosPDF" modal="true" resizable="true" width="80%">
+                <h:form id="frmMostrarReimpCertificadosPdf">
+                    <p:media value="#{controladorImpresionCertificadosUsuario.url}" 
+                             rendered="#{!empty controladorImpresionCertificadosUsuario.url}"
+                             width="100%" height="550px"
+                             />
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+
+</html>
+

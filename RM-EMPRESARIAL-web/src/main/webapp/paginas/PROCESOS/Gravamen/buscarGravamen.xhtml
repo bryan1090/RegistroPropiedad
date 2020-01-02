@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Buscar Gravamen"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="formBuscarGravamen">
+                <p:growl id="growl" showDetail="true" sticky="false" life="3000"/>
+
+                <p:panel header="Buscar Gravamen" >
+
+                    <p:panel>
+                        <h:panelGrid columns="6" style="text-align: center;width: 100%">
+
+                            <p:outputLabel for="numPredio" value="Predio"/>
+                            <p:inputText id="numPredio" required="true" value="#{controladorBuscarGravamen.numeroPredio}" requiredMessage="Ingrese el número de Predio"/> 
+
+                            <p:outputLabel for="numCatastro" value="Catastro"/>
+                            <p:inputText id="numCatastro" required="true" value="#{controladorBuscarGravamen.numeroCatastro}" requiredMessage="Ingrese el número de Catastro"/> 
+
+
+
+                            <p:commandButton actionListener="#{controladorBuscarGravamen.buscarGravamen()}"  
+                                             value="Buscar Gravamen" update="growl formBuscarGravamen" process="@form"
+                                             class="green-btn" style="margin-right:20px;" icon="fa fa-search" title="Buscar Gravamen" 
+                                             />
+                        </h:panelGrid>
+                    </p:panel>
+                    <br/>                  
+
+                    <h:panelGrid id="panelRep"> 
+                        <p:commandButton actionListener="#{controladorBuscarGravamen.cancelarGravamenes()}"  
+                                         value="Procesar" update="growl formBuscarGravamen" 
+                                         class="green-btn" style="margin-right:20px;" icon="fa fa-angle-double-right" title="Cancelar Gravamenes Seleccionados" 
+                                         />
+                        <p:dataTable id="tblGravamen" value="#{controladorBuscarGravamen.listaGravamen}"
+                                     var="gravamen" selection="#{controladorBuscarGravamen.listaGravamenesSeleccionados}" 
+                                     rowKey="#{gravamen.graId}" style="width: 900px"> 
+                            <f:facet name="header">
+                                Gravámenes
+                            </f:facet>
+
+                            <p:column headerText="Repertorio" width="20%">
+                                <h:outputText value="#{gravamen.repNumero.repNumero}" />
+                            </p:column>
+
+                            <p:column headerText="Descripción" width="40%">
+                                <h:outputText value="#{gravamen.graDescripcion}" />
+                            </p:column>
+
+                            <p:column headerText="Fecha" width="20%">
+                                <h:outputText value="#{gravamen.graFHR}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy " />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center" 
+                                      rendered="#{!gravamen.existeDetalleGrav}"/>  
+                            <p:column >
+                                <p:commandButton icon="fa fa-plus" class="cyan-btn" title="Detalles de Gravamen"
+                                                 oncomplete="PF('dlgGravDetalle').show()"
+                                                 update="formGravDetalle" rendered="#{gravamen.existeDetalleGrav}"                                                                     
+                                                 action="#{controladorBuscarGravamen.mostrarGravamenDetalle(gravamen)}"
+                                                 disabled="#{!gravamen.existeDetalleGrav}">
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </h:panelGrid>
+
+                </p:panel>
+
+
+            </h:form>
+
+            <p:dialog id="dlgFormGravDetalle" widgetVar="dlgGravDetalle" modal="true" width="650"
+                      onShow="PF('dlgGravDetalle').initPosition()" header="Detalle Gravamen" >
+                <h:form id="formGravDetalle">
+                    <h:panelGroup>
+                        <h:panelGrid>
+                            <p:dataTable id="tblGravDetalles"  scrollable="true" scrollHeight="150"
+                                         value="#{controladorBuscarGravamen.listaGravamenDetalle}"
+                                         var="gravDet" sortBy="#{gravDet.graId.graId}" rowKey="#{gravDet.gvdId}"
+                                         selection="#{controladorBuscarGravamen.listaGravDetalleSeleccionados}" >
+
+                                <p:column headerText="Nro. Matrícula" style="text-align: center;width: 50px">
+                                    <h:outputText value="#{gravDet.graId.prdMatricula.prdMatricula}" />
+                                </p:column>
+                                <p:column headerText="Persona" style="text-align: center;width:150px">
+                                    <h:outputText value="#{gravDet.perId.perNombre.trim()} #{gravDet.perId.perApellidoPaterno.trim()} #{gravDet.perId.perApellidoMaterno.trim()}" />
+                                </p:column>
+                                <p:column headerText="Valor (%)" style="text-align: center;width:40px">
+                                    <h:outputText value="#{gravDet.gvdPorcentaje}" />
+                                </p:column>                                                                     
+                                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+                            </p:dataTable>
+                        </h:panelGrid>
+                        <p:commandButton  
+                            process="@this formGravDetalle"
+                            action="#{controladorBuscarGravamen.agregarListaGravSeleccionado()}"
+                            class="green-btn" value="Aceptar"
+                            style="margin-right:20px;"
+                            title="Aceptar" onclick="PF('dlgGravDetalle').hide()"
+                            />
+
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CalendarioEditDlg" widgetVar="CalendarioEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditCalendarioTitle}">
+            <h:form id="CalendarioEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{calendarioController.selected != null}">
+
+                        <p:outputLabel value="#{bundle.EditCalendarioLabel_cldAnio}" for="cldAnio" />
+                        <p:inputText id="cldAnio" value="#{calendarioController.selected.cldAnio}" title="#{bundle.EditCalendarioTitle_cldAnio}" required="true" requiredMessage="#{bundle.EditCalendarioRequiredMessage_cldAnio}"/>
+                        <p:outputLabel value="#{bundle.EditCalendarioLabel_cldMes}" for="cldMes" />
+                        <p:inputText id="cldMes" value="#{calendarioController.selected.cldMes}" title="#{bundle.EditCalendarioTitle_cldMes}" required="true" requiredMessage="#{bundle.EditCalendarioRequiredMessage_cldMes}"/>
+                        <p:outputLabel value="#{bundle.EditCalendarioLabel_cldDia}" for="cldDia" />
+                        <p:inputText id="cldDia" value="#{calendarioController.selected.cldDia}" title="#{bundle.EditCalendarioTitle_cldDia}" required="true" requiredMessage="#{bundle.EditCalendarioRequiredMessage_cldDia}"/>
+                        <p:outputLabel value="#{bundle.EditCalendarioLabel_cldFecha}" for="cldFecha" />
+                        <p:calendar id="cldFecha" pattern="dd/MM/yyyy HH:mm:ss" value="#{calendarioController.selected.cldFecha}" title="#{bundle.EditCalendarioTitle_cldFecha}" required="true" requiredMessage="#{bundle.EditCalendarioRequiredMessage_cldFecha}" showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditCalendarioLabel_cldFestivo}" for="cldFestivo" />
+                        <p:selectBooleanCheckbox id="cldFestivo" value="#{calendarioController.diaFestivo}" title="#{bundle.EditCalendarioTitle_cldFestivo}" required="true" requiredMessage="#{bundle.EditCalendarioRequiredMessage_cldFestivo}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{calendarioController.update}" value="#{bundle.Save}" update="display,:CalendarioListForm:datalist,:growl" oncomplete="handleSubmit(args, 'CalendarioEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}" immediate="true" onclick="CalendarioEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

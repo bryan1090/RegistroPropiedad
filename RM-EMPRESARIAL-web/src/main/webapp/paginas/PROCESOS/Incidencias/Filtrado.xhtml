@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="dlgFiltradoPersona" widgetVar="dlgFiltradoPersona" position="center center" resizable="false" draggable="false" modal="true"
+                  width="700">
+            <h:form>
+                <p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-12,ui-grid-col-2,ui-grid-col-12,ui-grid-col-1,ui-grid-col-12,ui-grid-col-1"
+                             layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+                    <p:outputLabel for="@next" value="Apellido Paterno"/>
+                    <p:inputText id="txtApellidoPaterno" value="#{controladorIncidenciaUsuario.apellidoPaterno}" style="text-transform: uppercase"/>
+                    <p:outputLabel for="@next" value="Apellido Materno"/>
+                    <p:inputText id="txtApellidoMaterno" value="#{controladorIncidenciaUsuario.apellidoMaterno}" style="text-transform: uppercase"/>
+                    <p:outputLabel for="@next" value="Nombre"/>
+                    <p:inputText id="txtNombre" value="#{controladorIncidenciaUsuario.nombre}" style="text-transform: uppercase"/>
+                    <p:commandButton id="btnBuscarPersonadlg" class="green-btn" icon="fa fa-search" action="#{controladorIncidenciaUsuario.filtrarPersona()}" update="tblPersonasFiltradas"/>
+                </p:panelGrid>
+
+                <p:dataTable id="tblPersonasFiltradas" value="#{controladorIncidenciaUsuario.listaPersonasFiltradas}" var="listPersonas"
+                             scrollable="true" scrollHeight="400" emptyMessage="No Se Encontró Ninguna Persona "
+                             selectionMode="single" selection="#{controladorIncidenciaUsuario.personaEncontrada}" rowKey="#{listPersonas.perId}">
+                    <p:ajax event="rowSelect" listener="#{controladorIncidenciaUsuario.encontrarPersona()}" onsuccess="PF('dlgFiltradoPersona').hide()" update="@form :formIncidencia"/>
+                    <p:column headerText="Identificación" filterBy="#{listPersonas.perIdentificacion}" sortBy="#{listPersonas.perIdentificacion}">
+                        <h:outputText value="#{listPersonas.perIdentificacion}" />
+                    </p:column>
+
+                    <p:column headerText="Apellido Paterno" filterBy="#{listPersonas.perApellidoPaterno}" sortBy="#{listPersonas.perApellidoPaterno}">
+                        <h:outputText value="#{listPersonas.perApellidoPaterno}" />
+                    </p:column>
+
+                    <p:column headerText="Apellido Materno" filterBy="#{listPersonas.perApellidoMaterno}" sortBy="#{listPersonas.perApellidoMaterno}">
+                        <h:outputText value="#{listPersonas.perApellidoMaterno}" />
+                    </p:column>
+
+                    <p:column headerText="Nombre" filterBy="#{listPersonas.perNombre}" sortBy="#{listPersonas.perNombre}">
+                        <h:outputText value="#{listPersonas.perNombre}" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+
+</html>

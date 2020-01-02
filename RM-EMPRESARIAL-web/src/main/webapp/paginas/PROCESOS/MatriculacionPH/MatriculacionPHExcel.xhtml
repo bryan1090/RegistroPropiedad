@@ -1,0 +1,919 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <script type="text/javascript">
+            //<![CDATA[
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+            //]]>
+        </script>    
+
+        <ui:define name="title">
+            <h:outputText value="Declaratoria PH" />
+        </ui:define>
+
+        <ui:define name="content" >
+
+
+            <!--<h:form id="FormDeclaratoriaPH" enctype="multipart/form-data">-->
+
+            <p:panel id="pnlAsigMatr" header="Matriculación PH" >
+                <ui:include src="../MatriculacionPH/preMatriculacionExcel.xhtml"/>
+
+
+                <br/>
+
+
+                <p:panel id="pnlAcciones" header="DECLARATORIA" rendered="#{controladorTmpAlicuota.renderedPanelDeclaratoria}">
+                    <p:tabView activeIndex="#{controladorTmpAlicuota.indiceTab}" id="tabView">
+                        <p:tab id="formNuevasMatriculas" title="Matriculación" disabled="#{!controladorTmpAlicuota.disabledTab}">
+                            <h:form id="formNuevasMatricExc">
+                                <div align="right">                                     
+                                    <p:commandButton class="green-btn" icon="fa fa-save" 
+                                                     action="#{controladorTmpAlicuota.guardarPropiedad()}" 
+                                                     process="@form" update="growl @form :formMatriculacion2 :pnlAcciones"
+                                                     value="Guardar"/>
+                                </div>
+
+                                <div class="ui-g">
+                                    <div class="ui-g-6">
+
+                                        <p:panel header="Datos De Identificación" >
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtMatricula" value="Matricula" style="text-align: right"/>
+
+                                                <h:panelGrid columns="2" cellspacing="0" border="0" >
+                                                    <p:inputText id="txtMatricula" size="55" readonly="true" style="width: 250px" value="#{controladorTmpAlicuota.matricula}"/>
+
+                                                </h:panelGrid>
+                                                <p:outputLabel for="txtNumero" value="Número/Nombre" style="text-align: right"/> 
+                                                <p:inputText id="txtNumero" style="width: 250px" 
+                                                             required="true" requiredMessage="Ingrese el número"
+                                                             value="#{controladorTmpAlicuota.propiedadNueva.prdUnidadVivienda}" size="55"
+                                                             readonly="false"/>            
+                                                <p:outputLabel for="txtCatastro" value="Catastro" style="text-align: right"/>
+                                                <p:inputText id="txtCatastro" style="width: 250px" value="#{controladorTmpAlicuota.propiedadNueva.prdCatastro}" size="55"
+                                                             readonly="true"/>
+                                                <p:outputLabel for="txtPredio" value="Predio" style="text-align: right"/>
+                                                <p:inputText id="txtPredio" style="width: 250px" value="#{controladorTmpAlicuota.propiedadNueva.prdPredio}" size="55"
+                                                             readonly="true"/>
+                                                <p:outputLabel for="txtEspacial" value="Espacial" style="text-align: right" />                                               
+
+                                                <h:panelGrid columns="2" cellspacing="5">
+                                                    <p:commandButton class="orange-btn" icon="fa fa-search" onsuccess="PF('dlgMap').show()" action="#{controladorTmpAlicuota.verificarPosicion()}"
+                                                                     process="@this txtEspacial" update=":formMapa:gmap"/>
+                                                    <p:inputText id="txtEspacial" style="width: 250px" size="45" value="#{controladorTmpAlicuota.propiedadNueva.prdEspacial}"
+                                                                 readonly="true"/>
+                                                </h:panelGrid>
+
+
+
+
+
+                                                <p:outputLabel for="txtParroquiaHistorica" value="Parroquia Historica" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaHistorica" required="true" style="width: 250px" value="#{controladorTmpAlicuota.propiedadNueva.prdTdtParIdH}" 
+                                                                 filter="true" disabled="true">
+                                                    <p:ajax event="change" update="txtParroquiaActual txtDescripcion" listener="#{controladorTmpAlicuota.seleccionarParroquiaHistorica()}"/>
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaParroquia}" var="parroquia" itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>
+                                                </p:selectOneMenu>                                               
+
+
+                                                <p:outputLabel for="txtParroquiaActual" value="Parroquia Actual" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaActual" required="true" style="width: 250px" 
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.prdTdtParId}"
+                                                                 disabled="false">
+                                                    <p:ajax event="change" listener="#{controladorTmpAlicuota.seleccionarParroquiaActual()}"/>
+                                                    <p:ajax event="change" update="txtDescripcion txtParroquiaHistorica" process="@this txtNumero" listener="#{controladorTmpAlicuota.llenarDescripcion2()}"/>
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaParroquia}" var="parroquia"
+                                                                   itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>                                            
+                                                </p:selectOneMenu>
+
+
+                                                <p:outputLabel for="txtTipo"  value="Tipo" style="text-align: right" />
+                                                <p:selectOneMenu id="txtTipo" required="true" style="width: 250px" 
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.tpdId}" >
+                                                    <p:ajax event="change" update="txtDescripcion" process="@this txtNumero" listener="#{controladorTmpAlicuota.llenarDescripcion2()}"/>                                                    
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaTipoPropiedad}" var="tipoPropiedad" 
+                                                                   itemLabel="#{tipoPropiedad.tpdNombre}" itemValue="#{tipoPropiedad}" />
+                                                </p:selectOneMenu>
+
+                                                <p:outputLabel for="txtClase" value="Clase" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtClase" required="true" style="width: 250px" 
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.prdClasePropiedad}"  >
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItem itemLabel="HORIZONTAL" itemValue="H" />
+                                                    <f:selectItem itemLabel="ORDINARIA" itemValue="O"/>
+                                                    <p:ajax event="change" process="@this" update="pnlLblGrupo pnlTxtGrupo" 
+                                                            listener="#{controladorTmpAlicuota.seleccionarClase()}"/>
+                                                </p:selectOneMenu>                                                
+
+                                                <h:panelGroup id="pnlLblGrupo">
+                                                    <p:outputLabel id="lblTxtGrupo" for="txtGrupo" value="Grupo" 
+                                                                   style="text-align: right"
+                                                                   rendered="#{controladorTmpAlicuota.mostrarComboGrupo}"
+                                                                   />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup id="pnlTxtGrupo">
+                                                    <p:selectOneMenu id="txtGrupo" required="true" style="width: 250px" filter="true" 
+                                                                     value="#{controladorTmpAlicuota.propiedadNueva.tclId}"
+                                                                     rendered="#{controladorTmpAlicuota.mostrarComboGrupo}">
+                                                        <f:selectItem itemLabel="Seleccione uno..."/>
+                                                        <f:selectItems value="#{controladorTmpAlicuota.listaGrupo}" 
+                                                                       var="tipoPropiedadClase" itemLabel="#{tipoPropiedadClase.tclNombre}"
+                                                                       itemValue="#{tipoPropiedadClase}" />
+                                                    </p:selectOneMenu>
+                                                </h:panelGroup>
+                                            </h:panelGrid>
+
+                                            <h:panelGrid cellspacing="10" columns="3" width="100%">
+                                                <p:outputLabel for="txtCompania" value="Compañía" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtCompania" required="true" 
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.prdConjuntoId}" filter="true" >
+
+                                                    <f:selectItem itemLabel="Seleccione uno..."  />
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaCompaniaExcel}" 
+                                                                   var="compania" itemLabel="#{compania.comNombre}"
+                                                                   itemValue="#{compania.comId}"/>
+                                                </p:selectOneMenu>
+
+                                                <p:commandButton icon="fa fa-plus" title="Crear Compañía" class="green-btn"
+                                                                 action="#{controladorTmpAlicuota.listarParroquiasComp()}"
+                                                                 oncomplete="PF('dlgNuevaCompaniaExc').show()" process="@this"
+                                                                 update=":CrearCompaniaFormExcelCab :CrearCompaniaFormExcel" />
+                                            </h:panelGrid>  
+                                            <h:panelGrid cellspacing="10" columns="2">
+
+
+                                                <p:outputLabel for="btnCrearLindero" value="Lindero" style="text-align: right"/>
+
+                                                <p:commandButton id="btnCrearLindero" value="Agregar Linderos" immediate="true"
+                                                                 process="@this"
+                                                                 icon="fa fa-plus" class="cyan-btn"
+                                                                 actionListener="#{controladorTmpAlicuota.preCrearLindero()}"  
+                                                                 oncomplete="PF('dlgLinderos').show()"
+                                                                 update=":frmLinderos"/>
+
+                                                <h:outputText />
+                                            </h:panelGrid> 
+                                            <h:panelGrid columns="1" >
+                                                <p:dataTable id="dtbLinderos" value="#{controladorTmpAlicuota.listaLinderos}" 
+                                                             var="item" rowKey="#{item.ldrId}" scrollHeight="50px"
+                                                             style="width: 400px" scrollable="true"
+                                                             editable="true" editMode="cell">
+                                                    <p:column headerText="Nombre">
+                                                        <p:cellEditor>
+                                                            <f:facet name="output"> <h:outputText value="#{item.ldrNombre}"/></f:facet> 
+                                                            <f:facet name="input"><p:inputText value="#{item.ldrNombre}" style="width:96%" /></f:facet>
+                                                        </p:cellEditor>
+                                                    </p:column>
+                                                    <p:column style="width: 15%">
+                                                        <p:commandButton class="red-btn" icon="fa fa-remove" 
+                                                                         immediate="true" 
+                                                                         update="growl :pnlAcciones"
+
+                                                                         action="#{controladorTmpAlicuota.borrarLindero()}">
+                                                            <f:setPropertyActionListener target="#{controladorTmpAlicuota.linderoSeleccionado}"
+                                                                                         value="#{item}"/>
+                                                        </p:commandButton>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </h:panelGrid>
+
+
+
+
+                                        </p:panel>
+                                    </div>
+
+                                    <div class="ui-g-6">
+                                        <p:panel header="Datos Descriptivos" id="panelDatosDesc">
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtSuperficie"  value="Superficie"/>
+                                                <p:inputText id="txtSuperficie" style="width: 250px" value="#{controladorTmpAlicuota.propiedadNueva.prdSuperficie}" size="60" maxlength="7" required="true" requiredMessage="Superficie Requerida">
+                                                    <p:ajax event="change" listener="#{controladorTmpAlicuota.llenarDescripcion1()}" update="txtSuperficieLetras growl"/>
+                                                </p:inputText>
+                                                <h:outputText/>
+                                                <p:selectOneMenu id="txtSuperficieTipo"  style="width: 250px" 
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.umdId}" 
+                                                                 filter="true" required="true" requiredMessage="Requerido Unidad de Medida">
+                                                    <p:ajax event="change" listener="#{controladorTmpAlicuota.llenarDescripcion1()}"
+                                                            update="txtSuperficieLetras growl"/>
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaUnidMedida}" var="unidMedida" itemLabel="#{unidMedida.umdNombre}" itemValue="#{unidMedida}"/>
+                                                </p:selectOneMenu>
+                                                <h:outputText/>
+                                                <p:inputTextarea id="txtSuperficieLetras" style="width: 250px" value="#{controladorTmpAlicuota.propiedadNueva.prdDescripcion1}" rows="2"  readonly="true"/>
+                                                <p:outputLabel for="txtDescripcion" value="Descripción"/>
+                                                <p:inputTextarea id="txtDescripcion" style="width: 250px" rows="7"
+                                                                 required="true" requiredMessage="Ingrese la Descripción de la Propiedad"
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.prdDescripcion2}"/>
+
+                                                <p:outputLabel for="Estado" value="Estado"/>
+                                                <p:selectOneRadio id="Estado" required="true" requiredMessage="El campo estado, es requerido"
+                                                                  value="#{controladorTmpAlicuota.propiedadNueva.prdEstadoPropiedad}"
+                                                                  disabled="#{controladorTmpAlicuota.esPropiedadNueva}"
+                                                                  >
+                                                    <f:selectItem itemLabel="Activo" itemValue="AC"  />                                                   
+                                                </p:selectOneRadio>
+                                            </h:panelGrid>
+                                        </p:panel>
+
+                                        <br/>
+                                        <br/>
+
+
+                                    </div>
+                                </div>
+                            </h:form>
+
+                        </p:tab>
+                        <p:tab title="Importación" 
+                               disabled="#{controladorTmpAlicuota.disabledTab}"
+                               rendered="#{not empty controladorTmpAlicuota.propiedadNueva.prdMatricula}">
+                            <h:form id="FormDeclaratoriaPH" enctype="multipart/form-data">
+                                <p:outputLabel for="txtMatriculaGuardada" value="Matrícula: " style="font-weight: bold"/>
+
+                                <h:outputText id="txtMatriculaGuardada" 
+                                              value="#{controladorTmpAlicuota.propiedadNueva.prdMatricula}"
+                                              style="color: #1A237E"/>
+                                <h:panelGrid id="pnl" columns="3">
+
+                                    <h:panelGrid id="pnlImportar" columns="1">
+                                        <p:fileUpload id="btnFileUpload" uploadLabel="Subir" cancelLabel="Cancelar" label="Escoger" fileUploadListener="#{controladorTmpAlicuota.subirArchivo}" mode="advanced" dragDropSupport="false"
+                                                      update=":growl FormDeclaratoriaPH dtAlicuota dtbErrores gridAlicuota" sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(xls|xlsx)$/" />
+                                    </h:panelGrid> 
+                                    <div align="right">
+                                        <h:panelGrid id="pnlDescargarPlantilla" columns="5">
+                                            <!--
+                                            <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+                                                <p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+                                            </p:dialog>
+                                            -->
+
+                                            <p:commandButton value="Descargar Plantilla" 
+                                                             immediate="true" class="cyan-btn"
+                                                             ajax="false" icon="pi pi-arrow-down">
+                                                <p:fileDownload value="#{controladorTmpAlicuota.file}" />
+                                            </p:commandButton> 
+                                            <p:commandButton icon="fa fa-plus" title="Crear Compañía"                                                         
+                                                             class="green-btn" value="Compañía"
+                                                             action="#{controladorTmpAlicuota.listarParroquiasComp()}"
+                                                             oncomplete="PF('dlgNuevaCompaniaExc').show()" process="@this"
+                                                             update=":CrearCompaniaFormExcelCab :CrearCompaniaFormExcel" />
+                                            <p:commandButton icon="fa fa-remove" title="Deshacer Declaratoria"                                                         
+                                                             class="orange-btn" value="Deshacer Declaratoria"
+                                                             action="#{controladorTmpAlicuota.deshacerDeclaratoria()}"
+                                                             process="@this"
+                                                             update="growl FormDeclaratoriaPH" >
+                                                <p:confirm header="Confirmación" message="¿Desea deshacer la Declaratoria?" icon="ui-icon-alert" />
+                                            </p:commandButton>  
+                                            <p:commandButton value="DESCARGAR ??" 
+                                                             class="cyan-btn" rendered="#{controladorTmpAlicuota.rendBtnAclaratoriaDescargar}"
+                                                             ajax="false" icon="fa fa-download"
+                                                             actionListener="#{controladorTmpAlicuota.descargarExcelAclaratoria()}">
+                                                <p:fileDownload value="#{controladorTmpAlicuota.fileExcelAclar}" />
+                                            </p:commandButton> 
+
+                                        </h:panelGrid>
+                                    </div>
+                                </h:panelGrid>   
+                                <p:separator/>
+                                <h3><h:outputText value="Alicuotas"/></h3>
+                                <p:separator/>
+
+
+
+
+
+                                <p:panel rendered="#{controladorTmpAlicuota.renderedPanelError}">
+                                    <p:dataTable id="dtbErrores" var="error" 
+                                                 paginatorTemplate="{Exporters}"
+                                                 paginator="true"                                             
+                                                 value="#{controladorTmpAlicuota.listaErrores}" 
+                                                 scrollable="true" scrollHeight="150"
+                                                 paginatorPosition="top"                                                 
+                                                 >  
+
+                                        <f:facet name="{Exporters}" >
+                                            ERRORES
+                                            <div style="float:right;padding-top: 0px;" >
+                                                <h:commandLink value="Descargar Errores">                                                      
+                                                    <h:graphicImage value="/resources/imagenes/excel.png" width="24" height="18" />        
+                                                    <p:dataExporter type="xls" target="dtbErrores" fileName="listaErrores" />
+                                                </h:commandLink>  
+                                            </div>
+                                        </f:facet>
+
+                                        <p:column headerText="Detalle" >
+                                            <h:outputText value="#{error}" />
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </p:panel>        
+
+
+                                <h:panelGrid columns="1" id="gridAlicuota" >
+                                    <p:panel id="lista" rendered="#{controladorTmpAlicuota.renderedPanelExcel}">
+                                        <p:commandButton value="Guardar" icon="fa fa-save" class="green-btn"
+                                                         process="@this" immediate="true"
+                                                         update ="FormDeclaratoriaPH"                                                     
+                                                         action="#{controladorTmpAlicuota.guardarInformacion()}"
+                                                         rendered="#{empty controladorTmpAlicuota.listaErrores}"/>
+                                        <p:dataTable id="dtAlicuota" var="item" 
+                                                     paginator="false"
+                                                     value="#{controladorTmpAlicuota.listaTmpAlicuota}" 
+                                                     scrollable="true" scrollHeight="150"
+                                                     rendered="#{empty controladorTmpAlicuota.listaErrores}">                                    
+
+                                            <p:column headerText="Número">
+                                                <h:outputText value="#{item.talNumero}" />
+                                            </p:column>
+                                            <p:column headerText="Alicuota">
+                                                <h:outputText value="#{item.talAlicuota}" />
+                                            </p:column>
+                                            <p:column headerText="Área">
+                                                <h:outputText value="#{item.talArea}" />
+                                            </p:column>
+                                            <p:column headerText="Piso">
+                                                <h:outputText value="#{item.talPiso}" />
+                                            </p:column>                                        
+                                            <p:column headerText="Nombre Unidad">
+                                                <h:outputText value="#{item.talDescripcion}" />
+                                            </p:column>
+                                            <p:column headerText="Superficie">
+                                                <h:outputText value="#{item.talSuperficie}" />
+                                            </p:column>
+                                            <p:column headerText="Unidad Medida">
+                                                <h:outputText value="#{item.talTipoMedidaCodigo}" />
+                                            </p:column>
+                                            <p:column headerText="Tipo Propiedad">
+                                                <h:outputText value="#{item.talTipoPropiedadCodigo}" />
+                                            </p:column>
+                                            <p:column headerText="Observación">
+                                                <h:outputText value="#{item.talObservacion}" />
+                                            </p:column>
+                                            <p:column headerText="Catastro" >
+                                                <h:outputText value="#{item.talCatastro}" />
+                                            </p:column>
+                                            <p:column headerText="Predio" >
+                                                <h:outputText value="#{item.talPredio}" />
+                                            </p:column>                                     
+                                            <p:column headerText="Principal">
+                                                <h:outputText value="#{item.taPrincipal}" />
+                                            </p:column>
+
+
+                                        </p:dataTable>
+                                    </p:panel>
+                                </h:panelGrid>
+                            </h:form>
+
+                        </p:tab>
+                        <p:tab title="UNIDADES DE VIVIENDA" disabled="#{controladorTmpAlicuota.disabledTab}">
+                            <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                            <p:outputLabel value=" #{controladorTmpAlicuota.propiedadPadreMostrar.prdMatricula}"/>
+                            <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorTmpAlicuota.propiedadPadreMostrar.prdDescripcion2}"/>
+                            <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorTmpAlicuota.propiedadPadreMostrar.prdConjunto}"/>
+
+                            <h:form id="formGeneral">
+                                <p:dataGrid var="prop" value="#{controladorTmpAlicuota.listaPropiedadHija}" columns="14" layout="grid"
+                                            rows="12" id="alics"
+                                            >
+
+                                    <p:panel header="Nº: #{prop.prdUnidadVivienda}" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825':'background: #9CCC65'} ">
+
+                                        <h:panelGrid columns="1" 
+                                                     title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">            
+
+                                            <p:commandButton update=":tabView:formGeneral:detalleAlicuota" styleClass="boton"
+                                                             action="#{controladorTmpAlicuota.listarDetalleAlicuotas(prop)}"
+                                                             process="@this"
+                                                             icon="fa fa-home" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825;':'background: #9CCC65;'}"
+                                                             oncomplete="PF('dlgPropHij').show()" title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">                                                
+
+                                            </p:commandButton>
+                                        </h:panelGrid>
+                                    </p:panel>
+
+                                </p:dataGrid>
+
+                                <p:dialog header="Información Declaratorias" widgetVar="dlgPropHij" modal="true" 
+                                          showEffect="fade" hideEffect="fade" resizable="false" width="550px">
+                                    <p:outputPanel id="detalleAlicuota" style="text-align:center;">
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">PROPIEDAD PH</h3>
+                                        <p:panelGrid  columns="2" columnClasses="label,value">
+
+                                            <h:outputText value="Matrícula:" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdMatricula}" />
+
+                                            <h:outputText value="Descripción" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdDescripcion2}" />
+                                            <h:outputText value="Unidad" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdUnidadVivienda.toUpperCase()}" />
+                                            <h:outputText value="Predio" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdPredio}" />
+                                            <h:outputText value="Catastro" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdCatastro}" />
+
+                                        </p:panelGrid>
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">COMPONENTES PH</h3>
+                                        <p:dataTable var="alicu"
+                                                     scrollable="true" scrollHeight="150"
+                                                     value="#{controladorTmpAlicuota.listaAlicuotaMostrar}">
+                                            <p:column headerText="Número">
+                                                <h:outputText value="#{alicu.altNumero}" />
+                                            </p:column>
+
+                                            <p:column headerText="Alicuota">
+                                                <h:outputText value="#{alicu.altAlicuota}" />
+                                            </p:column>
+
+                                            <p:column headerText="Bloque">
+                                                <h:outputText value="#{alicu.altArea}" />
+                                            </p:column>
+
+                                            <p:column headerText="Piso">
+                                                <h:outputText value="#{alicu.altPiso}" />
+                                            </p:column>
+                                            <p:column headerText="Descripción">
+                                                <h:outputText value="#{alicu.altDescripcion}" />
+                                            </p:column>
+
+                                        </p:dataTable>
+
+
+
+                                    </p:outputPanel>
+                                </p:dialog>
+                            </h:form>
+                        </p:tab>
+
+
+                    </p:tabView>
+                </p:panel>
+                <!-- PANEL REVOCATORIA-->
+                <!-- PANEL REVOCATORIA-->
+                <!-- PANEL REVOCATORIA-->
+                <p:panel id="pnlAccionesRev" header="REVOCATORIA" rendered="#{controladorTmpAlicuota.renderedPanelRevocatoria}">
+                    <p:tabView id="tabViewRev" rendered="#{controladorTmpAlicuota.renderedPanelRevocatoria}" 
+                               activeIndex="#{controladorTmpAlicuota.indiceTab}" >
+                        <p:tab id="tab_1Rev" title="Generación de Matrículas" disabled="#{!controladorTmpAlicuota.disabledTab}">
+                            <h:form id="formNuevasMatriculas">                               
+
+                                <div class="ui-g">
+                                    <div class="ui-g-6">                                        
+
+                                        <p:panel header="Datos De Identificación" >
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtMatriculaRev" value="Matricula" style="text-align: right"/>
+
+                                                <h:panelGrid columns="2" cellspacing="0" border="0" >
+                                                    <p:inputText id="txtMatriculaRev" size="55" readonly="true" style="width: 250px" value="#{controladorTmpAlicuota.matricula}"/>
+
+                                                </h:panelGrid>
+                                                <p:outputLabel for="txtNumeroRev" value="Número/Nombre" style="text-align: right"/> 
+                                                <p:inputText id="txtNumeroRev" style="width: 250px"                                                              
+                                                             value="#{controladorTmpAlicuota.propiedadNueva.prdUnidadVivienda}" size="55"
+                                                             readonly="true"/>
+                                                <p:outputLabel for="txtCatastroRev" value="Catastro" style="text-align: right"/>
+                                                <p:inputText id="txtCatastroRev" style="width: 250px" value="#{controladorTmpAlicuota.propiedadNueva.prdCatastro}" size="55"
+                                                             readonly="true"/>
+                                                <p:outputLabel for="txtPredioRev" value="Predio" style="text-align: right"/>
+                                                <p:inputText id="txtPredioRev" style="width: 250px" value="#{controladorTmpAlicuota.propiedadNueva.prdPredio}" size="55"
+                                                             readonly="true"/>
+                                                <p:outputLabel for="txtEspacialRev" value="Espacial" style="text-align: right" />
+
+                                                <p:inputText id="txtEspacialRev" style="width: 250px" size="45" value="#{controladorTmpAlicuota.propiedadNueva.prdEspacial}"
+                                                             readonly="true"/>
+
+                                                <p:outputLabel for="txtParroquiaHistoricaRev" value="Parroquia Historica" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaHistoricaRev" required="true" style="width: 250px"                                                                  
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.prdTdtParIdH}" 
+                                                                 disabled="true">                                                    
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaParroquia}" var="parroquia" itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>
+                                                </p:selectOneMenu>                                               
+
+
+                                                <p:outputLabel for="txtParroquiaActualRev" value="Parroquia Actual" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtParroquiaActualRev" required="true" style="width: 250px" 
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.prdTdtParId}"
+                                                                 disabled="true">                                                    
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaParroquia}" var="parroquia"
+                                                                   itemLabel="#{parroquia.parNombre}" itemValue="#{parroquia.parId}"/>                                            
+                                                </p:selectOneMenu>
+                                                <p:outputLabel for="txtTipoRev"  value="Tipo" style="text-align: right" />
+                                                <p:selectOneMenu id="txtTipoRev" required="true" style="width: 250px"
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.tpdId}"
+                                                                 disabled="true">                                                    
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaTipoPropiedad}" var="tipoPropiedad" 
+                                                                   itemLabel="#{tipoPropiedad.tpdNombre}" itemValue="#{tipoPropiedad}" />
+                                                </p:selectOneMenu>
+
+                                                <p:outputLabel for="txtClaseRev" value="Clase" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtClaseRev" required="true" style="width: 250px" disabled="true" 
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.prdClasePropiedad}"  >
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItem itemLabel="HORIZONTAL" itemValue="H" />
+                                                    <f:selectItem itemLabel="ORDINARIA" itemValue="O"/>                                                   
+                                                </p:selectOneMenu>                                                
+
+                                                <h:panelGroup id="pnlLblGrupoRev">
+                                                    <p:outputLabel id="lblTxtGrupoRev" for="txtGrupoRev" value="Grupo" 
+                                                                   style="text-align: right"
+                                                                   rendered ="true"
+                                                                   />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup id="pnlTxtGrupoRev">
+                                                    <p:selectOneMenu id="txtGrupoRev" required="true" style="width: 250px" filter="true" 
+                                                                     value="#{controladorTmpAlicuota.propiedadNueva.tclId}"
+                                                                     rendered="true" disabled="true">
+                                                        <f:selectItem itemLabel="Seleccione uno..."/>
+                                                        <f:selectItems value="#{controladorTmpAlicuota.listaGrupo}" 
+                                                                       var="tipoPropiedadClase" itemLabel="#{tipoPropiedadClase.tclNombre}"
+                                                                       itemValue="#{tipoPropiedadClase}" />
+                                                    </p:selectOneMenu>
+                                                </h:panelGroup>
+                                            </h:panelGrid>
+
+                                            <h:panelGrid cellspacing="10" columns="3" width="100%">
+                                                <p:outputLabel for="txtCompaniaRev" value="Compañía Constructora" style="text-align: right"/>
+                                                <p:selectOneMenu id="txtCompaniaRev" disabled="true"
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.prdConjuntoId}" filter="true" >
+
+                                                    <f:selectItem itemLabel="Seleccione uno..."  />
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaCompaniaExcel}" var="compania" itemLabel="#{compania.comNombre}" itemValue="#{compania.comId}"/>
+                                                </p:selectOneMenu>
+
+                                            </h:panelGrid>  
+                                            <h:panelGrid cellspacing="10" columns="2">
+                                                <p:outputLabel value="Lindero" style="text-align: right"/>                                            
+
+                                                <h:outputText />
+                                            </h:panelGrid> 
+                                            <h:panelGrid columns="1" >
+                                                <p:dataTable id="dtbLinderosRev" value="#{controladorTmpAlicuota.listaLinderos}" 
+                                                             var="item" rowKey="#{item.ldrId}" scrollHeight="50px"
+                                                             style="width: 400px" scrollable="true"
+                                                             >                                                    
+                                                    <p:column headerText="LINDEROS">                                                       
+
+                                                        <h:outputText value="#{item.ldrNombre}" style="width:96%" />
+
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                            </h:panelGrid>
+
+
+
+
+                                        </p:panel>
+                                    </div>
+
+                                    <div class="ui-g-6">
+                                        <p:panel header="Datos Descriptivos" id="panelDatosDescRev">
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:outputLabel for="txtSuperficieRev"  value="Superficie"/>
+                                                <p:inputText id="txtSuperficieRev" style="width: 250px" 
+                                                             readonly="true"
+                                                             value="#{controladorTmpAlicuota.propiedadNueva.prdSuperficie}" size="60" maxlength="7" required="true" requiredMessage="Superficie Requerida">
+
+                                                </p:inputText>
+                                                <h:outputText/>
+                                                <p:selectOneMenu id="txtSuperficieTipoRev"  style="width: 250px" 
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.umdId}" 
+                                                                 filter="true" disabled="true">
+
+                                                    <f:selectItem itemLabel="Seleccione uno..."/>
+                                                    <f:selectItems value="#{controladorTmpAlicuota.listaUnidMedida}" var="unidMedida" itemLabel="#{unidMedida.umdNombre}" itemValue="#{unidMedida}"/>
+                                                </p:selectOneMenu>
+                                                <h:outputText/>
+                                                <p:inputTextarea id="txtSuperficieLetrasRev" style="width: 250px" value="#{controladorTmpAlicuota.propiedadNueva.prdDescripcion1}" rows="2"  readonly="true"/>
+                                                <p:outputLabel for="txtDescripcionRev" value="Descripción"/>
+                                                <p:inputTextarea id="txtDescripcionRev" style="width: 250px" rows="7" 
+                                                                 required="true" requiredMessage="Ingrese la Descripción de la Propiedad"
+                                                                 value="#{controladorTmpAlicuota.propiedadNueva.prdDescripcion2}"/>
+
+                                                <p:outputLabel for="EstadoRev" value="Estado"/>
+                                                <p:selectOneRadio id="EstadoRev" required="true" requiredMessage="El campo estado, es requerido"
+                                                                  value="#{controladorTmpAlicuota.propiedadNueva.prdEstadoPropiedad}"
+                                                                  disabled="#{controladorTmpAlicuota.esPropiedadNueva}"
+                                                                  >
+                                                    <f:selectItem itemLabel="Activo" itemValue="AC"  />                                                   
+                                                </p:selectOneRadio>
+                                            </h:panelGrid>
+                                        </p:panel>
+
+                                        <br/>
+                                        <br/>
+
+
+                                    </div>
+                                </div>
+                            </h:form>
+                        </p:tab>
+                        <p:tab title="UNIDADES DE VIVIENDA" disabled="false">
+                            <p:outputLabel value="MATRÍCULA PROCEDENTE: " style="padding-left: 15px;color: blue"/>
+                            <p:outputLabel value=" #{controladorTmpAlicuota.propiedadPadreMostrar.prdMatricula}"/>
+                            <p:outputLabel value=" DESCRIPCIÓN: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorTmpAlicuota.propiedadPadreMostrar.prdDescripcion2}"/>
+                            <p:outputLabel value=" CONJUNTO: " style="color: blue"/>
+                            <p:outputLabel value=" #{controladorTmpAlicuota.propiedadPadreMostrar.prdConjunto}"/>
+
+                            <h:form id="formGeneralRev">
+                                <p:dataGrid var="prop" value="#{controladorTmpAlicuota.listaPropiedadHija}" columns="14" layout="grid"
+                                            rows="12" id="alics"
+                                            >
+
+                                    <p:panel header="Nº: #{prop.prdUnidadVivienda}" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825':'background: #9CCC65'} ">
+
+                                        <h:panelGrid columns="1" 
+                                                     title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">            
+
+                                            <p:commandButton update=":tabViewRev:formGeneralRev:detalleAlicuotaRev" styleClass="boton"
+                                                             action="#{controladorTmpAlicuota.listarDetalleAlicuotas(prop)}"
+                                                             process="@this"
+                                                             icon="fa fa-home" style="#{prop.prdVendio eq 'S' ? 'background: #F9A825;':'background: #9CCC65;'}"
+                                                             oncomplete="PF('dlgPropHijRev').show()" title="#{prop.prdVendio eq 'S' ? 'Propiedad Vendida':'Propiedad no Vendida'}">                                                
+
+                                            </p:commandButton>
+                                        </h:panelGrid>
+                                    </p:panel>
+
+                                </p:dataGrid>
+
+                                <p:dialog header="Información Declaratorias" widgetVar="dlgPropHijRev" modal="true" 
+                                          showEffect="fade" hideEffect="fade" resizable="false" width="550px">
+                                    <p:outputPanel id="detalleAlicuotaRev" style="text-align:center;">
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">PROPIEDAD PH</h3>
+                                        <p:panelGrid  columns="2" columnClasses="label,value">
+
+                                            <h:outputText value="Matrícula:" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdMatricula}" />
+
+                                            <h:outputText value="Descripción" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdDescripcion2}" />
+                                            <h:outputText value="Unidad" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdUnidadVivienda.toUpperCase()}" />
+                                            <h:outputText value="Predio" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdPredio}" />
+                                            <h:outputText value="Catastro" />
+                                            <h:outputText value="#{controladorTmpAlicuota.propUV.prdCatastro}" />
+
+                                        </p:panelGrid>
+
+
+                                        <h3 style="font-weight: bolder;color: #1E88E5">COMPONENTES PH</h3>
+                                        <p:dataTable var="alicu"
+                                                     scrollable="true" scrollHeight="150"
+                                                     value="#{controladorTmpAlicuota.listaAlicuotaMostrar}">
+                                            <p:column headerText="Número">
+                                                <h:outputText value="#{alicu.altNumero}" />
+                                            </p:column>
+
+                                            <p:column headerText="Alicuota">
+                                                <h:outputText value="#{alicu.altAlicuota}" />
+                                            </p:column>
+
+                                            <p:column headerText="Bloque">
+                                                <h:outputText value="#{alicu.altArea}" />
+                                            </p:column>
+
+                                            <p:column headerText="Piso">
+                                                <h:outputText value="#{alicu.altPiso}" />
+                                            </p:column>
+                                            <p:column headerText="Descripción">
+                                                <h:outputText value="#{alicu.altDescripcion}" />
+                                            </p:column>
+
+                                        </p:dataTable>
+
+
+
+                                    </p:outputPanel>
+                                </p:dialog>
+                            </h:form>
+                        </p:tab>
+
+                    </p:tabView>
+                </p:panel>
+            </p:panel>
+            <!--TABLA-->
+
+
+            <!--</h:form>-->
+
+            <!--            DIALOGOS-->
+           
+
+            <p:dialog id="dlgLinderos" modal="true" header="Linderos" widgetVar="dlgLinderos">
+                <h:form id="frmLinderos">
+
+                    <h:panelGrid columns="3">
+                        <p:outputLabel for="txtLindero" value="Nombre"/>
+                        <p:inputText id="txtLindero" value="#{controladorTmpAlicuota.linderoSeleccionado.ldrNombre}"
+                                     required="true" requiredMessage="El campo Nombre, es requerido"/>
+                        <p:commandButton  class="green-btn" icon="fa fa-plus" 
+                                          action="#{controladorTmpAlicuota.crearLindero()}" 
+                                          update="growl @form  :tabView:formNuevasMatricExc:dtbLinderos" 
+                                          />
+                    </h:panelGrid>
+
+
+
+
+                    <h:panelGroup>
+
+                        <p:commandButton class="blue-btn" icon="fa fa-close" 
+                                         value="Cerrar" immediate="true"
+                                         onclick="PF('dlgLinderos').hide()"/>
+
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+            <!-- DIALOGO CREAR COMPANIA EXCEL -->
+            <p:dialog header="Crear Compañía" modal="true" widgetVar="dlgNuevaCompaniaExc" 
+                      style="width: 600px"
+                      minHeight="40" position="center center" onShow="PF('dlgNuevaCompaniaExc').initPosition()">
+                <h:form id="CrearCompaniaFormExcelCab">
+
+                    <p:growl id="growl" showDetail="true" sticky="false" life="4000"/> 
+                    <p:outputPanel id="plNuevaPersona" style="text-align:left;">
+                        <p:fieldset legend="Detalle Compañía" >
+                            <h:panelGrid columns="6">
+
+                                <p:outputLabel value="Nombre" for="compNombre" />
+                                <p:inputText id="compNombre"
+                                             style="text-transform: uppercase"
+                                             value="#{controladorTmpAlicuota.nombreComp}"  
+                                             > 
+                                    <p:ajax event="change" update="CrearCompaniaFormExcelCab"
+                                            process="@this"
+                                            listener="#{controladorTmpAlicuota.setearDatosCompania()}"/>
+                                </p:inputText>
+                                <p:outputLabel value="Constructora" for="compConstructora" />
+                                <p:inputText id="compConstructora"
+                                             style="text-transform: uppercase"
+                                             value="#{controladorTmpAlicuota.construcComp}">                                               
+                                    <p:ajax event="change" listener="#{controladorTmpAlicuota.setearDatosCompania()}"/>
+                                </p:inputText>
+
+                                <p:outputLabel value="Parroquia" for="compParroquia" />                    
+
+                                <p:selectOneMenu id="compParroquia" filter="true" required="true"
+                                                 requiredMessage="Seleccione la Parroquia"
+                                                 value="#{controladorTmpAlicuota.parroquiaCompania}" style="width:125px">
+                                    <f:selectItem value="#{null}" itemLabel="Seleccione una opción" />
+                                    <f:selectItems value="#{controladorTmpAlicuota.listaParriquias}" 
+                                                   var="parroquia" itemLabel="#{parroquia.parNombre}"
+                                                   itemValue="#{parroquia}"/>         
+                                    <p:ajax event="change" listener="#{controladorTmpAlicuota.setearDatosCompania()}"/>               
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                        </p:fieldset>
+                    </p:outputPanel>   
+                </h:form>
+                <div style="padding-bottom: 10px"></div>                          
+                <h:form id="CrearCompaniaFormExcel">
+                    <p:outputPanel>                              
+                        <p:fieldset legend="Representante Compañía" >
+
+                            <h:panelGrid columns="6">
+                                <p:outputLabel value="Identificación"/>
+                                <p:inputText id="txtIdentificacion" 
+
+                                             value="#{controladorTmpAlicuota.tramitesControladorBb.identificacion}">
+                                    <p:ajax listener="#{controladorTmpAlicuota.buscarPersona()}" 
+                                            update="growl CrearCompaniaFormExcel"  
+                                            process="@form" event="change" 
+                                            />
+                                </p:inputText>
+                                <p:inputText value="#{controladorTmpAlicuota.tramitesControladorBb.nombrePersona}"
+                                             style="width: 250px" readonly="true"/>
+
+                                <p:commandButton title="Crear Nueva Persona" icon="fa fa-user-plus" 
+                                                 oncomplete ="PF('dlgNuevaPersona').show()"/>
+
+                                <p:commandButton title="Buscar Persona" icon="fa fa-search" value="Buscar"
+                                                 class="orange-btn" immediate="true" process="@this" 
+                                                 actionListener="#{controladorFiltradoPersona.prepararFiltrado('CtrlPHExcel', 'CrearCompaniaFormExcel')}"
+                                                 oncomplete ="PF('dlgFiltradoPersona').show()"/>
+
+
+                                <p:commandButton title="Agregar persona a la companía" icon="fa fa-plus" 
+                                                 update="CrearCompaniaFormExcel" class="green-btn" 
+                                                 action="#{controladorTmpAlicuota.agregarPersonaCompania()}"/>
+                            </h:panelGrid>
+
+                            <h:panelGrid>
+                                <p:dataTable id="tblPersonaCompania" scrollable="true"  scrollHeight="100" style="width: 600px"
+                                             value="#{controladorTmpAlicuota.listaPersonaCompania}" 
+                                             var="persona" rowKey="#{persona.perId}" sortBy="#{persona.perIdentificacion}" > 
+
+                                    <p:column headerText="Identificación" groupRow="true">
+                                        <h:outputText value="#{persona.perIdentificacion}" />
+                                    </p:column>
+
+                                    <p:column headerText="Nombre">
+                                        <h:outputText value="#{persona.perNombre}" />
+                                    </p:column>                
+                                    <p:column headerText="A. Paterno">
+                                        <h:outputText value="#{persona.perApellidoPaterno}" />
+                                    </p:column>
+
+                                    <p:column headerText="A. Materno">
+                                        <h:outputText value="#{persona.perApellidoMaterno}" />
+                                    </p:column>
+                                    <p:column headerText="">
+                                        <p:commandButton class="red-btn" icon="fa fa-remove"
+                                                         action="#{controladorTmpAlicuota.eliminarRepresentante(persona)}"
+                                                         title="Eliminar"
+                                                         immediate="true" 
+                                                         update="growl CrearCompaniaFormExcel"/>
+
+                                    </p:column>
+                                </p:dataTable>                        
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <div align="left">
+                            <p:commandButton value="Guardar" icon="fa fa-save" class="green-btn" 
+                                             action="#{controladorTmpAlicuota.guardarCompaniaExcel()}"                                              
+                                             update="growl CrearCompaniaFormExcel CrearCompaniaFormExcelCab :tabView:formNuevasMatricExc"
+                                             process="@this CrearCompaniaFormExcelCab"
+                                             />
+
+                            <p:commandButton class="red-btn" immediate="true" icon="fa fa-close"
+
+                                             value="Cancelar" onclick="PF('dlgNuevaCompaniaExc').hide()"/>
+                        </div>
+
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog> 
+              <p:dialog widgetVar="dlgMap" modal="true" resizable="false" closable="false" position="center center"
+                      responsive="true" width="1000" height="600">
+                <h:form id="formMapa">
+                    <p:growl id="growl" life="3000"/>
+                    <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyC7R9us6s7z77X-uy5zaAc6DzUM6u0-7c4"></script>
+                    <p:gmap id="gmap" widgetVar="map" center="#{controladorTmpAlicuota.centerGeoMap}" 
+                            zoom="#{controladorTmpAlicuota.zoom}" 
+                            type="ROADMAP" style="width:100%;height:500px" 
+                            model="#{controladorTmpAlicuota.geoModel}" >
+                        <p:ajax event="stateChange" listener="#{controladorTmpAlicuota.onZoomAction}"/>
+                        <p:ajax event="pointSelect" listener="#{controladorTmpAlicuota.onPointSelect}" update="growl gmap" />
+                    </p:gmap>
+                    <br/>
+                    <p:panelGrid columns="5" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-5,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2" styleClass="ui-panelgrid-blank ui-fluid" >
+                        <p:outputLabel for="@next" value="Dirección"/>
+                        <p:inputText id="txtDireccionP" value="#{controladorTmpAlicuota.direccionGeolocalizacion}" 
+                                     placeholder="Barrio Calle principal N°casa"
+                                     required="true" requiredMessage="Dirección, Campo Requerido"/>
+                        <p:commandButton class="orange-btn" icon="fa fa-map-marker" value="Buscar"
+                                         action="#{controladorTmpAlicuota.localizarPorDireccion()}"
+                                         update="gmap txtDireccionP growl"/>
+                        <p:commandButton class="green-btn" icon="fa fa-save" value="Guardar" process="gmap @this"
+                                         action="#{controladorTmpAlicuota.guadarLocalizacion()}" 
+                                         onclick="PF('dlgMap').hide()" update="growl tabView:formNuevasMatricExc:txtEspacial"/>
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Salir" process="@this"
+                                         onclick="PF('dlgMap').hide()"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+            <ui:include src="/paginas/FiltradoPersona.xhtml"/>
+            <ui:include src="../MatriculacionPH/CrearNuevoTramiteValorExc.xhtml"/>
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>

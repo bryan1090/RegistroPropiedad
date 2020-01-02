@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TiempoProcesoViewDlg" widgetVar="TiempoProcesoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTiempoProcesoTitle}">
+            <h:form id="TiempoProcesoViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTiempoProceso.selected != null}">
+
+                        <h:outputText value="#{bundle.ViewTiempoProcesoLabel_tpoUnidadTiempo}"/>
+                        <h:outputText value="#{controladorTiempoProceso.selected.tpoUnidadTiempo eq 'D' ? 'Días':'Horas'}" title="#{bundle.ViewTiempoProcesoTitle_tpoUnidadTiempo}"/>
+                        <h:outputText value="#{bundle.ViewTiempoProcesoLabel_tpoTiempo}"/>
+                        <h:outputText value="#{controladorTiempoProceso.selected.tpoTiempo}" title="#{bundle.ViewTiempoProcesoTitle_tpoTiempo}"/>
+                        <h:outputText value="#{bundle.ViewTiempoProcesoLabel_tpoEstado}"/>
+                        <h:outputText value="#{controladorTiempoProceso.selected.tpoEstado}" title="#{bundle.ViewTiempoProcesoTitle_tpoEstado}"/>
+                        <h:outputText value="#{bundle.ViewTiempoProcesoLabel_tpoFHR}"/>
+                        <h:outputText value="#{controladorTiempoProceso.selected.tpoFHR}" title="#{bundle.ViewTiempoProcesoTitle_tpoFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewTipoCertificadoLabel_troTipo}"/>
+                        <h:panelGroup>
+                            <h:outputText rendered="#{item.troTipo eq 'G'}" value="GRAVAMEN"/>
+                            <h:outputText rendered="#{item.troTipo eq 'R'}" value="BIENES RAÍCES"/>
+                            <h:outputText rendered="#{item.troTipo eq 'B'}" value="BÚSQUEDA"/>
+                            <h:outputText rendered="#{item.troTipo eq 'N'}" value="NOMBRAMIENTOS"/>
+                            <h:outputText rendered="#{item.troTipo eq 'P'}" value="PROPIEDAD"/>
+                        </h:panelGroup>
+                        <h:outputText value="#{bundle.ViewTiempoProcesoLabel_tpoUser}"/>
+                        <h:outputText value="#{controladorTiempoProceso.selected.tpoUser}" title="#{bundle.ViewTiempoProcesoTitle_tpoUser}"/>
+                        <h:outputText value="#{bundle.ViewTiempoProcesoLabel_estId}"/>
+                        <h:outputText value="#{controladorTiempoProceso.selected.estId.estDescripcion}" title="#{bundle.ViewTiempoProcesoTitle_estId}"/>
+                        <h:outputText value="#{bundle.ViewTiempoProcesoLabel_ttrId}"/>
+                        <h:outputText value="#{controladorTiempoProceso.selected.ttrId.ttrDescripcion}" title="#{bundle.ViewTiempoProcesoTitle_ttrId}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" immediate="true"  value="#{bundle.Close}" onclick="TiempoProcesoViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,275 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                Cajas-Recaudación
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="formCajas">
+                    <p:keyFilter for="txtNumTramite" mask="num"/>
+                    <f:passThroughAttribute name="autocomplete" value="off"/>
+                    <p:growl id="growl" life="2000" />
+                    <p:panel header="Cajas-Recaudación" style="text-align: center">
+                        <p:tabMenu activeIndex="#{param.i}">
+                            <p:menuitem value="Inscripciones" outcome="/paginas/cajas/cajasRecaudacion_Inscripciones" icon="ui-icon">
+                                <f:param name="i" value="0" />
+                            </p:menuitem>
+                            <p:menuitem value="Certificados" outcome="/paginas/cajas/cajasRecaudacion_Certificados" icon="ui-icon">
+                                <f:param name="i" value="1" />
+                            </p:menuitem>   
+                            <p:menuitem value="Reingreso-Trámite" outcome="/paginas/cajas/CajasReingresoTramite" icon="ui-icon">
+                                <f:param name="i" value="2" />
+                            </p:menuitem>
+                            <p:menuitem value="Facturacion RM" outcome="/paginas/cajas/facturacionRM.xhtml" icon="ui-icon">
+                                <f:param name="i" value="3" />
+                            </p:menuitem>
+                        </p:tabMenu>  
+
+                        <p:panelGrid  id="cabezera" style="border: none;">
+                            <p:remoteCommand name="tramite" update="txtFechaIngreso dtValores growl txtDescuento txtSubTotal txtIva12 txtTotal txtFechaEntrega btnGrabar"  actionListener="#{controladorCajasRecaudacion.buscarTramite()}"></p:remoteCommand>
+                            <p:remoteCommand update="txtNombre txtMail txtDireccion txtTelefono growl" name="persona" actionListener="#{controladorCajasRecaudacion.buscarPersona()}"></p:remoteCommand>
+
+                            <h:panelGrid width="100%">
+                                <p:row>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtNumTramite" value="N° Tramite" style="color:#b71c1c" />
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText disabled="#{controladorCajasRecaudacion.cajasRecBb.facturado}" 
+                                                     style="color:#b71c1c" id="txtNumTramite" 
+                                                     required="true" requiredMessage="N° Trámite, Es Campo Obligatorio"
+                                                     value="#{controladorCajasRecaudacion.cajasRecBb.numeroTramite}" 
+                                                     maxlength="13" onchange="tramite()"/>
+                                    </p:column>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="btnFechaEntrega" value="Fecha Entrega"/>
+
+                                    </p:column>
+                                    <p:column>
+                                        <p:clock id="btnFechaEntrega" pattern="dd-MM-yyyy HH:mm:ss"/>
+                                    </p:column>
+
+                                </p:row>
+                                <p:row>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtNumFactura" value="N° Factura" style="color:#b71c1c" />
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText readonly="true" id="txtNumFactura" value="#{controladorCajasRecaudacion.cajasRecBb.numeroComprobante}" size="20" maxlength="13" style="color:#b71c1c" />
+                                    </p:column>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtFechaIngreso" value="Fecha Ingreso" style="color: #1A237E;" />
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText  id="txtFechaIngreso" readonly="true" value="#{controladorCajasRecaudacion.cajasRecBb.fechaIngreso}" style="color:#1A237E;"/>
+                                    </p:column>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtFechaEntrega" value="Fecha Entrega" style="color:#1A237E;" />
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="txtFechaEntrega" readonly="true" value="#{controladorCajasRecaudacion.cajasRecBb.fechaEntrega}" style="color:#1A237E;"></p:inputText>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtCedula" value="Cedula/RUC/Pas" style=""/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText readonly="#{controladorCajasRecaudacion.cajasRecBb.facturado}" id="txtCedula" value="#{controladorCajasRecaudacion.cajasRecBb.identificacion}" maxlength="13" onchange="persona()"/>
+                                    </p:column>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtNombre" value="Nombres y Apellidos"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText readonly="true" id="txtNombre" value="#{controladorCajasRecaudacion.cajasRecBb.persona.perNombre} #{controladorCajasRecaudacion.cajasRecBb.persona.perApellidoPaterno} #{controladorCajasRecaudacion.cajasRecBb.persona.perApellidoMaterno}" 
+                                                     maxlength="50"/>
+                                    </p:column>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtDireccion" value="Dirección"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText readonly="#{controladorCajasRecaudacion.cajasRecBb.facturado}" id="txtDireccion" value="#{controladorCajasRecaudacion.cajasRecBb.persona.perDireccion}" />
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtTelefono" value="Celular"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText readonly="#{controladorCajasRecaudacion.cajasRecBb.facturado}" id="txtTelefono" value="#{controladorCajasRecaudacion.cajasRecBb.persona.perCelular}" maxlength="10"/>
+                                    </p:column>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtMail" value="Mail"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText readonly="#{controladorCajasRecaudacion.cajasRecBb.facturado}" validatorMessage="Ingrese un email valido" id="txtMail" value="#{controladorCajasRecaudacion.cajasRecBb.persona.perEmail}">
+                                            <f:validateRegex  pattern="^((\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)|(\s*))$"/>
+                                        </p:inputText>
+                                    </p:column>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel value="Agregar Persona   " style="text-align: left" />
+                                    </p:column>
+                                    <p:column>
+                                        <div align="center">
+                                            <h:panelGrid columns="2">
+                                                <p:commandButton disabled="#{controladorCajasRecaudacion.cajasRecBb.facturado}" id="btnAgregarPersona" immediate="true" icon="fa fa-user-plus"  class="green-btn" oncomplete="PF('dlgNuevaPersona').show()" title="Crear nueva persona"/>
+                                                <p:commandButton disabled="#{controladorCajasRecaudacion.cajasRecBb.facturado}" id="btnFiltrar" class="orange-btn" icon="fa fa-search" value="Persona" actionListener="#{controladorFiltradoPersona.prepararFiltrado('CR', 'formCajas')}" oncomplete="PF('dlgFiltradoPersona').show();" immediate="true" process="@this"/>
+                                            </h:panelGrid>
+                                        </div>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="text-align: right">
+                                        <p:outputLabel for="txtObservacion" value="Observación"/>
+                                    </p:column>
+                                    <p:column colspan="5">
+                                        <p:inputText readonly="#{controladorCajasRecaudacion.cajasRecBb.facturado}" id="txtObservacion" value="#{controladorCajasRecaudacion.cajasRecBb.observacion}" style="width: 90%;"/>
+                                    </p:column>
+                                </p:row>
+                            </h:panelGrid>
+
+                        </p:panelGrid>
+
+                        <p:dataTable id="dtValores" var="detalle" value="#{controladorCajasRecaudacion.cajasRecBb.listaFacturaDetalle}" rowIndexVar="index">
+                            <p:column headerText="Línea" style="text-align: left">
+                                <h:outputText value="#{index+1}"/>
+                            </p:column>
+
+                            <p:column headerText="Contrato" width="500" style="text-align: left">
+                                <h:outputText value="#{detalle.fdtTtrDescripcion}"/>
+                            </p:column>
+                            <p:column headerText="Tramite " style="text-align: right" >
+                                <h:outputText value="#{detalle.fdtTraNumero}"/>
+                            </p:column>
+                            <p:column headerText="No. Predio " style="text-align: right" >
+                                <h:outputText value="#{detalle.numeroPredio}"/>
+                            </p:column>
+                            <p:column headerText="No. Catastro " style="text-align: right" >
+                                <h:outputText value="#{detalle.numeroCatastro}"/>
+                            </p:column>
+                            <p:column headerText="Valor" style="text-align: right" > 
+                                <h:outputText value="#{detalle.fdtValor}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:panelGrid  layout="grid"   columns="1" style="border: none;text-align: right;background-position: right">
+                           
+                            <p:row  style="border: none;">
+                                <p:outputLabel for="txtSubTotal" value="Subtotal" style="text-align: right; margin-right:12px; font-weight: bold; color:#1A237E;"/>
+                                <p:inputNumber readonly="true" id="txtSubTotal" value="#{controladorCajasRecaudacion.cajasRecBb.factura.facSubTotal}" inputStyle="text-align: right; font-weight:bold; color:#1A237E;" size="11"/>
+                            </p:row>
+                            <p:row  style="border: none;">
+                                <p:outputLabel for="txtDescuento" value="Descuento" style="text-align: right; margin-right:12px; font-weight: bold; color:#1A237E;"/>
+                                <p:inputNumber readonly="true" id="txtDescuento" value="#{controladorCajasRecaudacion.cajasRecBb.factura.facDescuento}" inputStyle="text-align: right; font-weight:bold; color:#1A237E;" size="11"/>
+                            </p:row>
+                            <p:row style="border: none">
+                                <p:outputLabel for="txtIva12" value="Iva 12%" style="text-align: right; margin-right:12px; font-weight: bold; color:#1A237E;"/>
+                                <p:inputNumber  readonly="true" id="txtIva12" value="#{controladorCajasRecaudacion.cajasRecBb.factura.facIva}" inputStyle="text-align: right; font-weight:bold; color:#1A237E;" size="11"/>
+                            </p:row>
+                            <p:row style="border: none">
+                                <p:outputLabel for="txtIva0" value="Iva 0%" style="text-align: right; margin-right:12px; font-weight: bold; color:#1A237E;"/>
+                                <p:inputNumber readonly="true" id="txtIva0" value="#{controladorCajasRecaudacion.cajasRecBb.iva0}" inputStyle="text-align: right; font-weight:bold; color:#1A237E;" size="11"/>
+                            </p:row>
+                            <p:row style="border: none">
+                                <p:outputLabel for="txtTotal" value="Total" style="text-align:  right; margin-right:12px; font-weight: bold; color:#1A237E;"/>
+                                <p:inputNumber readonly="true" id="txtTotal" value="#{controladorCajasRecaudacion.cajasRecBb.factura.facTotal}" inputStyle="text-align: right; font-weight:bold; color:#1A237E;" size="11"/>
+                            </p:row>
+
+                        </p:panelGrid>
+
+
+                        <p:panel style="text-align: right">
+                            <p:commandButton id="btnNuevo" value="Refrescar" class="cyan-btn"  icon="fa fa-refresh" action="#{controladorCajasRecaudacion.reload}" />
+                            <p:commandButton id="btnGrabar" class="green-btn" icon="fa fa-save" disabled="#{controladorCajasRecaudacion.cajasRecBb.facturado or controladorCajasRecaudacion.cajasRecBb.listaFacturaDetalle.size() == 0}"
+                                             action="#{controladorCajasRecaudacion.actualizarValorPago}" update="#{p:component('dlgPago')}" onclick="PF('dlgPago').show()"  value="Grabar"  />
+                            <p:commandButton disabled="#{controladorCajasRecaudacion.cajasRecBb.estadoImprimir}" id="btnImprimir" ajax="false"  immediate="true"  icon="fa fa-print" value="Imprimir" action="#{controladorCajasRecaudacion.generarNV()}" />
+                            <p:commandButton id="btncierrecaja" class="red-btn" icon="fa fa-window-close" immediate="true" value="Cierre Caja" action="#{controladorCajasReingresoTramite.cerrarCaja()}" />
+                        </p:panel>
+
+
+                        <p:dialog  widgetVar="dlgPago" modal="true" minHeight="40" position="center center" onShow="PF('dlgPago').initPosition()">
+                            <p:panel id="dlgPago">
+                                <p:growl id="growl1" life="2000" />
+                                <p:panelGrid columns="3" styleClass="ui-noborder" style="width: 80px; border: none">
+
+                                    <p:row style="align-content: center">
+                                        <p:selectOneMenu id="pago" value="#{controladorCajasRecaudacion.cajasRecBb.idPago}">
+                                            <f:selectItems value="#{controladorCajasRecaudacion.cajasRecBb.selectPago}" var="theme" itemLabel="#{theme.description}" itemValue="#{theme}"></f:selectItems>
+                                            <p:column style="width:10%">
+                                                <h:outputText styleClass="ui-theme ui-theme-#{theme.description}" />
+                                            </p:column>
+
+                                            <p:column>
+                                                <h:outputText value="#{controladorCajasRecaudacion.cajasRecBb.idPago}" />
+                                            </p:column>
+                                        </p:selectOneMenu>
+                                    </p:row>
+                                    <p:row>
+
+                                        <p:inputNumber id="inpValor" value="#{controladorCajasRecaudacion.cajasRecBb.valorPago}"></p:inputNumber>
+                                    </p:row>
+                                    <p:commandButton value="Agregar" update="formCajas:pagos growl1 btnPago salTotal inpValor" icon="fa fa-plus" action="#{controladorCajasRecaudacion.verificarPago}"></p:commandButton>
+
+                                    <p:dataTable id="pagos" var="pago" value="#{controladorCajasRecaudacion.cajasRecBb.listapagos}">
+                                        <f:facet name="header">
+                                            Pagos Registrados
+                                        </f:facet>
+                                        <p:column headerText="Tipo Forma de Pago">
+                                            <h:outputText value="#{pago.ffpDescripcion}" />
+                                        </p:column>
+                                        <p:column headerText="Valor Pago">
+                                            <h:outputText value="#{pago.ffpValor}" />
+                                        </p:column>
+                                        <p:column style="width:32px;text-align: center">
+                                            <p:commandButton icon="ui-icon-close" class="red-btn" title="Eliminar" update="pagos formCajas:btnPago formCajas:salTotal formCajas:inpValor" action="#{controladorCajasRecaudacion.elminarFila}">
+                                                <f:setPropertyActionListener value="#{pago}" target="#{controladorCajasRecaudacion.cajasRecBb.pagoSeleccionado}" />
+                                            </p:commandButton>
+                                        </p:column>
+                                        <p:summaryRow>
+                                            <p:column colspan="3" style="text-align:right">
+                                                <h:outputText value="Total:" />
+                                            </p:column>
+                                            <p:column>
+                                                <h:outputText value="#{controladorCajasRecaudacion.cajasRecBb.totalPago}">
+                                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                                </h:outputText>
+                                            </p:column>
+                                        </p:summaryRow>
+                                    </p:dataTable>
+                                    <p:outputLabel value="Pago Total:" style="text-align: right; font-weight:bold; color:#1A237E;"></p:outputLabel>
+                                    <p:outputLabel id="pagTotal" value="#{controladorCajasRecaudacion.cajasRecBb.factura.facTotal}" style="text-align: right; font-weight:bold; color:#1A237E;"/>
+                                    <p:outputLabel></p:outputLabel>
+                                    <p:outputLabel value="Saldo:" style="text-align: right; font-weight:bold; color:#1A237E;"></p:outputLabel>
+                                    <p:outputLabel id="salTotal" value="#{controladorCajasRecaudacion.cajasRecBb.saldoPago}" style="text-align: right; font-weight:bold; color:#1A237E;"/>
+                                    <p:commandButton id="btnPago" update="growl1 btnFiltrar txtNumFactura btnGrabar txtNumTramite txtCedula txtDireccion txtNombre txtTelefono txtMail txtObservacion btnAgregarPersona btnFiltrar" 
+                                                     class="green-btn" icon="fa fa-save" value="Guardar" action="#{controladorCajasRecaudacion.verificarDatos}" 
+                                                     disabled="#{controladorCajasRecaudacion.cajasRecBb.btnPago}" oncomplete="PF('dlgPago').hide()"/>
+                                </p:panelGrid>
+
+                            </p:panel>
+                        </p:dialog> 
+                    </p:panel>
+                    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                        <p:graphicImage  value="../../resources/imagenes/loading.gif"  style="width: 75px; height: 75px;"/>
+                    </p:dialog>                    
+                </h:form>
+                <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+                <ui:include src="/paginas/FiltradoPersona.xhtml"/>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

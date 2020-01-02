@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog widgetVar="dlgCrearTramVal" header="Nuevo Trámite Valor" modal="true" draggable="false" resizable="true" appendTo="@(body)" >
+            <h:form id="frmIngresoTramVal">
+                <p:panelGrid columns="2" columnClasses="label,value" 
+                             rendered="#{controladorMarginacionGrupal.tramiteValorSeleccionado != null}">
+                    <p:outputLabel value="Catastro" for="trvNumCatastro" />
+                    <p:inputText id="trvNumCatastro" value="#{controladorMarginacionGrupal.tramiteValorSeleccionado.trvNumCatastro}" 
+                                 required="true" requiredMessage="El campo Catastro, es requerido"/>
+
+                    <p:outputLabel value="Parroquia" for="trvParroquia" />
+                    <p:selectOneMenu id="trvParroquia" value="#{controladorMarginacionGrupal.parroquiaSeleccionada}"
+                                     required="true" requiredMessage="El campo Parroquia, es requerido">
+                        <f:selectItem itemLabel="Seleccione uno..." />
+                    <f:selectItems value="#{controladorMarginacionGrupal.listaParroquia}"
+                                   var="parroquia"
+                                   itemLabel="#{parroquia.parNombre}"
+                                   itemValue="#{parroquia}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Predio" for="traNumPredio" />
+                    <p:inputText id="traNumPredio" value="#{controladorMarginacionGrupal.tramiteValorSeleccionado.traNumPredio}"  
+                                 required="true" requiredMessage="El campo Predio, es requerido"/>
+                </p:panelGrid>
+
+                <div align="center">
+
+                    <p:commandButton actionListener="#{controladorMarginacionGrupal.crearTramiteValor()}" value="Guardar" 
+                                     icon="fa fa-save"
+                                     update="@form :growl :formMarginacion" oncomplete="if (!args.validationFailed) PF('dlgCrearTramVal').hide()" class="green-btn"
+                                     />
+                    <p:spacer width="30%" height="0"/>
+                    <p:commandButton value="Cancelar" onclick="PF('dlgCrearTramVal').hide()" class="red-btn"
+                                     immediate="true" icon="fa fa-trash"
+                                     />
+                </div>
+
+
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+
+</html>

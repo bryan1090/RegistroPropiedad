@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoDocumentoWebViewDlg" widgetVar="TipoDocumentoWebViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTipoDocumentoWebTitle}">
+            <h:form id="TipoDocumentoWebViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tipoDocumentoWebController.selected != null}">
+                        <h:outputText value="#{bundle.ViewTipoDocumentoWebLabel_tdwNombre}"/>
+                        <h:outputText value="#{tipoDocumentoWebController.selected.tdwNombre}" style="text-transform: uppercase" title="#{bundle.ViewTipoDocumentoWebTitle_tdwNombre}"/>
+                        <h:outputText value="#{bundle.ViewTipoDocumentoWebLabel_tdwDescripcion}"/>
+                        <h:outputText value="#{tipoDocumentoWebController.selected.tdwDescripcion}" style="text-transform: uppercase" title="#{bundle.ViewTipoDocumentoWebTitle_tdwDescripcion}"/>
+                        <h:outputText value="#{bundle.ViewTipoDocumentoWebLabel_tdwEstado}"/>
+                        <h:outputText value="#{tipoDocumentoWebController.selected.tdwEstado}" style="text-transform: uppercase" title="#{bundle.ViewTipoDocumentoWebTitle_tdwEstado}"/>
+                        <h:outputText value="#{bundle.ViewTipoDocumentoWebLabel_tdwFHR}"/>
+                        <h:outputText value="#{tipoDocumentoWebController.selected.tdwFHR}" style="text-transform: uppercase" title="#{bundle.ViewTipoDocumentoWebTitle_tdwFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewTipoDocumentoWebLabel_tdwUser}"/>
+                        <h:outputText value="#{tipoDocumentoWebController.selected.tdwUser}" style="text-transform: uppercase" title="#{bundle.ViewTipoDocumentoWebTitle_tdwUser}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{tipoDocumentoWebController.clear()}" value="#{bundle.Close}" onclick="TipoDocumentoWebViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

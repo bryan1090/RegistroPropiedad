@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Tramite - Proforma"></h:outputText>
+        </ui:define>
+        <ui:define name="content" >
+            <p:tabView id="tabsTramites">
+                <p:tab title="Trámite Proforma">
+                    <h:form id="frmTramites" >           
+                        <p:panel id="panelTramites" style="border: none">
+                            <p:panel>
+                                <p:remoteCommand name="contrato" actionListener="#{tramitesControlador.actualizarContrato()}"/>
+                                <h:panelGrid columns="6" cellpadding="5">
+                                    <p:outputLabel for="txtNumTram" style=" font-weight: bold;" value="Número Trámite"/>
+                                    <h:outputText  id="txtNumTram" value="#{tramitesControlador.tramitesControladorBb.tramite.traNumero}" style="color:#b71c1c"/>
+
+                                    <p:outputLabel for="txtEJ" value="E/J"/>
+                                    <h:outputText id="txtEJ" value="#{tramitesControlador.tramitesControladorBb.tramite.traClase}" style="color:#b71c1c"/>
+
+                                    <p:outputLabel value="Notaria" for="cmbNotaria" />
+                                    <p:selectOneMenu disabled="#{tramitesControlador.txtNotaria or tramitesControlador.readOnlyDatos}" id="cmbNotaria" value="#{tramitesControlador.tramitesControladorBb.tramite.traNotaria}" panelStyle="width:180px"
+                                                     effect="fade" var="t" style="width:160px" filter="true" filterMatchMode="startsWith"                                                
+                                                     required="true" requiredMessage="El campo Notaría, es requerido.">
+                                        <p:ajax process="cmbNotaria"/>
+                                        <f:selectItems value="#{tramitesControlador.tramitesControladorBb.notarias}" var="theme" itemLabel="#{theme.description}" itemValue="#{theme}"/>
+
+                                        <p:column style="width:10%">
+                                            <h:outputText styleClass="ui-theme ui-theme-#{theme.description}" />
+                                        </p:column>
+
+                                        <p:column>
+                                            <h:outputText value="#{tramitesControlador.tramitesControladorBb.valorNotaria}" />
+                                        </p:column>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="txtNumCont" value="Nro Contratos"/>
+                                    <p:inputText readonly="#{tramitesControlador.txtNumeroContrato or tramitesControlador.readOnlyDatos}"  id="txtNumCont" value="#{tramitesControlador.tramitesControladorBb.tramite.traNumeroContrato}"
+                                                 required="true" requiredMessage="El campo Número de Contrato, es requerido.">
+                                        <p:ajax process="txtNumCont"></p:ajax>
+                                    </p:inputText>                               
+
+                                    <p:outputLabel for="cmbCont" value="Contratos" style="font-weight: bold"/>
+                                    <p:selectOneMenu disabled="#{tramitesControlador.txtContratos or tramitesControlador.readOnlyDatos}"  id="cmbCont" value="#{tramitesControlador.tramitesControladorBb.valorTipTramite}" 
+                                                     filter="true" filterMatchMode="contains" style="width: 300px"
+                                                     required="true" requiredMessage="El campo Contratos, es requerido.">
+
+                                        <p:ajax update="cmbCtte txtCuantia growl optContrato" listener="#{tramitesControlador.cargarTipoTramiteCom()}" event="change"/>
+                                        <f:selectItem itemLabel="Seleccione Uno" itemValue="" /> 
+                                        <f:selectItems  value="#{tramitesControlador.tramitesControladorBb.listaTipoTramite}" var="theme" itemLabel="#{theme.description}" itemValue="#{theme}"/>                                    
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel  rendered="#{tramitesControlador.tramitesControladorBb.tramite.traClase eq 'E'? false:true}" for="txtNumJuic" value="Nro de Juicio"/>
+                                    <p:inputText rendered="#{tramitesControlador.tramitesControladorBb.tramite.traClase eq 'E'? false:true}" id="txtNumJuic" value="#{tramitesControlador.tramitesControladorBb.tramite.traJucio}"
+                                                 required="true" requiredMessage="El campo Número de Juicio, es requerido." readonly="#{tramitesControlador.readOnlyDatos}"> 
+                                        <p:ajax process="txtNumJuic"/>
+                                    </p:inputText>
+
+                                    <p:outputLabel rendered="#{tramitesControlador.tramitesControladorBb.tramite.traClase eq 'E'? false:true}" for="txtJuzg" value="Juzgado"/>
+                                    <p:inputText rendered="#{tramitesControlador.tramitesControladorBb.tramite.traClase eq 'E'? false:true}" id="txtJuzg" value="#{tramitesControlador.tramitesControladorBb.tramite.traNumeroJusgado}"
+                                                 required="true" requiredMessage="El campo Juzgado, es requerido." readonly="#{tramitesControlador.readOnlyDatos}">
+                                        <p:ajax process="txtJuzg"/>
+                                    </p:inputText>
+
+                                    <p:outputLabel for="txtRtd" value="RTD"/>
+                                    <p:inputText id="txtRtd" readonly="#{tramitesControlador.readOnlyDatos}"
+                                                 value="#{tramitesControlador.tramitesControladorBb.tramite.traRtd}" style="text-transform:uppercase;"> 
+                                        <p:ajax process="txtRtd"/>
+                                    </p:inputText>
+                                    <p:outputLabel for="tipoDesc" value="Tipo Descuento"/>
+                                    <p:selectOneMenu id="tipoDesc" value="#{tramitesControlador.tipoDescuentoSeleccionado}" 
+                                                     filter="true" filterMatchMode="contains"
+                                                     required="false" requiredMessage="El campo Tipo Descuento es requerido.">                                       
+                                        <f:selectItem itemLabel="NINGUNO" itemValue="#{null}" />                                          
+                                        <f:selectItems  value="#{tramitesControlador.listaTipoDescuento}" var="desc" itemLabel="#{desc.tpdDescripcion}" itemValue="#{desc}"/>                                    
+                                        <p:ajax process="tipoDesc"/>                 
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>          
+
+                            </p:panel>
+                            <p></p>
+                            <p:panel>
+                                <h:panelGrid columns="8" cellpadding="4">                                
+
+                                    <p:outputLabel value="Persona" />                    
+                                    <p:commandButton id="crearPersona" immediate="true" icon="fa fa-file-o" 
+                                                     class="green-btn" value="Crear" oncomplete="PF('dlgNuevaPersona').show()" 
+                                                     title="Crear nueva persona" disabled="#{tramitesControlador.readOnlyDatos}"/>
+
+                                    <p:outputLabel value="Modelo" />
+                                    <p:commandButton id="cmbCopiModelo" immediate="true" value="Copiar" disabled="#{tramitesControlador.txtCopiaModelo or tramitesControlador.readOnlyDatos}" class="green-btn" icon="fa fa-files-o" >
+                                        <p:ajax update=":tabsTramites:frmTramites:tblTramites txtCiRucPas growl"  oncomplete="PF('TramitesModelo').show()"  listener="#{tramitesControlador.cargarTramitesModelo}" /> 
+                                    </p:commandButton>
+
+                                    <p:outputLabel value="Contrato" />
+                                    <p:commandButton immediate="true" id="bntNuevoContrato" value="Agregar" action="#{tramitesControlador.desbloquearCampos()}" class="green-btn" icon="fa fa-file-o"
+                                                     disabled="#{tramitesControlador.readOnlyDatos}"
+                                                     update="growl txtNombre cmbNotaria txtNumCont  cmbCont cmbCopiModelo cmbCtte" />
+
+                                    <p:outputLabel value="Persona" />
+                                    <p:commandButton id="btnFiltrar" class="orange-btn" icon="fa fa-search" value="Buscar" actionListener="#{controladorFiltradoPersona.prepararFiltrado('TR', 'tabsTramites:frmTramites')}" 
+                                                     oncomplete="PF('dlgFiltradoPersona').show();" immediate="true" process="@this" disabled="#{tramitesControlador.readOnlyDatos}"/>
+                                </h:panelGrid>
+                            </p:panel>
+                            <h3><h:outputText value="Comparecientes"/></h3>
+                            <p:separator/>
+                            <p:panel>
+                                <h:panelGrid id="panelComparecientes" cellpadding="4" columns="3">                               
+                                    <h:panelGrid columns="5" cellpadding="4">
+
+                                        <p:outputLabel rendered="#{tramitesControlador.tramitesControladorBb.estado}" for="txtNJ" value="N/J" style="font-weight: bold"/>
+                                        <h:outputText rendered="#{tramitesControlador.tramitesControladorBb.estado}" id="txtNJ" value="#{tramitesControlador.tramitesControladorBb.persona.perTipoContribuyente}" />
+                                        <p:outputLabel value="Cédula/RUC/Pas:" style="font-weight: bold" />
+                                        <p:inputText  id="txtCiRucPas" required="true" title="Identificación Persona" readonly="#{tramitesControlador.readOnlyDatos}"
+                                                      style="color: #b71c1c;font-family: Arial, Helvetica, sans-serif;font-size: 15px;" 
+                                                      value="#{tramitesControlador.tramitesControladorBb.identificacion }" requiredMessage="Ingrese la identificación">
+                                            <p:ajax listener="#{tramitesControlador.buscarPersona()}" update="growl panelComparecientes :PersonaEditForm"  event="change" process="txtNumCont txtCiRucPas"/>
+                                        </p:inputText>
+                                    </h:panelGrid>
+
+                                    <h:panelGrid rendered="#{tramitesControlador.tramitesControladorBb.estado}" columns="6" cellpadding="1">
+
+                                        <h:outputText id="txtNombre" value="#{tramitesControlador.tramitesControladorBb.nombrePersona}"/>
+                                        <p:spacer height="1" width="20"/>
+
+                                        <p:outputLabel value="Contrato:" style="font-weight: bold" for="optContrato"/>
+                                        <p:outputLabel value="#{tramitesControlador.tramitesControladorBb.contrato}" id="optContrato" style="color:#b71c1c"/>
+
+                                        <p:outputLabel for="cmbCtte" value="Compareciente" style="font-weight: bold"/>
+                                        <p:selectOneMenu id="cmbCtte"  value="#{tramitesControlador.tramitesControladorBb.valorTramiteComp}" 
+                                                         filter="true" filterMatchMode="contains" disabled="#{tramitesControlador.readOnlyDatos}"
+                                                         required="true" requiredMessage="El campo Valor de Trámite, es requerido.">
+
+                                            <p:ajax update="cmbCtte txtCuantia" />
+
+                                            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                            <f:selectItems  value="#{tramitesControlador.tramitesControladorBb.listaTipoTramiteCompareciente}" var="theme" itemLabel="#{theme.description}" itemValue="#{theme}"/>
+
+                                        </p:selectOneMenu>
+
+                                    </h:panelGrid>
+
+                                    <p:commandButton rendered="#{tramitesControlador.tramitesControladorBb.estado}"
+                                                     disabled="#{tramitesControlador.readOnlyDatos}"
+                                                     id="withIcon" action="#{tramitesControlador.llenarComparecientes()}" update="growl gridComparecientes panelComparecientes txtNombre cmbNotaria txtNumCont  cmbCont cmbCopiModelo cmbCtte "  process="panelTramites" icon="fa fa-plus" />
+
+                                </h:panelGrid> 
+                            </p:panel>
+
+                            <h:panelGrid columns="1" id="gridComparecientes" >
+                                <p:panel id="lista">
+                                    <p:dataTable rendered="#{tramitesControlador.tramitesControladorBb.filtro}" id="dtCompareciente" var="item" 
+                                                 value="#{tramitesControlador.tramitesControladorBb.listacomparecientes}" 
+                                                 selection="#{tramitesControlador.tramitesControladorBb.comparecienteSeleccionado}" 
+                                                 rowKey="#{item.personaConyugue.perId}" scrollable="true" scrollHeight="150" >
+
+                                        <p:column headerText="" style="width: 5%;">
+                                            <p:commandButton class="red-btn" immediate="true" disabled="#{tramitesControlador.readOnlyDatos}"
+                                                             update=":tabsTramites:frmTramites:dtCompareciente :ConyugueForm:gridDetalles growl" 
+                                                             action="#{tramitesControlador.deleteRow}" icon="ui-icon-close" title="Borrar">
+                                                <f:setPropertyActionListener value="#{item}" target="#{tramitesControlador.tramitesControladorBb.comparecienteSeleccionado}" />
+                                            </p:commandButton>
+
+                                        </p:column>
+
+                                        <p:column headerText="Conyuge" style="width: 8%;">
+                                            <p:commandButton update=":tabsTramites:frmTramites:dtCompareciente :ConyugueForm:gridDetalles :CrearPersonaTramProformaForm"
+                                                             immediate="true" disabled="#{tramitesControlador.readOnlyDatos}"
+                                                             action="#{tramitesControlador.buscarConyugue(item.identificacion)}"
+                                                             oncomplete="PF('dlgNuevaPersonaTramProforma').show()" icon="ui-icon-search" title="Ver Conyugue">
+
+                                            </p:commandButton>
+
+                                        </p:column>
+
+                                        <p:column headerText="CI/Ruc/Pas" style="width: 10%;" >
+                                            <h:outputText value="#{item.identificacion}"  />
+                                        </p:column>
+
+                                        <p:column headerText="Nombres">
+                                            <h:outputText value="#{item.nombres}" />
+                                        </p:column>
+
+                                        <p:column headerText="Contrato" style="width: 15%;" >
+                                            <p:commandLink value="#{item.tramite}" disabled="#{tramitesControlador.readOnlyDatos}" immediate="true" action="#{tramitesControlador.seleccionarContrato()}" update=":tabsTramites:frmTramites:cmbCtte :tabsTramites:frmTramites:cmbCont" >
+                                                <f:setPropertyActionListener value="#{item}" target="#{tramitesControlador.tramitesControladorBb.comparecienteSeleccionado}" />
+                                            </p:commandLink>
+                                        </p:column>
+
+                                        <p:column headerText="Comparecientes" style="width: 15%;" >
+                                            <h:outputText value="#{item.compareciente}" />
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </p:panel>
+
+                                <p:panel id="panelCuantia" rendered="#{tramitesControlador.tramitesControladorBb.filtro}" >
+                                    <h:panelGrid columns="3" cellpadding="4">
+                                        <p:outputLabel value="Total Cuantia" for="txtCuantia"/>
+                                        <p:inputNumber readonly="true" id="txtCuantia" value="#{tramitesControlador.valorCuantia}"/>                                
+
+                                        <p:commandButton id="btnCuantia"  icon="fa fa-plus-circle"  class="green-btn" disabled="#{tramitesControlador.readOnlyDatos}"
+                                                         actionListener="#{tramitesControlador.unicoTramite()}" oncomplete="PF('dlgCuantia').show()" 
+                                                         update="cuantiaForm:cmbCont2 cuantiaForm:panelCuatia" title="Ingresar Cuantia"/>
+                                    </h:panelGrid>
+                                </p:panel>
+
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="6" class="ui-grid">
+                                <p:commandButton value="Guardar" immediate="true" class="green-btn" disabled="#{tramitesControlador.readOnlyDatos}"
+                                                 icon="fa fa-save" update="growl :tabsTramites:frmTramites" action="#{tramitesControlador.verificarComparecientesContrato}"  />
+                                <p:commandButton value="Guardar y a Caja" immediate="true" icon="fa fa-save" disabled="#{tramitesControlador.readOnlyDatos}"
+                                                 action="#{tramitesControlador.aCaja}" class="yellow-btn" update="growl :tabsTramites:frmTramites"  >
+
+                                </p:commandButton>
+                                <p:commandButton value="Imprimir" disabled="#{!tramitesControlador.readOnlyDatos}" icon="fa fa-print" immediate="true" update="growl" ajax="false" class="cyan-btn" action="#{tramitesControlador.generarReporte()}"/>
+                                <p:commandButton value="Regresar"  immediate="true" id="bntRedrescar" class="orange-btn" icon="fa fa-arrow-left" actionListener="#{tramitesControlador.limpiar()}"/>
+                                <p:commandButton class="red-btn"   immediate="true" icon="fa fa-sign-out"   value="Salir"  action="#{tramitesControlador.salir()}" /> 
+                            </h:panelGrid>
+
+
+
+
+                            <p:dialog header="DATOS CONYUGUE" widgetVar="dlgConyuge" minHeight="40" position="center center" onShow="PF('dlgConyuge').initPosition()">
+                                <p:outputPanel id="gridDetalles" style="text-align:center;">
+                                    <p:remoteCommand name="cedula" actionListener="#{tramitesControlador.validarCedula()}" update="growl"/>
+
+
+                                    <p:panelGrid columns="4">
+                                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perTipoIdentificacion}" for="perTipoIdentificacion" />
+                                        <p:inputText rendered="false" maxlength="1" style="text-transform:uppercase;"  id="perTipoIdentificacion" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perTipoIdentificacion}" title="Ingrese C 'Cédula'" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perTipoIdentificacion}"/>
+                                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perIdentificacion}" for="perIdentificacion" />
+                                        <p:inputText maxlength="10" readonly="#{tramitesControlador.tramitesControladorBb.controladorCompareciente.persona.perIdConyuge.perId eq 0 ? true:false }" id="perIdentificacion" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perIdentificacion}" title="#{bundle.CreatePersonaTitle_perIdentificacion}" 
+                                                     required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perIdentificacion}" onchange="cedula()"/>
+                                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perApellidoPaterno}" for="perApellidoPaterno" />
+                                        <p:inputText style="text-transform:uppercase;" id="perApellidoPaterno" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perApellidoPaterno}" title="#{bundle.CreatePersonaTitle_perApellidoPaterno}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perApellidoPaterno}"/>
+
+                                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perApellidoMaterno}" for="perApellidoMaterno" />
+                                        <p:inputText style="text-transform:uppercase;" id="perApellidoMaterno" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perApellidoMaterno}" title="#{bundle.CreatePersonaTitle_perApellidoMaterno}" />
+
+                                        <p:outputLabel value="#{bundle.CreatePersonaLabel_perNombre}" for="perNombre" />
+                                        <p:inputText style="text-transform:uppercase;" id="perNombre" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perNombre}" title="#{bundle.CreatePersonaTitle_perNombre}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perNombre}"/>
+
+                                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perFechaNacimiento}" for="perFechaNacimiento" />
+                                        <p:calendar rendered="false" id="perFechaNacimiento" pattern="dd/MM/yyyy HH:mm:ss" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perFechaNacimiento}" title="#{bundle.EditPersonaTitle_perFechaNacimiento}" required="true" requiredMessage="#{bundle.EditPersonaRequiredMessage_perFechaNacimiento}" showOn="button"/>
+                                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perEstado}" for="perEstado" />
+                                        <p:inputText rendered="false" readonly="true" id="perEstado" value="1" title="#{bundle.CreatePersonaTitle_perEstado}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perEstado}"/>
+                                        <p:outputLabel rendered="false"  value="#{bundle.CreatePersonaLabel_perUser}" for="perUser" />
+                                        <p:inputText rendered="false" readonly="true" id="perUser" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perUser}" title="#{bundle.CreatePersonaTitle_perUser}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perUser}"/>
+                                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perFHR}" for="perFHR" />
+                                        <p:calendar rendered="false" id="perFHR" pattern="dd/MM/yyyy HH:mm:ss" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perFHR}" title="#{bundle.EditPersonaTitle_perFHR}" required="true" requiredMessage="#{bundle.EditPersonaRequiredMessage_perFHR}" showOn="button"/>
+                                        <p:outputLabel rendered="false" value="#{bundle.CreatePersonaLabel_perEstadoCivil}" for="perEstadoCivil" />
+                                        <p:inputText rendered="false" id="perEstadoCivil" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perEstadoCivil}" title="#{bundle.CreatePersonaTitle_perEstadoCivil}" required="true" requiredMessage="#{bundle.CreatePersonaRequiredMessage_perEstadoCivil}"/>
+
+                                        <p:outputLabel rendered="false" value="Sexo:" for="cmbSexo" />
+                                        <p:selectOneMenu  rendered="false"  id="cmbSexo" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perSexo}" >
+                                            <f:selectItem itemLabel="Seleccionar una..." itemValue="" />
+                                            <f:selectItems value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.sexo}"/>
+                                        </p:selectOneMenu>
+                                        <p:outputLabel rendered="false" value="Género:" for="cmbSexo" />
+                                        <p:selectOneMenu rendered="false"   id="cmbGenero" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perGenero}" >
+                                            <f:selectItem itemLabel="Seleccionar una..." itemValue="" />
+                                            <f:selectItems value="#{recepcionDocumentacionControlador.recepcionDocumentacionControladorBb.sexo}"/>
+                                        </p:selectOneMenu>
+                                        <p:outputLabel rendered="false" value="Discapacidad" for="txtCalidad"/>
+                                        <p:selectOneMenu rendered="false"   id="txtCalidad" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perCalidad}" >
+                                            <f:selectItem itemLabel="N"/>
+                                            <f:selectItem itemLabel="S"/>
+                                        </p:selectOneMenu>
+                                        <p:outputLabel rendered="false" value="Dirección" for="txtDireccion"/>
+                                        <p:inputText rendered="false"  size="50" id="txtDireccion" value="#{tramitesControlador.tramitesControladorBb.personaConyugue.perDireccion}" ></p:inputText>
+                                    </p:panelGrid>
+                                </p:outputPanel>
+                            </p:dialog>
+                            <p:dialog widgetVar="TramitesModelo" modal="true" width="800" height="400" minHeight="40" position="center center" onShow="PF('TramitesModelo').initPosition()">
+                                <p:ajax event="close" oncomplete="#{tramitesControlador.actualizarEstado()}" update="dtCompareciente"/>
+                                <p:outputPanel id="gridTramitesModelo" style="text-align:center;">
+
+                                    <p:panel id="principal" header="Crea- Modelo"  >
+                                        <div class="ui-g">
+                                            <div class="ui-g-4">
+                                                <p:spacer></p:spacer>
+                                                <p:dataTable id="tblTramites"  widgetVar="tblTramites" var="item" value="#{controladorCopiaModelo.tramitesControladorBb.listaTramiteUsuario}" selection="#{controladorCopiaModelo.tramitesControladorBb.listaTramiteUsuaFiltrada}" 
+                                                             rowKey="#{item.traNumero.traNumero}" style="margin-bottom:0" scrollable="true" scrollHeight="350" >
+                                                    <p:ajax event="rowSelect"   listener="#{tramitesControlador.cargarCopia}" update=":tabsTramites:frmTramites:tblComparecientes" />
+                                                    <p:column visible="false" selectionMode="multiple" style="width:16px;text-align:center"/>
+
+                                                    <p:column filterBy="#{item.traNumero.traNumero}"  headerText="#TRÁMITE" filterMatchMode="contains">
+                                                        <h:outputText value="#{item.traNumero.traNumero}" />
+                                                    </p:column>
+
+                                                    <p:column visible="false" headerText="TIPO">
+                                                        <h:outputText value="#{item.traNumero.traClase}" />
+                                                    </p:column>
+
+                                                    <p:column visible="false" headerText="MODELO" >
+                                                        <p:cellEditor>
+                                                            <f:facet name="output"><h:outputText value="#{item.traNumero.traModelo}" style="color: red;" /></f:facet>
+                                                            <f:facet name="input"><p:inputText id="modelInput" value="#{item.traNumero.traModelo}" style="width:96%"/></f:facet>
+
+                                                        </p:cellEditor>
+                                                    </p:column>
+                                                </p:dataTable>
+
+                                            </div>
+                                            <div class="ui-g-8">
+                                                <p:panel>
+                                                    <p:dataTable widgetVar="tblComparecientes" id="tblComparecientes" editable="true"  var="detalle" value="#{tramitesControlador.tramitesControladorBb.listaTramitesDetalle}" >
+                                                        <p:column headerText="NOMBRES">
+                                                            <h:outputText value="#{detalle.tdtPerNombre}" />
+                                                        </p:column>
+                                                        <p:column headerText="CÉDULA/RUC/PAS">
+                                                            <h:outputText value="#{detalle.tdtPerIdentificacion}" />
+                                                        </p:column>
+                                                        <p:column headerText="COMPARECIENTES">
+                                                            <h:outputText value="#{detalle.tdtTpcDescripcion}" />
+                                                        </p:column>
+                                                        <p:column headerText="TRÁMITE">
+                                                            <h:outputText value="#{detalle.tdtTtrDescripcion}" />
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                    <p:commandButton immediate="true" class="green-btn" update="growl gridComparecientes txtNumCont" onclick="PF('TramitesModelo').hide()" value="Copiar" action="#{tramitesControlador.copiarTramite()}"> </p:commandButton>
+
+                                                </p:panel>
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>
+                            </p:dialog>  
+
+                            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                        </p:panel>        
+                    </h:form>
+                </p:tab>
+               
+            </p:tabView>
+            <ui:include src="/paginas/PROCESOS/persona/persona.xhtml"/>
+            <ui:include src="/paginas/PROCESOS/persona/personaTramiteProforma.xhtml"/>
+            <ui:include src="conyugue.xhtml"/> 
+            <ui:include src="cuantia.xhtml"/>      
+<!--            este contiene el dialogo editarpersona-->
+            <ui:include src="/paginas/FiltradoPersona.xhtml"/> 
+            
+        </ui:define>
+
+    </ui:composition>
+</html>

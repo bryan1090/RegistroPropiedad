@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListVolumenTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="VolumenListForm">
+                <p:panel header="#{bundle.ListVolumenTitle}">
+                    <p:dataTable id="datalist" value="#{controladorVolumen.items}" var="item"
+                                 selectionMode="single" selection="#{controladorVolumen.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.vleId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleVolumen}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleVolumen}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleHojas}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleHojas}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleFojaInicial}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleFojaInicial}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleFojaFinal}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleFojaFinal}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleEstado}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleEstado}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleUser}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <!--<p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleFila}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleFila}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleColumna}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleColumna}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleEstante}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleEstante}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleBloque}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleBloque}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_tomId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tomId.tomTomo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleInscripcionFinal}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleInscripcionFinal}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVolumenTitle_vleInscripcionInicial}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.vleInscripcionInicial}"/>
+                        </p:column>-->
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn"  value="#{bundle.Create}" actionListener="#{controladorVolumen.prepareCreate}" update=":VolumenCreateForm" oncomplete="PF('VolumenCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":VolumenViewForm" oncomplete="PF('VolumenViewDialog').show()" disabled="#{empty controladorVolumen.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" actionListener="#{controladorVolumen.prepareEdit}" update=":VolumenEditForm" oncomplete="PF('VolumenEditDialog').show()" disabled="#{empty controladorVolumen.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{controladorVolumen.destroy}" update=":growl,datalist" disabled="#{empty controladorVolumen.selected}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

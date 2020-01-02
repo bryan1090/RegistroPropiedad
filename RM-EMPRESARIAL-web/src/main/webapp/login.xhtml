@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>RM</title>
+        <script src="https://www.google.com/recaptcha/api.js"></script>
+    </h:head>
+
+    <h:body styleClass="login-body">
+        <div class="body-container">
+            <div class="ui-g">
+                <div class="ui-g-12 ui-lg-6 left-side">
+                    <p:graphicImage name="images/rm_inicio.png" library="apollo-layout" styleClass="logo" />
+                    <h1>Bienvenido</h1>
+                    <p>
+                        Por favor inicie sesión.
+                    </p>
+                </div>
+                <div class="ui-g-12 ui-lg-6 right-side">
+                    <div class="login-wrapper">
+                        <div class="login-container">
+                            <h:form id="LoginForm">
+
+                                <p:growl id="growl" showDetail="true" sticky="false" life="5000" />
+
+                                <div class="ui-g ui-fluid">
+                                    <div class="ui-g-12">
+                                        <p:inputText placeholder="Usuario"  autocomplete="off"  value="#{loginController.login}" style="text-transform: uppercase"/>
+                                    </div>
+                                    <div class="ui-g-12">
+                                        <p:password placeholder="Contraseña" autocomplete="off" value="#{loginController.contrasenia}" feedback="false" style="text-transform: uppercase"/>
+                                    </div>
+                                    <div class="ui-g-12">
+                                        <p:commandButton ajax="false" action="#{loginController.logear()}"  value="Login"  update="idDlgVerif growl"/>
+                                    </div>
+                                    <div class="ui-g-6">
+                                        <p:commandLink id="recuperarButton"  value="Recuperar contraseña" onclick="PF('dlgContrasena').show();grecaptcha.reset();" style="color: #1A237E; text-decoration: none; border: 1px solid #3F51B5; font-size: 14px; border-radius: 10px; padding-right: 10px; padding-left: 10px; width: 90%"/>
+                                    </div>
+                                    <div class="ui-g-6">
+                                        <p:commandLink id="registrarButton"  value="Registrar" onclick="PF('dlgRegistro').show();grecaptcha.reset();" style="color: #1A237E; text-decoration: none; border: 1px solid #3F51B5; font-size: 14px; border-radius: 10px; padding-right: 10px; padding-left: 10px; width: 85%"/>
+                                    </div>
+                                </div>
+                            </h:form>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p:dialog id="dlgRecuperarContrasena" widgetVar="dlgContrasena" modal="true"
+                  resizable="false" header="Recuperar Contraseña" position="center center">
+            <p:ajax event="close" update=":LoginForm" resetValues="true" />
+            <h:form id="RecuperarContrasenaForm">
+                <p:growl id="growl" showDetail="true" sticky="false" life="5000"/> 
+                <p:outputPanel id="plRecuperarContrasena" style="text-align:left;">
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Usuario" for="usuario" />
+                        <p:inputText id="usuario" value="#{recuperarContrasenaPorMail.usurioLogin}"  required="false" autocomplete="off"/>
+                        <p:outputLabel value="Email" for="email" />
+                        <p:inputText id="email" value="#{recuperarContrasenaPorMail.email}"  required="false" autocomplete="off"/>
+                    </h:panelGrid>
+                </p:outputPanel>
+                <p:outputPanel>
+                    <hr/>
+                    <div align="center" class="recaptcha">
+                        <div class="g-recaptcha" data-sitekey="6LfyNJoUAAAAAJajcJCAvli-rgd-YUJpkNA3C3gU"></div>
+                        <h:outputText id="msgRecaptcha1" style="color: red" value="#{recuperarContrasenaPorMail.msgReCaptcha}"/>
+                    </div>
+                    <hr/>
+                    <div align="center">
+                        <h:panelGrid columns="2">
+                            <p:commandButton class="green-btn" icon="fa fa-save" action="#{recuperarContrasenaPorMail.recuperarContraseña()}" value="Enviar" update="growl msgRecaptcha1 plRecuperarContrasena" />
+                            <p:commandButton class="red-btn" update="plRecuperarContrasena msgRecaptcha1" icon="fa fa-close" value="Cancelar" action="#{recuperarContrasenaPorMail.clear()}" onclick="PF('dlgContrasena').hide();" immediate="true" process="@this" oncomplete="grecaptcha.reset();"/>
+                        </h:panelGrid>
+                    </div>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="idDlgRecup" header="Recuperacion de contraseña" modal="true" widgetVar="dlgRecuperacion" position="center center"  visible="#{loginController.visibleDlgRecup}">
+            <h:form id="RecuperacionForm">
+                <p:growl id="growl" showDetail="true" sticky="false" life="5000"/> 
+                <p:outputPanel id="plRecuperacion" style="text-align:left;">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Contraseña nueva:"/>
+                        <p:password autocomplete="off" value="#{loginController.usuarioVerificacion.usuContrasenia}" feedback="true"
+                                    required="true" requiredMessage="Ingrese su contraseña nueva"/>
+                        <h:outputText value="Confirmar contraseña:"/>
+                        <p:password autocomplete="off" value="#{loginController.confiContrasenia}" feedback="false"
+                                    required="true" requiredMessage="Vuelva a ingresar su contraseña nueva"/>
+                    </h:panelGrid>
+                    <hr/>
+                    <div align="center">
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="Guardar" icon="fa fa-save" class="green-btn" update="plRecuperacion growl" action="#{loginController.cambiarContrasenia()}" oncomplete="PF('dlgRecuperacion').hide()"/>
+                            <p:commandButton class="red-btn" process="@this" update="plRecuperacion idDlgRecup" immediate="true" action="#{loginController.limpiar()}" icon="fa fa-close" value="Salir" onclick="PF('dlgRecuperacion').hide()"/>
+                        </h:panelGrid>
+                    </div>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+            <p:graphicImage value="/resources/imagenes/loading.gif"  style="width: 75px; height: 75px;"/>
+        </p:dialog>
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="apollo-layout" />
+        <ui:include src="/dlgRegistro.xhtml"/>
+    </h:body>
+
+</html>

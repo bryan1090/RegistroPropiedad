@@ -1,0 +1,576 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Marginacion Legal"></h:outputText>
+        </ui:define>
+
+        <ui:define name="head">
+            head
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="formMarginacion">
+
+                <p:panel>
+                    <p:panel id="pnlPreMatriculacion">
+                        <h:panelGrid columns="4" style="border: none;text-align: center;width: 100%" >
+                            <p:outputLabel for="txtTramitePopup" value="#Trámite" style="font-weight: bold"/>
+                            <p:outputLabel for="txtRepertorioPopup" value="Repertorio" style="font-weight: bold"/>
+                            <p:outputLabel for="txtFechaPopup" value="Fecha" style="font-weight: bold"/>
+                            <p:outputLabel for="txtContrato" value="Contrato" style="font-weight: bold"/>
+
+                            <h:outputText id="txtTramitePopup" value="#{controladorMarginacionGrupal.repertorioSeleccionado.traNumero.traNumero}"
+                                          style="color: #1A237E"/>
+                            <h:outputText id="txtRepertorioPopup" value="#{controladorMarginacionGrupal.repertorioSeleccionado.repNumero}"
+                                          style="color: #1A237E"
+                                          />
+                            <h:outputText id="txtFechaPopup" value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}"
+                                          style="color: #1A237E">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                            <h:outputText id="txtContrato" value="#{controladorMarginacionGrupal.repertorioSeleccionado.repTtrDescripcion}" 
+                                          style="color: #1A237E"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+
+                    <p:panel id="pnlMarginacionG" header="Selección" >
+                        <div align="right">
+                            <p:button 
+                                icon="fa fa-arrow-circle-left" 
+                                class="cyan-btn"
+                                value="Regresar"
+                                style="width: 80px"
+                                outcome="MarginacionLegalSelRep.xhtml"
+                                />
+                            <p:button 
+                                icon="fa fa-refresh"
+                                class="cyan-btn"
+                                value="Refrescar"
+                                outcome="MarginacionGrupal.xhtml"
+                                >
+                                <f:param name = "paramRepertorio" 
+                                         value = "#{controladorMarginacionGrupal.repertorioSeleccionado.repNumero}" />
+                            </p:button>
+                            <p:button
+                                icon="fa fa-file" class="yellow-btn" value="Crear Acta"
+                                style="width: 100px"
+                                rendered="true"
+                                outcome="/paginas/PROCESOS/MantenimientoTramite/MantenimientoTramite.xhtml"
+                                >
+                                
+                            </p:button>
+                            
+                        </div>
+
+                        <p:dataTable id="dtb_referencias" value="#{controladorMarginacionGrupal.listaActasTabla}" var="item"
+                                     paginator="false"
+                                     rowKey="#{item.actNumero}"
+                                     scrollable="true" scrollHeight="300"
+                                     selection="#{controladorMarginacionGrupal.listaActasSeleccionadas}"
+                                     disabledSelection="#{not empty controladorMarginacionGrupal.listaActasSeleccionadas}"
+                                     >
+
+                            <f:facet name="header">
+                                Actas
+                            </f:facet>
+                            <f:facet name="header">
+
+                            </f:facet>
+                            <f:facet name="footer">
+                                <div align="right">
+
+                                    <p:commandButton process="dtb_referencias"
+                                                     update="@form growl "
+                                                     icon="fa fa-check"
+                                                     class="green-btn"
+                                                     value="Aceptar"
+                                                     action="#{controladorMarginacionGrupal.seleccionarActas()}"
+                                                     >
+
+                                    </p:commandButton>
+                                </div>
+                            </f:facet>
+
+                            <p:column headerText="Acta" 
+                                      filterBy="#{item.actNumero}"
+                                      filterMatchMode="contains"
+                                      >
+                                <h:outputText value="#{item.actNumero}" />
+                            </p:column>
+
+                            <p:column headerText="N° matricula" 
+
+                                      >
+                                <h:outputText value="#{item.prdMatricula}" />
+                            </p:column>
+
+                            <p:column headerText="Fecha" style="width: 80px">
+                                <h:outputText value="#{item.actFch}" >
+                                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+                                </h:outputText>
+                            </p:column>
+
+
+
+                            <p:column headerText="Inscripción">
+                                <h:outputText value="#{item.actInscripcion}" />
+                            </p:column>
+
+
+                            <p:column headerText="Repertorio"
+                                      filterBy="#{item.repNumero.repNumero}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{item.repNumero.repNumero}" />
+                            </p:column>
+
+                            <p:column headerText="Predio"
+                                      filterBy="#{item.prdMatricula.prdPredio}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{item.prdMatricula.prdPredio}" />
+                            </p:column>
+
+                            <p:column headerText="Catastro"
+                                      filterBy="#{item.prdMatricula.prdCatastro}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{item.prdMatricula.prdCatastro}" />
+                            </p:column>
+
+                            <p:column headerText="Estado">
+                                <h:outputText value="Marginada" rendered="#{controladorMarginacionGrupal.esActaMarginada(item)}" style="color: green"/>
+                                <h:outputText value="No Marginada" rendered="#{!controladorMarginacionGrupal.esActaMarginada(item)}" style="color: red"/>
+                            </p:column>
+
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+                            <p:column style="width: 80px">
+                                <p:commandButton process="@this"
+                                                 immediate="true"
+                                                 update="@form growl frmVerActa" 
+                                                 icon="fa fa-search" 
+                                                 class="cyan-btn"
+                                                 value="Ver"
+                                                 oncomplete="PF('dlgVerActa').show();"
+                                                 action="#{controladorMarginacionGrupal.verActa(item)}"
+                                                 >
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
+
+                    <p:panel   header="Marginación" rendered="#{not empty controladorMarginacionGrupal.listaActasSeleccionadas}">
+                        <h:panelGrid columns="2"  >
+                            <p:outputLabel   value="Tipo Margin."/>
+                            <p:selectOneMenu id="lbxMargin" requiredMessage="Por favor seleccione el tipo de marginación" required="true" value="#{controladorMarginacionGrupal.IDtipoMarginacionSeleccionado}" 
+                                             filter="true" filterMatchMode="contains"
+                                             >
+                                <f:selectItem itemLabel="Seleccione..." itemValue=""/>
+                                <f:selectItems value="#{controladorMarginacionGrupal.getlistaTipoMarginacion()}" var="item"
+                                               itemValue="#{item.tmcId}" itemLabel="#{item.tmcNombre}"/>
+                            </p:selectOneMenu>                                           
+                        </h:panelGrid>
+
+                        <h:panelGroup>
+                            <p:commandButton class="green-btn" icon="fa fa-plus" value="Marginación"
+                                             action="#{controladorMarginacionGrupal.preGuardarMarginacion()}" 
+                                             update=" :frmIngreso growl :frmIngreso:growl2"
+                                             oncomplete="if (!args.validationFailed) PF('dlgCrearMarg').show()" 
+                                             />
+                            <p:commandButton class="yellow-btn" immediate="true" icon="fa fa-arrows-h" value="Matriculación" 
+                                             action="#{controladorMarginacionGrupal.cambiarEstado()}" update="growl"  
+                                             />
+
+                        </h:panelGroup>
+                    </p:panel>
+
+
+
+
+
+                </p:panel>
+            </h:form>
+
+            <p:dialog header="Ver Acta" widgetVar="dlgVerActa"
+                      modal="true" minHeight="50"  width="80%" appendTo="@(body)" >
+                <h:form id="frmVerActa">
+                    <p:scrollPanel mode="native" style="height: 500px">
+                        <div class="ui-g">
+                            <div class="ui-g-8" >
+                                <p:panel >
+                                    <h:outputText escape="false" value="#{controladorMarginacionGrupal.actaSeleccionada.actActa}"/>
+                                </p:panel>
+                            </div>
+                            <div class="ui-g-4">
+
+                                <p:panel >
+                                    <h:panelGrid columns="1"  id="pnlMarginacion" >
+                                        <!--                                        <p:scrollPanel mode="native" style="height:255px;"  >-->
+                                        <p:dataGrid  value="#{controladorMarginacionGrupal.listaMarginacion}"  var="item" columns="1"
+                                                     layout="grid">
+                                            <f:facet name="header">
+                                                <h:outputText value="Marginaciones"/>
+                                            </f:facet>
+                                            <h:panelGrid columns="2" >
+                                                <h:outputText value="Fecha: "/>
+                                                <h:outputText value="#{item.mrgFHR}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                                </h:outputText>
+                                                <h:outputText value="Responsable: "/>
+                                                <h:outputText value="#{item.mrgUser}"/>
+
+                                                <h:outputText value="Alterno: "/>
+                                                <h:outputText value="#{item.mrgAlt1}" />
+
+                                                <h:outputText value="Repertorio: "/>
+                                                <h:outputText value="#{item.mrgAlt2}"/>
+
+                                                <h:outputText value="Fecha: "/>
+                                                <h:outputText value="#{item.mrgFch}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                </h:outputText>
+                                            </h:panelGrid>
+                                            <p:dataGrid value="#{controladorMarginacionGrupal.listarMarginacionesDetalle(item)}"
+                                                        rendered="#{not empty controladorMarginacionGrupal.listarMarginacionesDetalle(item)}"
+                                                        var="mgd" columns="1" layout="grid" >
+                                                <h:panelGrid columns="2" >
+                                                    <h:outputText value="#{mgd.mgdDescripcion}: "/>
+                                                    <h:outputText value="#{mgd.mgdValor}"/>
+                                                </h:panelGrid>
+                                            </p:dataGrid>
+
+                                        </p:dataGrid>
+                                        <!--                                        </p:scrollPanel>-->
+                                    </h:panelGrid>
+                                </p:panel>
+
+
+                            </div>
+                        </div>
+                    </p:scrollPanel>
+                </h:form>          
+
+
+
+            </p:dialog>
+
+            <p:dialog header="Crear Marginación" widgetVar="dlgCrearMarg"
+                      modal="true" minHeight="50" appendTo="@(body)" >
+                <h:form id="frmIngreso">
+                    <p:growl id="growl2" sticky="true" />
+                    <h:panelGrid columns="1">
+                        <!--compraventa ,Donaciones,  01-->
+                        <h:panelGrid rendered="#{controladorMarginacionGrupal.tipoMarginacionSeleccionado.tmcCodigo eq '01'}"
+                                     columns="1">
+                            <h1><h:outputText value="Libro de Propiedad"/></h1>
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="Fecha de Marginación" for="@next" />
+                                <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+
+                                <p:outputLabel value="Responsable" for="@next" />
+                                <h:outputText value="#{dataManagerSesion.usuarioLogeado.usuLogin}"/>
+
+                                <p:outputLabel value="Parroquia" for="@next"                />
+                                <h:outputText value="#{controladorMarginacionGrupal.buscarNombreParroquia()}"/>
+
+                                <p:outputLabel value="Tipo Propiedad" for="@next" />
+                                <h:outputText value="#{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion2}
+                                              - #{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion1}"
+                                              />
+
+                                <p:outputLabel value="Vendido" for="@next" />
+                                <h:panelGroup>
+                                    <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                    <h:outputText value=" - #{controladorMarginacionGrupal.repertorioSeleccionado.repNumero}"/>
+                                </h:panelGroup>
+
+
+                                <p:outputLabel value="Derechos y Acciones" for="@next" />
+                                <p:inputNumber value="#{controladorMarginacionGrupal.porcentajeDerAcn}"
+                                               decimalPlaces="2"
+                                               maxValue="100.00" minValue="00.00"
+                                               symbol="%" symbolPosition="suffix"
+                                               >
+                                </p:inputNumber>
+
+                            </p:panelGrid>
+                            <br></br>
+                        </h:panelGrid>
+
+                        <!--hipoteca  02-->
+                        <h:panelGrid rendered="#{controladorMarginacionGrupal.tipoMarginacionSeleccionado.tmcCodigo eq '02'}"
+                                     columns="1">
+                            <h1><h:outputText value="Libro de Propiedad"/></h1>
+                            <p:panelGrid columns="2" 
+                                         >
+                                <p:outputLabel value="Fecha de Marginación" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}"
+                                              >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                                <p:outputLabel value="Responsable" for="@next" 
+                                               />
+                                <h:outputText value="#{dataManagerSesion.usuarioLogeado.usuLogin}"/>
+                                <p:outputLabel value="Parroquia" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.buscarNombreParroquia()}"
+                                              />
+
+
+                                <p:outputLabel value="Tipo Propiedad" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion2}
+                                              - #{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion1}"
+                                              />
+
+                                <p:outputLabel value="Hipoteca" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion2}"
+                                              />
+
+                                <p:outputLabel value="Derechos y Acciones" for="@next" 
+                                               />
+                                <p:inputNumber value="#{controladorMarginacionGrupal.porcentajeDerAcn}"
+                                               decimalPlaces="2"
+                                               maxValue="100.00" minValue="00.00"
+                                               symbol="%" symbolPosition="suffix"
+                                               >
+                                </p:inputNumber>
+
+                            </p:panelGrid>
+                            <br></br>
+                        </h:panelGrid>
+
+                        <!--declaratoria y modificatoria  03-->
+                        <h:panelGrid rendered="#{controladorMarginacionGrupal.tipoMarginacionSeleccionado.tmcCodigo eq '03'}"
+                                     columns="1">
+                            <h1><h:outputText value="Libro de Propiedad"/></h1>
+                            <p:panelGrid columns="2" 
+                                         >
+                                <p:outputLabel value="Fecha de Marginación" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}"
+                                              >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                                <p:outputLabel value="Responsable" for="@next" 
+                                               />
+                                <h:outputText value="#{dataManagerSesion.usuarioLogeado.usuLogin}"/>
+                                <p:outputLabel value="Parroquia" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.buscarNombreParroquia()}"
+                                              />
+
+
+                                <p:outputLabel value="Edificio o Bloque" for="@next" 
+                                               />
+                                <p:inputText value="#{controladorMarginacionGrupal.txtEdificioBloque}"
+
+                                             />
+
+                                <p:outputLabel value="Vendido" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion2}"
+                                              />
+
+                                <p:outputLabel value="Derechos y Acciones" for="@next" 
+                                               />
+                                <p:inputNumber value="#{controladorMarginacionGrupal.porcentajeDerAcn}"
+                                               decimalPlaces="2"
+                                               maxValue="100.00" minValue="00.00"
+                                               symbol="%" symbolPosition="suffix"
+                                               >
+                                </p:inputNumber>
+
+                            </p:panelGrid>
+                            <br></br>
+                        </h:panelGrid>
+
+
+                        <!--cancelacion de hipoteca  04 -->
+                        <h:panelGrid rendered="#{controladorMarginacionGrupal.tipoMarginacionSeleccionado.tmcCodigo eq '04'}"
+                                     columns="1">
+                            <h1><h:outputText value="Hay que marginar tanto en el libro de propiedad como de hipotecas"/></h1>
+                            <p:panelGrid columns="2" 
+                                         >
+                                <p:outputLabel value="Fecha de Marginación" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}"
+                                              >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                                <p:outputLabel value="Responsable" for="@next" 
+                                               />
+                                <h:outputText value="#{dataManagerSesion.usuarioLogeado.usuLogin}"/>
+                                <p:outputLabel value="Parroquia" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.buscarNombreParroquia()}"
+                                              />
+
+
+
+                                <p:outputLabel value="Número de Oficio" for="@next" 
+                                               />
+                                <p:inputText value="#{controladorMarginacionGrupal.txtNumOficio}"
+
+                                             />
+
+                                <p:outputLabel value="Fecha de Oficio" for="@next" 
+                                               />
+                                <p:calendar pattern="dd/MM/yyyy"  mask="true" value="#{controladorMarginacionGrupal.fechaOficio}"
+
+                                            />
+
+                                <p:outputLabel value="Notario" for="@next" 
+                                               />
+                                <p:inputText value="#{controladorMarginacionGrupal.txtNotario}"
+
+                                             />
+
+                                <p:outputLabel value="Observacion" for="@next" 
+                                               />
+                                <p:inputText value="#{controladorMarginacionGrupal.txtObservacion}"
+
+                                             />
+
+                                <p:outputLabel value="Cancelación de Hipoteca" for="@next" />
+                                <h:panelGroup>
+                                    <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                    <h:outputText value=" - #{controladorMarginacionGrupal.repertorioSeleccionado.repNumero}"/>
+                                </h:panelGroup>
+
+                            </p:panelGrid>
+                            <br></br>
+                        </h:panelGrid>
+
+                        <!--aclaratoria posesion efectiva  05 -->
+                        <h:panelGrid rendered="#{controladorMarginacionGrupal.tipoMarginacionSeleccionado.tmcCodigo eq '05'}"
+                                     columns="1">
+                            <h1><h:outputText value="Libro de Sentencias varias (Posesión Efectiva)"/></h1>
+                            <p:panelGrid columns="2" 
+                                         >
+                                <p:outputLabel value="Fecha de Marginación" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}"
+                                              >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                                <p:outputLabel value="Responsable" for="@next" 
+                                               />
+                                <h:outputText value="#{dataManagerSesion.usuarioLogeado.usuLogin}"/>
+                                <p:outputLabel value="Parroquia" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.buscarNombreParroquia()}"
+                                              />
+
+                                <p:outputLabel value="Tipo Propiedad" for="@next" />
+                                <h:outputText value="#{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion2}
+                                              - #{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion1}"
+                                              />
+
+                                <p:outputLabel value="Aclaratoria de Posesión Efectiva" for="@next" />
+                                <h:panelGroup>
+                                    <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                    <h:outputText value=" - #{controladorMarginacionGrupal.repertorioSeleccionado.repNumero}"/>
+                                </h:panelGroup>
+
+                                <p:outputLabel value="Observaciones" for="@next" 
+                                               />
+                                <p:inputText value="#{controladorMarginacionGrupal.txtObservacion}"
+
+                                             />
+
+
+                            </p:panelGrid>
+                            <br></br>
+                        </h:panelGrid>
+
+                        <!--sentencias varias  06 -->
+                        <h:panelGrid rendered="#{controladorMarginacionGrupal.tipoMarginacionSeleccionado.tmcCodigo eq '06'}"
+                                     columns="1">
+                            <h1><h:outputText value="Libro de Sentencias varias"/></h1>
+                            <p:panelGrid columns="2" 
+                                         >
+                                <p:outputLabel value="Fecha de Marginación" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}"
+                                              >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                                <p:outputLabel value="Responsable" for="@next" 
+                                               />
+                                <h:outputText value="#{dataManagerSesion.usuarioLogeado.usuLogin}"/>
+                                <p:outputLabel value="Parroquia" for="@next" 
+                                               />
+                                <h:outputText value="#{controladorMarginacionGrupal.buscarNombreParroquia()}"
+                                              />
+
+                                <p:outputLabel value="Tipo Propiedad" for="@next" />
+                                <h:outputText value="#{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion2}
+                                              - #{controladorMarginacionGrupal.actaSeleccionada.prdMatricula.prdDescripcion1}"
+                                              />
+
+                                <p:outputLabel value="Aclaratoria de Posesión Efectiva" for="@next" />
+                                <h:panelGroup>
+                                    <h:outputText value="#{controladorMarginacionGrupal.repertorioSeleccionado.repFHR}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputText>
+                                    <h:outputText value=" - #{controladorMarginacionGrupal.repertorioSeleccionado.repNumero}"/>
+                                </h:panelGroup>
+
+                                <p:outputLabel value="Observaciones" for="@next" 
+                                               />
+                                <p:inputText value="#{controladorMarginacionGrupal.txtObservacion}"
+
+                                             />
+                            </p:panelGrid>
+                            <br></br>
+                        </h:panelGrid>
+
+
+
+                        <p:outputLabel value="Texto de marginación: "
+                                       for="@next"/>
+                        <p:inputTextarea rows="5" cols="50" counter="display" maxlength="#{200}" 
+                                         counterTemplate="{0}/200 palabras restantes." 
+                                         value="#{controladorMarginacionGrupal.nuevaMarginacion.mrgAlt1}"
+                                         required="true" requiredMessage="El campo alterno 1,es requerido"/>
+                        <br />
+                        <h:outputText id="display" />
+                    </h:panelGrid>
+                    <p:commandButton value='Aceptar' class="green-btn" title="Confirmar marginación"
+                                     update="growl @form formMarginacion " action="#{controladorMarginacionGrupal.guardarmarginacion()}"
+                                     oncomplete="if (!args.validationFailed) PF('dlgCrearMarg').hide()"
+                                     />
+
+                    <p:commandButton value="#{bundle.Cancel}"  immediate="true"
+                                     class="red-btn"
+                                     onclick="PF('dlgCrearMarg').hide()"/>
+                </h:form>          
+
+            </p:dialog>
+
+
+            <ui:include src="CrearNuevoTramiteValor.xhtml"/>
+
+        </ui:define>
+
+    </ui:composition>
+
+</html>

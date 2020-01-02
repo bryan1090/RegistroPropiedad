@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SucursalEditDlg" widgetVar="SucursalEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditSucursalTitle}">
+            <h:form id="SucursalEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{sucursalController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditSucursalLabel_sucNombre}" for="sucNombre" />
+                        <p:inputText id="sucNombre" value="#{sucursalController.selected.sucNombre}" title="#{bundle.EditSucursalTitle_sucNombre}" />
+                        <p:outputLabel value="#{bundle.EditSucursalLabel_sucTelefono}" for="sucTelefono" />
+                        <p:inputText id="sucTelefono" value="#{sucursalController.selected.sucTelefono}" title="#{bundle.EditSucursalTitle_sucTelefono}" />
+                        <p:outputLabel value="#{bundle.EditSucursalLabel_sucMatriz}" for="sucMatriz" />
+                        <p:inputText id="sucMatriz" value="#{sucursalController.selected.sucMatriz}" title="#{bundle.EditSucursalTitle_sucMatriz}" required="true" requiredMessage="#{bundle.EditSucursalRequiredMessage_sucMatriz}"/>
+                        <p:outputLabel value="#{bundle.EditSucursalLabel_sucDireccion}" for="sucDireccion" />
+                        <p:inputText id="sucDireccion" value="#{sucursalController.selected.sucDireccion}" title="#{bundle.EditSucursalTitle_sucDireccion}" />
+                        <p:outputLabel value="#{bundle.EditSucursalLabel_sucCorreo}" for="sucCorreo" />
+                        <p:inputText id="sucCorreo" type="email" value="#{sucursalController.selected.sucCorreo}" title="#{bundle.EditSucursalTitle_sucCorreo}" validatorMessage="Formato de E-mail no válido">
+                            <f:validateRegex  pattern="^((\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)|(\s*))$"/>
+                        </p:inputText>
+                        <p:outputLabel value="#{bundle.EditSucursalLabel_sucEstado}" for="sucEstado" />
+                        <p:selectOneMenu id="sucEstado" value="#{sucursalController.selected.sucEstado}" required="true" requiredMessage="#{bundle.EditSucursalRequiredMessage_sucEstado}">
+                            <f:selectItem itemLabel="ACTIVO" itemValue="A"></f:selectItem>
+                            <f:selectItem itemLabel="INACTIVO" itemValue="I"></f:selectItem>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditSucursalLabel_sucSerie}" for="sucSerie" />
+                        <p:inputText id="sucSerie" value="#{sucursalController.selected.sucSerie}" title="#{bundle.EditSucursalTitle_sucSerie}" required="true" requiredMessage="#{bundle.EditSucursalRequiredMessage_sucSerie}"/>
+                        <p:outputLabel value="#{bundle.EditSucursalLabel_zonId}" for="zonId" />
+                        <p:selectOneMenu id="zonId" value="#{sucursalController.selected.zonId}" required="true" requiredMessage="#{bundle.EditSucursalRequiredMessage_zonId}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{zonaController.itemsAvailableSelectOne}"
+                                           var="zonIdItem"
+                                           itemValue="#{zonIdItem}" itemLabel="#{zonIdItem.zonNombre}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{sucursalController.update}" value="#{bundle.Save}" update="display,:SucursalListForm:datalist,:growl" oncomplete="handleSubmit(args, 'SucursalEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{sucursalController.clear()}" value="#{bundle.Cancel}" onclick="SucursalEditDialog.hide()" immediate="true"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

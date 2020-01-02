@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- P
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="Consulta de libros"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="frmLibros">
+                <p:panel header="Consulta de libros">
+
+                    <h:panelGrid columns="2" style="align-content: center">
+                        <p:panel header="" style="width: 280px; height: 500px; ">
+
+                            <h:panelGrid columns="1" >
+                                <h:panelGrid columns="2" id="plnLibro">
+
+                                    <p:outputLabel   value="Libro"/>
+
+                                    <p:selectOneMenu value="Libro" id="lbxLibro">  
+                                        <f:selectItem itemValue = "1" itemLabel = "Propiedad" /> 
+                                        <f:selectItem itemValue = "2" itemLabel = "Hipoteca" /> 
+                                        <f:selectItem itemValue = "2" itemLabel = "Declaratoria" /> 
+                                        <f:selectItem itemValue = "2" itemLabel = "Personas" /> 
+                                        <f:selectItem itemValue = "2" itemLabel = "Minas" /> 
+                                        <f:selectItem itemValue = "2" itemLabel = "Aguas" /> 
+                                        <f:selectItem itemValue = "2" itemLabel = "Inda" /> 
+                                        <f:selectItem itemValue = "2" itemLabel = "Inda Hipoteca" /> 
+                                        <f:selectItem itemValue = "2" itemLabel = "Prohibiciones" /> 
+                                    </p:selectOneMenu>
+                                    <p:outputLabel for="clnInicio" value="Fecha Inicio" />
+                                    <p:calendar pattern="dd/MM/yyyy" mask="true" id="clnInicio"  />  
+
+                                    <p:outputLabel for="clnFin" value="Fecha Fin" />
+                                    <p:calendar pattern="dd/MM/yyyy" mask="true" id="clnFin"  />
+
+                                    <p:outputLabel for="sbxMarginacion" value="Marginación" />
+                                    <p:selectBooleanCheckbox id="sbxMarginacion" value="#{consultalibros.marginacion}" />
+
+                                    <p:outputLabel for="txtInscripcion"  value="N° Inscripción"/>
+                                    <p:inputText id="txtInscripcion" value="#{consultalibros.fojas}"></p:inputText>
+
+                                </h:panelGrid> 
+
+                                <p:separator/>
+
+                                <h:panelGrid columns="2">                        
+
+                                    <p:commandButton class="green-btn" icon="fa fa-search" actionListener="#{consultalibros.generar()}" value="Generar"  update="pnlActa growl txtInscripcion"  /> 
+                                    <p:commandButton class="cyan-btn" icon="fa fa-refresh" actionListener="#{consultalibros.limpiar()}" value="Refrescar"  update="plnLibro pnlActa"  /> 
+                                    <p:commandButton class="red-btn"  icon="fa fa-sign-out" process="@this" actionListener="#{consultalibros.salir()}" value="Salir"  update="@form"  /> 
+
+                                </h:panelGrid> 
+
+                            </h:panelGrid>    
+
+                        </p:panel>
+
+                        <p:panel header="" style="width: 750px; height: 500px; ">
+                            <h:panelGrid columns="1" id="pnlActa" >
+
+                                <iframe id="iframeCenter" src="#{consultalibros.url}" width="700px"  
+                                        height="480px" frameborder="0">  
+                                </iframe>  
+                            </h:panelGrid>                      
+                        </p:panel>
+
+                    </h:panelGrid>                  
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+
+</html>

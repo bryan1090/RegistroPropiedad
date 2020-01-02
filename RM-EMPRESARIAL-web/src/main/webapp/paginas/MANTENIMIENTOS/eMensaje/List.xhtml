@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListEMensajeTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="EMensajeListForm">
+                <p:panel header="#{bundle.ListEMensajeTitle}">
+                    <p:dataTable id="datalist" value="#{eMensajeController.items}" var="item"
+                                 selectionMode="single" selection="#{eMensajeController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.EMsIdSec}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgDocumento}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgDocumento}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgSerie}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgSerie}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgNumero}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgNumero}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgMensaje}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgMensaje}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgTipo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgTipo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgDetalle}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgDetalle}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgPrograma}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgPrograma}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgClave}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgClave}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgAutorizacion}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgAutorizacion}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgErrorSri}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgErrorSri}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgCodigoSri}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgCodigoSri}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgEstado}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgEstado}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgUser}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListEMensajeTitle_EMsgFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.EMsgFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus" class="green-btn"  value="#{bundle.Create}" actionListener="#{eMensajeController.prepareCreate}" update=":EMensajeCreateForm" oncomplete="PF('EMensajeCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":EMensajeViewForm" oncomplete="PF('EMensajeViewDialog').show()" disabled="#{empty eMensajeController.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":EMensajeEditForm" oncomplete="PF('EMensajeEditDialog').show()" disabled="#{empty eMensajeController.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn"  value="#{bundle.Delete}" actionListener="#{eMensajeController.destroy}" update=":growl,datalist" disabled="#{empty eMensajeController.selected}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

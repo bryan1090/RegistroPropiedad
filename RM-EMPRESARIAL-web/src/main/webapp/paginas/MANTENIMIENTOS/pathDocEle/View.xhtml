@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PathDocEleViewDlg" widgetVar="PathDocEleViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewPathDocEleTitle}">
+            <h:form id="PathDocEleViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="4" rendered="#{pathDocEleController.selected != null}">
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeId}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeId}" title="#{bundle.ViewPathDocEleTitle_pdeId}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeRepositorio}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeRepositorio}" title="#{bundle.ViewPathDocEleTitle_pdeRepositorio}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeRepTemporal}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeRepTemporal}" title="#{bundle.ViewPathDocEleTitle_pdeRepTemporal}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeLogo}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeLogo}" title="#{bundle.ViewPathDocEleTitle_pdeLogo}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeReportesJrxml}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeReportesJrxml}" title="#{bundle.ViewPathDocEleTitle_pdeReportesJrxml}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeFirma}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeFirma}" title="#{bundle.ViewPathDocEleTitle_pdeFirma}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeCertificado}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeCertificado}" title="#{bundle.ViewPathDocEleTitle_pdeCertificado}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeCerAutorizado}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeCerAutorizado}" title="#{bundle.ViewPathDocEleTitle_pdeCerAutorizado}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeCerNoAutorizado}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeCerNoAutorizado}" title="#{bundle.ViewPathDocEleTitle_pdeCerNoAutorizado}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeCerContingencia}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeCerContingencia}" title="#{bundle.ViewPathDocEleTitle_pdeCerContingencia}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeCerDevuelto}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeCerDevuelto}" title="#{bundle.ViewPathDocEleTitle_pdeCerDevuelto}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMailHabilitarAutenticacion}"/>
+                        <p:selectBooleanCheckbox value="#{pathDocEleController.selected.pdeMailHabilitarAutenticacion}" disabled="true"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMailHabilitarSSL}"/>
+                        <p:selectBooleanCheckbox value="#{pathDocEleController.selected.pdeMailHabilitarSSL}" disabled="true"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMailHabilitarDEBUG}"/>
+                        <p:selectBooleanCheckbox value="#{pathDocEleController.selected.pdeMailHabilitarDEBUG}" disabled="true"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMailHost}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeMailHost}" title="#{bundle.ViewPathDocEleTitle_pdeMailHost}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMailPuerto}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeMailPuerto}" title="#{bundle.ViewPathDocEleTitle_pdeMailPuerto}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMailServidorDNS}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeMailServidorDNS}" title="#{bundle.ViewPathDocEleTitle_pdeMailServidorDNS}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMailProtocolo}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeMailProtocolo}" title="#{bundle.ViewPathDocEleTitle_pdeMailProtocolo}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMailUser}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeMailUser}" title="#{bundle.ViewPathDocEleTitle_pdeMailUser}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMailPassword}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeMailPassword}" title="#{bundle.ViewPathDocEleTitle_pdeMailPassword}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeWsRecepcion}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeWsRecepcion}" title="#{bundle.ViewPathDocEleTitle_pdeWsRecepcion}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeWsAutorizacion}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeWsAutorizacion}" title="#{bundle.ViewPathDocEleTitle_pdeWsAutorizacion}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMetodoRecepcion}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeMetodoRecepcion}" title="#{bundle.ViewPathDocEleTitle_pdeMetodoRecepcion}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeNameSpaceURIRecepcion}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeNameSpaceURIRecepcion}" title="#{bundle.ViewPathDocEleTitle_pdeNameSpaceURIRecepcion}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeMetodoAutorizacion}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeMetodoAutorizacion}" title="#{bundle.ViewPathDocEleTitle_pdeMetodoAutorizacion}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeNameSpaceURIAutorizacion}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeNameSpaceURIAutorizacion}" title="#{bundle.ViewPathDocEleTitle_pdeNameSpaceURIAutorizacion}"/>
+                        <h:outputText value="#{bundle.ViewPathDocEleLabel_pdeClaveArchivo}"/>
+                        <h:outputText value="#{pathDocEleController.selected.pdeClaveArchivo}" title="#{bundle.ViewPathDocEleTitle_pdeClaveArchivo}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Close}" onclick="PathDocEleViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

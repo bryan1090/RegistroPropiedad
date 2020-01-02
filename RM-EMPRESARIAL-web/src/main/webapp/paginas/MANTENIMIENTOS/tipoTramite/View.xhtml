@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoTramiteViewDlg" widgetVar="TipoTramiteViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTipoTramiteTitle}">
+            <h:form id="TipoTramiteViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorTipoTramite.selected != null}">
+                        <h:outputText value="#{bundle.ViewTipoTramiteLabel_ttrDescripcion}"/>
+                        <h:outputText value="#{controladorTipoTramite.selected.ttrDescripcion}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteTitle_ttrDescripcion}"/>
+                        <h:outputText value="#{bundle.ViewTipoTramiteLabel_ttrUser}"/>
+                        <h:outputText value="#{controladorTipoTramite.selected.ttrUser}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteTitle_ttrUser}"/>
+                        <h:outputText value="#{bundle.ViewTipoTramiteLabel_ttrFHR}"/>
+                        <h:outputText value="#{controladorTipoTramite.selected.ttrFHR}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteTitle_ttrFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewTipoTramiteLabel_ttrValor}"/>
+                        <h:outputText value="#{controladorTipoTramite.selected.ttrValor}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteTitle_ttrValor}"/>
+                        <h:outputText value="#{bundle.ViewTipoTramiteLabel_ttrValorFijo}"/>
+                        <h:outputText value="#{controladorTipoTramite.selected.ttrValorFijo}" style="text-transform: uppercase" title="#{bundle.ViewTipoTramiteTitle_ttrValorFijo}"/>
+                        <h:outputText value="Peso: "/>
+                        <h:outputText value="#{controladorTipoTramite.selected.ttrPeso}" title="Peso"/> 
+                        <h:outputText value="#{bundle.ViewTipoTramiteLabel_tplId}"/>
+                        <h:outputText value="#{controladorTipoTramite.selected.tplId.tplDescripcion}" title="#{bundle.ViewTipoTramiteTitle_tplId}"/>
+                        <h:outputText value="#{bundle.ViewTipoTramiteLabel_ttrCodigo}"/>
+                        <h:outputText value="#{controladorTipoTramite.selected.ttrCodigo}" title="#{bundle.ViewTipoTramiteTitle_ttrCodigo}"/>
+                        <h:outputText value="Clase: "/>
+                        <h:outputText value="#{controladorTipoTramite.selected.ttrClase}" title="Clase"/> 
+                        
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorTipoTramite.clear()}" value="#{bundle.Close}" onclick="TipoTramiteViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

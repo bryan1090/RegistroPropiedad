@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template fiand open the template in the editor.
+le, choose Tools | Templates
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Gestion Volumenes"></h:outputText>
+        </ui:define>
+        <ui:define name="content" >
+            <h:form id="formPrincipal">
+                <p:growl id="growl" showDetail="true" sticky="false" life="3000" showSummary="false"  />
+                <p:panel id="principal" header="Gestion Volumenes">
+                    <p:panel id="Filtro">
+
+
+                        <p:outputLabel style="font-weight: bold" value="Libro:" for="libro" />
+                        <h:outputText value="&#160;&#160;&#160;&#160;" />
+                        <p:selectOneMenu style="margin-top: 10px" id="libro" value="#{controladorGestionVolumenes.tipoLibroSeleccionado}">
+                            <p:ajax update="@form" listener="#{controladorGestionVolumenes.filtro()}" event="change" />
+                            <f:selectItem itemLabel="Seleccione..."/>
+                            <f:selectItems value="#{controladorTipoLibro.items}" var="tipoLibro" 
+                                           itemLabel="#{tipoLibro.tplDescripcion}"
+                                           itemValue="#{tipoLibro}"/>
+                        </p:selectOneMenu>
+                        <h:outputText value="&#160;&#160;&#160;&#160;" />
+                        <p:outputLabel value="Año:" for="año" style="font-weight: bold" />
+                        <h:outputText  value="&#160;&#160;&#160;&#160;" />
+                        <p:selectOneMenu disabled="#{controladorGestionVolumenes.estado}" style="margin-top: 10px" id="año" value="#{controladorGestionVolumenes.anio}"  >
+                            <f:selectItem itemLabel="Seleccione..."/>
+                            <f:selectItems value="#{controladorGestionVolumenes.año}"
+                                           var="año"
+                                           itemValue="#{año.configDetalleTexto}" itemLabel="#{año.configDetalleTexto}" />
+                        </p:selectOneMenu>
+                        <h:outputText value="&#160;&#160;&#160;&#160;&#160;&#160;" />
+                        <p:commandButton  value="BUSCAR" icon="fa fa-search" update="@form "  action="#{controladorGestionVolumenes.listarVolumenes(controladorGestionVolumenes.tipoLibroSeleccionado,controladorGestionVolumenes.anio)}">
+
+                        </p:commandButton>
+
+                    </p:panel>
+                    <hr />
+                    <p:panel id="tblGestiuon" >
+                        <p:dataTable  style="text-align: center;border: #aa1526" value="#{controladorGestionVolumenes.listaVolumen}" var="item">
+                            <p:column headerText="Volumen">
+                                <p:outputLabel value="#{item.vleVolumen}"/>
+                            </p:column>
+                            <p:column headerText="Numero de Hojas">
+                                <p:outputLabel value="#{item.vleHojas}"/>
+                            </p:column>
+                            <p:column headerText="Estado">
+                                <p:outputLabel value="Activo" rendered="#{item.vleEstado eq 'A'}"/>
+                                <p:outputLabel value="Inactivo" rendered="#{item.vleEstado eq 'I'}"/>
+                            </p:column>
+                            <p:column headerText="Inscripcion Inicial">
+                                <p:outputLabel value="#{item.vleInscripcionInicial}"/>
+                            </p:column>
+                            <p:column headerText="Inscripcion Final">
+                                <p:outputLabel value="#{item.vleInscripcionFinal}"/>
+                            </p:column>
+                            <p:column headerText="Prestamo Volumen">
+                                <p:commandButton  update="digListaGestion:tblPrestamo" onclick="PF('dlgListaPrestamo').show();" icon="fa fa-external-link" class="blue-theme" style="margin-top: 10px" action="#{controladorGestionVolumenes.listaPrestamoVolumenId(item.vleId,item)}" >
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
+
+                </p:panel>
+            </h:form>
+            <p:dialog id="dlg1" header="Prestamo Volumenes" widgetVar="dlgPrestamo" modal="true" height="200" width="600">
+                <h:form id="digGestion" >
+                    <p:growl id="growl" showDetail="true" sticky="false" life="3000" showSummary="false" />
+                    <p:panelGrid columns="4" style="border: #ffffff" >
+                        <p:outputLabel style="font-weight: bold" value="Tipo de Identificacion:" for="perTipoIdentificacion"/>                     
+                        <p:selectOneMenu required="true" id="perTipoIdentificacion" value="#{controladorGestionVolumenes.perTipoIdentificacion}" style="width:125px">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="" />    
+                            <f:selectItem itemLabel="CEDULA" itemValue="C" />
+                            <f:selectItem itemLabel="RUC" itemValue="R" />
+                            <f:selectItem itemLabel="PASAPORTE" itemValue="P" />
+                        </p:selectOneMenu>
+                        <p:outputLabel style="font-weight: bold" value="Identificacion:" for="identificacion"/>                     
+                        <p:inputText style="text-transform: uppercase" required="true" value="#{controladorGestionVolumenes.perIdentificacion}" id="identificacion" />
+                        <p:outputLabel style="font-weight: bold" value="Razon Social:" for="prvNombre"/>
+                        <p:inputText style="text-transform: uppercase" required="true" value="#{controladorGestionVolumenes.prvNombre}"  id="prvNombre"  />
+                        <p:outputLabel style="font-weight: bold" value="Razon Comercial:" for="apellido"/>
+                        <p:inputText style="text-transform: uppercase" required="true" value="#{controladorGestionVolumenes.prvApellido}" id="apellido" />
+                        <p:outputLabel style="font-weight: bold" value="Fecha de Inicio:" for="inicio"/>
+                        <p:calendar required="true" pattern="dd/MM/yyyy" value="#{controladorGestionVolumenes.prvFechaIni}" id="inicio" />
+                        <p:outputLabel style="font-weight: bold" value="Fecha de Fin:" for="fin"/>
+                        <p:calendar required="true" pattern="dd/MM/yyyy"  value="#{controladorGestionVolumenes.prvFechaFin}" id="fin" />
+                    </p:panelGrid>
+                    <p:commandButton  update="@form :digListaGestion:tblPrestamo" value="Crear" icon="fa fa-plus" class="green-btn " action="#{controladorGestionVolumenes.crearPrestamo()}" />
+                    <p:commandButton id="btnFiltrar" class="orange-btn" icon="fa fa-search" value="Persona" actionListener="#{controladorFiltradoPersona.prepararFiltrado('CtlGVol', ':digGestion')}" oncomplete="PF('dlgFiltradoPersona').show();" immediate="true" process="@this"/>
+
+                </h:form>   
+            </p:dialog>
+
+            <p:dialog id="dlg2" header="Prestamo Volumenes" widgetVar="dlgListaPrestamo" modal="true" height="400" width="550">
+                <h:form id="digListaGestion" >
+                    <p:growl id="growl" showDetail="true" sticky="false" life="3000" />
+                    <p:commandButton  action="#{controladorGestionVolumenes.limpiar()}" update=":digGestion" onclick="PF('dlgPrestamo').show();" value="Crear" icon="fa fa-plus" class="green-btn" style="margin-top: 10px"  >
+                    </p:commandButton>
+                    <hr />
+                    <p:dataTable style="text-align: center" id="tblPrestamo" var="prestamo" value="#{controladorGestionVolumenes.listaPrestamoVolumen}" >
+                        <p:column headerText="Nombre" width="120">
+                            <p:outputLabel value="#{prestamo.prvApellido} #{prestamo.prvNombre} " />    
+                        </p:column> 
+                        <p:column headerText="Fecha de Inicion " width="60">
+                            <p:outputLabel value="#{prestamo.prvFechaInicio}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </p:outputLabel>    
+                        </p:column> 
+                        <p:column headerText="Fecha de Finalizacion" width="60">
+                            <p:outputLabel value="#{prestamo.prvFechaFin}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </p:outputLabel>    
+                        </p:column>
+                        <p:column headerText="Estado" width="50">
+                            <p:outputLabel value="Activo" rendered="#{prestamo.prvEstado eq 'A'}" />
+                            <p:outputLabel value="Entregado" rendered="#{prestamo.prvEstado eq 'I'}" />
+                        </p:column>
+                        <p:column  headerText="Entregar" width="100">
+                            <p:commandButton disabled="#{prestamo.prvEstado eq 'I'}" update="digListaGestion:tblPrestamo growl" class="yellow-btn" value="Entregar" icon="fa fa-hand-lizard-o" action="#{controladorGestionVolumenes.entregar(prestamo)}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:form>   
+            </p:dialog>
+            <ui:include src="/paginas/FiltradoPersona.xhtml" />  
+        </ui:define>
+    </ui:composition>
+</html>

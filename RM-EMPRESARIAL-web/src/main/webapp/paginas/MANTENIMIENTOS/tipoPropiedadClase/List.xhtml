@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListTipoPropiedadClaseTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="TipoPropiedadClaseListForm">
+                <p:panel header="#{bundle.ListTipoPropiedadClaseTitle}">
+                    <p:dataTable id="datalist" value="#{tipoPropiedadClaseController.items}" var="item"
+                                 selectionMode="single" selection="#{tipoPropiedadClaseController.selected}"
+                                 paginator="true" sortBy="#{item.tclId}"
+                                 rowKey="#{item.tclId}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column sortBy="#{item.tclId}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoPropiedadClaseTitle_tclId}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tclId}"/>
+                        </p:column>
+                        <p:column filterBy="#{item.tclNombre}" sortBy="#{item.tclNombre}" filterMatchMode="startsWith" filterStyle="text-transform: uppercase">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoPropiedadClaseTitle_tclNombre}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tclNombre}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.tclEstado}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoPropiedadClaseTitle_tclEstado}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tclEstado}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.tclUser}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoPropiedadClaseTitle_tclUser}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tclUser}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.tclFHR}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTipoPropiedadClaseTitle_tclFHR}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tclFHR}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="header">
+                            <div align="right">
+                                <p:commandButton id="createButton" icon="ui-icon-plus"  class="green-btn" value="#{bundle.Create}" actionListener="#{tipoPropiedadClaseController.prepareCreate}" update=":TipoPropiedadClaseCreateForm" oncomplete="PF('TipoPropiedadClaseCreateDialog').show()"/>
+                                <p:commandButton id="viewButton"   icon="ui-icon-search" class="blue-btn" value="#{bundle.View}" update=":TipoPropiedadClaseViewForm" oncomplete="PF('TipoPropiedadClaseViewDialog').show()" disabled="#{empty tipoPropiedadClaseController.selected}"/>
+                                <p:commandButton id="editButton"   icon="ui-icon-pencil" class="cyan-btn" value="#{bundle.Edit}" update=":TipoPropiedadClaseEditForm" oncomplete="PF('TipoPropiedadClaseEditDialog').show()" disabled="#{empty tipoPropiedadClaseController.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash" class="red-btn" value="#{bundle.Delete}" actionListener="#{tipoPropiedadClaseController.destroy}" update=":growl,datalist" disabled="#{empty tipoPropiedadClaseController.selected}">
+                                    <p:confirm header="Confirmación" message="¿Desea eliminar el registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

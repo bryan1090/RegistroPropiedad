@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition>
+
+			<h:form id="formManActa">
+				<p:panel>
+					<p:panelGrid columns="2" columnClasses="ui-grid-col-1,ui-grid-col-2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel value="N° Trámite"/>
+						<p:inputText value="#{controladorMantenimientoTramite.controladorMantenimientoTramiteBb.numTramite}" required="true" requiredMessage="N° Trámite, Es Campo Requerido">
+							<p:ajax event="change" listener="#{controladorMantenimientoTramite.buscarTramiteValor()}" update="@form growl"/>
+						</p:inputText>
+					</p:panelGrid>
+
+					<br/>
+					<p:separator/>
+
+					<p:panelGrid id="datosRep" layout="grid" columns="8">
+						<p:outputLabel for="txtNumTramite" value="# Trámite"/>
+						<p:inputText id="txtNumTramite" value="#{controladorMantenimientoTramite.repertorio.traNumero.traNumero}" readonly="true"
+									 style="color: #1a237e"/>
+						<p:outputLabel for="txtRepertorio" value="Repertorio"/>
+						<p:inputText id="txtRepertorio" value="#{controladorMantenimientoTramite.repertorio.repNumero}" readonly="true"
+									 style="color: #1a237e"/>
+						<p:outputLabel for="txtFecha" value="Fecha"/>
+						<p:inputText id="txtFecha" value="#{controladorMantenimientoTramite.repertorio.repFHR}" readonly="true">
+							<f:convertDateTime pattern="dd-MM-yyyy"/>
+						</p:inputText>
+
+					</p:panelGrid>
+
+
+					<br/>
+
+					<p:layout id="lMantenimiento" style="min-width:400px;min-height:420px;" >
+
+						<p:layoutUnit id="luActa" position="west" resizable="true" size="300" header="TRÁMITES" 
+									  minSize="100" maxSize="350" collapsible="true" effect="drop"
+									  style="border: none">
+							<p:dataTable var="traValor" value="#{controladorMantenimientoTramite.listaTramiteValor}"
+										 selectionMode="single" selection="#{controladorMantenimientoTramite.tramiteValorSeleccionado}"
+										 rowKey="#{traValor.trvId}" sortBy="#{traValor.traNumero.traNumero}">
+
+								<p:ajax event="rowSelect" listener="#{controladorMantenimientoTramite.buscarRepertorio()}"
+										update="@form "/>
+
+								<p:column headerText="Tipo Tramite" groupRow="true">
+									<h:outputText value="#{traValor.ttrId.ttrDescripcion}" />
+								</p:column>
+
+								<p:column headerText="N° Trámite" groupRow="true">
+									<h:outputText value="#{traValor.traNumero.traNumero}" />
+								</p:column>
+							</p:dataTable>
+						</p:layoutUnit>
+
+						<p:layoutUnit position="center" resizable="true" size="680" minSize="680" maxSize="700" style="border: none">
+							<p:commandButton id="btnConcluir" class="green-btn" icon="fa fa-save" value="Terminar"
+											 action="#{controladorMantenimientoTramite.guardarActa()}" update="@form growl :frmConfRepertorio"
+											 disabled="#{controladorMantenimientoTramite.listaPropiedadesSeleccionadas.size() == 0 and !controladorMantenimientoTramite.boolVerNuevaProp}"
+											 onsuccess="PF('dlgConfRepertorio').show();"/>
+							<br/>
+							<p:scrollPanel id="pnlTextos" style="height: 555px" rendered="#{controladorMantenimientoTramite.boolOcultartabs}">
+								<p:outputLabel for="txtActa" value="Acta" style="font-weight: bold"/>
+								<p:textEditor id="txtActa" toolbarVisible="false"
+											  widgetVar="acta" value="#{controladorMantenimientoTramite.acta.actActaPdf}"
+											  height="185" style="margin-bottom:10px; text-align: justify;font-family: monospace"
+											  readonly="#{controladorMantenimientoTramite.estaActa}"/>
+
+								<p:outputLabel for="txtAntecedentes" value="Objeto del contrato" style="font-weight: bold"/>
+								<p:textEditor id="txtAntecedentes" toolbarVisible="false" required="true"
+											  widgetVar="actaAntecedentes" value="#{controladorMantenimientoTramite.acta.actDescripcion3}" 
+											  height="185" style="margin-bottom:10px; text-align: justify;font-family: monospace"
+											  readonly="#{controladorMantenimientoTramite.estaActa}"/>
+
+								<p:outputLabel for="txtFormAdq" value="Formas de Adquisición" style="font-weight: bold"/>
+								<p:textEditor id="txtFormAdq" toolbarVisible="false" required="true"
+											  widgetVar="actaFormAdquisicion" value="#{controladorMantenimientoTramite.acta.actDescripcion9}"
+											  height="185" style="margin-bottom:10px; text-align: justify;font-family: monospace"
+											  readonly="#{controladorMantenimientoTramite.estaActa}"/>
+							</p:scrollPanel>
+						</p:layoutUnit>
+					</p:layout>
+				</p:panel>
+			</h:form>
+
+			<p:dialog widgetVar="dlgConfRepertorio" resizable="false" closable="false" position="center center" >
+				<h:form id="frmConfRepertorio">
+					<p:outputLabel for="@next" value="N° Repertorio:" style="font-weight: bold"/>
+					<p:inputText value=""/>
+					<p:outputLabel for="@next" value="Fecha Repertorio:" style="font-weight: bold"/>
+					<p:inputText value=""/>
+				</h:form>
+			</p:dialog>
+
+        </ui:composition>
+
+    </body>
+</html>

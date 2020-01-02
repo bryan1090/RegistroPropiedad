@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- P
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ProcesoTipoSuspension}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="formRazonesSuspension">
+                <p:panel header="Proceso Tipo Suspension">
+
+                    <h:panelGrid columns="6">
+                        <h:panelGrid columns="2" >
+                            <p:outputLabel for="txtNumTramite"  value="Nro. Tramite "/>
+                            <p:inputNumber minValue="0" thousandSeparator="" decimalPlaces="0" id="txtNumTramite"
+                                           disabled="#{!razonesSuspensionController.disabledComponent}"
+                                           readonly="#{razonesSuspensionController.tramiteSeleccionado ne null}" value="#{razonesSuspensionController.numProforma}">
+                                <p:ajax event="change" listener="#{razonesSuspensionController.buscarTramite()}" update="growl grid grid2 @form txtNumTramite"/>
+                            </p:inputNumber>
+                        </h:panelGrid>
+                        <p:spacer width="10px"/>
+                        <h:panelGrid columns="3">
+
+                            <p:outputLabel for="txtObservacion"  value="Observación "/>
+                            <p:inputText id="txtObservacion" style="width: 470px; text-transform: uppercase;" 
+                                         disabled="#{!razonesSuspensionController.disabledComponent}"
+                                         value="#{razonesSuspensionController.observacion}"/>
+                            <p:commandButton icon="fa fa-plus" value="Añadir" actionListener="#{razonesSuspensionController.agregarNuevo()}" 
+                                             disabled="#{!razonesSuspensionController.disabledComponent}" update="grid grid2 txtObservacion"  /> 
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+                    <p:separator  />
+
+
+                    <div class="ui-g" >
+                        <div class="ui-g-10 ui-g-nopad " >
+                            <p:panel id="pnlTipoSuspension" rendered="#{razonesSuspensionController.mostrarGrid1}">
+                                <p:selectManyCheckbox  disabled="#{!razonesSuspensionController.disabledComponent}"
+                                                       style="font-size: 10px;" id="grid"  value="#{razonesSuspensionController.listaIDTipoSuspensionSeleccionados}" layout="responsive" columns="2" >
+                                    <f:selectItems value="#{razonesSuspensionController.listaTipoSuspension}"  var="item" itemLabel="#{item.tpsNombre}"  itemValue="#{item.tpsId}" />
+                                </p:selectManyCheckbox>
+                            </p:panel>  
+                        </div>
+                        <div class="ui-g-2" align="center">
+                            <h:panelGrid columns="1" rendered="#{razonesSuspensionController.mostrarGrid1}">
+                                <p:commandButton disabled="#{!razonesSuspensionController.disabledComponent}"
+                                                 style="min-width: 90px" class="green-btn" update="growl @form" icon="fa fa-save" value="Guardar" actionListener="#{razonesSuspensionController.insertarTramitesSuspension()}"   /> 
+                                <p:commandButton style="min-width: 90px" class="cyan-btn" icon="fa fa-refresh" value="Refrescar" 
+                                                 action="#{razonesSuspensionController.recargarPagina()}"/>
+                                <p:commandButton style="min-width: 90px" class="red-btn"  icon="fa fa-sign-out" process="@this" actionListener="#{razonesSuspensionController.salir()}" value="Salir"  update="@form"  /> 
+                                <p:commandButton value="Imprimir" ajax="false" style="width: 90px"
+                                                 disabled="#{razonesSuspensionController.disabledComponent}"
+                                                 icon="fa fa-print" actionListener="#{razonesSuspensionController.descargarPDF()}">
+									<p:fileDownload value="#{razonesSuspensionController.pdfRazanesSuspension}" />
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </div>
+                    </div>
+
+                    <div class="ui-g" >
+                        <div class="ui-g-10 ui-g-nopad " >
+                            <p:panel id="pnlTramiteSuspension" rendered="#{razonesSuspensionController.mostrarGrid2}">
+                                <p:selectManyCheckbox disabled="#{!razonesSuspensionController.disabledComponent}"
+                                                      style="font-size: 9px;" id="grid2"  value="#{razonesSuspensionController.listaIDTramiteSuspensionSeleccionados}" layout="responsive" columns="2">
+                                    <f:selectItems value="#{razonesSuspensionController.listaTramiteSuspension}"  var="item" itemLabel="#{item.tmsNombre}"  itemValue="#{item.tmsId}" />
+                                </p:selectManyCheckbox>
+                            </p:panel>  
+                        </div>
+                        <div class="ui-g-2" align="center">
+                            <h:panelGrid columns="1" rendered="#{razonesSuspensionController.mostrarGrid2}">
+                                <p:commandButton disabled="#{!razonesSuspensionController.disabledComponent}"
+                                                 style="min-width: 90px"  update="growl @form" icon="fa fa-save" value="Guardar2" actionListener="#{razonesSuspensionController.insertarTramitesSuspensionCaso2()}"   /> 
+                                <p:commandButton style="min-width: 90px" class="cyan-btn" icon="fa fa-refresh" value="Refrescar" 
+                                                 action="#{razonesSuspensionController.recargarPagina()}"/>
+                                <p:commandButton style="min-width: 90px" class="red-btn"  icon="fa fa-sign-out" process="@this" actionListener="#{razonesSuspensionController.salir()}" value="Salir"  update="@form"  />
+                                <p:commandButton value="Imprimir" ajax="false" style="width: 90px"
+                                                 disabled="#{razonesSuspensionController.disabledComponent}"
+                                                 icon="fa fa-print" actionListener="#{razonesSuspensionController.descargarPDF()}">
+                                </p:commandButton>  
+                            </h:panelGrid>
+                        </div>
+                    </div>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

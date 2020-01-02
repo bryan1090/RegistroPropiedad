@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ConfigDetalleViewDlg" widgetVar="ConfigDetalleViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewConfigDetalleTitle}">
+            <h:form id="ConfigDetalleViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorConfigDetalle.selected != null}">
+                        <h:outputText value="#{bundle.ViewConfigDetalleLabel_configDetalleCodigo}"/>
+                        <h:outputText value="#{controladorConfigDetalle.selected.configDetalleCodigo}" title="#{bundle.ViewConfigDetalleTitle_configDetalleCodigo}"/>
+                        <h:outputText value="#{bundle.ViewConfigDetalleLabel_configDetalleTexto}"/>
+                        <h:outputText value="#{controladorConfigDetalle.selected.configDetalleTexto}" title="#{bundle.ViewConfigDetalleTitle_configDetalleTexto}"/>
+                        <h:outputText value="#{bundle.ViewConfigDetalleLabel_configDetalleNumero}"/>
+                        <h:outputText value="#{controladorConfigDetalle.selected.configDetalleNumero}" title="#{bundle.ViewConfigDetalleTitle_configDetalleNumero}"/>
+                        <h:outputText value="#{bundle.ViewConfigDetalleLabel_configDetalleFecha}"/>
+                        <h:outputText value="#{controladorConfigDetalle.selected.configDetalleFecha}" title="#{bundle.ViewConfigDetalleTitle_configDetalleFecha}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewConfigDetalleLabel_configDetalleUser}"/>
+                        <h:outputText value="#{controladorConfigDetalle.selected.configDetalleUser}" title="#{bundle.ViewConfigDetalleTitle_configDetalleUser}"/>
+                        <h:outputText value="#{bundle.ViewConfigDetalleLabel_configDetalleFHR}"/>
+                        <h:outputText value="#{controladorConfigDetalle.selected.configDetalleFHR}" title="#{bundle.ViewConfigDetalleTitle_configDetalleFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewConfigDetalleLabel_configId}"/>
+                        <h:outputText value="#{controladorConfigDetalle.selected.configId.configDescripcion}" title="#{bundle.ViewConfigDetalleTitle_configId}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorConfigDetalle.clear()}" value="#{bundle.Close}" onclick="ConfigDetalleViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

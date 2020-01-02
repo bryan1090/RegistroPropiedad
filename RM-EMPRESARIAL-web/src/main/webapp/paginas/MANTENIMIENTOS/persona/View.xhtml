@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PersonaViewDlg" widgetVar="PersonaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewPersonaTitle}" onShow="PF('PersonaCreateDialog').initPosition();" width="800">
+            <h:form id="PersonaViewForm">
+                <h:panelGroup id="display">
+                    <h:panelGrid columns="4" rendered="#{personaController.selected != null}" style="width: 100%">
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perTipoIdentificacion}"/>
+                        <h:outputText value="#{personaController.selected.perTipoIdentificacion}" title="#{bundle.ViewPersonaTitle_perTipoIdentificacion}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perIdentificacion}"/>
+                        <h:outputText value="#{personaController.selected.perIdentificacion}" title="#{bundle.ViewPersonaTitle_perIdentificacion}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perNombre}"/>
+                        <h:outputText value="#{personaController.selected.perNombre}" title="#{bundle.ViewPersonaTitle_perNombre}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perApellidoPaterno}"/>
+                        <h:outputText value="#{personaController.selected.perApellidoPaterno}" title="#{bundle.ViewPersonaTitle_perApellidoPaterno}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perApellidoMaterno}"/>
+                        <h:outputText value="#{personaController.selected.perApellidoMaterno}" title="#{bundle.ViewPersonaTitle_perApellidoMaterno}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perFechaNacimiento}"/>
+                        <h:outputText value="#{personaController.selected.perFechaNacimiento}" title="#{bundle.ViewPersonaTitle_perFechaNacimiento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perFechaDefuncion}"/>
+                        <h:outputText value="#{personaController.selected.perFechaDefuncion}" title="#{bundle.ViewPersonaTitle_perFechaDefuncion}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perTelefono}"/>
+                        <h:outputText value="#{personaController.selected.perTelefono}" title="#{bundle.ViewPersonaTitle_perTelefono}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perCelular}"/>
+                        <h:outputText value="#{personaController.selected.perCelular}" title="#{bundle.ViewPersonaTitle_perCelular}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perEmail}"/>
+                        <h:outputText value="#{personaController.selected.perEmail}" title="#{bundle.ViewPersonaTitle_perEmail}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perDireccion}"/>
+                        <h:outputText value="#{personaController.selected.perDireccion}" title="#{bundle.ViewPersonaTitle_perDireccion}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perSexo}"/>
+                        <h:outputText value="#{personaController.selected.perSexo}" title="#{bundle.ViewPersonaTitle_perSexo}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perGenero}"/>
+                        <h:outputText value="#{personaController.selected.perGenero}" title="#{bundle.ViewPersonaTitle_perGenero}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perEstadoCivil}"/>
+                        <h:outputText value="#{personaController.selected.perEstadoCivil}" title="#{bundle.ViewPersonaTitle_perEstadoCivil}"/>
+                    </h:panelGrid>
+                    <hr/>
+                    <h:panelGrid columns="4" rendered="#{personaController.selected != null}" style="width: 100%">
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perIdConyuge}"/>
+                        <h:outputText value="#{personaController.selected.perIdConyuge.perIdentificacion}" title="#{bundle.ViewPersonaTitle_perIdConyuge}"/>
+                        <h:outputText value="#{personaController.selected.perIdConyuge.perApellidoPaterno} #{personaController.selected.perIdConyuge.perApellidoMaterno}" title="#{bundle.ViewPersonaTitle_perIdConyuge}"/>
+                        <h:outputText value="#{personaController.selected.perIdConyuge.perNombre}" title="#{bundle.ViewPersonaTitle_perIdConyuge}"/>
+                    </h:panelGrid>
+                    <hr/>
+                    <h:panelGrid columns="4" rendered="#{personaController.selected != null}" style="width: 100%">
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perDisolucionConyugal}"/>
+                        <h:outputText value="#{personaController.selected.perDisolucionConyugal}" title="#{bundle.ViewPersonaTitle_perDisolucionConyugal}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perCalidad}"/>
+                        <h:outputText value="#{personaController.selected.perCalidad}" title="#{bundle.ViewPersonaTitle_perCalidad}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perEstado}"/>
+                        <h:outputText value="#{personaController.selected.perEstado}" title="#{bundle.ViewPersonaTitle_perEstado}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perUser}"/>
+                        <h:outputText value="#{personaController.selected.perUser}" title="#{bundle.ViewPersonaTitle_perUser}"/>
+
+                        <h:outputText value="#{bundle.ViewPersonaLabel_perFHR}"/>
+                        <h:outputText value="#{personaController.selected.perFHR}" title="#{bundle.ViewPersonaTitle_perFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </h:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Close}" onclick="PF('PersonaViewDialog').hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

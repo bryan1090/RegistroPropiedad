@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ParroquiaViewDlg" widgetVar="ParroquiaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewParroquiaTitle}">
+            <h:form id="ParroquiaViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorParroquia.selected != null}">
+                        <h:outputText value="#{bundle.ViewParroquiaLabel_parNombre}"/>
+                        <h:outputText value="#{controladorParroquia.selected.parNombre}" style="text-transform: uppercase" title="#{bundle.ViewParroquiaTitle_parNombre}"/>
+                        <h:outputText value="#{bundle.ViewParroquiaLabel_parEstado}"/>
+                        <h:outputText value="#{controladorParroquia.selected.parEstado}" style="text-transform: uppercase" title="#{bundle.ViewParroquiaTitle_parEstado}"/>
+                        <h:outputText value="#{bundle.ViewParroquiaLabel_parFHR}"/>
+                        <h:outputText value="#{controladorParroquia.selected.parFHR}" style="text-transform: uppercase" title="#{bundle.ViewParroquiaTitle_parFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewParroquiaLabel_parUser}"/>
+                        <h:outputText value="#{controladorParroquia.selected.parUser}" style="text-transform: uppercase" title="#{bundle.ViewParroquiaTitle_parUser}"/>
+                        <h:outputText value="#{bundle.ViewParroquiaLabel_parCodigo}"/>
+                        <h:outputText value="#{controladorParroquia.selected.parCodigo}" style="text-transform: uppercase" title="#{bundle.ViewParroquiaTitle_parCodigo}"/>
+                        <h:outputText value="#{bundle.ViewParroquiaLabel_parInicial}"/>
+                        <h:outputText value="#{controladorParroquia.selected.parInicial}" style="text-transform: uppercase" title="#{bundle.ViewParroquiaTitle_parInicial}"/>
+                        <h:outputText value="#{bundle.ViewParroquiaLabel_ciuId}"/>
+                        <h:outputText value="#{controladorParroquia.selected.ciuId.ciuNombre}" style="text-transform: uppercase" title="#{bundle.ViewParroquiaTitle_ciuId}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorParroquia.clear()}" value="#{bundle.Close}" onclick="ParroquiaViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

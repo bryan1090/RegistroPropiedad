@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <ui:composition>
+        <p:dialog id="DfcDlg" header="Revisión Formulario Web" widgetVar="DfcDialogo" modal="true" resizable="false"
+                  height="400" width="1200">
+            <h:form id="DfcVerForm">
+                <p:dataTable id="datos2" value="#{controladorVerCertificado.listaFormularioDigital}" var="item" 
+                             widgetVar="wVdtbDatos2"
+                             scrollable="true" scrollHeight="430" resizableColumns="false" paginatorPosition="top" style="text-align: center" 
+                             sortBy="#{item.facId.facNumero}">
+                    <p:column groupRow="true" headerText="Factura" sortBy="#{item.facId.facNumero}" filterStyle="height:20px;text-transform: uppercase;"
+                              filterBy="#{item.facId.facNumero}" filterMatchMode="contains" >
+                        <h:outputText value="#{item.facId.facNumero}" />
+                    </p:column>
+
+                    <p:column  headerText="Nombre Archivo" style="width: 15%" sortBy="#{item.fmdNombreArchivo}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.fmdNombreArchivo}" filterMatchMode="contains" >
+                        <h:outputText value="#{item.fmdNombreArchivo}" />
+                    </p:column>                           
+
+                    <p:column  headerText="Usuario" sortBy="#{item.fmdUser}"  >
+                        <h:outputText value="#{item.fmdUser}" />
+                    </p:column>
+                    <p:column  headerText="Fecha" sortBy="#{item.fmdFHR}"  >
+                        <h:outputText  value="#{item.fmdFHR}" >
+                            <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column  headerText="Estado" sortBy="#{item.fmdEstado}" filterStyle="height:20px;text-transform: uppercase;" filterBy="#{item.fmdEstado}" filterMatchMode="contains" >
+                        <h:outputText value="#{item.fmdEstado}" />
+                    </p:column>
+
+                    <p:column headerText="Abrir" style="width: 7%;">
+                        <h:commandLink title="Abrir PDF en un nuevo tab"  action="#{controladorVerCertificado.abrirArchivo()}" target="_blank" >
+                            <p:graphicImage name="/imagenes/pdf.png" width="24" />
+                            <f:setPropertyActionListener value="#{item}" target="#{controladorVerCertificado.formularioDigital}"/>
+                        </h:commandLink>  
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+
+</html>
+

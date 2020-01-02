@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Inscripción"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:outputStylesheet name="css/textEditor.css" />
+
+            <h:form id="formRazon">
+                <p:growl id="growl" showDetail="true" sticky="false" life="3000"/>
+
+                <p:panel header="Razón" >
+                    <p:panelGrid layout="grid" columns="8" style="display: block;text-align: center">
+                        <p:outputLabel for="txtNumTramite" value="# Trámite"/>
+                        <p:inputText id="txtNumTramite" value="#{controladorRazon.tramite}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtRepertorio" value="Repertorio"/>
+                        <p:inputText id="txtRepertorio" value="#{controladorRazon.numRepertorio}" readonly="true"
+                                     style="color: #1a237e"/>
+                        <p:outputLabel for="txtFecha" value="Fecha"/>
+                        <p:calendar pattern="dd/MM/yyyy" mask="true" id="txtFecha" value="#{controladorRazon.FHR}" readonly="true"
+                                    style="color: #1a237e"/>
+                        <p:outputLabel for="txtContrato" value="Contrato"/>
+                        <p:inputText id="txtContrato" value="#{controladorRazon.contrato}" readonly="true"
+                                     style="color: #1a237e" />
+                    </p:panelGrid>
+                    <table align="center" >
+                        <tbody>
+                            <tr align="top" bottom="top" >
+                                <td><p:panel header="" style="width: 350px; height: 589px; ">
+                                        <h:panelGrid columns="2" >
+                                            <p:outputLabel for="txtFechaRepertorio" value="Fecha" />
+                                            <p:calendar pattern="dd/MM/yyyy" id="txtFechaRepertorio" value="#{controladorRazon.FHR}" required="true" label="firstname">
+                                                <p:ajax event="dateSelect" listener="#{controladorRazon.llenarDatos()}" update=":formRazon "/>
+                                            </p:calendar>
+                                        </h:panelGrid>
+
+                                        <h:panelGrid id="panelRep" columns="1">      
+                                            <p:dataTable id="tblRepertorios" scrollable="true"  scrollHeight="410" 
+                                                         value="#{controladorRazon.listaRepertorioFecha}" 
+                                                         var="list" selectionMode="single" selection="#{list}" rowKey="#{list.repNumero}" sortBy="#{list.traNumero.traNumero}" > 
+                                                <p:ajax event="rowSelect" listener="#{controladorRazon.onRowSelect}"  
+                                                        update=" :formRazon, :formFechaOtorgamiento, :dlgFormVisualizarGravamenes" />
+                                                <p:column headerText="# Trámite" groupRow="true">
+                                                    <h:outputText value="#{list.traNumero.traNumero}" />
+                                                </p:column>
+
+                                                <p:column headerText="Repertorio">
+                                                    <h:outputText value="#{list.repNumero}" />
+                                                </p:column>
+
+                                                <p:column headerText="Contrato">
+                                                    <h:outputText value="#{list.repTtrDescripcion}" />
+                                                </p:column>
+                                            </p:dataTable>
+                                        </h:panelGrid>
+                                    </p:panel>
+                                </td>
+                                <td>
+                                    <p:panel>
+                                        <p:commandButton action="#{controladorRazon.guardarRazon()}"
+                                                         update=":formRazon:panelRep, :formRazon:scrollPanel, growl" 
+                                                         value="Guardar Razón" immediate="true" process="@this"
+                                                         disabled="#{controladorRazon.deshabilitarBotonGuardar}"
+                                                         class="green-btn" style="margin-right:20px;" icon="fa fa-save" title="Guardar Razón" />
+
+                                        <p:commandButton action="#{controladorRazon.previsualizarRazon()}"
+                                                         update=":formPrevisualizar:preViewActa,formRazon" 
+                                                         value ="Previsualizar Razón" oncomplete ="PF('dlgPreviewActa').show()" 
+                                                         class="blue-btn" immediate="true" process="@this"                                          
+                                                         style="margin-right:20px;" icon="fa fa-file-o" title="Previsualizar Razón" />
+
+                                        <p:commandButton value ="Firmado Digital" 
+                                                         class="cyan-btn" immediate="true" process="@this"
+                                                         style="margin-right:20px;" icon="fa fa-file-code-o" title="Firmado Digital" />
+
+
+
+
+                                    </p:panel>
+
+                                    <p:panel header="" id="scrollPanel"  style="width: 680px;  ">
+                                        <p:scrollPanel  style="width: 660px; height: 510px;" >
+
+
+                                            <p:outputLabel style="font-weight: bold;" value="RAZÓN DE INSCRIPCIÓN"
+                                                           rendered="#{controladorRazon.renderedTxtEdit}" for="txtRazonInscripcion" />
+
+                                            <p:textEditor toolbarVisible="false" id="txtRazonInscripcion" widgetVar="editorPro"
+                                                          rendered="#{controladorRazon.renderedTxtEdit}"
+                                                          value="#{controladorRazon.razonInscripcion}" required="true" 
+                                                          height="500" style="margin-bottom:10px; width: 640px; text-align: justify;" readonly="true" />
+                                        </p:scrollPanel>
+                                    </p:panel>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </p:panel>
+            </h:form>
+
+            <p:dialog id="dlgFormOtorgamiento" widgetVar="dlgFechaOtorgamiento" modal="true"
+                      onShow="PF('dlgFechaOtorgamiento').initPosition()" header="Otorgamiento" >
+                <h:form id="formFechaOtorgamiento">
+
+                    <h:panelGroup >                       
+
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="Fecha" for="otorgamientoFecha" />
+                            <p:calendar id = "otorgamientoFecha" pattern="dd/MM/yyyy" mask="true" value = "#{controladorInscripcion.fechaOtorgamiento}" disabled="false"/>
+                            <p:outputLabel value="Número Notario" for="numNotario" />
+                            <p:selectOneMenu id="numNotario" value="#{controladorInscripcion.numeroNotario}">
+                                <f:selectItems value="#{controladorInscripcion.listaNumeroNotario}"
+                                               var="notaria" 
+                                               itemValue="#{notaria.notNumero}"
+                                               itemLabel="#{notaria.notNumero}"
+                                               />
+
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Cantón" for="otorgamientoCanton" />
+                            <p:selectOneMenu id="otorgamientoCanton" value="#{controladorInscripcion.canton}">
+                                <f:selectItems value="#{controladorInscripcion.listaCanton}"
+                                               var="canton" 
+                                               itemValue="#{canton.canNombre}"
+                                               itemLabel="#{canton.canNombre}"
+                                               />
+
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Nombre Notario" for="nombreNotario"  />
+                            <p:inputText id="nombreNotario" value="#{controladorInscripcion.nombreNotario}" 
+                                         title="" required="true" 
+                                         requiredMessage="Ingrese el nombre del notario"
+                                         validatorMessage="Ingrese solo letras en el nombre"
+                                         style="text-transform: uppercase">
+
+                                <f:validateRegex  pattern="^\s*[a-zA-Z\ñÑÁÉÍÓÚáéíóú'´][a-zA-Z\sñÑÁÉÍÓÚáéíóú'´]*$"/>
+                            </p:inputText>
+                        </h:panelGrid>
+
+
+                        <p:commandButton class="green-btn" action ="#{controladorInscripcion.txtOtorgamiento()}" icon="fa fa-save" value="Generar" update=":formRazon:txtRazonInscripcion,:growl" oncomplete="handleSubmit(args,'dlgFechaOtorgamiento');" />
+                        <p:commandButton class="red-btn" icon="fa fa-close" value="Cancelar" immediate="true" onclick="PF('dlgFechaOtorgamiento').hide()"/>
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgFormPreViewActa" widgetVar="dlgPreviewActa" modal="true"
+                      onShow="PF('dlgPreviewActa').initPosition()" header="Previsualizar Razón">
+
+                <h:form id="formPrevisualizar">
+                    <h:panelGroup>
+                        <p:textEditor toolbarVisible="false" id="preViewActa" widgetVar="preVisualizarActa" 
+                                      value="#{controladorRazon.razonInscripcion}" required="true" height="450" 
+                                      style="margin-bottom:10px; width: 660px" readonly="true"/>
+                        <p:commandButton class="cyan-btn" icon="fa fa-close" value="Aceptar" immediate="true" onclick="PF('dlgPreviewActa').hide()"/>
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgFormVisualizarGravamenes" widgetVar="dlgVerGravamenes" modal="true"
+                      onShow="PF('dlgVerGravamenes').initPosition()" header="Gravamenes" >
+
+                <h:form id="formVisualizarGravamenes">
+                    <h:panelGroup >                       
+
+                        <h:panelGrid columns="1">
+                            <h3 style="color: red; font-weight: bolder; font-size: large;">Exiten gravamenes para:</h3>
+
+                        </h:panelGrid>
+                        <h:panelGrid id="panelVerGravamenes" columns="1" width="400px">      
+                            <p:dataTable id="tblGravamenes" scrollable="true" scrollHeight="250" 
+                                         value="#{controladorInscripcion.listaGravamenMostrar}" var="gravamen" sortBy="#{gravamen.prdMatricula}" > 
+
+                                <p:column headerText="Matricula">
+                                    <h:outputText value="#{gravamen.prdMatricula}" />
+                                </p:column>
+
+                                <p:column headerText="Repertorio">
+                                    <h:outputText value="#{gravamen.repNumero}" />
+                                </p:column>
+
+                                <p:column headerText="Descripcion">
+                                    <h:outputText value="#{gravamen.graDescripcion}" />
+                                </p:column>
+                            </p:dataTable>
+
+                        </h:panelGrid>
+
+                        <p:commandButton class="green-btn" icon="fa fa-close" value="Aceptar" immediate="true" onclick="PF('dlgVerGravamenes').hide()"/>
+                    </h:panelGroup>
+                </h:form>
+            </p:dialog>
+
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>

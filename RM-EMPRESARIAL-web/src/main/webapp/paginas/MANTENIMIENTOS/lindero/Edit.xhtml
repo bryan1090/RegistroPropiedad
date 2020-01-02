@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="LinderoEditDlg" widgetVar="LinderoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditLinderoTitle}">
+            <h:form id="LinderoEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{linderoController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditLinderoLabel_ldrNombre}" for="ldrNombre" />
+                        <p:inputText id="ldrNombre" value="#{linderoController.selected.ldrNombre}" title="#{bundle.EditLinderoTitle_ldrNombre}" required="true" requiredMessage="#{bundle.EditLinderoRequiredMessage_ldrNombre}"/>
+                        <p:outputLabel value="#{bundle.EditLinderoLabel_prdMatricula}" for="prdMatricula" />
+                        <p:selectOneMenu id="prdMatricula" value="#{linderoController.selected.prdMatricula}" required="true" requiredMessage="#{bundle.EditLinderoRequiredMessage_prdMatricula}">
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{propiedadController.itemsAvailableSelectOne}"
+                                           var="prdMatriculaItem"
+                                           itemValue="#{prdMatriculaItem}" itemLabel="#{prdMatriculaItem.prdPredio}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton class="green-btn" icon="fa fa-save" actionListener="#{linderoController.update}" value="#{bundle.Save}" update="display,:LinderoListForm:datalist,:growl" oncomplete="handleSubmit(args, 'LinderoEditDialog');"/>
+                    <p:commandButton class="red-btn" icon="fa fa-close" value="#{bundle.Cancel}" immediate="true" onclick="LinderoEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

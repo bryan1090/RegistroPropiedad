@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+
+        <ui:define name="title">
+            <h:outputText value="Formulario Digital"/>
+        </ui:define>
+
+        <ui:define name="content" >
+
+
+            <h:form id="form"  >
+
+
+
+                <p:panel id="panel" header="Formulario - Digital"  >
+
+                    <p:panel style="min-height:500px; ">
+                        <h:panelGrid columns="3">
+                            <p:outputLabel for="txtFecha" value="Fecha" />
+                            <p:calendar pattern="dd/MM/yyyy" id="txtFecha" value="#{controladorFormularioDigital.fecha}" required="true" label="firstname">
+
+                            </p:calendar>
+                            <p:commandButton icon="fa fa-search" class="green-btn" value="Buscar"
+                                             action="#{controladorFormularioDigital.inicializar()}"
+                                             update="form"/>
+
+                        </h:panelGrid>
+
+                        <p:dataTable id="dtbRepUsu" value="#{controladorFormularioDigital.listaCertificadoCarga}" var="item" 
+                                     scrollable="true" scrollHeight="430" resizableColumns="false" paginatorPosition="top" 
+                                     sortBy="#{item.cdcDocumento}">
+
+                            <p:column  headerText="Documento" groupRow="true" sortBy=" "
+                                       filterStyle="height:20px;text-transform: uppercase;"
+                                       filterBy="#{item.cdcDocumento}" filterMatchMode="contains" >
+                                <h:outputText value="#{item.cdcDocumento}" />
+                            </p:column>
+
+                            <p:column  headerText="DERECHOS" sortBy=" " filterStyle="height:20px;text-transform: uppercase;" filterBy=" " filterMatchMode="contains" >
+                                <h:outputText value="#{item.facId.facNumeroDerecho}" />
+                            </p:column>
+                            <p:column  headerText="ACCIONES" sortBy=" " filterStyle="height:20px;text-transform: uppercase;" filterBy=" " filterMatchMode="contains" >
+                                <h:outputText value="#{item.facId.facNumeroAcciones}" />
+                            </p:column>
+                            <p:column  headerText="Apellidos y Nombres" sortBy=" " filterStyle="height:20px;text-transform: uppercase;" filterBy=" " filterMatchMode="contains" >
+                                <h:outputText value="#{item.facId.facCertificadoNombre.trim()} #{item.facId.facCertificadoPrimerApe.trim()} #{item.facId.facCertificadoSegundoApe.trim()}" />
+                            </p:column>
+                            <p:column headerText="Subida" >
+                                <p:commandButton icon="fa fa-upload" oncomplete="PF('dialogoSubirArchivo').show()">
+                                    <f:setPropertyActionListener target="#{controladorFormularioDigital.certificadoCargaSeleccionado}" value="#{item}"/>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:panel>
+
+                </p:panel>
+
+            </h:form>
+
+
+            <p:dialog id="dlgSubirArchivo"  widgetVar="dialogoSubirArchivo" modal="true" resizable="false" appendTo="@(body)" header="Subir Archivo">
+                <h:form >
+                    <p:fileUpload widgetVar="fileUploadWidgetVar" fileUploadListener="#{controladorFormularioDigital.subirArchivo}" oncomplete="PF('dialogoSubirArchivo').hide()" mode="advanced" dragDropSupport="false"
+                                  update="@form  growl :form:dtbRepUsu" sizeLimit="1000000000" fileLimit="1" allowTypes="/(\.|\/)(pdf)$/" label="Escoger..." cancelLabel="Cancelar" uploadLabel="Subir" fileLimitMessage="Error, Sólo puede subir 1 archivo." />
+                </h:form>
+            </p:dialog>
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>

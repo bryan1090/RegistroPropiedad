@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="SeleccionAtributoViewDlg" widgetVar="SeleccionAtributoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewSeleccionAtributoTitle}">
+            <h:form id="SeleccionAtributoViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorSeleccionAtributo.selected != null}">
+                        <h:outputText value="#{bundle.ViewSeleccionAtributoLabel_scaAtrAtributo}"/>
+                        <h:outputText value="#{controladorSeleccionAtributo.selected.scaAtrAtributo}" title="#{bundle.ViewSeleccionAtributoTitle_scaAtrAtributo}"/>
+                        <h:outputText value="#{bundle.ViewSeleccionAtributoLabel_scaUser}"/>
+                        <h:outputText value="#{controladorSeleccionAtributo.selected.scaUser}" title="#{bundle.ViewSeleccionAtributoTitle_scaUser}"/>
+                        <h:outputText value="#{bundle.ViewSeleccionAtributoLabel_scaFHR}"/>
+                        <h:outputText value="#{controladorSeleccionAtributo.selected.scaFHR}" title="#{bundle.ViewSeleccionAtributoTitle_scaFHR}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewSeleccionAtributoLabel_slcId}"/>
+                        <h:outputText value="#{controladorSeleccionAtributo.selected.slcId.slcDescripcion}" title="#{bundle.ViewSeleccionAtributoTitle_slcId}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorSeleccionAtributo.clear()}" value="#{bundle.Close}" onclick="SeleccionAtributoViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

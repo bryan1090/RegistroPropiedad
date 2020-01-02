@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Carga Laboral"></h:outputText>
+        </ui:define>
+        <ui:define name="content" >
+            <h:form id="formPrincipal"> 
+                <p:growl id="growl" sticky="false" life="3000" />
+                <p:panel  id="principal" header="Carga Laboral"  style="text-align: center" >
+                    <p:panel >
+                        <div align="center">   
+                            <p:outputLabel style="" id="lblFechas"  value="Buscar por Rango de Fechas"/> 
+                        </div>        
+                        <hr/>           
+                        <h:panelGrid columns="7" style="width: 100%">
+                            <p:outputLabel value="Fecha Inicio:"></p:outputLabel>
+                            <p:calendar pattern="dd/MM/yyyy" value="#{cargaControlador.fechaIni}" >
+                            </p:calendar>
+                            <p:outputLabel value="Fecha Fin:"></p:outputLabel>
+                            <p:calendar pattern="dd/MM/yyyy" value="#{cargaControlador.fechaFin}">
+                            </p:calendar>
+                            <p:outputLabel value="Rol:"></p:outputLabel>
+                            <p:selectOneMenu value="#{cargaControlador.rolId}" filter="true">
+                                <f:selectItem itemLabel="TODOS" itemValue="todos"/>
+                                <f:selectItems value="#{rolController.itemsAvailableSelectOne}" 
+                                               var="rolIdItem"
+                                               itemValue="#{rolIdItem.rolId}" itemLabel="#{rolIdItem.rolNombre}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton id="btn" update="tblCarga btnExcel growl" icon="fa fa-search" value="Buscar" action="#{cargaControlador.listarPorFecha()}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    <div align="right">
+                        <p:commandButton id="btnExcel" value="Excel" icon="fa fa-file-excel-o" class="green-btn" disabled="#{empty cargaControlador.listaCargaLaboral}" action="#{cargaControlador.generarExcel()}" ajax="false" process="@this"/>
+                        <p:commandButton   value="Imprimir" ajax="false" icon="fa fa-print" action="#{cargaControlador.generarReporte()}"/>
+                        <p:commandButton   value="Actualizar" ajax="false" icon="fa fa-refresh" action="#{cargaControlador.listarCarga()}" />
+                    </div>
+                    <p:separator />
+                    <p:dataTable id="tblCarga"  widgetVar="dataCarga" var="item" value="#{cargaControlador.listaCargaLaboral}" 
+                                 style="margin-bottom:0" >
+                        <p:column style="width: 30%" headerText="Nombre" filterMatchMode="contains">
+                            <h:outputText id="Nombre"  value="#{item.usuId.perId.perApellidoPaterno} #{item.usuId.perId.perApellidoMaterno} #{item.usuId.perId.perNombre} " >
+                            </h:outputText>
+                        </p:column>
+                        <p:column  headerText="Cantidad Carga Laboral" filterMatchMode="contains">
+                            <h:outputText value="#{item.carCantidad}" />
+                        </p:column>
+                        <p:column  headerText="Usuario Carga Laboral" filterBy="#{item.usuId.usuLogin}" filterMatchMode="contains" >
+                            <h:outputText value="#{item.usuId.usuLogin}" />
+                        </p:column>
+                        <p:column   headerText="Fecha">
+                            <h:outputText  value="#{item.carFHR.time}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column  headerText="Tipo de Carga Laboral"   filterBy="#{item.carTipoCompleto}"  filterMatchMode="contains" >
+                            <h:outputText value="#{item.carTipoCompleto}" />
+                        </p:column>
+                        <p:column headerText="Ver" style="width: 15%;">
+                            <p:commandButton rendered="#{item.carTipo eq 'RVT'}" update="formDialog:second" class="cyan-btn"  onclick="PF('dlgRVT').show();" action="#{controladorTusuario.listarTramiteRVT(item.carTipoCompleto)}" icon="fa fa-external-link" title="Ver">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorTusuario.cargaLaboral}"/> 
+                            </p:commandButton>
+                            <p:commandButton rendered="#{item.carTipo eq 'DIG'}" update="formDialogDig:DIG" class="cyan-btn"  onclick="PF('dlgDIG').show();" action="#{controladorTusuario.listarTramiteDIG(item.carTipoCompleto)}" icon="fa fa-external-link" title="Ver">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorTusuario.cargaLaboral}"/> 
+                            </p:commandButton>
+                            <p:commandButton rendered="#{item.carTipo eq 'IMP'}" update="formDialogDig:DIG" class="cyan-btn"  onclick="PF('dlgDIG').show();" action="#{controladorTusuario.listarTramiteIMP(item.carTipoCompleto)}" icon="fa fa-external-link" title="Ver">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorTusuario.cargaLaboral}"/> 
+                            </p:commandButton>
+                            <p:commandButton rendered="#{item.carTipo eq 'MRG'}" update="formDialogDig:DIG" class="cyan-btn"  onclick="PF('dlgDIG').show();" action="#{controladorTusuario.listarTramiteMRG(item.carTipoCompleto)}" icon="fa fa-external-link" title="Ver">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorTusuario.cargaLaboral}"/> 
+                            </p:commandButton>
+                            <p:commandButton rendered="#{item.carTipo eq 'MAT'}" update="formDialogDig:DIG" class="cyan-btn"  onclick="PF('dlgDIG').show();" action="#{controladorTusuario.listarTramiteMAT(item.carTipoCompleto)}" icon="fa fa-external-link" title="Ver">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorTusuario.cargaLaboral}"/> 
+                            </p:commandButton>
+                            <p:commandButton rendered="#{item.carTipo eq 'INS'}" update="formDialogDig:DIG" class="cyan-btn"  onclick="PF('dlgDIG').show();" action="#{controladorTusuario.listarTramiteINS(item.carTipoCompleto)}" icon="fa fa-external-link" title="Ver">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorTusuario.cargaLaboral}"/> 
+                            </p:commandButton>
+                            <p:commandButton rendered="#{item.carTipo eq 'RAZ'}" update="formRAZ:tblRAZ formRAZ:tblUsu" class="cyan-btn"  onclick="PF('dlgRAZ').show();" action="#{controladorTusuario.listarTramiteRAZ(item.carTipoCompleto)}" icon="fa fa-external-link" title="Ver">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorTusuario.cargaLaboral}"/> 
+                            </p:commandButton>
+                            <p:commandButton rendered="#{item.carTipo eq 'CER'}" update="formCertificado:tbl02 formCertificado:tblCertificado" class="cyan-btn"  onclick="PF('dlgCertificado').show();" action="#{controladorTusuario.listarCER(item.carTipoCompleto)}" icon="fa fa-external-link" title="Ver">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorTusuario.cargaLaboral}"/> 
+                            </p:commandButton>
+                            <p:commandButton rendered="#{item.carTipo eq 'DFC'}" update="formCertificado:tbl02 formCertificado:tblCertificado" class="cyan-btn"  onclick="PF('dlgCertificado').show();" action="#{controladorTusuario.listarDFC(item.carTipoCompleto)}" icon="fa fa-external-link" title="Ver">
+                                <f:setPropertyActionListener  value="#{item}" target="#{controladorTusuario.cargaLaboral}"/> 
+                            </p:commandButton>
+                        </p:column>     
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+            <h:form id="formCertificado">
+                <p:dialog   widgetVar="dlgCertificado" modal="true" height="300" width="50%"  >                
+                    <p:panel  id="second"  style="text-align: center; border: none" >
+                        <p:dataTable rows="1" id="tbl02" var="nombre" value="#{controladorTusuario.listaCER}" style="border: none" >   
+                            <p:column style="width: 30%"  > 
+                                <h:outputText value="CARGA LABORAL DE #{nombre.usuId.perId.perNombre} #{nombre.usuId.perId.perApellidoPaterno}-#{controladorTusuario.tipo}" style="font-family: serif "/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:dataTable id="tblCertificado" var="certificado" value="#{controladorTusuario.listaCER}" 
+                                     style="margin-bottom:0" >
+                            <p:column style="width: 30%" headerText="Documento">
+                                <h:outputText value="#{certificado.cdcDocumento}" />
+                            </p:column>
+                            <p:column  headerText="User" filterMatchMode="contains">
+                                <h:outputText value="#{certificado.cdcUser}" />
+                            </p:column>
+                            <p:column   headerText="Fecha" filterMatchMode="contains">
+                                <h:outputText  value="#{certificado.cdcFHR.time}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Reasignar" style="width: 15%;">
+                                <p:commandButton rendered="#{certificado.cdcTipo eq 'CER'}"  update="formReasignarCER:tblUsuariosCER" class="green-btn"  onclick="PF('dlgUsuarioCertificado').show();" action="#{controladorTusuario.listarUsuarioCER()}" icon="fa fa-plus" title="Reasignar">
+                                    <f:setPropertyActionListener  value="#{certificado}" target="#{controladorTusuario.certificadoCarga}"/>
+                                </p:commandButton>
+                                <p:commandButton rendered="#{certificado.cdcTipo eq 'DFC'}"  update="formReasignarCER:tblUsuariosCER" class="green-btn"  onclick="PF('dlgUsuarioCertificado').show();" action="#{controladorTusuario.listarUsuarioCER()}" icon="fa fa-plus" title="Reasignar">
+                                    <f:setPropertyActionListener  value="#{certificado}" target="#{controladorTusuario.certificadoCarga}"/>
+                                </p:commandButton>
+                            </p:column> 
+                        </p:dataTable>
+                    </p:panel>
+                </p:dialog>
+            </h:form>
+            <h:form id="formReasignarCER">
+                <p:dialog header="Usuarios" widgetVar="dlgUsuarioCertificado"  modal="true" height="200" width="30%" style="text-align: center">                
+                    <p:dataTable id="tblUsuariosCER" var="usuario" emptyMessage="No hay usuarios disponibles" value="#{controladorTusuario.listaUsuario}" 
+                                 style="margin-bottom:0" >
+                        <f:facet name="header">
+                            <h:outputText value="Usuarios Disponibles Para " style="font-family: serif " />
+                        </f:facet>
+                        <f:facet name="header">
+                            <h:outputText value="#{controladorTusuario.tipo}" style="font-family: serif " />
+                        </f:facet>
+                        <p:column style="width: 30%" headerText="Nombre">
+                            <h:outputText value="#{usuario.perId.perApellidoPaterno} #{usuario.perId.perApellidoMaterno} #{usuario.perId.perNombre}" />
+                        </p:column>
+                        <p:column headerText="Reasignar" style="width: 15%;">
+                            <p:growl id="message" showDetail="true"/>   
+                            <p:commandButton  action="#{controladorTusuario.actualizarCertificado()}" update="message @form formCertificado :formPrincipal" class="green-btn"  icon="fa fa-undo" title="Ver">
+                                <f:setPropertyActionListener  value="#{certificado}" target="#{controladorTusuario.listaCER}" />
+                                <f:setPropertyActionListener  value="#{usuario}" target="#{controladorTusuario.usuario}" />
+                                <p:confirm header="Asignar Usuario" message="¿Asignar usuario elegido?" icon="fa fa-exclamation-triangle" />
+                            </p:commandButton>    
+                        </p:column> 
+                    </p:dataTable>
+                </p:dialog>
+            </h:form>
+            <h:form id="formRAZ">
+                <p:dialog   widgetVar="dlgRAZ" modal="true" height="300" width="50%"  >                
+                    <p:panel  id="ZAR"  style="text-align: center; border: none" >
+                        <p:dataTable rows="1" id="tblRAZ" var="nombre" value="#{controladorTusuario.listaRepertorio}" style="border: none" >   
+                            <p:column style="width: 30%"> 
+                                <h:outputText value="CARGA LABORAL DE #{nombre.usuId.perId.perNombre} #{nombre.usuId.perId.perApellidoPaterno}-#{controladorTusuario.tipo}" style="font-family: serif "/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:dataTable id="tblUsu" var="repertorio" value="#{controladorTusuario.listaRepertorio}" 
+                                     style="margin-bottom:0" >
+
+                            <p:column style="width: 30%" headerText="N° Repertorio">
+                                <h:outputText value="#{repertorio.repNumero.repNumero}" />
+                            </p:column>
+                            <p:column  headerText="User" filterMatchMode="contains">
+                                <h:outputText value="#{repertorio.rpuUser}" />
+                            </p:column>
+                            <p:column   headerText="Fecha" filterMatchMode="contains">
+                                <h:outputText  value="#{repertorio.rpuFHR.time}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Ver" style="width: 15%;">
+                                <h:commandLink value="VER">
+                                    <p:ajax event="click" 
+                                            listener="#{controladorVerRVT.mostrar(repertorio.repNumero.traNumero.traNumero)}" 
+                                            oncomplete="PF('RvtDialogo').show()"
+                                            update=":RvtVerForm"/>
+                                </h:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </p:dialog>
+            </h:form>
+            <h:form id="formDialog">
+                <p:dialog   widgetVar="dlgRVT" modal="true" height="300" width="50%"  >                
+                    <p:panel  id="second"  style="text-align: center; border: none" >
+                        <p:dataTable rows="1" id="tbl4" var="nombre" value="#{controladorTusuario.lista}" style="border: none" >   
+                            <p:column style="width: 30%"  > 
+                                <h:outputText value="CARGA LABORAL DE #{nombre.usuId.perId.perNombre} #{nombre.usuId.perId.perApellidoPaterno}-#{controladorTusuario.tipo}" style="font-family: serif "/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:dataTable id="tbl2" var="tramite" value="#{controladorTusuario.lista}" 
+                                     style="margin-bottom:0" >
+                            <p:column style="width: 30%" headerText="Tramite">
+                                <h:outputText value="#{tramite.traNumero.traNumero}" />
+                            </p:column>
+                            <p:column  headerText="User" filterMatchMode="contains">
+                                <h:outputText value="#{tramite.tusUser}" />
+                            </p:column>
+                            <p:column   headerText="Fecha" filterMatchMode="contains">
+                                <h:outputText  value="#{tramite.tusFHR.time}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Ver" style="width: 15%;">
+                                <h:commandLink value="VER">
+                                    <p:ajax event="click" 
+                                            listener="#{controladorVerRVT.mostrar(tramite.traNumero.traNumero)}" 
+                                            oncomplete="PF('RvtDialogo').show()"
+                                            update=":RvtVerForm"/>
+                                </h:commandLink>
+                            </p:column>
+                            <p:column headerText="Reasignar" style="width: 15%;">
+                                <p:commandButton  update="formReasignar:tblUsuarios" class="green-btn"  onclick="PF('dlg3').show();" action="#{controladorTusuario.listarUsuarioRvt()}" icon="fa fa-plus" title="Reasignar">
+                                    <f:setPropertyActionListener  value="#{tramite}" target="#{controladorTusuario.tramiteUsuario}"/>
+                                </p:commandButton>
+                            </p:column> 
+                        </p:dataTable>
+                    </p:panel>
+                </p:dialog>
+            </h:form>
+            <h:form id="formDialogDig">
+                <p:dialog   widgetVar="dlgDIG" modal="true" height="300" width="50%"  >                
+                    <p:panel  id="DIG"  style="text-align: center; border: none" >
+                        <p:dataTable rows="1" id="tbl4" var="nombre" value="#{controladorTusuario.listaRepertorio}" style="border: none" >   
+                            <p:column style="width: 30%"> 
+                                <h:outputText value="CARGA LABORAL DE #{nombre.usuId.perId.perNombre} #{nombre.usuId.perId.perApellidoPaterno}-#{controladorTusuario.tipo}" style="font-family: serif "/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:dataTable id="tblRepertorio" var="repertorio" value="#{controladorTusuario.listaRepertorio}" 
+                                     style="margin-bottom:0" >
+
+                            <p:column style="width: 30%" headerText="N° Repertorio">
+                                <h:outputText value="#{repertorio.repNumero.repNumero}" />
+                            </p:column>
+                            <p:column  headerText="User" filterMatchMode="contains">
+                                <h:outputText value="#{repertorio.rpuUser}" />
+                            </p:column>
+                            <p:column   headerText="Fecha" filterMatchMode="contains">
+                                <h:outputText  value="#{repertorio.rpuFHR.time}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Ver" style="width: 15%;">
+                                <h:commandLink value="VER">
+                                    <p:ajax event="click" 
+                                            listener="#{controladorVerRVT.mostrar(repertorio.repNumero.traNumero.traNumero)}" 
+                                            oncomplete="PF('RvtDialogo').show()"
+                                            update=":RvtVerForm"/>
+                                </h:commandLink>
+                            </p:column>
+                            <p:column headerText="Reasignar" style="width: 15%;">
+                                <p:commandButton rendered="#{repertorio.rpuTipo eq 'INS'}"  update="formReasignarRepertorio:tblUsuariosRepertorio" class="green-btn"  onclick="PF('dlgUsuarios').show();" action="#{controladorTusuario.listarUsuarioINS()}" icon="fa fa-plus" title="Reasignar">
+                                    <f:setPropertyActionListener  value="#{repertorio}" target="#{controladorTusuario.repertorioUsuario}"/>
+                                </p:commandButton>
+                                <p:commandButton rendered="#{repertorio.rpuTipo eq 'IMP'}"  update="formReasignarRepertorio:tblUsuariosRepertorio" class="green-btn"  onclick="PF('dlgUsuarios').show();" action="#{controladorTusuario.listarUsuarioIMP()}" icon="fa fa-plus" title="Reasignar">
+                                    <f:setPropertyActionListener  value="#{repertorio}" target="#{controladorTusuario.repertorioUsuario}"/>
+                                </p:commandButton>
+                                <p:commandButton rendered="#{repertorio.rpuTipo eq 'MAT'}"  update="formReasignarRepertorio:tblUsuariosRepertorio" class="green-btn"  onclick="PF('dlgUsuarios').show();" action="#{controladorTusuario.listarUsuarioMAT()}" icon="fa fa-plus" title="Reasignar">
+                                    <f:setPropertyActionListener  value="#{repertorio}" target="#{controladorTusuario.repertorioUsuario}"/>
+                                </p:commandButton>
+                                <p:commandButton rendered="#{repertorio.rpuTipo eq 'MRG'}"  update="formReasignarRepertorio:tblUsuariosRepertorio" class="green-btn"  onclick="PF('dlgUsuarios').show();" action="#{controladorTusuario.listarUsuarioMRG()}" icon="fa fa-plus" title="Reasignar">
+                                    <f:setPropertyActionListener  value="#{repertorio}" target="#{controladorTusuario.repertorioUsuario}"/>
+                                </p:commandButton>
+                                <p:commandButton rendered="#{repertorio.rpuTipo eq 'DIG'}"  update="formReasignarRepertorio:tblUsuariosRepertorio" class="green-btn"  onclick="PF('dlgUsuarios').show();" action="#{controladorTusuario.listarUsuarioDIG()}" icon="fa fa-plus" title="Reasignar">
+                                    <f:setPropertyActionListener  value="#{repertorio}" target="#{controladorTusuario.repertorioUsuario}"/>
+                                </p:commandButton>
+
+                            </p:column> 
+                        </p:dataTable>
+                    </p:panel>
+                </p:dialog>
+            </h:form>
+            <h:form id="formReasignarRepertorio">
+                <p:dialog  widgetVar="dlgUsuarios" modal="true" height="200" width="30%" style="text-align: center">                
+                    <p:dataTable  id="tblUsuariosRepertorio" var="usuario" value="#{controladorTusuario.listaUsuario}" 
+                                  style="margin-bottom:0" emptyMessage="No hay usuarios disponibles" >
+                        <f:facet name="header">
+                            <h:outputText value="Usuarios Disponibles Para " style="font-family: serif " />
+                        </f:facet>
+                         <f:facet name="header">
+                            <h:outputText value="#{controladorTusuario.tipo}" />
+                        </f:facet>
+                        
+                        <p:column style="width: 30%" headerText="Nombre">
+                            <h:outputText value="#{usuario.perId.perApellidoPaterno} #{usuario.perId.perApellidoMaterno} #{usuario.perId.perNombre}" />
+                        </p:column>
+                        <p:column headerText="Reasignar" style="width: 15%;">
+                            <p:growl id="mensaje" showDetail="true"/>
+                            <p:commandButton action="#{controladorTusuario.actualizarRepertorio()}"  update="mensaje @form formDialogDig :formPrincipal:tblCarga" class="green-btn"  icon="fa fa-undo" title="Ver">
+                                <f:setPropertyActionListener  value="#{repertorio}" target="#{controladorTusuario.listaRepertorio}"/>
+                                <f:setPropertyActionListener  value="#{usuario}" target="#{controladorTusuario.usuario}"/>
+                                <p:confirm header="Asignar Usuario" message="¿Asignar usuario elegido?" icon="fa fa-exclamation-triangle" />    
+                            </p:commandButton>    
+                        </p:column> 
+                    </p:dataTable>
+                </p:dialog>
+            </h:form>
+            <h:form id="formReasignar">
+                <p:dialog  widgetVar="dlg3" modal="true" height="200" width="30%" style="text-align: center">                
+                    <p:dataTable id="tblUsuarios" var="usuario" value="#{controladorTusuario.listaUsuario}"  emptyMessage="No hay usuarios disponibles" 
+                                 style="margin-bottom:0" >
+                        <f:facet name="header">
+                            <h:outputText value="Usuarios Disponibles Para " style="font-family: serif " />
+                        </f:facet>
+                            <f:facet name="header">
+                            <h:outputText value="#{controladorTusuario.tipo}" />
+                        </f:facet>
+                        <p:column style="width: 30%" headerText="Nombre">
+                            <h:outputText value="#{usuario.perId.perApellidoPaterno} #{usuario.perId.perApellidoMaterno} #{usuario.perId.perNombre}" />
+                        </p:column>
+                        <p:column headerText="Reasignar" style="width: 15%;">
+                            <p:growl id="message" showDetail="true"/>   
+                            <p:commandButton  action="#{controladorTusuario.actualizarTramite()}" update="message @form formDialog :formPrincipal" class="green-btn"  icon="fa fa-undo" title="Ver">
+                                <f:setPropertyActionListener  value="#{tramite}" target="#{controladorTusuario.lista}" />
+                                <f:setPropertyActionListener  value="#{usuario}" target="#{controladorTusuario.usuario}" />
+                                <p:confirm header="Asignar Usuario" message="¿Asignar usuario elegido?" icon="fa fa-exclamation-triangle" />
+                            </p:commandButton>    
+                        </p:column> 
+                    </p:dataTable>
+                </p:dialog>
+            </h:form>
+            <p:dialog id="RvtDlg" header="Trámite" widgetVar="RvtDialogo" modal="true" resizable="false">
+                <h:form id="RvtVerForm" >
+                    <h:panelGrid columns="2" style="width: 100%" >
+                        <h:panelGrid columns="2" cellpadding="10">
+                            <h:outputText  value="N° Trámite:  "  style="font-weight: bold"/>
+                            <h:outputText value="#{controladorVerRVT.tramite.traNumero}" style="color: #b30000"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Tipo ingreso"  style="font-weight: bold"/>
+                        <h:selectOneRadio id="TipoIngreso" value="#{controladorVerRVT.tramite.traTipo}" disabled="true">
+                            <f:selectItem itemLabel="Normal" itemValue="N"/>
+                            <f:selectItem itemLabel="Legal" itemValue="L"/>
+                            <f:selectItem itemLabel="Cancelaciones" itemValue="C" />
+                            <f:selectItem itemLabel="Organizaciones" itemValue="O" />                            
+                        </h:selectOneRadio>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid columns="6" cellpadding="10">
+                        <h:outputText value="CI/RUC/Pas:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traPerIdentificacion}" style="color: #b30000"/>
+                        <h:outputText value="N° de Tramites:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traCantidadTramite}"/>
+                        <h:outputText value="Fecha Entrega:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traFechaEntrega.time}" style="color: #1A237E">
+                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                        </h:outputText>
+                    </h:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid id="pnlIngreso" columns="6" cellpadding="10">
+                        <h:outputText value="Apellido Paterno:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traPerApellidoPaterno}"/>
+                        <h:outputText value="Apellido Materno:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traPerApellidoMaterno}"/>
+                        <h:outputText value="Nombre:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traPerNombre}"/>
+                        <h:outputText value="Notaria:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traNotaria}"/>
+                        <h:outputText value="Juicio:  " style="font-weight: bold"/>
+                        <h:outputText value="#{controladorVerRVT.tramite.traJucio}"/>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

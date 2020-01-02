@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="MensajeViewDlg" widgetVar="MensajeViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewMensajeTitle}">
+            <h:form id="MensajeViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{controladorMensaje.selected != null}">
+                        <h:outputText value="#{bundle.ViewMensajeLabel_msjNumero}"/>
+                        <h:outputText value="#{controladorMensaje.selected.msjNumero}" title="#{bundle.ViewMensajeTitle_msjNumero}"/>
+                        <h:outputText value="#{bundle.ViewMensajeLabel_msjDescripcion}"/>
+                        <h:outputText value="#{controladorMensaje.selected.msjDescripcion}" title="#{bundle.ViewMensajeTitle_msjDescripcion}"/>
+                        <h:outputText value="#{bundle.ViewMensajeLabel_msjTipo}"/>
+                        <h:outputText value="#{controladorMensaje.selected.msjTipo}" title="#{bundle.ViewMensajeTitle_msjTipo}"/>
+                        <h:outputText value="#{bundle.ViewMensajeLabel_msjProblema}"/>
+                        <h:outputText value="#{controladorMensaje.selected.msjProblema}" title="#{bundle.ViewMensajeTitle_msjProblema}"/>
+                        <h:outputText value="#{bundle.ViewMensajeLabel_msjSolucion}"/>
+                        <h:outputText value="#{controladorMensaje.selected.msjSolucion}" title="#{bundle.ViewMensajeTitle_msjSolucion}"/>
+                        <h:outputText value="#{bundle.ViewMensajeLabel_msjColor}"/>
+                        <h:outputText value="#{controladorMensaje.selected.msjColor}" title="#{bundle.ViewMensajeTitle_msjColor}"/>
+                        <h:outputText value="#{bundle.ViewMensajeLabel_msjNegrilla}"/>
+                        <h:outputText value="#{controladorMensaje.selected.msjNegrilla}" title="#{bundle.ViewMensajeTitle_msjNegrilla}"/>
+                        <h:outputText value="#{bundle.ViewMensajeLabel_msjTamanio}"/>
+                        <h:outputText value="#{controladorMensaje.selected.msjTamanio}" title="#{bundle.ViewMensajeTitle_msjTamanio}"/>
+                    </p:panelGrid>
+                    <p:commandButton class="red-btn" icon="fa fa-close" actionListener="#{controladorMensaje.clear()}" value="#{bundle.Close}" onclick="MensajeViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

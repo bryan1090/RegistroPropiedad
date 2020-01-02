@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TipoDescuentoEditDlg" widgetVar="TipoDescuentoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditTipoDescuentoTitle}" closable="false">
+            <h:form id="TipoDescuentoEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{tipoDescuentoController.selected != null}">
+                        
+                        <p:outputLabel value="#{bundle.EditTipoDescuentoLabel_tpdDescripcion}" for="tpdDescripcion" />
+                        <p:inputText id="tpdDescripcion" value="#{tipoDescuentoController.selected.tpdDescripcion}"
+                                     style="text-transform: uppercase"
+                                     title="#{bundle.EditTipoDescuentoTitle_tpdDescripcion}"
+                                     required="true" requiredMessage="#{bundle.EditTipoDescuentoRequiredMessage_tpdDescripcion}"/>
+                        <p:outputLabel value="#{bundle.EditTipoDescuentoLabel_tpdPorcentaje}" for="tpdPorcentaje" />
+                        <p:inputNumber id="tpdPorcentaje" value="#{tipoDescuentoController.selected.tpdPorcentaje}"
+                                       title="#{bundle.EditTipoDescuentoTitle_tpdPorcentaje}" maxValue="100" minValue="0"
+                                       required="true" requiredMessage="#{bundle.EditTipoDescuentoRequiredMessage_tpdPorcentaje}"/>
+                        <p:outputLabel value="#{bundle.EditTipoDescuentoLabel_tpdIdentificacion}" for="tpdIdentificacion" />
+                        <p:inputText id="tpdIdentificacion" value="#{tipoDescuentoController.tramitesControladorBb.identificacion}" title="#{bundle.EditTipoDescuentoTitle_tpdIdentificacion}" >
+                         <p:ajax listener="#{tipoDescuentoController.buscarPersona()}" 
+                                        update="growl TipoDescuentoEditForm:tpdPersona"  
+                                        process="tpdIdentificacion" event="change" 
+                                        />
+                        </p:inputText>
+                         <p:outputLabel value="Persona" for="tpdPersona" />
+                         <h:panelGrid columns="2">
+                             <h:outputText id="tpdPersona" style="width: 250px"
+                                      value="#{tipoDescuentoController.tramitesControladorBb.nombrePersona}"
+                                      title="Persona" />
+                         <p:commandButton title="Buscar Persona" icon="fa fa-search" value="Buscar"
+                                             class="orange-btn" immediate="true" process="@this" 
+                                             actionListener="#{controladorFiltradoPersona.prepararFiltrado('CtrlTipDesc', 'TipoDescuentoEditForm:tpdIdentificacion TipoDescuentoEditForm:tpdPersona')}"
+                                             oncomplete ="PF('dlgFiltradoPersona').show()"/>
+                        </h:panelGrid>
+                        <p:outputLabel value="#{bundle.EditTipoDescuentoLabel_tpdPublico}" for="tpdPublico" />
+                        <p:selectBooleanCheckbox id="tpdPublico" value="#{tipoDescuentoController.esPublico}" title="#{bundle.EditTipoDescuentoTitle_tpdPublico}"/>                        
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{tipoDescuentoController.update}" class="green-btn" value="#{bundle.Save}" update="display,:TipoDescuentoListForm:datalist,:growl" oncomplete="handleSubmit(args, 'TipoDescuentoEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" class="red-btn" action="#{tipoDescuentoController.refrescar()}" immediate="true"  update="display,:TipoDescuentoListForm:datalist" onclick="TipoDescuentoEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
